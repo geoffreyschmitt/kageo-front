@@ -1,0 +1,243 @@
+.shareModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.shareModal__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.shareModal__container {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.shareModal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 24px 24px 0 24px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 24px;
+}
+
+.shareModal__headerContent {
+    flex: 1;
+}
+
+.shareModal__title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px 0;
+}
+
+.shareModal__subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+    font-style: italic;
+}
+
+.shareModal__closeButton {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.shareModal__closeButton:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.shareModal__content {
+    padding: 0 24px 24px 24px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.shareModal__sectionTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 16px 0;
+}
+
+/* Link Group */
+.shareModal__linkGroup {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.shareModal__linkInput {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    background: #f9fafb;
+    font-family: monospace;
+    cursor: text;
+}
+
+.shareModal__note {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Email Form */
+.shareModal__emailForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.shareModal__input {
+    padding: 10px 12px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+.shareModal__input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.shareModal__input--error {
+    border-color: #ef4444;
+}
+
+.shareModal__error {
+    font-size: 12px;
+    color: #ef4444;
+    font-weight: 500;
+    margin-top: -4px;
+}
+
+.shareModal__success {
+    font-size: 12px;
+    color: #10b981;
+    font-weight: 500;
+    margin-top: -4px;
+}
+
+/* Buttons */
+.shareModal__button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.shareModal__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.shareModal__button--primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.shareModal__button--primary:hover:not(:disabled) {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.shareModal__button--secondary {
+    background: transparent;
+    color: #6b7280;
+    border: 2px solid #d1d5db;
+}
+
+.shareModal__button--secondary:hover:not(:disabled) {
+    background: #f9fafb;
+    color: #374151;
+    border-color: #9ca3af;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .shareModal {
+        padding: 10px;
+    }
+
+    .shareModal__container {
+        max-height: 95vh;
+    }
+
+    .shareModal__header {
+        padding: 20px 20px 0 20px;
+    }
+
+    .shareModal__content {
+        padding: 0 20px 20px 20px;
+    }
+
+    .shareModal__linkGroup {
+        flex-direction: column;
+    }
+
+    .shareModal__button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .shareModal__header {
+        padding: 16px 16px 0 16px;
+    }
+
+    .shareModal__content {
+        padding: 0 16px 16px 16px;
+    }
+
+    .shareModal__title {
+        font-size: 20px;
+    }
+}

@@ -1,0 +1,118 @@
+.ownerFilterSelect {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px; /* Add some spacing */
+}
+
+.ownerFilterSelect__label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ownerFilterSelect__inputContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.ownerFilterSelect__input {
+    width: 100%;
+    padding: 10px 12px;
+    padding-right: 30px; /* Space for clear button */
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    background: white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ownerFilterSelect__input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.ownerFilterSelect__clearButton {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #9ca3af;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.ownerFilterSelect__clearButton:hover {
+    color: #6b7280;
+}
+
+.ownerFilterSelect__dropdown {
+    position: absolute;
+    top: 100%; /* Position below the input */
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 500; /* Ensure it's above other content */
+    margin-top: 8px;
+}
+
+.ownerFilterSelect__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ownerFilterSelect__listItem {
+    padding: 0;
+}
+
+.ownerFilterSelect__optionButton {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.ownerFilterSelect__optionButton:hover {
+    background-color: #f3f4f6;
+}
+
+.ownerFilterSelect__optionButton--selected {
+    background-color: #e0f2fe;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.ownerFilterSelect__noResults {
+    padding: 12px;
+    font-size: 14px;
+    color: #6b7280;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ownerFilterSelect {
+        max-width: 100%;
+    }
+}

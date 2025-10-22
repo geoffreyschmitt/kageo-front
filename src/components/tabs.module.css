@@ -1,0 +1,50 @@
+.tabs {
+    width: 100%;
+}
+
+.tabs__header {
+    display: flex;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.tabs__header::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.tabs__button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #6b7280;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.tabs__button:hover {
+    color: #374151;
+}
+
+.tabs__button--active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+}
+
+.tabs__content {
+    padding-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .tabs__button {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
