@@ -1,0 +1,102 @@
+import Image from "next/image"
+import styles from "./Wish.module.css"
+import {TWish} from "@/entities/WIsh/Wish.types";
+
+export const Wish = ({
+  id,
+  name,
+  description,
+  price,
+  currency,
+  imageUrl,
+  priority,
+  status,
+  purchaseUrl,
+  notes,
+  addedDate,
+}: TWish) => {
+  const getPriorityClass = () => {
+    switch (priority) {
+      case "high":
+        return styles["wish__priority--high"]
+      case "medium":
+        return styles["wish__priority--medium"]
+      case "low":
+        return styles["wish__priority--low"]
+      default:
+        return styles["wish__priority--medium"]
+    }
+  }
+
+  const getStatusClass = () => {
+    switch (status) {
+      case "purchased":
+        return styles["wish__status--purchased"]
+      case "reserved":
+        return styles["wish__status--reserved"]
+      case "wanted":
+        return styles["wish__status--wanted"]
+      default:
+        return styles["wish__status--wanted"]
+    }
+  }
+
+  return (
+    <div className={`${styles.wish} ${status === "purchased" ? styles["wish--purchased"] : ""}`} data-id={id}>
+      <div className={styles.wish__imageContainer}>
+        <Image
+          src={imageUrl || "/placeholder.svg"}
+          alt={name}
+          width={200}
+          height={200}
+          className={styles.wish__image}
+        />
+        <div className={`${styles.wish__priority} ${getPriorityClass()}`}>{priority}</div>
+        <div className={`${styles.wish__status} ${getStatusClass()}`}>{status}</div>
+      </div>
+
+      <div className={styles.wish__content}>
+        <div className={styles.wish__header}>
+          <h3 className={styles.wish__title}>{name}</h3>
+          <div className={styles.wish__price}>
+            {currency}
+            {price.toFixed(2)}
+          </div>
+        </div>
+
+        <p className={styles.wish__description}>{description}</p>
+
+        {notes && (
+          <div className={styles.wish__notes}>
+            <span className={styles.wish__notesLabel}>Notes:</span>
+            <p className={styles.wish__notesText}>{notes}</p>
+          </div>
+        )}
+
+        <div className={styles.wish__meta}>
+          <span className={styles.wish__date}>Added {addedDate}</span>
+        </div>
+
+        <div className={styles.wish__actions}>
+          {purchaseUrl && status === "wanted" && (
+            <a
+              href={purchaseUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${styles.wish__button} ${styles["wish__button--primary"]}`}
+            >
+              Buy Now
+            </a>
+          )}
+          <button className={`${styles.wish__button} ${styles["wish__button--secondary"]}`}>Edit</button>
+          <button className={`${styles.wish__button} ${styles["wish__button--danger"]}`}>Remove</button>
+          {status === "wanted" && (
+            <button className={`${styles.wish__button} ${styles["wish__button--success"]}`}>
+              Mark Purchased
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

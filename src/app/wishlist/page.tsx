@@ -1,6 +1,6 @@
 'use client';
-import WishlistList from "@/components/wishlist-list"
-import Tabs from "@/components/tabs"
+import { WishlistList } from "@/widgets"
+import { Tabs } from "@/shared/ui"
 import pageStyles from "./page.module.css"
 import OwnerFilterSelect from "@/components/owner-filter-select"
 import {useMemo, useState} from "react";

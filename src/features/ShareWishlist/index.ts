@@ -1,0 +1,1 @@
+export { ShareWishlistModal } from './ui/ShareWishlistModal'

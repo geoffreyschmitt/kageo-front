@@ -1,11 +1,11 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import WishItem from "./wish-item"
+import { Wish } from "@/entities/WIsh"
 import styles from "./wishlist.module.css"
-import AddItemModal from "./add-item-modal"
-import EditWishlistModal from "./edit-wishlist-modal"
-import ShareModal from "@/components/share-modal";
+import { AddWishlistItemModal } from "@/features/AddWishlistItem"
+import { ShareWishlistModal } from "@/features/ShareWishlist"
+import { EditWishlistModal } from "@/features/EditWishlist"
 import ProposeItemModal from "./propose-item-modal"
 
 interface WishlistItem {
@@ -317,7 +317,7 @@ export default function Wishlist({
 
               <div className={styles.wishlist__itemsGrid}>
                 {filteredAndSortedItems.map((item) => (
-                    <WishItem
+                    <Wish
                         key={item.id}
                         id={item.id}
                         name={item.name}
@@ -356,7 +356,7 @@ export default function Wishlist({
               )}
             </div>
         )}
-        <AddItemModal isOpen={isAddItemModalOpen} onClose={() => setIsAddItemModalOpen(false)} onSubmit={handleAddItem} />
+        <AddWishlistItemModal isOpen={isAddItemModalOpen} onClose={() => setIsAddItemModalOpen(false)} onSubmit={handleAddItem} />
         <EditWishlistModal
             isOpen={isEditWishlistModalOpen}
             onClose={() => setIsEditWishlistModalOpen(false)}
@@ -372,7 +372,7 @@ export default function Wishlist({
               notifyOnPurchase: true,
             }}
         />
-        <ShareModal
+        <ShareWishlistModal
             isOpen={isShareModalOpen}
             onClose={() => setIsShareModalOpen(false)}
             wishlistUrl={`https://XXX.app/wishlist/${id}`}
