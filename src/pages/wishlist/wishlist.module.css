@@ -32,7 +32,8 @@
   line-height: 1.2;
 }
 
-.wishlist__owner {
+.wishlist__owner,
+.wishlist__creationDate {
   font-size: 14px;
   color: #6b7280;
   margin: 0 0 12px 0;

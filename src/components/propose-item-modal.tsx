@@ -12,6 +12,7 @@ interface ProposeItemFormData {
     imageUrl: string
     purchaseUrl: string
     notes: string
+    showToOwner?: boolean
 }
 
 interface ProposeItemModalProps {
@@ -29,6 +30,7 @@ export default function ProposeItemModal({ isOpen, onClose, onSubmit }: ProposeI
         imageUrl: "",
         purchaseUrl: "",
         notes: "",
+        showToOwner: false
     })
 
     const [errors, setErrors] = useState<Partial<ProposeItemFormData>>({})
@@ -93,13 +95,14 @@ export default function ProposeItemModal({ isOpen, onClose, onSubmit }: ProposeI
 
     const handleClose = () => {
         setFormData({
+            showToOwner: false,
             name: "",
             description: "",
             price: 0,
             currency: "$",
             imageUrl: "",
             purchaseUrl: "",
-            notes: "",
+            notes: ""
         })
         setErrors({})
         onClose()
@@ -235,6 +238,18 @@ export default function ProposeItemModal({ isOpen, onClose, onSubmit }: ProposeI
                                 rows={2}
                             />
                         </div>
+
+                        {/* Show to Owner Checkbox */}
+                        <div className={`${styles.proposeItemModal__field} ${styles["proposeItemModal__field--full"]}`}>
+                            <label className={styles.proposeItemModal__checkbox}>
+                                <input
+                                    type="checkbox"
+                                    checked={formData.showToOwner}
+                                    onChange={(e) => handleInputChange("showToOwner", e.target.checked)}
+                                />
+                                Show to Owner
+                            </label>
+                        </div>
                     </div>
 
                     {/* Preview */}
@@ -262,6 +277,8 @@ export default function ProposeItemModal({ isOpen, onClose, onSubmit }: ProposeI
                             </div>
                         </div>
                     )}
+                    
+                    
 
                     <div className={styles.proposeItemModal__actions}>
                         <button

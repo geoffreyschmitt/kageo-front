@@ -1,3 +1,7 @@
+export type TWishPriority = "low" | "medium" | "high"
+
+export type TWishStatus = "wanted" | "purchased" | "reserved" | "proposed"
+
 export type TWish = {
   id: string
   name: string
@@ -5,8 +9,8 @@ export type TWish = {
   price: number
   currency: string
   imageUrl: string
-  priority: "low" | "medium" | "high"
-  status: "wanted" | "purchased" | "reserved"
+  priority: TWishPriority
+  status: TWishStatus
   purchaseUrl?: string
   notes?: string
   addedDate: string

@@ -1,0 +1,381 @@
+.wishForm {
+    padding: 0 24px 24px 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.wishForm__formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.wishForm__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wishForm__field--full {
+    grid-column: 1 / -1;
+}
+
+.wishForm__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wishForm__input,
+.wishForm__select,
+.wishForm__textarea {
+    padding: 12px 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    background: white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wishForm__input:focus,
+.wishForm__select:focus,
+.wishForm__textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.wishForm__input--error,
+.wishForm__textarea--error {
+    border-color: #ef4444;
+}
+
+.wishForm__input--error:focus,
+.wishForm__textarea--error:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.wishForm__textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+}
+
+.wishForm__error {
+    font-size: 12px;
+    color: #ef4444;
+    font-weight: 500;
+}
+
+/* Radio Group */
+.wishForm__radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.wishForm__radioLabel {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wishForm__radioLabel:hover {
+    border-color: #d1d5db;
+    background: #f9fafb;
+}
+
+.wishForm__radioLabel:has(.wishForm__radio:checked) {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.wishForm__radio {
+    margin: 0;
+    accent-color: #3b82f6;
+}
+
+.wishForm__radioText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wishForm__radioText strong {
+    font-size: 14px;
+    color: #111827;
+}
+
+.wishForm__radioText small {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Settings Group */
+.wishForm__settingsGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.wishForm__checkboxLabel {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wishForm__checkboxLabel:hover {
+    border-color: #d1d5db;
+    background: #f9fafb;
+}
+
+.wishForm__checkboxLabel:has(.wishForm__checkbox:checked) {
+    border-color: #10b981;
+    background: #ecfdf5;
+}
+
+.wishForm__checkbox {
+    margin: 0;
+    accent-color: #10b981;
+}
+
+.wishForm__checkboxText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wishForm__checkboxText strong {
+    font-size: 14px;
+    color: #111827;
+}
+
+.wishForm__checkboxText small {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Preview Section */
+.wishForm__preview {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 2px dashed #d1d5db;
+}
+
+.wishForm__previewTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wishForm__previewCard {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.wishForm__previewImage {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #e5e7eb;
+    margin-bottom: 16px;
+}
+
+.wishForm__previewImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.wishForm__previewContent {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.wishForm__previewHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.wishForm__previewName {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.wishForm__previewBadges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.wishForm__previewBadge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.wishForm__previewBadge--public {
+    background: #10b981;
+    color: white;
+}
+
+.wishForm__previewBadge--private {
+    background: #6b7280;
+    color: white;
+}
+
+.wishForm__previewDescription {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.wishForm__previewSettings {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.wishForm__previewSetting {
+    font-size: 12px;
+    color: #059669;
+    background: #ecfdf5;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Actions */
+.wishForm__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.wishForm__button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 140px;
+}
+
+.wishForm__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.wishForm__button--primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.wishForm__button--primary:hover:not(:disabled) {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.wishForm__button--secondary {
+    background: transparent;
+    color: #6b7280;
+    border: 2px solid #d1d5db;
+}
+
+.wishForm__button--secondary:hover:not(:disabled) {
+    background: #f9fafb;
+    color: #374151;
+    border-color: #9ca3af;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .wishForm {
+        padding: 0 20px 20px 20px;
+    }
+
+    .wishForm__formGrid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .wishForm__field--full {
+        grid-column: 1;
+    }
+
+    .wishForm__previewHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .wishForm__previewBadges {
+        justify-content: flex-start;
+    }
+
+    .wishForm__actions {
+        flex-direction: column;
+    }
+
+    .wishForm__button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .wishForm {
+        padding: 0 16px 16px 16px;
+    }
+
+    .wishForm__radioGroup,
+    .wishForm__settingsGroup {
+        gap: 12px;
+    }
+
+    .wishForm__radioLabel,
+    .wishForm__checkboxLabel {
+        padding: 10px;
+    }
+}

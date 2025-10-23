@@ -1,4 +1,4 @@
-import Wishlist from "@/components/wishlist"
+import Wishlist from "@/pages/wishlist/wishlist"
 
 // Sample data for a single wishlist
 const sampleWishlistData = {
@@ -95,7 +95,7 @@ const sampleWishlistData = {
   ],
 }
 
-export default function WishlistPage({ params }: { params: { id: string } }) {
+export default function WishlistPage() {
   return (
     <main>
       <Wishlist

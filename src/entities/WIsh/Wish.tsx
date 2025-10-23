@@ -1,6 +1,6 @@
 import Image from "next/image"
 import styles from "./Wish.module.css"
-import {TWish} from "@/entities/WIsh/Wish.types";
+import {TWish} from "@/entities/wish/Wish.types";
 
 export const Wish = ({
   id,
@@ -34,6 +34,8 @@ export const Wish = ({
         return styles["wish__status--purchased"]
       case "reserved":
         return styles["wish__status--reserved"]
+      case "proposed":
+        return styles["wish__status--proposed"]
       case "wanted":
         return styles["wish__status--wanted"]
       default:

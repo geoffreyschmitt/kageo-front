@@ -91,6 +91,11 @@
   color: white;
 }
 
+.wish__status--proposed {
+    background: #f59e0b;
+    color: white;
+}
+
 .wish__content {
   padding: 16px;
   flex: 1;
