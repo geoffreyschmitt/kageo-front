@@ -1,5 +1,5 @@
 export { WISHLIST_CATEGORIES, DEFAULT_WISHLIST_SETTINGS } from './model/constants'
 export type { WishlistCategory } from './model/constants'
 export type { Wishlist, WishlistFormData } from './model/types'
-export type {WishlistForm } from './ui/WishlistForm'
-export type {TEditWishlistFormData, TEditWishlistForm, TEditWishlistValidationErrors } from './ui/EditWishlistForm.types'
+export type { WishlistForm } from './ui/WishlistForm'
+export type { TWishlistFormData, TWishlistForm, TWishlistValidationErrors } from './ui/WishlistForm.types'
