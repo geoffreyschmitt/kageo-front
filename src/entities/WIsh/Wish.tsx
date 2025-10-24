@@ -52,6 +52,13 @@ export const Wish = ({
           width={200}
           height={200}
           className={styles.wish__image}
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2UyZTJlMiIvPjwvc3ZnPg=="
+          onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.backgroundColor = '#e2e2e2';
+              target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Image transparente 1x1
+          }}
         />
         <div className={`${styles.wish__priority} ${getPriorityClass()}`}>{priority}</div>
         <div className={`${styles.wish__status} ${getStatusClass()}`}>{status}</div>

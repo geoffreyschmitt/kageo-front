@@ -3,6 +3,7 @@ import { useState, useCallback  } from "react"
 import type { TWishFormData, TWishValidationErrors, TWishPriority} from "@/entities/wish"
 import { addWish as addWishService } from "@/services/wishlist/addWish"
 import { mockAddWish } from "./lib/mockAddWish"
+import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 
 type TUseAddWishModelParams = {
@@ -43,16 +44,6 @@ export const useAddWishModel = ({
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }, [formData])
-
-    const isValidUrl = (value: string): boolean => {
-        try {
-            // eslint-disable-next-line no-new
-            new URL(value)
-            return true
-        } catch {
-            return false
-        }
-    }
 
     // Generic setter that accepts string | number for fields.
     const handleInputChange = useCallback(

@@ -1,10 +1,9 @@
-// features/EditWishlist/model.ts
-
 import { useState, useCallback } from "react"
 import type { TEditWishlistFormData, TEditWishlistValidationErrors } from "@/entities/wishlist"
 import { updateWishlist } from "@/services/wishlist/updateWishlist"
 import { mockUpdateWishlist } from "./lib/mockUpdateWishlist"
 import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist";
+import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 type TUseEditWishlistModel = {
     onSubmit: (wishlistData: TEditWishlistFormData) => void
@@ -49,15 +48,6 @@ export const useEditWishlistModel = ({
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }, [formData])
-
-    const isValidUrl = (value: string): boolean => {
-        try {
-            new URL(value)
-            return true
-        } catch {
-            return false
-        }
-    }
 
     const handleInputChange = useCallback(
         (field: keyof TEditWishlistFormData, value: string | boolean) => {

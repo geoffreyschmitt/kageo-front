@@ -4,6 +4,7 @@ import {useCallback, useState} from "react"
 import type { TProposedWishFormData, TProposedWishValidationErrors } from "@/entities/wish"
 import { mockProposeWish } from "./lib/mockProposeWish"
 import {addWish as addWishService} from "@/services/wishlist/addWish";
+import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 type TUseProposeWishFormParams = {
     onSubmit: (item: TProposedWishFormData & { id: string }) => void
@@ -29,15 +30,6 @@ export const useProposeWishForm = ({
 
     const [errors, setErrors] = useState<TProposedWishValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState(false)
-
-    const isValidUrl = (url: string): boolean => {
-        try {
-            new URL(url)
-            return true
-        } catch {
-            return false
-        }
-    }
 
     const validateForm = (): boolean => {
         const newErrors: Partial<Record<keyof TProposedWishFormData, string>> = {}
