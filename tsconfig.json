@@ -20,12 +20,13 @@
     ],
     "baseUrl": "src",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./*"],
       "@/features/*": ["features/*"],
       "@/shared/*": ["shared/*"],
       "@/entities/*": ["entities/*"],
       "@/widgets/*": ["widgets/*"],
-      "@/lib/*": ["lib/*"]
+      "@/lib/*": ["lib/*"],
+      "@/pages/*": ["pages/*"]
     },
 
     //TODO: Remove this later
