@@ -33,7 +33,7 @@ export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName,
             await onSendEmail(email, wishlistUrl)
             setSendSuccess(true)
             setEmail("") // Clear email input on success
-        } catch (error) {
+        } catch {
             setEmailError("Failed to send email. Please try again.")
         } finally {
             setIsSending(false)
