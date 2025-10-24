@@ -13,7 +13,7 @@ export default function HomePage() {
                     </p>
                     <div className={pageStyles.hero__actions}>
                         <Link href="/wishlist" className={pageStyles.hero__buttonPrimary}>
-                            Get Started - It's Free!
+                            Get Started - It&#39;s Free!
                         </Link>
                         <Link href="/features" className={pageStyles.hero__buttonSecondary}>
                             Learn More
@@ -57,7 +57,7 @@ export default function HomePage() {
                         <div className={pageStyles.featureCard__icon}>🔒</div>
                         <h3 className={pageStyles.featureCard__title}>Privacy Control</h3>
                         <p className={pageStyles.featureCard__description}>
-                            Keep wishlists private or make them public for easy sharing. You're in control.
+                            Keep wishlists private or make them public for easy sharing. You&#39;re in control.
                         </p>
                     </div>
                 </div>
