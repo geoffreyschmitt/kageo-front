@@ -67,7 +67,7 @@ export const Header = () => {
                     const data = await res.json()
                     setError(data.message || 'Registration failed')
                 }
-            } catch (error) {
+            } catch {
                 setError('Network error')
             }
         }
@@ -133,7 +133,7 @@ export const Header = () => {
                         </ul>
                     </nav>
                     <div className={styles.header__actions}>
-                        {session ? (
+                        {session?.user ? (
                             <div className={styles.header__userMenu}>
                                 <span className={styles.header__userName}>
                                     Hello, {session.user.name || session.user.email}
