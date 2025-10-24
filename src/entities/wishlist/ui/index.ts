@@ -1,2 +1,2 @@
 export { WishlistForm } from './WishlistForm'
-export type { TEditWishlistFormData, TEditWishlistForm, TEditWishlistValidationErrors } from './WishlistForm.types'
+export type { TWishlistForm } from './WishlistForm.types'
