@@ -2,13 +2,13 @@ import React from "react";
 import styles from "./AddWishModal.module.css";
 import {
     TAddWishModal,
-    TAddWishFormData
 } from "./AddWishModal.types";
 import {
     useAddWishModel,
 } from "@/features/AddWish/model";
 import {WishForm} from "@/entities/wish/ui/WishForm";
 import {Modal} from "@/shared/ui";
+import {TWishFormData, TWishForm} from "@/entities/wish";
 
 
 export const AddWishModal = ({
@@ -22,6 +22,7 @@ export const AddWishModal = ({
         errors,
         isSubmitting,
         handleInputChange,
+        handleCheckboxChange,
         handleSubmit,
     } = useAddWishModel({
         onSubmit,
@@ -32,28 +33,29 @@ export const AddWishModal = ({
     if (!isOpen) return null;
 
     const handleSelectChange =
-        (field: keyof TAddWishFormData) =>
+        (field: keyof TWishFormData) =>
             (e: React.ChangeEvent<HTMLSelectElement>) => {
                 const value = e.target.value;
                 handleInputChange(field, value);
             };
 
     return (
-
         <Modal
             isOpen={isOpen}
             onClose={onClose}
             title=" Ajouter un souhait"
             className={styles.addWishModal}
         >
-                <WishForm
+                <WishForm<TWishForm>
                     formData={formData}
                     errors={errors}
                     isSubmitting={isSubmitting}
                     handleInputChange={handleInputChange}
                     handleSelectChange={handleSelectChange}
+                    handleCheckboxChange={handleCheckboxChange}
                     handleSubmit={handleSubmit}
                     onCancel={onClose}
+                    priority={formData.priority}
                 />
         </Modal>
     );

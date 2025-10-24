@@ -1,17 +1,19 @@
 import React from "react"
 import styles from "./WishForm.module.css"
-import {TWishForm} from "@/entities/wish/ui/WishForm.types";
+import {TProposedWishForm, TProposedWishFormData, TWishForm} from "@/entities/wish/ui/WishForm.types";
 
 
-export const WishForm = ({
-     formData,
-     errors,
-     isSubmitting,
-     handleInputChange,
-     handleSelectChange,
-     handleSubmit,
-     onCancel,
- }: TWishForm) => {
+export const WishForm = <T extends TWishForm | TProposedWishForm>({
+    formData,
+    errors,
+    isSubmitting,
+    handleInputChange,
+    handleSelectChange,
+    handleCheckboxChange,
+    handleSubmit,
+    onCancel,
+    isProposedWish
+}: T) => {
     return (
         <form
             className={styles.wishForm}
@@ -38,20 +40,22 @@ export const WishForm = ({
                 </label>
 
                 {/* Priorité */}
-                <label className={styles.wishForm__field}>
-                    <span className={styles.wishForm__label}>Priorité</span>
-                    <select
-                        name="priority"
-                        value={formData.priority}
-                        onChange={(e) => handleSelectChange("priority", e.target.value)}
-                        disabled={isSubmitting}
-                        className={styles.wishForm__select}
-                    >
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </label>
+                {!isProposedWish && (
+                    <label className={styles.wishForm__field}>
+                        <span className={styles.wishForm__label}>Priorité</span>
+                        <select
+                            name="priority"
+                            value={formData.priority}
+                            onChange={(e) => handleSelectChange("priority", e.target.value)}
+                            disabled={isSubmitting}
+                            className={styles.wishForm__select}
+                        >
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </label>
+                )}
 
                 {/* Description */}
                 <label
@@ -169,6 +173,20 @@ export const WishForm = ({
                 </label>
             </div>
 
+            {/* Show to Owner */}
+            {isProposedWish && (
+                <div className={`${styles.proposeWishModal__field} ${styles["wishForm__field--full"]}`}>
+                    <label className={styles.proposeWishModal__checkbox}>
+                        <input
+                            type="checkbox"
+                            checked={(formData as unknown as TProposedWishFormData).showToOwner}
+                            onChange={e => handleCheckboxChange("showToOwner", e.target.checked)}
+                        />
+                        Show to Owner
+                    </label>
+                </div>
+            )}
+
             {/* Preview */}
             {(formData.name || formData.imageUrl) && (
                 <section className={styles.wishForm__preview}>
@@ -199,13 +217,15 @@ export const WishForm = ({
                             ? formData.price.toFixed(2)
                             : "0.00"}
                     </span>
-                                <span
-                                    className={`${styles.wishForm__previewPriority} ${
-                                        styles[`wishForm__previewPriority--${formData.priority}`]
-                                    }`}
-                                >
+                                {!isProposedWish && (
+                    <span
+                        className={`${styles.wishForm__previewPriority} ${
+                            styles[`wishForm__previewPriority--${formData.priority}`]
+                        }`}
+                    >
                       {formData.priority}
                     </span>
+                                )}
                             </div>
                         </div>
                     </div>

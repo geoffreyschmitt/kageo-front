@@ -1,4 +1,6 @@
 import React from "react";
+import {TWishPriority} from "@/entities/wish/Wish.types";
+
 
 export type TWishFormData = {
     name: string
@@ -6,20 +8,36 @@ export type TWishFormData = {
     price: number
     currency: string
     imageUrl: string
-    priority: "low" | "medium" | "high"
+    priority: TWishPriority
     purchaseUrl: string
     notes: string
 }
 
 export type TWishValidationErrors = Partial<Record<keyof TWishFormData, string>>
 
+export type TProposedWishFormData = Omit<TWishFormData, 'priority'> & {
+    showToOwner: boolean
+}
+export type TProposedWishValidationErrors = Partial<Record<keyof TProposedWishFormData, string>>
 
-export type TWishForm = {
-    formData: TWishFormData
-    errors: TWishValidationErrors
+type TFormChangeHandler<T> = (field: keyof T, value: T[keyof T]) => void;
+
+type TBaseWishFormProps<TData, TErrors> = {
+    formData: TData
+    errors: TErrors
     isSubmitting: boolean
-    handleInputChange: (field: keyof TWishFormData, value: any) => void
-    handleSelectChange: (field: keyof TWishFormData, value: any) => void
+    handleInputChange: TFormChangeHandler<TData>
+    handleSelectChange: TFormChangeHandler<TData>
+    handleCheckboxChange: TFormChangeHandler<TData>
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     onCancel: () => void
+}
+
+export type TWishForm = TBaseWishFormProps<TWishFormData, TWishValidationErrors> & {
+    isProposedWish?: false
+    priority: TWishPriority
+}
+
+export type TProposedWishForm = TBaseWishFormProps<TProposedWishFormData, TProposedWishValidationErrors> & {
+    isProposedWish: true
 }

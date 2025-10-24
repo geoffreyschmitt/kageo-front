@@ -1,12 +1,13 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import {TWish, Wish} from "@/entities/wish"
+import {TProposedWishFormData, TWish, TWishFormData, Wish} from "@/entities/wish"
 import styles from "./wishlist.module.css"
 import { AddWishModal } from "@/features/AddWish"
 import { ShareWishlistModal } from "@/features/ShareWishlist"
 import { UpdateWishlistModal } from "@/features/UpdateWishlist"
-import ProposeItemModal from "@/components/propose-item-modal"
+import {ProposeWishModal} from "@/features/ProposeWish";
+import {TWishlistFormData} from "@/entities/wishlist/ui/WishlistForm.types";
 
 
 interface WishlistProps {
@@ -100,22 +101,22 @@ export default function Wishlist({
 
   const completionPercentage = items.length > 0 ? (purchasedItems.length / items.length) * 100 : 0
 
-  const handleAddItem = (itemData: any) => {
-    console.log("New wish added:", itemData)
+  const handleAddWish = (wish: TWishFormData) => {
+    console.log("New wish added:", wish)
     // Here you would typically add the item to your state/database
     setIsAddItemModalOpen(false)
   }
 
-  const handleProposeItem = (itemData: any) => {
-    console.log("New wish proposed:", itemData)
+  const handleProposeWish = (wish: TProposedWishFormData) => {
+    console.log("New wish proposed:", wish)
     // In a real application, this would send the item to a backend
     // with a 'proposed' status, and the owner/editors would see it
     // in a separate section for review/approval.
     setIsProposeItemModalOpen(false)
   }
 
-  const handleEditWishlist = (wishlistData: any) => {
-    console.log("Wishlist updated:", wishlistData)
+  const handleUpdateWishlist = (wishlist: TWishlistFormData) => {
+    console.log("Wishlist updated:", wishlist)
     // Here you would typically update the wishlist in your state/database
     setIsEditWishlistModalOpen(false)
   }
@@ -367,11 +368,11 @@ export default function Wishlist({
               )}
             </div>
         )}
-        <AddWishModal isOpen={isAddItemModalOpen} onClose={() => setIsAddItemModalOpen(false)} onSubmit={handleAddItem} useMock />
+        <AddWishModal isOpen={isAddItemModalOpen} onClose={() => setIsAddItemModalOpen(false)} onSubmit={handleAddWish} useMock />
         <UpdateWishlistModal
             isOpen={isEditWishlistModalOpen}
             onClose={() => setIsEditWishlistModalOpen(false)}
-            onSubmit={handleEditWishlist}
+            onSubmit={handleUpdateWishlist}
             initialData={{
               name,
               description,
@@ -390,10 +391,10 @@ export default function Wishlist({
             wishlistName={name}
             onSendEmail={handleSendShareEmail}
         />
-        <ProposeItemModal
+        <ProposeWishModal
             isOpen={isProposeItemModalOpen}
             onClose={() => setIsProposeItemModalOpen(false)}
-            onSubmit={handleProposeItem}
+            onSubmit={handleProposeWish}
         />
       </div>
   )

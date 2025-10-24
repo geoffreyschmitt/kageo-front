@@ -1,6 +1,6 @@
 
 import { useState, useCallback  } from "react"
-import type { TWishFormData, TWishValidationErrors } from "@/entities/wish"
+import type { TWishFormData, TWishValidationErrors, TWishPriority} from "@/entities/wish"
 import { addWish as addWishService } from "@/services/wishlist/addWish"
 import { mockAddWish } from "./lib/mockAddWish"
 
@@ -10,6 +10,7 @@ type TUseAddWishModelParams = {
     onClose: () => void
     useMock?: boolean
 }
+
 export const useAddWishModel = ({
     onSubmit,
     onClose,
@@ -55,7 +56,7 @@ export const useAddWishModel = ({
 
     // Generic setter that accepts string | number for fields.
     const handleInputChange = useCallback(
-        (field: keyof TWishFormData, value: string | number) => {
+        (field: keyof TWishFormData, value: string | number | TWishPriority) => {
             setFormData(prev => {
                 // ensure numeric fields remain numbers
                 const normalized =
@@ -67,6 +68,20 @@ export const useAddWishModel = ({
             setErrors(prev => {
                 if (!prev[field]) return prev
                 const copy = { ...prev }
+                delete copy[field]
+                return copy
+            })
+        },
+        [],
+    )
+
+    const handleCheckboxChange = useCallback(
+        (field: keyof TWishFormData, value: string | number | TWishPriority) => {
+            setFormData(prev => ({...prev, [field]: value}))
+            // clear error for the field when user changes checkbox
+            setErrors(prev => {
+                if (!prev[field]) return prev
+                const copy = {...prev}
                 delete copy[field]
                 return copy
             })
@@ -102,7 +117,7 @@ export const useAddWishModel = ({
                 resetForm()
                 onClose()
             } catch (err) {
-                console.error("Erreur lors de l'ajout d'item :", err)
+                console.error("Erreur lors de l'ajout de souhait :", err)
                 // Optionally set a global error state here
             } finally {
                 setIsSubmitting(false)
@@ -116,6 +131,7 @@ export const useAddWishModel = ({
         errors,
         isSubmitting,
         handleInputChange,
+        handleCheckboxChange,
         handleSubmit,
         resetForm,
         validateForm,

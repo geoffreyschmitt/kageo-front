@@ -1,8 +1,12 @@
- import type { TAddWishFormData } from "@/features/AddWish/ui/AddWishModal.types"
+import {TProposedWishFormData, TWishFormData} from "@/entities/wish";
 
-export type TAddWishResponse = TAddWishFormData & { id: string }
+export type TAddWishResponse<T extends TWishFormData | TProposedWishFormData> = T & {
+    id: string
+}
 
-export const addWish = async (data: TAddWishFormData): Promise<TAddWishResponse> => {
+export const addWish = async <T extends TWishFormData | TProposedWishFormData>(
+    data: T
+): Promise<TAddWishResponse<T>> => {
     const res = await fetch("/api/wishlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -14,6 +18,5 @@ export const addWish = async (data: TAddWishFormData): Promise<TAddWishResponse>
         throw new Error(`API error ${res.status}: ${text}`)
     }
 
-    const json = (await res.json()) as TAddWishResponse
-    return json
+    return (await res.json()) as TAddWishResponse<T>
 }

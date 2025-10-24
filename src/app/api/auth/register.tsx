@@ -1,9 +1,12 @@
-// pages/api/auth/register.js
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { kv } from '@vercel/kv'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
-export default async function handler(req, res) {
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse
+) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' })
     }

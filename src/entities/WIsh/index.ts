@@ -1,3 +1,3 @@
 export * from './ui'
 export { Wish } from './Wish'
-export type { TWish } from './Wish.types'
+export type { TWish, TWishPriority, TWishStatus } from './Wish.types'
