@@ -31,7 +31,6 @@
 
     //TODO: Remove this later
     "noImplicitAny": false,
-    "suppressImplicitAnyIndexErrors": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"],
