@@ -50,7 +50,7 @@ export const useEditWishlistModel = ({
     }, [formData])
 
     const handleInputChange = useCallback(
-        (field: keyof TWishlistFormData, value: string | boolean) => {
+        (field: keyof TWishlistFormData, value?: string | boolean) => {
             setFormData((prev: TWishlistFormData) => ({ ...prev, [field]: value }))
 
             // Clear error for the field when user types/selects
