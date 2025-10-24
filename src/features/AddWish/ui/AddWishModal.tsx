@@ -34,8 +34,6 @@ export const AddWishModal = ({
         useMock,
     });
 
-    if (!isOpen) return null;
-
     const handleSelectChange =
         (field: keyof TWishFormData) =>
             (e: React.ChangeEvent<HTMLSelectElement>) => {

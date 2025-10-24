@@ -18,8 +18,6 @@ export const ProposeWishModal = ({ isOpen, onClose, onSubmit }: TProposeWishModa
     const { formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit } =
         useProposeWishForm({onSubmit, onClose})
 
-    if (!isOpen) return null
-
     const handleSelectChange =
         (field: keyof TProposedWishFormData) =>
             (e: React.ChangeEvent<HTMLSelectElement>) => {
