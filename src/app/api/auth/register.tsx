@@ -55,7 +55,7 @@ export default async function handler(
         await kv.set(`user:id:${userId}`, email) // For reverse lookup
 
         // Return success (don't return password)
-        const { password: _, ...userWithoutPassword } = user
+        const { password: {}, ...userWithoutPassword } = user
 
         res.status(201).json({
             message: 'User created successfully',
