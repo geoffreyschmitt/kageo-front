@@ -21,12 +21,12 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["./*"],
-      "@/features/*": ["features/*"],
-      "@/shared/*": ["shared/*"],
-      "@/entities/*": ["entities/*"],
-      "@/widgets/*": ["widgets/*"],
-      "@/lib/*": ["lib/*"],
-      "@/pages/*": ["pages/*"]
+      "@/features/*": ["./features/*"],
+      "@/shared/*": ["./shared/*"],
+      "@/entities/*": ["./entities/*"],
+      "@/widgets/*": ["./widgets/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/pages/*": ["./pages/*"]
     },
 
     //TODO: Remove this later

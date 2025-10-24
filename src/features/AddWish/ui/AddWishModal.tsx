@@ -6,9 +6,8 @@ import {
 import {
     useAddWishModel,
 } from "@/features/AddWish/model";
-import {WishForm} from "@/entities/wish/ui/WishForm";
 import {Modal} from "@/shared/ui";
-import {TWishFormData, TWishForm} from "@/entities/wish";
+import {WishForm, TWishFormData, TWishForm} from "@/entities/wish";
 
 
 export const AddWishModal = ({
