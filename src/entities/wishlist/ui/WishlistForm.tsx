@@ -1,5 +1,7 @@
 import React from "react"
 
+import Image from "next/image";
+
 import { WISHLIST_CATEGORIES } from "@/entities/wishlist"
 import {TWishlistForm} from "@/entities/wishlist/ui/WishlistForm.types";
 
@@ -169,7 +171,11 @@ export const WishlistForm = ({
                 <div className={styles.editWishlistForm__previewCard}>
                     {formData.coverImage && (
                         <div className={styles.editWishlistForm__previewImage}>
-                            <img src={formData.coverImage || "/placeholder.svg"} alt="Aperçu de la couverture" />
+                            <Image
+                                src={formData.coverImage || "/placeholder.svg"} alt="Aperçu de la couverture"
+                                width={600}
+                                height={400}
+                            />
                         </div>
                     )}
                     <div className={styles.editWishlistForm__previewContent}>

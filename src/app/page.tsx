@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 import pageStyles from "./page.module.css"
@@ -22,10 +23,12 @@ export default function HomePage() {
                     </div>
                 </div>
                 <div className={pageStyles.hero__imageContainer}>
-                    <img
-                        src="/placeholder.svg?height=400&width=600"
+                    <Image
+                        src="/placeholder.svg"
                         alt="Wishlist illustration"
                         className={pageStyles.hero__image}
+                        width={600}
+                        height={400}
                     />
                 </div>
             </section>

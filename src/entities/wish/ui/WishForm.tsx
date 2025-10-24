@@ -1,8 +1,11 @@
 import React from "react"
 
+import Image from "next/image";
+
 import {TProposedWishForm, TProposedWishFormData, TWishForm} from "@/entities/wish/ui/WishForm.types";
 
 import styles from "./WishForm.module.css"
+
 
 
 export const WishForm = <T extends TWishForm | TProposedWishForm>({
@@ -196,10 +199,11 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     <div className={styles.wishForm__previewCard}>
                         <div className={styles.wishForm__previewImage}>
                             {formData.imageUrl ? (
-                                 
-                                <img
+                                <Image
                                     src={formData.imageUrl}
                                     alt="Aperçu de l'image"
+                                    width={600}
+                                    height={400}
                                 />
                             ) : (
                                 <div>No image</div>
