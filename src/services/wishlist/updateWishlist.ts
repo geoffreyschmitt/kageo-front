@@ -1,8 +1,8 @@
-import {TEditWishlistFormData} from "@/entities/wishlist";
+import {TWishlistFormData} from "@/entities/wishlist";
 
-export type TAddWishResponse = TEditWishlistFormData & { id: string }
+export type TAddWishResponse = TWishlistFormData & { id: string }
 
-export const updateWishlist = async (data: TEditWishlistFormData): Promise<TAddWishResponse> => {
+export const updateWishlist = async (data: TWishlistFormData): Promise<TAddWishResponse> => {
     const res = await fetch("/api/wishlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

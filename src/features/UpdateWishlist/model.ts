@@ -1,14 +1,14 @@
 import { useState, useCallback } from "react"
-import type { TEditWishlistFormData, TEditWishlistValidationErrors } from "@/entities/wishlist"
+import type { TWishlistFormData, TWishlistValidationErrors } from "@/entities/wishlist"
 import { updateWishlist } from "@/services/wishlist/updateWishlist"
 import { mockUpdateWishlist } from "./lib/mockUpdateWishlist"
 import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist";
 import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 type TUseEditWishlistModel = {
-    onSubmit: (wishlistData: TEditWishlistFormData) => void
+    onSubmit: (wishlistData: TWishlistFormData) => void
     onClose: () => void
-    initialData?: Partial<TEditWishlistFormData>
+    initialData?: Partial<TWishlistFormData>
     useMock?: boolean
 }
 
@@ -18,16 +18,16 @@ export const useEditWishlistModel = ({
     initialData = {},
     useMock = false,
 }: TUseEditWishlistModel) => {
-    const [formData, setFormData] = useState<TEditWishlistFormData>({
+    const [formData, setFormData] = useState<TWishlistFormData>({
         ...DEFAULT_WISHLIST_SETTINGS,
         ...initialData,
     })
 
-    const [errors, setErrors] = useState<TEditWishlistValidationErrors>({})
+    const [errors, setErrors] = useState<TWishlistValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
     const validateForm = useCallback((): boolean => {
-        const newErrors: TEditWishlistValidationErrors = {}
+        const newErrors: TWishlistValidationErrors = {}
 
         if (!formData.name.trim()) {
             newErrors.name = "Le nom de la wishlist est requis"
@@ -50,14 +50,14 @@ export const useEditWishlistModel = ({
     }, [formData])
 
     const handleInputChange = useCallback(
-        (field: keyof TEditWishlistFormData, value: string | boolean) => {
-            setFormData((prev: TEditWishlistFormData) => ({ ...prev, [field]: value }))
+        (field: keyof TWishlistFormData, value: string | boolean) => {
+            setFormData((prev: TWishlistFormData) => ({ ...prev, [field]: value }))
 
             // Clear error for the field when user types/selects
-            setErrors((prev: TEditWishlistValidationErrors) => {
-                if (!prev[field as keyof TEditWishlistValidationErrors]) return prev
+            setErrors((prev: TWishlistValidationErrors) => {
+                if (!prev[field as keyof TWishlistValidationErrors]) return prev
                 const copy = { ...prev }
-                delete copy[field as keyof TEditWishlistValidationErrors]
+                delete copy[field as keyof TWishlistValidationErrors]
                 return copy
             })
         },

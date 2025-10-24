@@ -1,8 +1,8 @@
-import {TEditWishlistFormData} from "@/entities/wishlist";
+import {TWishlistFormData} from "@/entities/wishlist";
 
 export type TUpdateWishlistModal = {
     isOpen: boolean
     onClose: () => void
-    onSubmit: (wishlistData: TEditWishlistFormData) => void
-    initialData?: Partial<TEditWishlistFormData>
+    onSubmit: (wishlistData: TWishlistFormData) => void
+    initialData?: Partial<TWishlistFormData>
 }
