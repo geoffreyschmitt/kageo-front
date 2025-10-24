@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
+
 import styles from "./Tabs.module.css"
 import { TTabs } from "./Tabs.types"
 

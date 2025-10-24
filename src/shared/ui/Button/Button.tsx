@@ -1,7 +1,8 @@
 "use client"
 
-import styles from "./Button.module.css"
 import {TButton} from "shared/ui/Button/Button.types";
+
+import styles from "./Button.module.css"
 
 export const Button = ({
     className = "",

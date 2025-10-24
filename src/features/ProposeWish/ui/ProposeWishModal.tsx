@@ -1,12 +1,18 @@
 "use client"
 
+import React from "react";
+
+import {TProposedWishFormData, WishForm} from "@/entities/wish";
+import {TProposedWishForm} from "@/entities/wish/ui/WishForm.types";
+
+import {Modal} from "@/shared/ui";
+
+import { useProposeWishForm } from "../model"
+
 import styles from "./ProposeWishModal.module.css"
 import type { TProposeWishModal } from "./ProposeWishModal.types"
-import { useProposeWishForm } from "../model"
-import {Modal} from "@/shared/ui";
-import {TProposedWishFormData, WishForm} from "@/entities/wish";
-import React from "react";
-import {TProposedWishForm} from "@/entities/wish/ui/WishForm.types";
+
+
 
 export const ProposeWishModal = ({ isOpen, onClose, onSubmit }: TProposeWishModal) => {
     const { formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit } =

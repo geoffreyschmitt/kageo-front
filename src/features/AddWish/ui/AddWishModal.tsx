@@ -1,13 +1,18 @@
 import React from "react";
+
+import {
+    useAddWishModel,
+} from "@/features/AddWish/model";
+
+import {WishForm, TWishFormData, TWishForm} from "@/entities/wish";
+
+import {Modal} from "@/shared/ui";
+
 import styles from "./AddWishModal.module.css";
 import {
     TAddWishModal,
 } from "./AddWishModal.types";
-import {
-    useAddWishModel,
-} from "@/features/AddWish/model";
-import {Modal} from "@/shared/ui";
-import {WishForm, TWishFormData, TWishForm} from "@/entities/wish";
+
 
 
 export const AddWishModal = ({

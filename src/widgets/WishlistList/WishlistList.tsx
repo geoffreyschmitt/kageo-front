@@ -1,4 +1,5 @@
 import { WishlistCard } from "@/widgets/WishlistCard"
+
 import styles from "./WishlistList.module.css"
 
 type Wishlist = {

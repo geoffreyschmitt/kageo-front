@@ -1,6 +1,8 @@
 import React from "react"
-import styles from "./WishForm.module.css"
+
 import {TProposedWishForm, TProposedWishFormData, TWishForm} from "@/entities/wish/ui/WishForm.types";
+
+import styles from "./WishForm.module.css"
 
 
 export const WishForm = <T extends TWishForm | TProposedWishForm>({
@@ -194,7 +196,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     <div className={styles.wishForm__previewCard}>
                         <div className={styles.wishForm__previewImage}>
                             {formData.imageUrl ? (
-                                // eslint-disable-next-line jsx-a11y/img-redundant-alt
+                                 
                                 <img
                                     src={formData.imageUrl}
                                     alt="Aperçu de l'image"

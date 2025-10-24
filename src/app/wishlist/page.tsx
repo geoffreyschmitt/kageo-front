@@ -1,9 +1,15 @@
 'use client';
-import { WishlistList } from "@/widgets"
-import { Tabs } from "@/shared/ui"
-import pageStyles from "./page.module.css"
-import OwnerFilterSelect from "@/components/owner-filter-select"
 import {useMemo, useState} from "react";
+
+import { WishlistList } from "@/widgets"
+
+import OwnerFilterSelect from "@/components/owner-filter-select"
+
+import { Tabs } from "@/shared/ui"
+
+import pageStyles from "./page.module.css"
+
+
 
 // Sample data for demonstration
 const sampleWishlists = [

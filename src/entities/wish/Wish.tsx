@@ -1,6 +1,8 @@
 import Image from "next/image"
-import styles from "./Wish.module.css"
+
 import {TWish} from "@/entities/wish/Wish.types";
+
+import styles from "./Wish.module.css"
 
 export const Wish = ({
   id,

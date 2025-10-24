@@ -1,10 +1,14 @@
 
 import React from "react"
-import styles from "./UpdateWishlistModal.module.css"
+
 import type { TUpdateWishlistModal } from "@/features/UpdateWishlist"
 import { useEditWishlistModel } from "@/features/UpdateWishlist/model"
-import {Modal} from "@/shared/ui";
+
 import {WishlistForm} from "@/entities/wishlist/ui";
+
+import {Modal} from "@/shared/ui";
+
+import styles from "./UpdateWishlistModal.module.css"
 export const UpdateWishlistModal = ({ isOpen, onClose, onSubmit, initialData }: TUpdateWishlistModal) => {
     const {
         formData,

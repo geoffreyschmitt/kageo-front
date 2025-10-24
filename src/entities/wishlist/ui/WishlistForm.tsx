@@ -1,7 +1,9 @@
 import React from "react"
-import styles from "./WishlistForm.module.css"
+
 import { WISHLIST_CATEGORIES } from "@/entities/wishlist"
 import {TWishlistForm} from "@/entities/wishlist/ui/WishlistForm.types";
+
+import styles from "./WishlistForm.module.css"
 
 
 export const WishlistForm = ({

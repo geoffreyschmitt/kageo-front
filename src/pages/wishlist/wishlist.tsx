@@ -1,13 +1,16 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import {TProposedWishFormData, TWish, TWishFormData, Wish} from "@/entities/wish"
-import styles from "./wishlist.module.css"
+
 import { AddWishModal } from "@/features/AddWish"
+import {ProposeWishModal} from "@/features/ProposeWish";
 import { ShareWishlistModal } from "@/features/ShareWishlist"
 import { UpdateWishlistModal } from "@/features/UpdateWishlist"
-import {ProposeWishModal} from "@/features/ProposeWish";
+
+import {TProposedWishFormData, TWish, TWishFormData, Wish} from "@/entities/wish"
 import {TWishlistFormData} from "@/entities/wishlist/ui/WishlistForm.types";
+
+import styles from "./wishlist.module.css"
 
 
 interface WishlistProps {

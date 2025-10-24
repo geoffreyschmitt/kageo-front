@@ -1,5 +1,6 @@
-import NextLink from "next/link"
 import Image from "next/image"
+import NextLink from "next/link"
+
 import styles from "./WishlistCard.module.css"
 
 type TWishlistCard = {

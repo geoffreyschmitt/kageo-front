@@ -1,10 +1,14 @@
 "use client"
 
 import {useCallback, useState} from "react"
-import type { TProposedWishFormData, TProposedWishValidationErrors } from "@/entities/wish"
-import { mockProposeWish } from "./lib/mockProposeWish"
+
 import {addWish as addWishService} from "@/services/wishlist/addWish";
+
+import type { TProposedWishFormData, TProposedWishValidationErrors } from "@/entities/wish"
+
 import {isValidUrl} from "@/shared/lib/isValidUrl";
+
+import { mockProposeWish } from "./lib/mockProposeWish"
 
 type TUseProposeWishFormParams = {
     onSubmit: (item: TProposedWishFormData & { id: string }) => void

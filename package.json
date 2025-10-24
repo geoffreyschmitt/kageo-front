@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "eslint --fix \"**/*.{ts,tsx}\"",
+    "format": "eslint --fix \"src/**/*.{ts,tsx}\" --ignore-pattern \"node_modules/*\" --ignore-pattern \".next/*\""
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
@@ -29,6 +31,7 @@
     "@types/uuid": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
+    "eslint-plugin-import": "^2.32.0",
     "typescript": "^5"
   }
 }
