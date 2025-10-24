@@ -43,11 +43,21 @@
     margin-bottom: 24px;
 }
 
+.modal__headerContent {
+    flex: 1;
+}
+
 .modal__title {
     font-size: 24px;
     font-weight: 700;
     color: #111827;
     margin: 0;
+}
+.modal__subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+    font-style: italic;
 }
 
 .modal__closeButton {

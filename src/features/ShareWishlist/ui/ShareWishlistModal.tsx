@@ -2,6 +2,7 @@ import React, {useState} from "react";
 
 import styles from "./ShareWishlistModal.module.css";
 import {TShareWishlistModal} from "./ShareWishlistModal.types";
+import {Modal} from "@/shared/ui";
 
 export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName, onSendEmail }: TShareWishlistModal) => {
     const [email, setEmail] = useState("")
@@ -59,19 +60,13 @@ export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName,
     if (!isOpen) return null
 
     return (
-        <div className={styles.shareWishlistModal}>
-            <div className={styles.shareWishlistModal__overlay} onClick={handleClose} />
-            <div className={styles.shareWishlistModal__container}>
-                <div className={styles.shareWishlistModal__header}>
-                    <div className={styles.shareWishlistModal__headerContent}>
-                        <h2 className={styles.shareWishlistModal__title}>Share Wishlist</h2>
-                        <p className={styles.shareWishlistModal__subtitle}>&#34;{wishlistName}&#34;</p>
-                    </div>
-                    <button className={styles.shareWishlistModal__closeButton} onClick={handleClose}>
-                        ×
-                    </button>
-                </div>
-
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Share Wishlist"
+            subtitle={'"{wishlistName}"'}
+            className={styles.updateWishlistModal}
+        >
                 <div className={styles.shareWishlistModal__content}>
                     {/* Share Link Section */}
                     <div className={styles.shareWishlistModal__section}>
@@ -115,7 +110,6 @@ export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName,
                         </form>
                     </div>
                 </div>
-            </div>
-        </div>
+        </Modal>
     )
 }
