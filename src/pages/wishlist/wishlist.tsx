@@ -30,7 +30,7 @@ export default function Wishlist({
                                    id,
                                    name,
                                    description,
-                                   items,
+                                   items = [],
                                    isPublic,
                                    createdDate,
                                    ownerName,
