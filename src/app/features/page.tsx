@@ -10,7 +10,7 @@ export default function FeaturesPage() {
                     <h1 className={styles.featuresHero__title}>Unlock the Full Potential of Your Wishlists</h1>
                     <p className={styles.featuresHero__description}>
                         Discover how Kageo makes managing your desires and coordinating gifts simpler and more fun than ever before.
-                        From effortless item tracking to seamless collaboration, we've got you covered.
+                        From effortless item tracking to seamless collaboration, we&#39;ve got you covered.
                     </p>
                     <Link href="/wishlist" className={styles.featuresHero__ctaButton}>
                         Start Your Dream Wishlist
@@ -64,7 +64,7 @@ export default function FeaturesPage() {
                         />
                         <h3 className={styles.featureCard__title}>Smart Sorting & Filtering</h3>
                         <p className={styles.featureCard__text}>
-                            Find exactly what you're looking for with powerful sorting by name, price, or date, and filter by status
+                            Find exactly what you&#39;re looking for with powerful sorting by name, price, or date, and filter by status
                             or price range.
                         </p>
                     </div>
@@ -166,7 +166,7 @@ export default function FeaturesPage() {
                         />
                         <h3 className={styles.featureCard__title}>Clear Ownership Display</h3>
                         <p className={styles.featureCard__text}>
-                            Always know who owns a wishlist, whether it's yours or shared by someone else.
+                            Always know who owns a wishlist, whether it&#39;s yours or shared by someone else.
                         </p>
                     </div>
                 </div>
