@@ -17,11 +17,13 @@ export type TWishlistValidationErrors = {
     coverImage?: string
 }
 
+type TFormChangeHandler<T> = (field: keyof T, value: T[keyof T]) => void;
+
 export type TWishlistForm = {
     formData: TWishlistFormData
     errors: TWishlistValidationErrors
     isSubmitting: boolean
-    handleInputChange: (field: keyof TWishlistFormData, value: any) => void
+    handleInputChange: TFormChangeHandler<TWishlistFormData>
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     onCancel: () => void
 }
