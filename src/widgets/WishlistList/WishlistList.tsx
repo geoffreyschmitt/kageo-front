@@ -1,20 +1,11 @@
 import { WishlistCard } from "@/widgets/WishlistCard"
 
+import {TWishlist} from "@/entities/wishlist";
+
 import styles from "./WishlistList.module.css"
 
-type Wishlist = {
-  id: string
-  name: string
-  description: string
-  itemCount: number
-  coverImage: string
-  createdDate: string
-  isPublic: boolean
-  ownerName?: string
-}
-
 type TWishlistList = {
-  wishlists: Wishlist[]
+  wishlists: TWishlist[]
   title?: string
   emptyMessage?: string
   showCreateButton?: boolean // New prop to control button visibility
@@ -57,10 +48,9 @@ export const WishlistList = ({
                       id={wishlist.id}
                       name={wishlist.name}
                       description={wishlist.description}
-                      itemCount={wishlist.itemCount}
                       coverImage={wishlist.coverImage}
-                      createdDate={wishlist.createdDate}
-                      ownerName={wishlist.ownerName}
+                      createdAt={wishlist.createdAt}
+                      ownerId={wishlist.ownerId}
                       isPublic={wishlist.isPublic}
                   />
               ))}

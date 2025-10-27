@@ -1,29 +1,43 @@
 import Image from "next/image"
 import NextLink from "next/link"
 
+import {mockUserPrivate} from "@/entities/user";
+
 import styles from "./WishlistCard.module.css"
 
 type TWishlistCard = {
-  id: string
+    id: string
+    ownerId: string
   name: string
   description: string
-  itemCount: number
-  coverImage: string
-  createdDate: string
+  coverImage?: string
+  createdAt: Date
   isPublic: boolean
-  ownerName?: string
 }
+
+const getRelativeTime = (date: Date) => {
+    const now = new Date();
+    const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    const diffInMonths = Math.floor(diffInDays / 30);
+
+    if (diffInDays < 7) return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
+    if (diffInWeeks < 4) return `${diffInWeeks} week${diffInWeeks !== 1 ? 's' : ''} ago`;
+    return `${diffInMonths} month${diffInMonths !== 1 ? 's' : ''} ago`;
+};
 
 export const WishlistCard = ({
   id,
   name,
   description,
-  itemCount,
   coverImage,
-  createdDate,
+  createdAt,
   isPublic,
-  ownerName
+    ownerId
 }: TWishlistCard) => {
+  const user = mockUserPrivate
+    const isOwnedByCurrentUser = user.id === ownerId;
+
   return (
     <div className={styles.wishlistCard}>
       <div className={styles.wishlistCard__imageContainer}>
@@ -33,6 +47,13 @@ export const WishlistCard = ({
           width={300}
           height={200}
           className={styles.wishlistCard__image}
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2UyZTJlMiIvPjwvc3ZnPg=="
+          onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.backgroundColor = '#e2e2e2';
+              target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Image transparente 1x1
+          }}
         />
         <div
           className={`${styles.wishlistCard__badge} ${isPublic ? styles["wishlistCard__badge--public"] : styles["wishlistCard__badge--private"]}`}
@@ -45,21 +66,26 @@ export const WishlistCard = ({
         <div className={styles.wishlistCard__header}>
           <h3 className={styles.wishlistCard__title}>{name}</h3>
           <span className={styles.wishlistCard__count}>
-            {itemCount} {itemCount === 1 ? "item" : "items"}
+              10 items
+            {/**
+                {itemCount} {itemCount === 1 ? "item" : "items"}
+             */}
           </span>
         </div>
 
         <p className={styles.wishlistCard__description}>{description}</p>
 
         <div className={styles.wishlistCard__footer}>
-          <span className={styles.wishlistCard__date}>Created {createdDate}</span>
-          {ownerName && (
-              <span className={styles.wishlistCard__owner}>By {ownerName}</span>
+            <span className={styles.wishlistCard__date}>Created {getRelativeTime(createdAt)}</span>
+            {!isOwnedByCurrentUser && (
+              <span className={styles.wishlistCard__owner}>By {ownerId}</span>
           )}
           <div className={styles.wishlistCard__actions}>
-            <button className={`${styles.wishlistCard__button} ${styles["wishlistCard__button--secondary"]}`}>
-              Edit
-            </button>
+              {isOwnedByCurrentUser && (
+                  <button className={`${styles.wishlistCard__button} ${styles["wishlistCard__button--secondary"]}`}>
+                      Edit
+                  </button>
+              )}
             <NextLink href={`/wishlist/${id}`} className={`${styles.wishlistCard__button} ${styles["wishlistCard__button--primary"]}`}>
               View
             </NextLink>
