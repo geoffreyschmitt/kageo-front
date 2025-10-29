@@ -2,7 +2,6 @@ import React from "react"
 
 import Image from "next/image";
 
-import { WISHLIST_CATEGORIES } from "@/entities/wishlist"
 import {TWishlistForm} from "@/entities/wishlist/ui/WishlistForm.types";
 
 import styles from "./WishlistForm.module.css"
@@ -49,25 +48,6 @@ export const WishlistForm = ({
                         rows={4}
                     />
                     {errors.description && <span className={styles.editWishlistForm__error}>{errors.description}</span>}
-                </div>
-
-                {/* Category */}
-                <div className={styles.editWishlistForm__field}>
-                    <label className={styles.editWishlistForm__label} htmlFor="category">
-                        Catégorie
-                    </label>
-                    <select
-                        id="category"
-                        className={styles.editWishlistForm__select}
-                        value={formData.category || ""}
-                        onChange={(e) => handleInputChange("category", e.target.value)}
-                    >
-                        {WISHLIST_CATEGORIES.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
                 </div>
 
                 {/* Privacy Setting */}
@@ -186,9 +166,6 @@ export const WishlistForm = ({
                                     className={`${styles.editWishlistForm__previewBadge} ${formData.isPublic ? styles["editWishlistForm__previewBadge--public"] : styles["editWishlistForm__previewBadge--private"]}`}
                                 >
                                     {formData.isPublic ? "Publique" : "Privée"}
-                                </span>
-                                <span className={styles.editWishlistForm__previewBadge}>
-                                    {WISHLIST_CATEGORIES.find(cat => cat.value === formData.category)?.label || formData.category}
                                 </span>
                             </div>
                         </div>

@@ -5,7 +5,6 @@ export type TWishlistFormData = {
     description: string
     isPublic: boolean
     coverImage?: string
-    category: string
     allowComments: boolean
     allowSuggestions: boolean
     notifyOnPurchase: boolean

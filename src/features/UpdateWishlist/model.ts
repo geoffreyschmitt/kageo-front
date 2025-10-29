@@ -3,11 +3,12 @@ import { useState, useCallback } from "react"
 import { updateWishlist } from "@/services/wishlist/updateWishlist"
 
 import type { TWishlistFormData, TWishlistValidationErrors } from "@/entities/wishlist"
-import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist";
+import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
 
 import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 import { mockUpdateWishlist } from "./lib/mockUpdateWishlist"
+
 
 type TUseEditWishlistModel = {
     onSubmit: (wishlistData: TWishlistFormData) => void
