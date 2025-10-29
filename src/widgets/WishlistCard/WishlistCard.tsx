@@ -1,9 +1,10 @@
 import Image from "next/image"
-import NextLink from "next/link"
 
 import { TWishlistCard } from "@/widgets/WishlistCard";
 
 import { mockUserPrivate } from "@/entities/user";
+
+import {Button} from "@/shared/ui";
 
 import styles from "./WishlistCard.module.css"
 
@@ -77,9 +78,9 @@ export const WishlistCard = ({
                       Edit
                   </button>
               )}
-            <NextLink href={`/wishlist/${id}`} className={`${styles.wishlistCard__button} ${styles["wishlistCard__button--primary"]}`}>
+            <Button href={`/wishlist/${id}`} variant={'primary'} className={`${styles.wishlistCard__button}`}>
               View
-            </NextLink>
+            </Button>
           </div>
         </div>
       </div>
