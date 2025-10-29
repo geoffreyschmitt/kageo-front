@@ -3,11 +3,12 @@ import { useMemo, useState } from "react";
 
 import { WishlistList } from "@/widgets"
 
+import { wishlistCardListMock } from "@/widgets/WishlistList/lib";
+
 import { OwnerFilter } from "@/features/FilterWishlistOwner";
 import { TWishlistOwner } from "@/features/FilterWishlistOwner/ui/FilterWishlistOwner.types";
 
 import { mockUserPrivate } from "@/entities/user";
-import { wishlistsMock } from "@/entities/wishlist";
 
 import { Tabs } from "@/shared/ui"
 
@@ -15,23 +16,27 @@ import pageStyles from "./page.module.css"
 
 export default function HomePage() {
     const user = mockUserPrivate
-    const ownedWishlists = wishlistsMock.filter((w) => w.ownerId === user.id)
-    const allInvitedWishlists = wishlistsMock.filter((w) => w.ownerId !== user.id)
+    const ownedWishlists = wishlistCardListMock.filter((w) => w.ownerId === user.id)
+    const allInvitedWishlists = wishlistCardListMock.filter((w) => w.ownerId !== user.id)
 
     const [selectedOwnerFilter, setSelectedOwnerFilter] = useState<TWishlistOwner | null>(null)
 
 
     const uniqueInvitedOwners = useMemo(() => {
-        const owners = new Set<{ id: string, name: string }>()
-        allInvitedWishlists.forEach((wishlist) => owners.add({id: wishlist.id, name: wishlist.ownerId}))
-        return Array.from(owners).sort()
+        const ownersMap = new Map<string, {id: string, name: string }>();
+        allInvitedWishlists.forEach((wishlist) => {
+            if (!ownersMap.has(wishlist.ownerId)) {
+                ownersMap.set(wishlist.ownerId, {id: wishlist.ownerId, name: wishlist.ownerName});
+            }
+        });
+        return Array.from(ownersMap.values()).sort();
     }, [allInvitedWishlists])
 
     const filteredInvitedWishlists = useMemo(() => {
         if (!selectedOwnerFilter) {
             return allInvitedWishlists
         }
-        return allInvitedWishlists.filter((wishlist) => wishlist.ownerId === selectedOwnerFilter.name)
+        return allInvitedWishlists.filter((wishlist) => wishlist.ownerId === selectedOwnerFilter.id)
     }, [allInvitedWishlists, selectedOwnerFilter])
 
 
@@ -41,7 +46,7 @@ export default function HomePage() {
             label: "My Wishlists",
             content: (
                 <WishlistList
-                    wishlists={ownedWishlists}
+                    wishlistCardList={ownedWishlists}
                     title="My Wishlists"
                     emptyMessage="You haven't created any wishlists yet. Start by creating one!"
                     showCreateButton={true} // Show create button for owned wishlists
@@ -60,7 +65,7 @@ export default function HomePage() {
                         />
                     </div>
                     <WishlistList
-                        wishlists={filteredInvitedWishlists}
+                        wishlistCardList={filteredInvitedWishlists}
                         title="Wishlists Shared with Me"
                         emptyMessage="No wishlists have been shared with you yet."
                         showCreateButton={false}
