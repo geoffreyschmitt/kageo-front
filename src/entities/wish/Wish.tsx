@@ -93,6 +93,13 @@ export const Wish = ({
         <div className={styles.wish__actions}>
           {showGuestAction && (
             <>
+              {status === 'wanted' && (
+                <a
+                  className={`${styles.wish__button} ${styles['wish__button--reserved']}`}
+                >
+                  Reserve
+                </a>
+              )}
               {purchaseUrl && status === 'wanted' && (
                 <a
                   href={purchaseUrl}
