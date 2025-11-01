@@ -100,6 +100,7 @@ export const Wish = ({
                   Reserve
                 </a>
               )}
+
               {purchaseUrl && status === 'wanted' && (
                 <a
                   href={purchaseUrl}
@@ -110,6 +111,7 @@ export const Wish = ({
                   Buy Now
                 </a>
               )}
+              
               {/** TODO for reserved items, should only be able to mark purchased for the user who reserved it */}
               {(status === 'wanted' || status === 'reserved') && (
                 <button className={`${styles.wish__button} ${styles['wish__button--success']}`}>

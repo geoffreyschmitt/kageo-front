@@ -94,6 +94,19 @@ const sampleOwnerWishlistData = {
       purchaseUrl: 'https://example.com/yoga-mat',
       addedDate: '1 week ago',
     },
+    {
+      id: '8',
+      name: 'Art Supplies Set',
+      description:
+        'Professional art supplies set including high-quality brushes, paints, and canvas. Perfect for exploring artistic creativity.',
+      price: 45.99,
+      currency: '$',
+      imageUrl: '/placeholder.svg?height=200&width=200',
+      priority: 'medium' as const,
+      status: 'wanted' as const,
+      notes: 'Watercolor or acrylic set preferred.',
+      addedDate: '3 days ago',
+    },
   ],
 }
 
