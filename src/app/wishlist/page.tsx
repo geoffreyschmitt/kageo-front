@@ -21,7 +21,6 @@ export default function HomePage() {
   const ownedWishlists = wishlistCardListMock.filter((w) => w.ownerId === user.id)
   const allInvitedWishlists = wishlistCardListMock.filter((w) => w.ownerId !== user.id)
 
-  const [createWishlistModalIsOpen, setCreateWishlistModalIsOpen] = useState(false)
   const [selectedOwnerFilter, setSelectedOwnerFilter] = useState<TWishlistOwner | null>(null)
 
 
@@ -60,8 +59,6 @@ export default function HomePage() {
             showCreateButton={true}
           />
           <CreateWishlistModal
-            isOpen={createWishlistModalIsOpen}
-            onClose={() => setCreateWishlistModalIsOpen(false)}
             onSubmit={handleCreateWishlist}
           />
         </>

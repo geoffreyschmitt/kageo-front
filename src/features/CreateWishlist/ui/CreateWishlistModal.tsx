@@ -13,12 +13,16 @@ export const CreateWishlistModal = ({onClose, onSubmit}: TCreateWishlistModal) =
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
-    eventBus.on('wishlist:openCreationModal', () => {
+    const removeOpenModalEvent = eventBus.on('wishlist:openCreationModal', () => {
       setIsOpen(true)
     });
-    eventBus.on('wishlist:closeCreationModal', () => {
+    const removeCloseModalEvent = eventBus.on('wishlist:closeCreationModal', () => {
       setIsOpen(false);
     });
+    return () => {
+      removeOpenModalEvent();
+      removeCloseModalEvent();
+    }
   }, [])
 
   const handleClose = () => {

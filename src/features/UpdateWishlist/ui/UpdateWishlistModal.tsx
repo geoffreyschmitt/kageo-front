@@ -14,12 +14,16 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData}: TUpdateWis
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
-    eventBus.on('wishlist:openUpdateModal', () => {
+    const removeOpenModalEvent = eventBus.on('wishlist:openUpdateModal', () => {
       setIsOpen(true);
     });
-    eventBus.on('wishlist:closeUpdateModal', () => {
+    const removeCloseModalEvent = eventBus.on('wishlist:closeUpdateModal', () => {
       setIsOpen(false);
     });
+    return () => {
+      removeOpenModalEvent();
+      removeCloseModalEvent();
+    }
   }, [])
 
   const handleClose = () => {
