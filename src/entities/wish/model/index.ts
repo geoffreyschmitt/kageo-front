@@ -1,0 +1,1 @@
+export type {TWishPriority, TWishStatus} from './types'

@@ -2,12 +2,14 @@
 
 import {useMemo, useState} from 'react'
 
+import {TWishCard, WishCard} from '@/widgets/WishCard';
+
 import {AddWishModal} from '@/features/AddWish'
 import {ProposeWishModal} from '@/features/ProposeWish';
 import {ShareWishlistModal} from '@/features/ShareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
 
-import {TProposedWishFormData, TWish, TWishFormData, Wish} from '@/entities/wish'
+import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
 import {TWishlistFormData} from '@/entities/wishlist';
 
 import styles from './wishlist.module.css'
@@ -19,7 +21,7 @@ type TWishlistPageProps = {
   id: string
   name: string
   description: string
-  items: TWish[]
+  items: TWishCard[]
   isPublic: boolean
   createdDate: string
   ownerId: string
@@ -348,7 +350,7 @@ export default function Wishlist({
 
           <div className={styles.wishlist__itemsGrid}>
             {filteredAndSortedItems.map((item) => (
-              <Wish
+              <WishCard
                 key={item.id}
                 id={item.id}
                 name={item.name}

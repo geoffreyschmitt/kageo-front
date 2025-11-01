@@ -1,8 +1,7 @@
-export type TWishPriority = 'low' | 'medium' | 'high'
+import {TWishPriority, TWishStatus} from '@/entities/wish';
 
-export type TWishStatus = 'wanted' | 'purchased' | 'reserved' | 'proposed'
 
-export type TWish = {
+export type TWishCard = {
   id: string
   name: string
   description: string

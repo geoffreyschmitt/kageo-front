@@ -1,4 +1,4 @@
-.wish {
+.wish-card {
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -9,35 +9,35 @@
     height: 100%;
 }
 
-.wish:hover {
+.wish-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-.wish--purchased {
+.wish-card--purchased {
     opacity: 0.7;
     background: #f9fafb;
 }
 
-.wish__imageContainer {
+.wish-card__imageContainer {
     position: relative;
     width: 100%;
     height: 200px;
     overflow: hidden;
 }
 
-.wish__image {
+.wish-card__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.wish:hover .wish__image {
+.wish-card:hover .wish-card__image {
     transform: scale(1.05);
 }
 
-.wish__priority {
+.wish-card__priority {
     position: absolute;
     top: 8px;
     left: 8px;
@@ -49,22 +49,22 @@
     letter-spacing: 0.5px;
 }
 
-.wish__priority--high {
+.wish-card__priority--high {
     background: #ef4444;
     color: white;
 }
 
-.wish__priority--medium {
+.wish-card__priority--medium {
     background: #f59e0b;
     color: white;
 }
 
-.wish__priority--low {
+.wish-card__priority--low {
     background: #10b981;
     color: white;
 }
 
-.wish__status {
+.wish-card__status {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -76,34 +76,34 @@
     letter-spacing: 0.5px;
 }
 
-.wish__status--wanted {
+.wish-card__status--wanted {
     background: #3b82f6;
     color: white;
 }
 
-.wish__status--purchased {
+.wish-card__status--purchased {
     background: #10b981;
     color: white;
 }
 
-.wish__status--reserved {
+.wish-card__status--reserved {
     background: #8b5cf6;
     color: white;
 }
 
-.wish__status--proposed {
+.wish-card__status--proposed {
     background: #f59e0b;
     color: white;
 }
 
-.wish__content {
+.wish-card__content {
     padding: 16px;
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-.wish__header {
+.wish-card__header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -111,7 +111,7 @@
     gap: 12px;
 }
 
-.wish__title {
+.wish-card__title {
     font-size: 16px;
     font-weight: 700;
     color: #111827;
@@ -120,14 +120,14 @@
     flex: 1;
 }
 
-.wish__price {
+.wish-card__price {
     font-size: 16px;
     font-weight: 700;
     color: #059669;
     white-space: nowrap;
 }
 
-.wish__description {
+.wish-card__description {
     font-size: 14px;
     color: #6b7280;
     line-height: 1.4;
@@ -139,14 +139,14 @@
     flex: 1;
 }
 
-.wish__notes {
+.wish-card__notes {
     background: #f3f4f6;
     padding: 8px 12px;
     border-radius: 6px;
     margin-bottom: 12px;
 }
 
-.wish__notesLabel {
+.wish-card__notesLabel {
     font-size: 12px;
     font-weight: 600;
     color: #374151;
@@ -154,31 +154,31 @@
     letter-spacing: 0.5px;
 }
 
-.wish__notesText {
+.wish-card__notesText {
     font-size: 13px;
     color: #6b7280;
     margin: 4px 0 0 0;
     line-height: 1.4;
 }
 
-.wish__meta {
+.wish-card__meta {
     margin-bottom: 16px;
 }
 
-.wish__date {
+.wish-card__date {
     font-size: 12px;
     color: #9ca3af;
     font-weight: 500;
 }
 
-.wish__actions {
+.wish-card__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     margin-top: auto;
 }
 
-.wish__button {
+.wish-card__button {
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 11px;
@@ -193,68 +193,68 @@
     text-align: center;
 }
 
-.wish__button--primary {
+.wish-card__button--primary {
     background: #3b82f6;
     color: white;
 }
 
-.wish__button--primary:hover {
+.wish-card__button--primary:hover {
     background: #2563eb;
     transform: translateY(-1px);
 }
 
-.wish__button--secondary {
+.wish-card__button--secondary {
     background: transparent;
     color: #6b7280;
     border: 1px solid #d1d5db;
 }
 
-.wish__button--secondary:hover {
+.wish-card__button--secondary:hover {
     background: #f9fafb;
     color: #374151;
     border-color: #9ca3af;
 }
 
-.wish__button--danger {
+.wish-card__button--danger {
     background: #ef4444;
     color: white;
 }
 
-.wish__button--danger:hover {
+.wish-card__button--danger:hover {
     background: #dc2626;
     transform: translateY(-1px);
 }
 
-.wish__button--success {
+.wish-card__button--success {
     background: #10b981;
     color: white;
 }
 
-.wish__button--success:hover {
+.wish-card__button--success:hover {
     background: #059669;
     transform: translateY(-1px);
 }
 
-.wish__button--reserved {
+.wish-card__button--reserved {
     color: #fff;
     background: #8b5cf6;
 }
 
-.wish__button--reserved:hover {
+.wish-card__button--reserved:hover {
     background: #7c3aed;
     transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
-    .wish__actions {
+    .wish-card__actions {
         flex-direction: column;
     }
 
-    .wish__button {
+    .wish-card__button {
         width: 100%;
     }
 
-    .wish__header {
+    .wish-card__header {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
