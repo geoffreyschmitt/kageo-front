@@ -8,23 +8,26 @@ import {ShareWishlistModal} from '@/features/ShareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
 
 import {TProposedWishFormData, TWish, TWishFormData, Wish} from '@/entities/wish'
-import {TWishlistFormData} from '@/entities/wishlist/ui/WishlistForm.types';
+import {TWishlistFormData} from '@/entities/wishlist';
 
 import styles from './wishlist.module.css'
 import {eventBus} from '@/shared/eventBus/';
+import {mockUserPrivate} from '@/entities/user';
 
 
-interface WishlistProps {
+type TWishlistPageProps = {
   id: string
   name: string
   description: string
   items: TWish[]
   isPublic: boolean
   createdDate: string
+  ownerId: string
   ownerName: string
   onAddItem?: () => void
   onShareWishlist?: () => void
   onEditWishlist?: () => void
+  userIsOwner: boolean
 }
 
 export default function Wishlist({
@@ -34,10 +37,13 @@ export default function Wishlist({
   items = [],
   isPublic,
   createdDate,
+  ownerId,
   ownerName,
   onAddItem,
-}: WishlistProps) {
-  // State for sorting and filtering
+  userIsOwner = false,
+}: TWishlistPageProps) {
+  const user = mockUserPrivate
+
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'date'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed')[]>(['all'])
@@ -46,20 +52,16 @@ export default function Wishlist({
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isProposeItemModalOpen, setIsProposeItemModalOpen] = useState(false)
 
-  // Get price range from items
   const itemPrices = items.map((item) => item.price)
   const minPrice = Math.min(...itemPrices, 0)
   const maxPrice = Math.max(...itemPrices, 1000)
 
-  // Filter and sort items
   const filteredAndSortedItems = useMemo(() => {
     const filtered = items.filter((item) => {
-      // Status filter
       if (!statusFilter.includes('all') && !statusFilter.includes(item.status)) {
         return false
       }
 
-      // Price range filter
       if (item.price < priceRange.min || item.price > priceRange.max) {
         return false
       }
@@ -67,7 +69,6 @@ export default function Wishlist({
       return true
     })
 
-    // Sort items
     filtered.sort((a, b) => {
       let comparison = 0
 
@@ -159,39 +160,45 @@ export default function Wishlist({
           </div>
 
           <div className={styles.wishlist__actions}>
-            <button
-              className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
-              onClick={() => {
-                eventBus.emit('wishlist:openUpdateModal', {
-                  id,
-                  name,
-                  description,
-                  isPublic,
-                  coverImage: '',
-                  allowComments: true,
-                  allowSuggestions: true,
-                  notifyOnPurchase: true,
-                })
-              }}
-            >
-              Edit Wishlist
-            </button>
+            {userIsOwner && (
+              <button
+                className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
+                onClick={() => {
+                  eventBus.emit('wishlist:openUpdateModal', {
+                    id,
+                    name,
+                    description,
+                    isPublic,
+                    coverImage: '',
+                    allowComments: true,
+                    allowSuggestions: true,
+                    notifyOnPurchase: true,
+                  })
+                }}
+              >
+                Edit Wishlist
+              </button>
+            )}
             <button
               className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
               onClick={() => setIsShareModalOpen(true)}
             >
               Share
             </button>
-            <button className={`${styles.wishlist__button} ${styles['wishlist__button--primary']}`}
-                    onClick={() => setIsAddItemModalOpen(true)}>
-              Add Item
-            </button>
-            <button
-              className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
-              onClick={() => setIsProposeItemModalOpen(true)}
-            >
-              Propose Item
-            </button>
+            {userIsOwner && (
+              <button className={`${styles.wishlist__button} ${styles['wishlist__button--primary']}`}
+                      onClick={() => setIsAddItemModalOpen(true)}>
+                Add Item
+              </button>
+            )}
+            {!userIsOwner && (
+              <button
+                className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
+                onClick={() => setIsProposeItemModalOpen(true)}
+              >
+                Propose Item
+              </button>
+            )}
           </div>
         </div>
 
@@ -236,7 +243,6 @@ export default function Wishlist({
         </div>
       ) : (
         <div className={styles.wishlist__items}>
-          {/* Sort and Filter Controls */}
           <div className={styles.wishlist__controls}>
             <div className={styles.wishlist__controlsSection}>
               <h4 className={styles.wishlist__controlsTitle}>Sort By</h4>
@@ -259,53 +265,56 @@ export default function Wishlist({
               </div>
             </div>
 
-            <div className={styles.wishlist__controlsSection}>
-              <h4 className={styles.wishlist__controlsTitle}>Filter by Status</h4>
-              <div className={styles.wishlist__filterButtons}>
-                <button
-                  className={`${styles.wishlist__filterButton} ${statusFilter.includes('all') ? styles['wishlist__filterButton--active'] : ''}`}
-                  onClick={() => setStatusFilter(['all'])}
-                >
-                  All ({items.length})
-                </button>
-                <button
-                  className={`${styles.wishlist__filterButton} ${statusFilter.includes('wanted') ? styles['wishlist__filterButton--active'] : ''}`}
-                  onClick={() => {
-                    if (statusFilter.includes('wanted')) {
-                      setStatusFilter(statusFilter.filter(s => s !== 'wanted'))
-                    } else {
-                      setStatusFilter(prev => prev.includes('all') ? ['wanted', 'proposed'] : [...prev.filter(s => s !== 'all'), 'wanted'])
-                    }
-                  }}
-                >
-                  Open to Buy ({proposedItems.length + wantedItems.length})
-                </button>
-                <button
-                  className={`${styles.wishlist__filterButton} ${statusFilter.includes('purchased') ? styles['wishlist__filterButton--active'] : ''}`}
-                  onClick={() => {
-                    if (statusFilter.includes('purchased')) {
-                      setStatusFilter(statusFilter.filter(s => s !== 'purchased'))
-                    } else {
-                      setStatusFilter(prev => prev.includes('all') ? ['purchased'] : [...prev.filter(s => s !== 'all'), 'purchased'])
-                    }
-                  }}
-                >
-                  Purchased ({purchasedItems.length})
-                </button>
-                <button
-                  className={`${styles.wishlist__filterButton} ${statusFilter.includes('reserved') ? styles['wishlist__filterButton--active'] : ''}`}
-                  onClick={() => {
-                    if (statusFilter.includes('reserved')) {
-                      setStatusFilter(statusFilter.filter(s => s !== 'reserved'))
-                    } else {
-                      setStatusFilter(prev => prev.includes('all') ? ['reserved'] : [...prev.filter(s => s !== 'all'), 'reserved'])
-                    }
-                  }}
-                >
-                  Reserved ({reservedItems.length})
-                </button>
+            {!userIsOwner && (
+              <div className={styles.wishlist__controlsSection}>
+                <h4 className={styles.wishlist__controlsTitle}>Filter by Status</h4>
+                <div className={styles.wishlist__filterButtons}>
+                  <button
+                    className={`${styles.wishlist__filterButton} ${statusFilter.includes('all') ? styles['wishlist__filterButton--active'] : ''}`}
+                    onClick={() => setStatusFilter(['all'])}
+                  >
+                    All ({items.length})
+                  </button>
+                  <button
+                    className={`${styles.wishlist__filterButton} ${statusFilter.includes('wanted') ? styles['wishlist__filterButton--active'] : ''}`}
+                    onClick={() => {
+                      if (statusFilter.includes('wanted')) {
+                        setStatusFilter(statusFilter.filter(s => s !== 'wanted'))
+                      } else {
+                        setStatusFilter(prev => prev.includes('all') ? ['wanted', 'proposed'] : [...prev.filter(s => s !== 'all'), 'wanted'])
+                      }
+                    }}
+                  >
+                    Open to Buy ({proposedItems.length + wantedItems.length})
+                  </button>
+                  <button
+                    className={`${styles.wishlist__filterButton} ${statusFilter.includes('purchased') ? styles['wishlist__filterButton--active'] : ''}`}
+                    onClick={() => {
+                      if (statusFilter.includes('purchased')) {
+                        setStatusFilter(statusFilter.filter(s => s !== 'purchased'))
+                      } else {
+                        setStatusFilter(prev => prev.includes('all') ? ['purchased'] : [...prev.filter(s => s !== 'all'), 'purchased'])
+                      }
+                    }}
+                  >
+                    Purchased ({purchasedItems.length})
+                  </button>
+                  <button
+                    className={`${styles.wishlist__filterButton} ${statusFilter.includes('reserved') ? styles['wishlist__filterButton--active'] : ''}`}
+                    onClick={() => {
+                      if (statusFilter.includes('reserved')) {
+                        setStatusFilter(statusFilter.filter(s => s !== 'reserved'))
+                      } else {
+                        setStatusFilter(prev => prev.includes('all') ? ['reserved'] : [...prev.filter(s => s !== 'all'), 'reserved'])
+                      }
+                    }}
+                  >
+                    Reserved ({reservedItems.length})
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
+
 
             <div className={styles.wishlist__controlsSection}>
               <h4 className={styles.wishlist__controlsTitle}>Price Range</h4>
@@ -335,12 +344,6 @@ export default function Wishlist({
                 </button>
               </div>
             </div>
-
-            <div className={styles.wishlist__controlsSection}>
-              <div className={styles.wishlist__resultsCount}>
-                Showing {filteredAndSortedItems.length} of {items.length} items
-              </div>
-            </div>
           </div>
 
           <div className={styles.wishlist__itemsGrid}>
@@ -358,6 +361,8 @@ export default function Wishlist({
                 purchaseUrl={item.purchaseUrl}
                 notes={item.notes}
                 addedDate={item.addedDate}
+                showOwnerAction={!!userIsOwner}
+                showGuestAction={Boolean(user.id && !userIsOwner)}
               />
             ))}
           </div>
@@ -381,8 +386,20 @@ export default function Wishlist({
           )}
         </div>
       )}
-      <AddWishModal isOpen={isAddItemModalOpen} onClose={() => setIsAddItemModalOpen(false)} onSubmit={handleAddWish}
-                    useMock/>
+
+      <div className={styles.wishlist__controlsSection}>
+        <div className={styles.wishlist__resultsCount}>
+          Showing {filteredAndSortedItems.length} of {items.length} items
+        </div>
+      </div>
+
+      <AddWishModal
+        isOpen={isAddItemModalOpen}
+        onClose={() => setIsAddItemModalOpen(false)}
+        onSubmit={handleAddWish}
+        useMock
+      />
+
       <UpdateWishlistModal
         onSubmit={handleUpdateWishlist}
         initialData={{
@@ -395,6 +412,7 @@ export default function Wishlist({
           notifyOnPurchase: true,
         }}
       />
+
       <ShareWishlistModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
@@ -402,6 +420,7 @@ export default function Wishlist({
         wishlistName={name}
         onSendEmail={handleSendShareEmail}
       />
+
       <ProposeWishModal
         isOpen={isProposeItemModalOpen}
         onClose={() => setIsProposeItemModalOpen(false)}

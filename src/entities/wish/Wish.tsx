@@ -1,8 +1,8 @@
-import Image from "next/image"
+import Image from 'next/image'
 
-import {TWish} from "@/entities/wish/Wish.types";
+import {TWish} from '@/entities/wish/Wish.types';
 
-import styles from "./Wish.module.css"
+import styles from './Wish.module.css'
 
 export const Wish = ({
   id,
@@ -16,40 +16,42 @@ export const Wish = ({
   purchaseUrl,
   notes,
   addedDate,
+  showOwnerAction = false,
+  showGuestAction = false
 }: TWish) => {
   const getPriorityClass = () => {
     switch (priority) {
-      case "high":
-        return styles["wish__priority--high"]
-      case "medium":
-        return styles["wish__priority--medium"]
-      case "low":
-        return styles["wish__priority--low"]
+      case 'high':
+        return styles['wish__priority--high']
+      case 'medium':
+        return styles['wish__priority--medium']
+      case 'low':
+        return styles['wish__priority--low']
       default:
-        return styles["wish__priority--medium"]
+        return styles['wish__priority--medium']
     }
   }
 
   const getStatusClass = () => {
     switch (status) {
-      case "purchased":
-        return styles["wish__status--purchased"]
-      case "reserved":
-        return styles["wish__status--reserved"]
-      case "proposed":
-        return styles["wish__status--proposed"]
-      case "wanted":
-        return styles["wish__status--wanted"]
+      case 'purchased':
+        return styles['wish__status--purchased']
+      case 'reserved':
+        return styles['wish__status--reserved']
+      case 'proposed':
+        return styles['wish__status--proposed']
+      case 'wanted':
+        return styles['wish__status--wanted']
       default:
-        return styles["wish__status--wanted"]
+        return styles['wish__status--wanted']
     }
   }
 
   return (
-    <div className={`${styles.wish} ${status === "purchased" ? styles["wish--purchased"] : ""}`} data-id={id}>
+    <div className={`${styles.wish} ${status === 'purchased' ? styles['wish--purchased'] : ''}`} data-id={id}>
       <div className={styles.wish__imageContainer}>
         <Image
-          src={imageUrl || "/placeholder.svg"}
+          src={imageUrl || '/placeholder.svg'}
           alt={name}
           width={200}
           height={200}
@@ -57,9 +59,9 @@ export const Wish = ({
           placeholder="blur"
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2UyZTJlMiIvPjwvc3ZnPg=="
           onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.backgroundColor = '#e2e2e2';
-              target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Image transparente 1x1
+            const target = e.target as HTMLImageElement;
+            target.style.backgroundColor = '#e2e2e2';
+            target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Image transparente 1x1
           }}
         />
         <div className={`${styles.wish__priority} ${getPriorityClass()}`}>{priority}</div>
@@ -89,22 +91,30 @@ export const Wish = ({
         </div>
 
         <div className={styles.wish__actions}>
-          {purchaseUrl && status === "wanted" && (
-            <a
-              href={purchaseUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${styles.wish__button} ${styles["wish__button--primary"]}`}
-            >
-              Buy Now
-            </a>
+          {showGuestAction && (
+            <>
+              {purchaseUrl && status === 'wanted' && (
+                <a
+                  href={purchaseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.wish__button} ${styles['wish__button--primary']}`}
+                >
+                  Buy Now
+                </a>
+              )}
+              {(status === 'wanted' || status === 'reserved') && (
+                <button className={`${styles.wish__button} ${styles['wish__button--success']}`}>
+                  Mark Purchased
+                </button>
+              )}
+            </>
           )}
-          <button className={`${styles.wish__button} ${styles["wish__button--secondary"]}`}>Edit</button>
-          <button className={`${styles.wish__button} ${styles["wish__button--danger"]}`}>Remove</button>
-          {status === "wanted" && (
-            <button className={`${styles.wish__button} ${styles["wish__button--success"]}`}>
-              Mark Purchased
-            </button>
+          {showOwnerAction && (
+            <>
+              <button className={`${styles.wish__button} ${styles['wish__button--secondary']}`}>Edit</button>
+              <button className={`${styles.wish__button} ${styles['wish__button--danger']}`}>Remove</button>
+            </>
           )}
         </div>
       </div>

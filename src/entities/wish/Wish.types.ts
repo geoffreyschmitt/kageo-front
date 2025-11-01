@@ -1,6 +1,6 @@
-export type TWishPriority = "low" | "medium" | "high"
+export type TWishPriority = 'low' | 'medium' | 'high'
 
-export type TWishStatus = "wanted" | "purchased" | "reserved" | "proposed"
+export type TWishStatus = 'wanted' | 'purchased' | 'reserved' | 'proposed'
 
 export type TWish = {
   id: string
@@ -14,4 +14,6 @@ export type TWish = {
   purchaseUrl?: string
   notes?: string
   addedDate: string
+  showOwnerAction?: boolean
+  showGuestAction?: boolean
 }
