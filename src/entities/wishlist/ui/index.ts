@@ -1,2 +1,2 @@
 export { WishlistForm } from './WishlistForm'
-export type { TWishlistForm } from './WishlistForm.types'
+export type { TWishlistForm, TWishlistFormData, TWishlistValidationErrors } from './WishlistForm.types'

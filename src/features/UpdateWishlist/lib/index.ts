@@ -1,0 +1,1 @@
+export { mockUpdateWishlist } from './mockUpdateWishlist'

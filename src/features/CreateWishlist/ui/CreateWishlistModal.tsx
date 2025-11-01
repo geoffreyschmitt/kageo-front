@@ -1,34 +1,32 @@
 import React from 'react'
 
-import type {TUpdateWishlistModal} from '@/features/UpdateWishlist'
-import {useEditWishlistModel} from '@/features/UpdateWishlist/model'
-
 import {WishlistForm} from '@/entities/wishlist/ui';
 
 import {Modal} from '@/shared/ui';
 
-import styles from './UpdateWishlistModal.module.css'
+import styles from './CreateWishlistModal.module.css'
+import {TCreateWishlistModal} from '@/features/CreateWishlist/ui/CreateWishlistModal.types';
+import {useCreateWishlistModel} from '@/features/CreateWishlist';
 
-export const UpdateWishlistModal = ({isOpen, onClose, onSubmit, initialData}: TUpdateWishlistModal) => {
+export const CreateWishlistModal = ({isOpen, onClose, onSubmit}: TCreateWishlistModal) => {
   const {
     formData,
     errors,
     isSubmitting,
     handleInputChange,
     handleSubmit,
-  } = useEditWishlistModel({
+  } = useCreateWishlistModel({
     onSubmit,
     onClose,
-    initialData,
     useMock: true,
   })
-  
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Modifier la Wishlist"
-      className={styles.updateWishlistModal}
+      title="Créer une Wishlist"
+      className={styles.createWishlistModal}
     >
       <WishlistForm
         formData={formData}

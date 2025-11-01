@@ -2,35 +2,30 @@ import { useState, useCallback } from "react"
 
 import { updateWishlist } from "@/services/wishlist/updateWishlist"
 
-import {TWishlistFormData, TWishlistValidationErrors, validateWishlistForm} from '@/entities/wishlist'
-import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
+import type { TWishlistFormData, TWishlistValidationErrors } from "@/entities/wishlist"
+import { DEFAULT_WISHLIST_SETTINGS } from "@/entities/wishlist/model/constants";
 
-import {isValidUrl} from "@/shared/lib/isValidUrl";
+import { mockCreateWishlist } from "./lib/mockCreateWishlist"
+import { validateWishlistForm } from '@/entities/wishlist/lib/validateWishlistForm';
 
-import { mockUpdateWishlist } from "./lib/mockUpdateWishlist"
 
-
-type TUseEditWishlistModel = {
+type TUseCreateWishlistModel = {
     onSubmit: (wishlistData: TWishlistFormData) => void
     onClose: () => void
-    initialData?: Partial<TWishlistFormData>
     useMock?: boolean
 }
 
-export const useEditWishlistModel = ({
+export const useCreateWishlistModel = ({
     onSubmit,
     onClose,
-    initialData = {},
     useMock = false,
-}: TUseEditWishlistModel) => {
+}: TUseCreateWishlistModel) => {
     const [formData, setFormData] = useState<TWishlistFormData>({
         ...DEFAULT_WISHLIST_SETTINGS,
-        ...initialData,
     })
 
     const [errors, setErrors] = useState<TWishlistValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-
 
     const handleInputChange = useCallback(
         (field: keyof TWishlistFormData, value?: string | boolean) => {
@@ -50,10 +45,9 @@ export const useEditWishlistModel = ({
     const resetForm = useCallback(() => {
         setFormData({
             ...DEFAULT_WISHLIST_SETTINGS,
-            ...initialData,
         })
         setErrors({})
-    }, [initialData])
+    }, [])
 
     const handleSubmit = useCallback(
         async (e?: React.FormEvent) => {
@@ -66,7 +60,7 @@ export const useEditWishlistModel = ({
 
             setIsSubmitting(true)
             try {
-                const runner = useMock ? mockUpdateWishlist : updateWishlist
+                const runner = useMock ? mockCreateWishlist : updateWishlist
                 await runner(formData)
                 onSubmit(formData)
                 resetForm()
