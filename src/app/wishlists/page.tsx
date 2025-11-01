@@ -16,7 +16,7 @@ import pageStyles from './page.module.css'
 import {CreateWishlistModal} from '@/features/CreateWishlist';
 import {TWishlistFormData} from '@/entities/wishlist';
 
-export default function HomePage() {
+export default function WishlistsPage() {
   const user = mockUserPrivate
   const ownedWishlists = wishlistCardListMock.filter((w) => w.ownerId === user.id)
   const allInvitedWishlists = wishlistCardListMock.filter((w) => w.ownerId !== user.id)
