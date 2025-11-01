@@ -11,6 +11,7 @@ import {TProposedWishFormData, TWish, TWishFormData, Wish} from '@/entities/wish
 import {TWishlistFormData} from '@/entities/wishlist/ui/WishlistForm.types';
 
 import styles from './wishlist.module.css'
+import {eventBus} from '@/shared/eventBus/';
 
 
 interface WishlistProps {
@@ -42,7 +43,6 @@ export default function Wishlist({
   const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed')[]>(['all'])
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({min: 0, max: 1000})
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)
-  const [isEditWishlistModalOpen, setIsEditWishlistModalOpen] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isProposeItemModalOpen, setIsProposeItemModalOpen] = useState(false)
 
@@ -117,11 +117,10 @@ export default function Wishlist({
     // in a separate section for review/approval.
     setIsProposeItemModalOpen(false)
   }
-  
+
   const handleUpdateWishlist = (wishlist: TWishlistFormData) => {
     console.log('Wishlist updated:', wishlist)
-    // Here you would typically update the wishlist in your state/database
-    setIsEditWishlistModalOpen(false)
+
   }
 
   const handleSendShareEmail: (email: string, url: string) => Promise<void> = async (email, url) => {
@@ -162,7 +161,18 @@ export default function Wishlist({
           <div className={styles.wishlist__actions}>
             <button
               className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
-              onClick={() => setIsEditWishlistModalOpen(true)}
+              onClick={() => {
+                eventBus.emit('wishlist:openUpdateModal', {
+                  id,
+                  name,
+                  description,
+                  isPublic,
+                  coverImage: '',
+                  allowComments: true,
+                  allowSuggestions: true,
+                  notifyOnPurchase: true,
+                })
+              }}
             >
               Edit Wishlist
             </button>
@@ -374,8 +384,6 @@ export default function Wishlist({
       <AddWishModal isOpen={isAddItemModalOpen} onClose={() => setIsAddItemModalOpen(false)} onSubmit={handleAddWish}
                     useMock/>
       <UpdateWishlistModal
-        isOpen={isEditWishlistModalOpen}
-        onClose={() => setIsEditWishlistModalOpen(false)}
         onSubmit={handleUpdateWishlist}
         initialData={{
           name,

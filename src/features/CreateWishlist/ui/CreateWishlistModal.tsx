@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 
 import {WishlistForm} from '@/entities/wishlist/ui';
 
@@ -7,8 +7,25 @@ import {Modal} from '@/shared/ui';
 import styles from './CreateWishlistModal.module.css'
 import {TCreateWishlistModal} from '@/features/CreateWishlist/ui/CreateWishlistModal.types';
 import {useCreateWishlistModel} from '@/features/CreateWishlist';
+import {eventBus} from '@/shared/eventBus/lib/eventBus';
 
-export const CreateWishlistModal = ({isOpen, onClose, onSubmit}: TCreateWishlistModal) => {
+export const CreateWishlistModal = ({onClose, onSubmit}: TCreateWishlistModal) => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    eventBus.on('wishlist:openCreationModal', () => {
+      setIsOpen(true)
+    });
+    eventBus.on('wishlist:closeCreationModal', () => {
+      setIsOpen(false);
+    });
+  }, [])
+
+  const handleClose = () => {
+    eventBus.emit('wishlist:closeCreationModal', {})
+    onClose?.();
+  }
+
   const {
     formData,
     errors,
@@ -17,14 +34,15 @@ export const CreateWishlistModal = ({isOpen, onClose, onSubmit}: TCreateWishlist
     handleSubmit,
   } = useCreateWishlistModel({
     onSubmit,
-    onClose,
+    onClose: handleClose,
     useMock: true,
   })
+
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="Créer une Wishlist"
       className={styles.createWishlistModal}
     >
@@ -34,7 +52,7 @@ export const CreateWishlistModal = ({isOpen, onClose, onSubmit}: TCreateWishlist
         isSubmitting={isSubmitting}
         handleInputChange={handleInputChange}
         handleSubmit={handleSubmit}
-        onCancel={onClose}
+        onCancel={handleClose}
       />
     </Modal>
   )

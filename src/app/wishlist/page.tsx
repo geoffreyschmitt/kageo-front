@@ -57,7 +57,7 @@ export default function HomePage() {
             wishlistCardList={ownedWishlists}
             title="My Wishlists"
             emptyMessage="You haven't created any wishlists yet. Start by creating one!"
-            showCreateButton={true} // Show create button for owned wishlists
+            showCreateButton={true}
           />
           <CreateWishlistModal
             isOpen={createWishlistModalIsOpen}
