@@ -43,7 +43,6 @@ export default function HomePage() {
 
   const handleCreateWishlist = (wishlist: TWishlistFormData) => {
     console.log('Wishlist created:', wishlist)
-    setCreateWishlistModalIsOpen(false)
   }
 
   // Define the tabs for the Tabs component
