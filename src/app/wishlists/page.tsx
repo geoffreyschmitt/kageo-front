@@ -15,6 +15,7 @@ import {Tabs} from '@/shared/ui'
 import pageStyles from './page.module.css'
 import {CreateWishlistModal} from '@/features/CreateWishlist';
 import {TWishlistFormData} from '@/entities/wishlist';
+import {UpdateWishlistModal} from '@/features/UpdateWishlist';
 
 export default function WishlistsPage() {
   const user = mockUserPrivate
@@ -58,6 +59,9 @@ export default function WishlistsPage() {
             showCreateButton={true}
           />
           <CreateWishlistModal
+            onSubmit={handleCreateWishlist}
+          />
+          <UpdateWishlistModal
             onSubmit={handleCreateWishlist}
           />
         </>

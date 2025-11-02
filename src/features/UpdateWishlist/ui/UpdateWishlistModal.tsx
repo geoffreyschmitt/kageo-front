@@ -10,15 +10,21 @@ import {Modal} from '@/shared/ui';
 import styles from './UpdateWishlistModal.module.css'
 import {eventBus} from '@/shared/eventBus/lib/eventBus';
 
-export const UpdateWishlistModal = ({onClose, onSubmit, initialData}: TUpdateWishlistModal) => {
+export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpdateWishlistModal) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [initialDataToUse, setIsInitialDataToUse] = useState(initialData)
 
   useEffect(() => {
-    const removeOpenModalEvent = eventBus.on('wishlist:openUpdateModal', () => {
-      setIsOpen(true);
+    console.log('initialDataToUse', initialDataToUse)
+    const removeOpenModalEvent = eventBus.on('wishlist:openUpdateModal', (payload) => {
+      setIsInitialDataToUse(payload)
+      setTimeout(() => {
+        setIsOpen(true);
+      }, 0)
     });
     const removeCloseModalEvent = eventBus.on('wishlist:closeUpdateModal', () => {
       setIsOpen(false);
+      setIsInitialDataToUse(initialData)
     });
     return () => {
       removeOpenModalEvent();
@@ -40,7 +46,7 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData}: TUpdateWis
   } = useEditWishlistModel({
     onSubmit,
     onClose: handleClose,
-    initialData,
+    initialData: initialDataToUse,
     useMock: true,
   })
 
