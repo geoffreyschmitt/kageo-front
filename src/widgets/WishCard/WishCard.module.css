@@ -235,16 +235,6 @@
     transform: translateY(-1px);
 }
 
-.wish-card__button--reserved {
-    color: #fff;
-    background: #8b5cf6;
-}
-
-.wish-card__button--reserved:hover {
-    background: #7c3aed;
-    transform: translateY(-1px);
-}
-
 @media (max-width: 768px) {
     .wish-card__actions {
         flex-direction: column;

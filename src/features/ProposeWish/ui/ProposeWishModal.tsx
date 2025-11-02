@@ -7,15 +7,13 @@ import {TProposedWishForm} from "@/entities/wish/ui/WishForm.types";
 
 import {Modal} from "@/shared/ui";
 
-import { useProposeWishForm } from "../model"
+import {useProposeWishForm} from "../model"
 
 import styles from "./ProposeWishModal.module.css"
-import type { TProposeWishModal } from "./ProposeWishModal.types"
+import type {TProposeWishModal} from "./ProposeWishModal.types"
 
-
-
-export const ProposeWishModal = ({ isOpen, onClose, onSubmit }: TProposeWishModal) => {
-    const { formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit } =
+export const ProposeWishModal = ({isOpen, onClose, onSubmit}: TProposeWishModal) => {
+    const {formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit} =
         useProposeWishForm({onSubmit, onClose})
 
     const handleSelectChange =
