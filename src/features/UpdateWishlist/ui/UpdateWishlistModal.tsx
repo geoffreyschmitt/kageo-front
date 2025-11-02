@@ -15,7 +15,6 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpda
   const [initialDataToUse, setIsInitialDataToUse] = useState(initialData)
 
   useEffect(() => {
-    console.log('initialDataToUse', initialDataToUse)
     const removeOpenModalEvent = eventBus.on('wishlist:openUpdateModal', (payload) => {
       setIsInitialDataToUse(payload)
       setTimeout(() => {
