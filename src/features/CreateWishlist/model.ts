@@ -1,13 +1,12 @@
-import { useState, useCallback } from "react"
+import {useCallback, useState} from "react"
 
-import { updateWishlist } from "@/services/wishlist/updateWishlist"
+import {createWishlist} from "@/services/wishlist/createWishlist";
 
-import type { TWishlistFormData, TWishlistValidationErrors } from "@/entities/wishlist"
-import { DEFAULT_WISHLIST_SETTINGS } from "@/entities/wishlist/model/constants";
+import type {TWishlistFormData, TWishlistValidationErrors} from "@/entities/wishlist"
+import {validateWishlistForm} from '@/entities/wishlist/lib/validateWishlistForm';
+import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
 
-import { mockCreateWishlist } from "./lib/mockCreateWishlist"
-import { validateWishlistForm } from '@/entities/wishlist/lib/validateWishlistForm';
-
+import {mockCreateWishlist} from "./lib/mockCreateWishlist"
 
 type TUseCreateWishlistModel = {
     onSubmit: (wishlistData: TWishlistFormData) => void
@@ -29,12 +28,12 @@ export const useCreateWishlistModel = ({
 
     const handleInputChange = useCallback(
         (field: keyof TWishlistFormData, value?: string | boolean) => {
-            setFormData((prev: TWishlistFormData) => ({ ...prev, [field]: value }))
+            setFormData((prev: TWishlistFormData) => ({...prev, [field]: value}))
 
             // Clear error for the field when user types/selects
             setErrors((prev: TWishlistValidationErrors) => {
                 if (!prev[field as keyof TWishlistValidationErrors]) return prev
-                const copy = { ...prev }
+                const copy = {...prev}
                 delete copy[field as keyof TWishlistValidationErrors]
                 return copy
             })
@@ -53,14 +52,14 @@ export const useCreateWishlistModel = ({
         async (e?: React.FormEvent) => {
             if (e) e.preventDefault()
 
-            const { errorList, hasError } = validateWishlistForm(formData);
+            const {errorList, hasError} = validateWishlistForm(formData);
             setErrors(errorList)
 
             if (hasError) return
 
             setIsSubmitting(true)
             try {
-                const runner = useMock ? mockCreateWishlist : updateWishlist
+                const runner = useMock ? mockCreateWishlist : createWishlist
                 await runner(formData)
                 onSubmit(formData)
                 resetForm()
@@ -71,7 +70,7 @@ export const useCreateWishlistModel = ({
                 setIsSubmitting(false)
             }
         },
-        [formData, onSubmit, onClose, resetForm, useMock, validateWishlistForm],
+        [formData, onSubmit, onClose, resetForm, useMock],
     )
 
     return {

@@ -1,8 +1,8 @@
 import {TWishlistFormData} from "@/entities/wishlist";
 
-export type TUpdateWishlistResponse = TWishlistFormData & { id: string }
+export type TCreateWishlistResponse = TWishlistFormData
 
-export const updateWishlist = async (data: TWishlistFormData): Promise<TUpdateWishlistResponse> => {
+export const createWishlist = async (data: TWishlistFormData): Promise<TCreateWishlistResponse> => {
     const res = await fetch("/api/wishlist", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -14,6 +14,6 @@ export const updateWishlist = async (data: TWishlistFormData): Promise<TUpdateWi
         throw new Error(`API error ${res.status}: ${text}`)
     }
 
-    const json = (await res.json()) as TUpdateWishlistResponse
+    const json = (await res.json()) as TCreateWishlistResponse
     return json
 }
