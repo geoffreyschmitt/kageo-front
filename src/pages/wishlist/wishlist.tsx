@@ -41,6 +41,8 @@ type TWishlistPageProps = {
   onDeleteError?: (wishId: string) => void
   onEditWish?: (wish: TWishCard) => void
   onUpdateWish?: (wishId: string, updatedWish: TWishFormData & { id: string }) => void
+  onAddWish?: (wish: TWishFormData & { id: string }) => void
+  onProposeWish?: (wish: TProposedWishFormData & { id: string }) => void
   useMock?: boolean
   userIsOwner: boolean
 }
@@ -65,6 +67,8 @@ export default function Wishlist({
   onDeleteError,
   onEditWish,
   onUpdateWish,
+  onAddWish,
+  onProposeWish,
   useMock = false,
   userIsOwner = false,
 }: TWishlistPageProps) {
@@ -133,17 +137,19 @@ export default function Wishlist({
 
   const completionPercentage = items.length > 0 ? (purchasedItems.length / items.length) * 100 : 0
 
-  const handleAddWish = (wish: TWishFormData) => {
-    console.log('New wish added:', wish)
-    // Here you would typically add the item to your state/database
+  const handleAddWish = (wish: TWishFormData & { id: string }) => {
+    // Call parent callback to update state
+    if (onAddWish) {
+      onAddWish(wish)
+    }
     setIsAddItemModalOpen(false)
   }
 
-  const handleProposeWish = (wish: TProposedWishFormData) => {
-    console.log('New wish proposed:', wish)
-    // In a real application, this would send the item to a backend
-    // with a 'proposed' status, and the owner/editors would see it
-    // in a separate section for review/approval.
+  const handleProposeWish = (wish: TProposedWishFormData & { id: string }) => {
+    // Call parent callback to update state
+    if (onProposeWish) {
+      onProposeWish(wish)
+    }
     setIsProposeItemModalOpen(false)
   }
 

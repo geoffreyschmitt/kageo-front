@@ -5,7 +5,7 @@ import {useState} from 'react'
 import Wishlist from '@/pages/wishlist/wishlist'
 import {mockUserPrivate} from '@/entities/user';
 import type {TWishCard} from '@/widgets/WishCard/WishCard.types';
-import type {TWishFormData} from '@/entities/wish';
+import type {TWishFormData, TProposedWishFormData} from '@/entities/wish';
 
 // Sample data for a single wishlist
 const sampleOwnerWishlistData = {
@@ -246,6 +246,42 @@ export default function WishlistPage() {
         // TODO: Add toast/notification system for better UX
     }
 
+    const handleAddWish = (wish: TWishFormData & { id: string }) => {
+        // Convert TWishFormData to TWishCard and add to items state
+        const newWishCard: TWishCard = {
+            id: wish.id,
+            name: wish.name,
+            description: wish.description,
+            price: wish.price,
+            currency: wish.currency,
+            imageUrl: wish.imageUrl,
+            priority: wish.priority,
+            status: 'wanted',
+            purchaseUrl: wish.purchaseUrl,
+            notes: wish.notes,
+            addedDate: 'just now',
+        }
+        setItems(prev => [...prev, newWishCard])
+    }
+
+    const handleProposeWish = (wish: TProposedWishFormData & { id: string }) => {
+        // Convert TProposedWishFormData to TWishCard and add to items state
+        const newWishCard: TWishCard = {
+            id: wish.id,
+            name: wish.name,
+            description: wish.description,
+            price: wish.price,
+            currency: wish.currency,
+            imageUrl: wish.imageUrl,
+            priority: 'medium', // default since proposed wishes don't have priority in form
+            status: 'proposed',
+            purchaseUrl: wish.purchaseUrl,
+            notes: wish.notes,
+            addedDate: 'just now',
+        }
+        setItems(prev => [...prev, newWishCard])
+    }
+
     return (
         <main>
             <Wishlist
@@ -262,6 +298,8 @@ export default function WishlistPage() {
                 onDeleteError={handleDeleteError}
                 onEditWish={handleEditWish}
                 onUpdateWish={handleUpdateWish}
+                onAddWish={handleAddWish}
+                onProposeWish={handleProposeWish}
                 useMock={true}
             />
         </main>
