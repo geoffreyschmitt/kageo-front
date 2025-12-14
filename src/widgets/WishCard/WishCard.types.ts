@@ -13,6 +13,11 @@ export type TWishCard = {
   purchaseUrl?: string
   notes?: string
   addedDate: string
+  reservedBy?: string
   showOwnerAction?: boolean
   showGuestAction?: boolean
+  onReserve?: (wishId: string, reservedBy: string) => void
+  onReserveError?: (wishId: string) => void
+  userId?: string
+  useMock?: boolean
 }

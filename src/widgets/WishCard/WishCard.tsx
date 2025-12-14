@@ -46,8 +46,13 @@ export const WishCard = ({
     purchaseUrl,
     notes,
     addedDate,
+    reservedBy,
     showOwnerAction = false,
-    showGuestAction = false
+    showGuestAction = false,
+    onReserve,
+    onReserveError,
+    userId,
+    useMock
 }: TWishCard) => {
     return (
         <div className={`${styles['wish-card']} ${status === 'purchased' ? styles['wish-card--purchased'] : ''}`}
@@ -91,13 +96,16 @@ export const WishCard = ({
 
                 <div className={styles['wish-card__meta']}>
                     <span className={styles['wish-card__date']}>Added {addedDate}</span>
+                    {status === 'reserved' && reservedBy && (
+                        <span className={styles['wish-card__reservedBy']}>Reserved by {reservedBy}</span>
+                    )}
                 </div>
 
                 <div className={styles['wish-card__actions']}>
                     {showGuestAction && (
                         <>
-                            {status === 'wanted' && (
-                                <ReserveButton wishId={id}/>
+                            {status === 'wanted' && userId && (
+                                <ReserveButton wishId={id} userId={userId} onReserve={onReserve} onError={onReserveError} useMock={useMock}/>
                             )}
 
                             {purchaseUrl && status === 'wanted' && (

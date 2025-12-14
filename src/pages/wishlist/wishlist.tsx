@@ -29,6 +29,9 @@ type TWishlistPageProps = {
   onAddItem?: () => void
   onShareWishlist?: () => void
   onEditWishlist?: () => void
+  onReserveWish?: (wishId: string, reservedBy: string) => void
+  onReserveError?: (wishId: string) => void
+  useMock?: boolean
   userIsOwner: boolean
 }
 
@@ -42,6 +45,9 @@ export default function Wishlist({
   ownerId,
   ownerName,
   onAddItem,
+  onReserveWish,
+  onReserveError,
+  useMock = false,
   userIsOwner = false,
 }: TWishlistPageProps) {
   const user = mockUserPrivate
@@ -363,8 +369,13 @@ export default function Wishlist({
                 purchaseUrl={item.purchaseUrl}
                 notes={item.notes}
                 addedDate={item.addedDate}
+                reservedBy={item.reservedBy}
                 showOwnerAction={!!userIsOwner}
                 showGuestAction={Boolean(user.id && !userIsOwner)}
+                onReserve={onReserveWish}
+                onReserveError={onReserveError}
+                userId={user.id}
+                useMock={useMock}
               />
             ))}
           </div>

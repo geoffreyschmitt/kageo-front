@@ -1,5 +1,10 @@
+'use client'
+
+import {useState} from 'react'
+
 import Wishlist from '@/pages/wishlist/wishlist'
 import {mockUserPrivate} from '@/entities/user';
+import type {TWishCard} from '@/widgets/WishCard/WishCard.types';
 
 // Sample data for a single wishlist
 const sampleOwnerWishlistData = {
@@ -134,11 +139,38 @@ export default function WishlistPage() {
     const user = mockUserPrivate
     //const userIsOwner = user.id && ownerId === user.id
     const userIsOwner = false
+    
+    const initialData = userIsOwner ? sampleOwnerWishlistData : sampleGuestWishlistData
+    const [items, setItems] = useState<TWishCard[]>(initialData.items)
+    
+    const handleReserveWish = (wishId: string, reservedBy: string) => {
+        // Optimistic update: immediately update items state
+        setItems(prev => prev.map(item => 
+            item.id === wishId 
+                ? { ...item, status: 'reserved', reservedBy }
+                : item
+        ))
+    }
+    
+    const handleReserveError = (wishId: string) => {
+        // Revert optimistic update on error
+        setItems(prev => prev.map(item => 
+            item.id === wishId 
+                ? { ...item, status: 'wanted', reservedBy: undefined }
+                : item
+        ))
+        // TODO: Add toast/notification system for better UX
+    }
+    
     return (
         <main>
             <Wishlist
-                {...(userIsOwner ? sampleOwnerWishlistData : sampleGuestWishlistData)}
+                {...initialData}
+                items={items}
                 userIsOwner={userIsOwner}
+                onReserveWish={handleReserveWish}
+                onReserveError={handleReserveError}
+                useMock={true}
             />
         </main>
     )
