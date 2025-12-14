@@ -6,7 +6,7 @@ import {TWishCard, WishCard} from '@/widgets/WishCard';
 
 import {AddWishModal} from '@/features/AddWish'
 import {ProposeWishModal} from '@/features/ProposeWish';
-import {ShareWishlistModal} from '@/features/ShareWishlist'
+import {ShareWishlistModal, mockShareWishlistByEmail} from '@/features/ShareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
 import {EditWishModal} from '@/features/EditWish'
 
@@ -175,9 +175,7 @@ export default function Wishlist({
   }
 
   const handleSendShareEmail: (email: string, url: string) => Promise<void> = async (email, url) => {
-    console.log(`Sending wishlist link to ${email}: ${url}`)
-    // Simulate API call for sending email
-    return new Promise((resolve) => setTimeout(resolve, 1000))
+    return mockShareWishlistByEmail(email, url)
   }
 
   const resetFilters = () => {

@@ -1,9 +1,9 @@
-import {TWishlistFormData} from "@/entities/wishlist";
-
 export const mockShareWishlistByEmail = async (
-    data: TWishlistFormData
-): Promise<TWishlistFormData> => {
-    console.info("[mockShareWishlistByEmail] called with:", data)
-
-    return data
+    email: string,
+    url: string
+): Promise<void> => {
+    console.info("[mockShareWishlistByEmail] Sending wishlist link to", email, ":", url)
+    
+    // Simulate API call for sending email
+    return new Promise((resolve) => setTimeout(resolve, 1000))
 }
