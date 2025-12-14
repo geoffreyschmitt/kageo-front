@@ -31,12 +31,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     <input
                         name="name"
                         value={formData.name}
-                        onChange={(e) => {
-                            // #region agent log
-                            fetch('http://127.0.0.1:7242/ingest/589dc481-6610-4da2-ab8e-d2a0ce748c90',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'WishForm.tsx:34',message:'Name input onChange triggered',data:{fieldName:'name',value:e.target.value,formDataBefore:{name:formData.name,description:formData.description}},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-                            // #endregion
-                            handleInputChange("name", e.target.value)
-                        }}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
                         disabled={isSubmitting}
                         className={`${styles.wishForm__input} ${
                             errors.name ? styles['wishForm__input--error'] : ""
@@ -75,12 +70,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     <textarea
                         name="description"
                         value={formData.description}
-                        onChange={(e) => {
-                            // #region agent log
-                            fetch('http://127.0.0.1:7242/ingest/589dc481-6610-4da2-ab8e-d2a0ce748c90',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'WishForm.tsx:73',message:'Description onChange triggered',data:{fieldName:'description',value:e.target.value,formDataBefore:{name:formData.name,description:formData.description}},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-                            // #endregion
-                            handleInputChange("description", e.target.value)
-                        }}
+                        onChange={(e) => handleInputChange("description", e.target.value)}
                         rows={3}
                         disabled={isSubmitting}
                         className={`${styles.wishForm__textarea} ${

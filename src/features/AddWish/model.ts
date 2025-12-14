@@ -52,18 +52,11 @@ export const useAddWishModel = ({
     // Generic setter that accepts string | number for fields.
     const handleInputChange = useCallback(
         (field: keyof TWishFormData, value: string | number | TWishPriority) => {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/589dc481-6610-4da2-ab8e-d2a0ce748c90',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model.ts:53',message:'handleInputChange called',data:{field,value,formDataBefore:{name:formData.name,description:formData.description}},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-            // #endregion
             setFormData(prev => {
                 // ensure numeric fields remain numbers
                 const normalized =
                     field === "price" ? (typeof value === "number" ? value : Number.parseFloat(String(value) || "0")) : value
-                const newFormData = { ...prev, [field]: normalized } as TWishFormData
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/589dc481-6610-4da2-ab8e-d2a0ce748c90',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model.ts:59',message:'FormData state updated',data:{field,value,formDataAfter:{name:newFormData.name,description:newFormData.description}},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-                // #endregion
-                return newFormData
+                return { ...prev, [field]: normalized } as TWishFormData
             })
 
             // clear error for the field when user types/selects
@@ -74,7 +67,7 @@ export const useAddWishModel = ({
                 return copy
             })
         },
-        [formData],
+        [],
     )
 
     const handleCheckboxChange = useCallback(
