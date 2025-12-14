@@ -231,6 +231,21 @@ export default function WishlistPage() {
         ))
     }
 
+    const handleDeleteWish = (wishId: string) => {
+        // Optimistic update: immediately remove the wish from items state
+        setItems(prev => prev.filter(item => item.id !== wishId))
+    }
+
+    const handleDeleteError = (wishId: string) => {
+        // Revert optimistic update on error: restore the wish
+        // We need to find the original wish from initialData
+        const originalWish = initialData.items.find(item => item.id === wishId)
+        if (originalWish) {
+            setItems(prev => [...prev, originalWish])
+        }
+        // TODO: Add toast/notification system for better UX
+    }
+
     return (
         <main>
             <Wishlist
@@ -243,6 +258,8 @@ export default function WishlistPage() {
                 onCancelError={handleCancelError}
                 onMarkPurchasedWish={handleMarkPurchased}
                 onMarkPurchasedError={handleMarkPurchasedError}
+                onDeleteWish={handleDeleteWish}
+                onDeleteError={handleDeleteError}
                 onEditWish={handleEditWish}
                 onUpdateWish={handleUpdateWish}
                 useMock={true}

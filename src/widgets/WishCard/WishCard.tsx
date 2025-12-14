@@ -5,6 +5,7 @@ import {TWishCard} from '@/widgets/WishCard/WishCard.types';
 import {ReserveButton} from "@/features/reserveWish";
 import {CancelReservationButton} from "@/features/cancelReservation";
 import {MarkPurchasedButton} from "@/features/markPurchasedWish";
+import {DeleteWishButton} from "@/features/DeleteWish";
 
 import styles from './WishCard.module.css'
 
@@ -57,6 +58,8 @@ export const WishCard = ({
     onCancelError,
     onMarkPurchased,
     onMarkPurchasedError,
+    onDeleteWish,
+    onDeleteError,
     onEditWish,
     userId,
     useMock
@@ -173,6 +176,8 @@ export const WishCard = ({
                                     onCancelError,
                                     onMarkPurchased,
                                     onMarkPurchasedError,
+                                    onDeleteWish,
+                                    onDeleteError,
                                     onEditWish,
                                     userId,
                                     useMock
@@ -180,9 +185,13 @@ export const WishCard = ({
                             >
                                 Edit
                             </button>
-                            <button
-                                className={`${styles['wish-card__button']} ${styles['wish-card__button--danger']}`}>Remove
-                            </button>
+                            <DeleteWishButton
+                                wishId={id}
+                                wishName={name}
+                                onDelete={onDeleteWish}
+                                onError={onDeleteError}
+                                useMock={useMock}
+                            />
                         </>
                     )}
                 </div>

@@ -37,6 +37,8 @@ type TWishlistPageProps = {
   onCancelError?: (wishId: string) => void
   onMarkPurchasedWish?: (wishId: string) => void
   onMarkPurchasedError?: (wishId: string) => void
+  onDeleteWish?: (wishId: string) => void
+  onDeleteError?: (wishId: string) => void
   onEditWish?: (wish: TWishCard) => void
   onUpdateWish?: (wishId: string, updatedWish: TWishFormData & { id: string }) => void
   useMock?: boolean
@@ -59,6 +61,8 @@ export default function Wishlist({
   onCancelError,
   onMarkPurchasedWish,
   onMarkPurchasedError,
+  onDeleteWish,
+  onDeleteError,
   onEditWish,
   onUpdateWish,
   useMock = false,
@@ -410,6 +414,8 @@ export default function Wishlist({
                 onCancelError={onCancelError}
                 onMarkPurchased={onMarkPurchasedWish}
                 onMarkPurchasedError={onMarkPurchasedError}
+                onDeleteWish={onDeleteWish}
+                onDeleteError={onDeleteError}
                 onEditWish={handleEditWish}
                 userId={user.id}
                 useMock={useMock}
