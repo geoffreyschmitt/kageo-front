@@ -1,0 +1,68 @@
+import React from "react";
+
+import {
+    useEditWishModel,
+} from "@/features/EditWish/model";
+
+import {WishForm, TWishFormData, TWishForm} from "@/entities/wish";
+
+import {Modal} from "@/shared/ui";
+
+import styles from "./EditWishModal.module.css";
+import {
+    TEditWishModal,
+} from "./EditWishModal.types";
+
+
+
+export const EditWishModal = ({
+    isOpen,
+    onClose,
+    onSubmit,
+    wishId,
+    initialData,
+    useMock = false,
+}: TEditWishModal) => {
+    const {
+        formData,
+        errors,
+        isSubmitting,
+        handleInputChange,
+        handleCheckboxChange,
+        handleSubmit,
+    } = useEditWishModel({
+        wishId,
+        initialData,
+        onSubmit,
+        onClose,
+        useMock,
+    });
+
+    const handleSelectChange =
+        (field: keyof TWishFormData) =>
+            (e: React.ChangeEvent<HTMLSelectElement>) => {
+                const value = e.target.value;
+                handleInputChange(field, value);
+            };
+
+    return (
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Modifier un souhait"
+            className={styles.editWishModal}
+        >
+            <WishForm<TWishForm>
+                formData={formData}
+                errors={errors}
+                isSubmitting={isSubmitting}
+                handleInputChange={handleInputChange}
+                handleSelectChange={handleSelectChange}
+                handleCheckboxChange={handleCheckboxChange}
+                handleSubmit={handleSubmit}
+                onCancel={onClose}
+                priority={formData.priority}
+            />
+        </Modal>
+    );
+};

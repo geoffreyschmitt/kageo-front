@@ -5,6 +5,7 @@ import {useState} from 'react'
 import Wishlist from '@/pages/wishlist/wishlist'
 import {mockUserPrivate} from '@/entities/user';
 import type {TWishCard} from '@/widgets/WishCard/WishCard.types';
+import type {TWishFormData} from '@/entities/wish';
 
 // Sample data for a single wishlist
 const sampleOwnerWishlistData = {
@@ -139,72 +140,97 @@ const sampleGuestWishlistData = {
 export default function WishlistPage() {
     const user = mockUserPrivate
     //const userIsOwner = user.id && ownerId === user.id
-    const userIsOwner = false
-    
+    const userIsOwner = true
+
     const initialData = userIsOwner ? sampleOwnerWishlistData : sampleGuestWishlistData
     const [items, setItems] = useState<TWishCard[]>(initialData.items)
-    
+
     const handleReserveWish = (wishId: string, reservedBy: string) => {
         // Optimistic update: immediately update items state
-        setItems(prev => prev.map(item => 
-            item.id === wishId 
-                ? { ...item, status: 'reserved', reservedBy }
+        setItems(prev => prev.map(item =>
+            item.id === wishId
+                ? {...item, status: 'reserved', reservedBy}
                 : item
         ))
     }
-    
+
     const handleReserveError = (wishId: string) => {
         // Revert optimistic update on error
-        setItems(prev => prev.map(item => 
-            item.id === wishId 
-                ? { ...item, status: 'wanted', reservedBy: undefined }
+        setItems(prev => prev.map(item =>
+            item.id === wishId
+                ? {...item, status: 'wanted', reservedBy: undefined}
                 : item
         ))
         // TODO: Add toast/notification system for better UX
     }
-    
+
     const handleCancelReservation = (wishId: string) => {
         // Optimistic update: immediately revert status to 'wanted' and clear reservedBy
-        setItems(prev => prev.map(item => 
-            item.id === wishId 
-                ? { ...item, status: 'wanted', reservedBy: undefined }
+        setItems(prev => prev.map(item =>
+            item.id === wishId
+                ? {...item, status: 'wanted', reservedBy: undefined}
                 : item
         ))
     }
-    
+
     const handleCancelError = (wishId: string) => {
         // Revert optimistic update on error: restore to 'reserved' status
         // Since cancel button only shows when reservedBy === userId, we can restore to user.id
-        setItems(prev => prev.map(item => 
-            item.id === wishId 
-                ? { ...item, status: 'reserved', reservedBy: user.id }
+        setItems(prev => prev.map(item =>
+            item.id === wishId
+                ? {...item, status: 'reserved', reservedBy: user.id}
                 : item
         ))
         // TODO: Add toast/notification system for better UX
     }
-    
+
     const handleMarkPurchased = (wishId: string) => {
         // Optimistic update: immediately update status to 'purchased'
-        setItems(prev => prev.map(item => 
-            item.id === wishId 
-                ? { ...item, status: 'purchased' }
+        setItems(prev => prev.map(item =>
+            item.id === wishId
+                ? {...item, status: 'purchased'}
                 : item
         ))
     }
-    
+
     const handleMarkPurchasedError = (wishId: string) => {
         // Revert optimistic update on error: restore previous status
         // If reservedBy exists, it was 'reserved', otherwise it was 'wanted'
         setItems(prev => prev.map(item => {
             if (item.id === wishId) {
                 const previousStatus = item.reservedBy ? 'reserved' : 'wanted'
-                return { ...item, status: previousStatus }
+                return {...item, status: previousStatus}
             }
             return item
         }))
         // TODO: Add toast/notification system for better UX
     }
-    
+
+    const handleEditWish = (wish: TWishCard) => {
+        // This handler is called when edit button is clicked
+        // The actual modal opening is handled in wishlist.tsx
+        console.log('Edit wish clicked:', wish)
+    }
+
+    const handleUpdateWish = (wishId: string, updatedWish: TWishFormData & { id: string }) => {
+        // Optimistic update: immediately update the wish in items state
+        setItems(prev => prev.map(item =>
+            item.id === wishId
+                ? {
+                    ...item,
+                    name: updatedWish.name,
+                    description: updatedWish.description,
+                    price: updatedWish.price,
+                    currency: updatedWish.currency,
+                    imageUrl: updatedWish.imageUrl,
+                    priority: updatedWish.priority,
+                    purchaseUrl: updatedWish.purchaseUrl,
+                    notes: updatedWish.notes,
+                }
+                : item
+        ))
+    }
+
     return (
         <main>
             <Wishlist
@@ -217,6 +243,8 @@ export default function WishlistPage() {
                 onCancelError={handleCancelError}
                 onMarkPurchasedWish={handleMarkPurchased}
                 onMarkPurchasedError={handleMarkPurchasedError}
+                onEditWish={handleEditWish}
+                onUpdateWish={handleUpdateWish}
                 useMock={true}
             />
         </main>

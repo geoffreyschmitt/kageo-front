@@ -1,0 +1,381 @@
+.editWishModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.editWishModal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.editWishModal__container {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.editWishModal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0 24px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+
+.editWishModal__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.editWishModal__closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.editWishModal__closeButton:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.editWishModal__form {
+  padding: 0 24px 24px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.editWishModal__formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.editWishModal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.editWishModal__field--full {
+  grid-column: 1 / -1;
+}
+
+.editWishModal__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.editWishModal__input,
+.editWishModal__select,
+.editWishModal__textarea {
+  padding: 12px 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  background: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editWishModal__input:focus,
+.editWishModal__select:focus,
+.editWishModal__textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.editWishModal__input--error,
+.editWishModal__textarea--error {
+  border-color: #ef4444;
+}
+
+.editWishModal__input--error:focus,
+.editWishModal__textarea--error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.editWishModal__textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.editWishModal__priceGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.editWishModal__currencySelect {
+  flex: 0 0 auto;
+  min-width: 80px;
+}
+
+.editWishModal__error {
+  font-size: 12px;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* Preview Section */
+.editWishModal__preview {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
+}
+
+.editWishModal__previewTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.editWishModal__previewCard {
+  display: flex;
+  gap: 16px;
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editWishModal__previewImage {
+  flex: 0 0 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.editWishModal__previewImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.editWishModal__previewContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editWishModal__previewName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.editWishModal__previewDescription {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.editWishModal__previewMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  gap: 12px;
+}
+
+.editWishModal__previewPrice {
+  font-size: 16px;
+  font-weight: 700;
+  color: #059669;
+}
+
+.editWishModal__previewPriority {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.editWishModal__previewPriority--high {
+  background: #ef4444;
+  color: white;
+}
+
+.editWishModal__previewPriority--medium {
+  background: #f59e0b;
+  color: white;
+}
+
+.editWishModal__previewPriority--low {
+  background: #10b981;
+  color: white;
+}
+
+/* Actions */
+.editWishModal__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.editWishModal__button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 120px;
+}
+
+.editWishModal__button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.editWishModal__button--primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.editWishModal__button--primary:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.editWishModal__button--secondary {
+  background: transparent;
+  color: #6b7280;
+  border: 2px solid #d1d5db;
+}
+
+.editWishModal__button--secondary:hover:not(:disabled) {
+  background: #f9fafb;
+  color: #374151;
+  border-color: #9ca3af;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .editWishModal {
+    padding: 10px;
+  }
+
+  .editWishModal__container {
+    max-height: 95vh;
+  }
+
+  .editWishModal__header {
+    padding: 20px 20px 0 20px;
+  }
+
+  .editWishModal__form {
+    padding: 0 20px 20px 20px;
+  }
+
+  .editWishModal__formGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .editWishModal__field--full {
+    grid-column: 1;
+  }
+
+  .editWishModal__previewCard {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .editWishModal__previewImage {
+    flex: none;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+  }
+
+  .editWishModal__previewMeta {
+    justify-content: center;
+  }
+
+  .editWishModal__actions {
+    flex-direction: column;
+  }
+
+  .editWishModal__button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .editWishModal__header {
+    padding: 16px 16px 0 16px;
+  }
+
+  .editWishModal__form {
+    padding: 0 16px 16px 16px;
+  }
+
+  .editWishModal__title {
+    font-size: 20px;
+  }
+
+  .editWishModal__priceGroup {
+    flex-direction: column;
+  }
+
+  .editWishModal__currencySelect {
+    min-width: auto;
+  }
+}

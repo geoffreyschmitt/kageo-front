@@ -22,6 +22,7 @@ export type TWishCard = {
   onCancelError?: (wishId: string) => void
   onMarkPurchased?: (wishId: string) => void
   onMarkPurchasedError?: (wishId: string) => void
+  onEditWish?: (wish: TWishCard) => void
   userId?: string
   useMock?: boolean
 }

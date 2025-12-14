@@ -57,6 +57,7 @@ export const WishCard = ({
     onCancelError,
     onMarkPurchased,
     onMarkPurchasedError,
+    onEditWish,
     userId,
     useMock
 }: TWishCard) => {
@@ -150,7 +151,34 @@ export const WishCard = ({
                                 />
                             )}
                             <button
-                                className={`${styles['wish-card__button']} ${styles['wish-card__button--secondary']}`}>Edit
+                                className={`${styles['wish-card__button']} ${styles['wish-card__button--secondary']}`}
+                                onClick={() => onEditWish?.({
+                                    id,
+                                    name,
+                                    description,
+                                    price,
+                                    currency,
+                                    imageUrl,
+                                    priority,
+                                    status,
+                                    purchaseUrl,
+                                    notes,
+                                    addedDate,
+                                    reservedBy,
+                                    showOwnerAction,
+                                    showGuestAction,
+                                    onReserve,
+                                    onReserveError,
+                                    onCancelReservation,
+                                    onCancelError,
+                                    onMarkPurchased,
+                                    onMarkPurchasedError,
+                                    onEditWish,
+                                    userId,
+                                    useMock
+                                })}
+                            >
+                                Edit
                             </button>
                             <button
                                 className={`${styles['wish-card__button']} ${styles['wish-card__button--danger']}`}>Remove

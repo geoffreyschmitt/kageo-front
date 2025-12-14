@@ -8,6 +8,7 @@ import {AddWishModal} from '@/features/AddWish'
 import {ProposeWishModal} from '@/features/ProposeWish';
 import {ShareWishlistModal} from '@/features/ShareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
+import {EditWishModal} from '@/features/EditWish'
 
 import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
 import {TWishlistFormData} from '@/entities/wishlist';
@@ -36,6 +37,8 @@ type TWishlistPageProps = {
   onCancelError?: (wishId: string) => void
   onMarkPurchasedWish?: (wishId: string) => void
   onMarkPurchasedError?: (wishId: string) => void
+  onEditWish?: (wish: TWishCard) => void
+  onUpdateWish?: (wishId: string, updatedWish: TWishFormData & { id: string }) => void
   useMock?: boolean
   userIsOwner: boolean
 }
@@ -56,6 +59,8 @@ export default function Wishlist({
   onCancelError,
   onMarkPurchasedWish,
   onMarkPurchasedError,
+  onEditWish,
+  onUpdateWish,
   useMock = false,
   userIsOwner = false,
 }: TWishlistPageProps) {
@@ -68,6 +73,8 @@ export default function Wishlist({
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isProposeItemModalOpen, setIsProposeItemModalOpen] = useState(false)
+  const [isEditWishModalOpen, setIsEditWishModalOpen] = useState(false)
+  const [editingWish, setEditingWish] = useState<TWishCard | null>(null)
 
   const itemPrices = items.map((item) => item.price)
   const minPrice = Math.min(...itemPrices, 0)
@@ -139,6 +146,22 @@ export default function Wishlist({
   const handleUpdateWishlist = (wishlist: TWishlistFormData) => {
     console.log('Wishlist updated:', wishlist)
 
+  }
+
+  const handleEditWish = (wish: TWishCard) => {
+    setEditingWish(wish)
+    setIsEditWishModalOpen(true)
+    if (onEditWish) {
+      onEditWish(wish)
+    }
+  }
+
+  const handleUpdateWish = (updatedWish: TWishFormData & { id: string }) => {
+    if (onUpdateWish && editingWish) {
+      onUpdateWish(editingWish.id, updatedWish)
+    }
+    setIsEditWishModalOpen(false)
+    setEditingWish(null)
   }
 
   const handleSendShareEmail: (email: string, url: string) => Promise<void> = async (email, url) => {
@@ -387,6 +410,7 @@ export default function Wishlist({
                 onCancelError={onCancelError}
                 onMarkPurchased={onMarkPurchasedWish}
                 onMarkPurchasedError={onMarkPurchasedError}
+                onEditWish={handleEditWish}
                 userId={user.id}
                 useMock={useMock}
               />
@@ -452,6 +476,29 @@ export default function Wishlist({
         onClose={() => setIsProposeItemModalOpen(false)}
         onSubmit={handleProposeWish}
       />
+
+      {editingWish && (
+        <EditWishModal
+          isOpen={isEditWishModalOpen}
+          onClose={() => {
+            setIsEditWishModalOpen(false)
+            setEditingWish(null)
+          }}
+          onSubmit={handleUpdateWish}
+          wishId={editingWish.id}
+          initialData={{
+            name: editingWish.name,
+            description: editingWish.description,
+            price: editingWish.price,
+            currency: editingWish.currency,
+            imageUrl: editingWish.imageUrl,
+            priority: editingWish.priority,
+            purchaseUrl: editingWish.purchaseUrl || '',
+            notes: editingWish.notes || '',
+          }}
+          useMock={useMock}
+        />
+      )}
     </div>
   )
 }
