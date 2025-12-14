@@ -15,6 +15,7 @@ import {TWishlistFormData} from '@/entities/wishlist';
 import styles from './wishlist.module.css'
 import {eventBus} from '@/shared/eventBus/';
 import {mockUserPrivate} from '@/entities/user';
+import {generateShareUrl} from '@/shared/lib/generateShareUrl';
 
 
 type TWishlistPageProps = {
@@ -435,7 +436,7 @@ export default function Wishlist({
       <ShareWishlistModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
-        wishlistUrl={`https://XXX.app/wishlist/${id}`}
+        wishlistUrl={generateShareUrl(id)}
         wishlistName={name}
         onSendEmail={handleSendShareEmail}
       />
