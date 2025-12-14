@@ -9,9 +9,9 @@ import {mockUpdateWishlist} from './lib/mockUpdateWishlist'
 
 
 type TUseEditWishlistModel = {
-    onSubmit: (wishlistData: TWishlistFormData) => void
+    onSubmit: (wishlistData: TWishlistFormData & { id: string }) => void
     onClose: () => void
-    initialData?: Partial<TWishlistFormData>
+    initialData?: Partial<TWishlistFormData> & { id?: string }
     useMock?: boolean
 }
 
@@ -21,6 +21,9 @@ export const useEditWishlistModel = ({
     initialData = {},
     useMock = false,
 }: TUseEditWishlistModel) => {
+    // Extract and store the wishlist ID separately
+    const [wishlistId, setWishlistId] = useState<string | undefined>(initialData.id)
+    
     const [formData, setFormData] = useState<TWishlistFormData>({
         ...DEFAULT_WISHLIST_SETTINGS,
         ...initialData,
@@ -53,6 +56,7 @@ export const useEditWishlistModel = ({
     }, [initialData])
 
     useEffect(() => {
+        setWishlistId(initialData.id)
         resetForm()
     }, [initialData, resetForm])
 
@@ -68,8 +72,10 @@ export const useEditWishlistModel = ({
             setIsSubmitting(true)
             try {
                 const runner = useMock ? mockUpdateWishlist : updateWishlist
-                await runner(formData)
-                onSubmit(formData)
+                // Include the ID when calling the service
+                const dataWithId = wishlistId ? { ...formData, id: wishlistId } : formData
+                const result = await runner(dataWithId)
+                onSubmit(result)
                 resetForm()
                 onClose()
             } catch (err) {
@@ -78,7 +84,7 @@ export const useEditWishlistModel = ({
                 setIsSubmitting(false)
             }
         },
-        [formData, onSubmit, onClose, resetForm, useMock],
+        [formData, onSubmit, onClose, resetForm, useMock, wishlistId],
     )
 
     return {

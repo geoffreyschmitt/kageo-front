@@ -1,7 +1,8 @@
 'use client';
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 
 import {WishlistList} from '@/widgets'
+import {TWishlistCard} from '@/widgets/WishlistCard';
 
 import {wishlistCardListMock} from '@/widgets/WishlistList/lib';
 
@@ -11,6 +12,7 @@ import {TWishlistOwner} from '@/features/FilterWishlistOwner/ui/FilterWishlistOw
 import {mockUserPrivate} from '@/entities/user';
 
 import {Tabs} from '@/shared/ui'
+import {eventBus} from '@/shared/eventBus';
 
 import pageStyles from './page.module.css'
 import {CreateWishlistModal} from '@/features/CreateWishlist';
@@ -19,10 +21,34 @@ import {UpdateWishlistModal} from '@/features/UpdateWishlist';
 
 export default function WishlistsPage() {
   const user = mockUserPrivate
-  const ownedWishlists = wishlistCardListMock.filter((w) => w.ownerId === user.id)
-  const allInvitedWishlists = wishlistCardListMock.filter((w) => w.ownerId !== user.id)
-
+  // Convert static mock data to state
+  const [wishlists, setWishlists] = useState<TWishlistCard[]>(wishlistCardListMock)
   const [selectedOwnerFilter, setSelectedOwnerFilter] = useState<TWishlistOwner | null>(null)
+  
+  // Track which wishlist is being updated (from event bus)
+  const [updatingWishlistId, setUpdatingWishlistId] = useState<string | null>(null)
+
+  // Listen to update modal open event to track the wishlist being updated
+  useEffect(() => {
+    const removeOpenModalEvent = eventBus.on('wishlist:openUpdateModal', (payload: { id?: string }) => {
+      if (payload.id) {
+        setUpdatingWishlistId(payload.id)
+      }
+    })
+    return () => {
+      removeOpenModalEvent()
+    }
+  }, [])
+
+  // Compute owned and invited wishlists from state
+  const ownedWishlists = useMemo(() => 
+    wishlists.filter((w) => w.ownerId === user.id),
+    [wishlists, user.id]
+  )
+  const allInvitedWishlists = useMemo(() => 
+    wishlists.filter((w) => w.ownerId !== user.id),
+    [wishlists, user.id]
+  )
 
 
   const uniqueInvitedOwners = useMemo(() => {
@@ -42,8 +68,40 @@ export default function WishlistsPage() {
     return allInvitedWishlists.filter((wishlist) => wishlist.ownerId === selectedOwnerFilter.id)
   }, [allInvitedWishlists, selectedOwnerFilter])
 
-  const handleCreateWishlist = (wishlist: TWishlistFormData) => {
-    console.log('Wishlist created:', wishlist)
+  const handleCreateWishlist = (wishlistData: TWishlistFormData & { id: string }) => {
+    // Convert form data to TWishlistCard format
+    const newWishlist: TWishlistCard = {
+      id: wishlistData.id,
+      name: wishlistData.name,
+      description: wishlistData.description,
+      coverImage: wishlistData.coverImage,
+      isPublic: wishlistData.isPublic,
+      ownerId: user.id,
+      ownerName: user.name,
+      createdAt: new Date(),
+      itemCount: 0,
+    }
+    
+    // Add new wishlist to state (optimistic update)
+    setWishlists((prev) => [newWishlist, ...prev])
+  }
+
+  const handleUpdateWishlist = (wishlistData: TWishlistFormData & { id: string }) => {
+    // Find and update the wishlist in state (optimistic update)
+    setWishlists((prev) =>
+      prev.map((wishlist) =>
+        wishlist.id === wishlistData.id
+          ? {
+              ...wishlist,
+              name: wishlistData.name,
+              description: wishlistData.description,
+              coverImage: wishlistData.coverImage,
+              isPublic: wishlistData.isPublic,
+            }
+          : wishlist
+      )
+    )
+    setUpdatingWishlistId(null)
   }
 
   // Define the tabs for the Tabs component
@@ -62,7 +120,7 @@ export default function WishlistsPage() {
             onSubmit={handleCreateWishlist}
           />
           <UpdateWishlistModal
-            onSubmit={handleCreateWishlist}
+            onSubmit={handleUpdateWishlist}
           />
         </>
       ),

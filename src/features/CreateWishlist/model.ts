@@ -9,7 +9,7 @@ import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
 import {mockCreateWishlist} from "./lib/mockCreateWishlist"
 
 type TUseCreateWishlistModel = {
-    onSubmit: (wishlistData: TWishlistFormData) => void
+    onSubmit: (wishlistData: TWishlistFormData & { id: string }) => void
     onClose: () => void
     useMock?: boolean
 }
@@ -60,8 +60,8 @@ export const useCreateWishlistModel = ({
             setIsSubmitting(true)
             try {
                 const runner = useMock ? mockCreateWishlist : createWishlist
-                await runner(formData)
-                onSubmit(formData)
+                const result = await runner(formData)
+                onSubmit(result)
                 resetForm()
                 onClose()
             } catch (err) {
