@@ -4,6 +4,7 @@ import {TWishCard} from '@/widgets/WishCard/WishCard.types';
 
 import {ReserveButton} from "@/features/reserveWish";
 import {CancelReservationButton} from "@/features/cancelReservation";
+import {MarkPurchasedButton} from "@/features/markPurchasedWish";
 
 import styles from './WishCard.module.css'
 
@@ -54,6 +55,8 @@ export const WishCard = ({
     onReserveError,
     onCancelReservation,
     onCancelError,
+    onMarkPurchased,
+    onMarkPurchasedError,
     userId,
     useMock
 }: TWishCard) => {
@@ -126,17 +129,26 @@ export const WishCard = ({
                                 </a>
                             )}
 
-                            {/** TODO for reserved items, should only be able to mark purchased for the user who reserved it */}
-                            {(status === 'wanted' || status === 'reserved') && (
-                                <button
-                                    className={`${styles['wish-card__button']} ${styles['wish-card__button--success']}`}>
-                                    Mark Purchased
-                                </button>
+                            {status === 'reserved' && reservedBy === userId && (
+                                <MarkPurchasedButton 
+                                    wishId={id} 
+                                    onMarkPurchased={onMarkPurchased} 
+                                    onError={onMarkPurchasedError} 
+                                    useMock={useMock}
+                                />
                             )}
                         </>
                     )}
                     {showOwnerAction && (
                         <>
+                            {(status === 'wanted' || status === 'reserved') && (
+                                <MarkPurchasedButton 
+                                    wishId={id} 
+                                    onMarkPurchased={onMarkPurchased} 
+                                    onError={onMarkPurchasedError} 
+                                    useMock={useMock}
+                                />
+                            )}
                             <button
                                 className={`${styles['wish-card__button']} ${styles['wish-card__button--secondary']}`}>Edit
                             </button>

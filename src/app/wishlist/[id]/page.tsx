@@ -183,6 +183,28 @@ export default function WishlistPage() {
         // TODO: Add toast/notification system for better UX
     }
     
+    const handleMarkPurchased = (wishId: string) => {
+        // Optimistic update: immediately update status to 'purchased'
+        setItems(prev => prev.map(item => 
+            item.id === wishId 
+                ? { ...item, status: 'purchased' }
+                : item
+        ))
+    }
+    
+    const handleMarkPurchasedError = (wishId: string) => {
+        // Revert optimistic update on error: restore previous status
+        // If reservedBy exists, it was 'reserved', otherwise it was 'wanted'
+        setItems(prev => prev.map(item => {
+            if (item.id === wishId) {
+                const previousStatus = item.reservedBy ? 'reserved' : 'wanted'
+                return { ...item, status: previousStatus }
+            }
+            return item
+        }))
+        // TODO: Add toast/notification system for better UX
+    }
+    
     return (
         <main>
             <Wishlist
@@ -193,6 +215,8 @@ export default function WishlistPage() {
                 onReserveError={handleReserveError}
                 onCancelReservation={handleCancelReservation}
                 onCancelError={handleCancelError}
+                onMarkPurchasedWish={handleMarkPurchased}
+                onMarkPurchasedError={handleMarkPurchasedError}
                 useMock={true}
             />
         </main>
