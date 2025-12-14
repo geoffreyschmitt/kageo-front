@@ -18,6 +18,8 @@ export type TWishCard = {
   showGuestAction?: boolean
   onReserve?: (wishId: string, reservedBy: string) => void
   onReserveError?: (wishId: string) => void
+  onCancelReservation?: (wishId: string) => void
+  onCancelError?: (wishId: string) => void
   userId?: string
   useMock?: boolean
 }

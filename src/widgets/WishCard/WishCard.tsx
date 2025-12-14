@@ -3,6 +3,7 @@ import Image from 'next/image'
 import {TWishCard} from '@/widgets/WishCard/WishCard.types';
 
 import {ReserveButton} from "@/features/reserveWish";
+import {CancelReservationButton} from "@/features/cancelReservation";
 
 import styles from './WishCard.module.css'
 
@@ -51,6 +52,8 @@ export const WishCard = ({
     showGuestAction = false,
     onReserve,
     onReserveError,
+    onCancelReservation,
+    onCancelError,
     userId,
     useMock
 }: TWishCard) => {
@@ -106,6 +109,10 @@ export const WishCard = ({
                         <>
                             {status === 'wanted' && userId && (
                                 <ReserveButton wishId={id} userId={userId} onReserve={onReserve} onError={onReserveError} useMock={useMock}/>
+                            )}
+
+                            {status === 'reserved' && reservedBy === userId && (
+                                <CancelReservationButton wishId={id} onCancel={onCancelReservation} onError={onCancelError} useMock={useMock}/>
                             )}
 
                             {purchaseUrl && status === 'wanted' && (

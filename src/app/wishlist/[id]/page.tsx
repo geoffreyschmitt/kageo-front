@@ -43,6 +43,7 @@ const sampleOwnerWishlistData = {
             imageUrl: '/placeholder.svg?height=200&width=200',
             priority: 'high' as const,
             status: 'reserved' as const,
+            reservedBy: mockUserPrivate.id,
             notes: 'Size medium, prefer sport band in blue or black.',
             addedDate: '1 week ago',
         },
@@ -162,6 +163,26 @@ export default function WishlistPage() {
         // TODO: Add toast/notification system for better UX
     }
     
+    const handleCancelReservation = (wishId: string) => {
+        // Optimistic update: immediately revert status to 'wanted' and clear reservedBy
+        setItems(prev => prev.map(item => 
+            item.id === wishId 
+                ? { ...item, status: 'wanted', reservedBy: undefined }
+                : item
+        ))
+    }
+    
+    const handleCancelError = (wishId: string) => {
+        // Revert optimistic update on error: restore to 'reserved' status
+        // Since cancel button only shows when reservedBy === userId, we can restore to user.id
+        setItems(prev => prev.map(item => 
+            item.id === wishId 
+                ? { ...item, status: 'reserved', reservedBy: user.id }
+                : item
+        ))
+        // TODO: Add toast/notification system for better UX
+    }
+    
     return (
         <main>
             <Wishlist
@@ -170,6 +191,8 @@ export default function WishlistPage() {
                 userIsOwner={userIsOwner}
                 onReserveWish={handleReserveWish}
                 onReserveError={handleReserveError}
+                onCancelReservation={handleCancelReservation}
+                onCancelError={handleCancelError}
                 useMock={true}
             />
         </main>

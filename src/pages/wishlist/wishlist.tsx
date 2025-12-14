@@ -31,6 +31,8 @@ type TWishlistPageProps = {
   onEditWishlist?: () => void
   onReserveWish?: (wishId: string, reservedBy: string) => void
   onReserveError?: (wishId: string) => void
+  onCancelReservation?: (wishId: string) => void
+  onCancelError?: (wishId: string) => void
   useMock?: boolean
   userIsOwner: boolean
 }
@@ -47,6 +49,8 @@ export default function Wishlist({
   onAddItem,
   onReserveWish,
   onReserveError,
+  onCancelReservation,
+  onCancelError,
   useMock = false,
   userIsOwner = false,
 }: TWishlistPageProps) {
@@ -374,6 +378,8 @@ export default function Wishlist({
                 showGuestAction={Boolean(user.id && !userIsOwner)}
                 onReserve={onReserveWish}
                 onReserveError={onReserveError}
+                onCancelReservation={onCancelReservation}
+                onCancelError={onCancelError}
                 userId={user.id}
                 useMock={useMock}
               />
