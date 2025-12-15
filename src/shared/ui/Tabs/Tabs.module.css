@@ -4,8 +4,8 @@
 
 .tabs__header {
     display: flex;
-    border-bottom: 2px solid #e5e7eb;
-    margin-bottom: 24px;
+    border-bottom: var(--border-width-medium) solid var(--color-neutral-200);
+    margin-bottom: var(--spacing-300);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; /* Firefox */
@@ -17,34 +17,34 @@
 }
 
 .tabs__button {
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #6b7280;
+    padding: var(--spacing-200) var(--spacing-300);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
     background: none;
     border: none;
-    border-bottom: 2px solid transparent;
+    border-bottom: var(--border-width-medium) solid transparent;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-all-fast);
     white-space: nowrap;
 }
 
 .tabs__button:hover {
-    color: #374151;
+    color: var(--color-text-primary);
 }
 
 .tabs__button--active {
-    color: #3b82f6;
-    border-bottom-color: #3b82f6;
+    color: var(--color-primary-main);
+    border-bottom-color: var(--color-primary-main);
 }
 
 .tabs__content {
-    padding-top: 16px;
+    padding-top: var(--spacing-200);
 }
 
 @media (max-width: 768px) {
     .tabs__button {
-        padding: 10px 16px;
-        font-size: 14px;
+        padding: var(--spacing-200) var(--spacing-200);
+        font-size: var(--font-size-lg);
     }
 }

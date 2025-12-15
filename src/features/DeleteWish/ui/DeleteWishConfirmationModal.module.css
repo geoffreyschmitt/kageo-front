@@ -1,49 +1,49 @@
 .confirmation-modal__content {
-    padding: 24px;
+    padding: var(--spacing-300);
 }
 
 .confirmation-modal__message {
-    margin-bottom: 24px;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #333;
+    margin-bottom: var(--spacing-300);
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-loose);
+    color: var(--color-text-primary);
 }
 
 .confirmation-modal__wish-name {
-    font-weight: 600;
-    color: #000;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
 }
 
 .confirmation-modal__actions {
     display: flex;
-    gap: 12px;
+    gap: var(--spacing-200);
     justify-content: flex-end;
 }
 
 .confirmation-modal__button {
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
+    padding: var(--spacing-200) var(--spacing-300);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-all-fast);
 }
 
 .confirmation-modal__button--cancel {
-    background: #f3f4f6;
-    color: #374151;
+    background: var(--color-background-tertiary);
+    color: var(--color-text-primary);
 }
 
 .confirmation-modal__button--cancel:hover {
-    background: #e5e7eb;
+    background: var(--color-neutral-200);
 }
 
 .confirmation-modal__button--confirm {
-    background: #ef4444;
-    color: #fff;
+    background: var(--color-error-main);
+    color: var(--color-text-inverse);
 }
 
 .confirmation-modal__button--confirm:hover {
-    background: #dc2626;
+    background: var(--color-error-hover);
 }

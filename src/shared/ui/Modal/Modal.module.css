@@ -8,7 +8,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: var(--spacing-300);
 }
 
 .modal__overlay {
@@ -23,9 +23,9 @@
 
 .modal__container {
     position: relative;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    background: var(--color-background);
+    border-radius: var(--border-radius-2xl);
+    box-shadow: var(--shadow-modal);
     width: 100%;
     max-width: 700px;
     max-height: 90vh;
@@ -38,9 +38,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 24px 24px 0 24px;
-    border-bottom: 1px solid #e5e7eb;
-    margin-bottom: 24px;
+    padding: var(--spacing-300) var(--spacing-300) 0 var(--spacing-300);
+    border-bottom: var(--border-width-thin) solid var(--color-neutral-200);
+    margin-bottom: var(--spacing-300);
 }
 
 .modal__headerContent {
@@ -48,14 +48,14 @@
 }
 
 .modal__title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #111827;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
     margin: 0;
 }
 .modal__subtitle {
-    font-size: 14px;
-    color: #6b7280;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
     margin: 0;
     font-style: italic;
 }
@@ -63,23 +63,23 @@
 .modal__closeButton {
     background: none;
     border: none;
-    font-size: 24px;
-    color: #6b7280;
+    font-size: var(--font-size-3xl);
+    color: var(--color-text-secondary);
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    padding: var(--spacing-100);
+    border-radius: var(--border-radius-sm);
+    transition: var(--transition-all-fast);
     line-height: 1;
 }
 
 .modal__closeButton:hover {
-    background: #f3f4f6;
-    color: #374151;
+    background: var(--color-background-tertiary);
+    color: var(--color-text-primary);
 }
 
 @media (max-width: 768px) {
     .modal {
-        padding: 10px;
+        padding: var(--spacing-200);
     }
 
     .modal__container {
@@ -87,16 +87,16 @@
     }
 
     .modal__header {
-        padding: 20px 20px 0 20px;
+        padding: var(--spacing-300) var(--spacing-300) 0 var(--spacing-300);
     }
 }
 
 @media (max-width: 480px) {
     .modal__header {
-        padding: 16px 16px 0 16px;
+        padding: var(--spacing-200) var(--spacing-200) 0 var(--spacing-200);
     }
 
     .modal__title {
-        font-size: 20px;
+        font-size: var(--font-size-3xl);
     }
 }

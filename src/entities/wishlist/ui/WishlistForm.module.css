@@ -1,7 +1,5 @@
-
-
 .editWishlistForm {
-    padding: 0 24px 24px 24px;
+    padding: 0 var(--spacing-300) var(--spacing-300) var(--spacing-300);
     overflow-y: auto;
     flex: 1;
 }
@@ -9,14 +7,14 @@
 .editWishlistForm__formGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 24px;
+    gap: var(--spacing-300);
+    margin-bottom: var(--spacing-300);
 }
 
 .editWishlistForm__field {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-100);
 }
 
 .editWishlistForm__field--full {
@@ -24,42 +22,42 @@
 }
 
 .editWishlistForm__label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #374151;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: var(--letter-spacing-wide);
 }
 
 .editWishlistForm__input,
 .editWishlistForm__select,
 .editWishlistForm__textarea {
-    padding: 12px 16px;
-    border: 2px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #374151;
-    background: white;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    padding: var(--spacing-200) var(--spacing-200);
+    border: var(--border-width-medium) solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+    background: var(--color-background);
+    transition: var(--transition-fast) var(--easing-standard), var(--transition-fast) var(--easing-standard);
 }
 
 .editWishlistForm__input:focus,
 .editWishlistForm__select:focus,
 .editWishlistForm__textarea:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: var(--color-primary-main);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 .editWishlistForm__input--error,
 .editWishlistForm__textarea--error {
-    border-color: #ef4444;
+    border-color: var(--color-error-main);
 }
 
 .editWishlistForm__input--error:focus,
 .editWishlistForm__textarea--error:focus {
-    border-color: #ef4444;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    border-color: var(--color-error-main);
+    box-shadow: 0 0 0 3px var(--color-error-light);
 }
 
 .editWishlistForm__textarea {
@@ -69,42 +67,42 @@
 }
 
 .editWishlistForm__error {
-    font-size: 12px;
-    color: #ef4444;
-    font-weight: 500;
+    font-size: var(--font-size-base);
+    color: var(--color-error-main);
+    font-weight: var(--font-weight-medium);
 }
 
 /* Radio Group */
 .editWishlistForm__radioGroup {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-200);
 }
 
 .editWishlistForm__radioLabel {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 12px;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
+    gap: var(--spacing-200);
+    padding: var(--spacing-200);
+    border: var(--border-width-medium) solid var(--color-neutral-200);
+    border-radius: var(--border-radius-lg);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-all-fast);
 }
 
 .editWishlistForm__radioLabel:hover {
-    border-color: #d1d5db;
-    background: #f9fafb;
+    border-color: var(--color-border);
+    background: var(--color-background-secondary);
 }
 
 .editWishlistForm__radioLabel:has(.editWishlistForm__radio:checked) {
-    border-color: #3b82f6;
-    background: #eff6ff;
+    border-color: var(--color-primary-main);
+    background: var(--color-primary-light);
 }
 
 .editWishlistForm__radio {
     margin: 0;
-    accent-color: #3b82f6;
+    accent-color: var(--color-primary-main);
 }
 
 .editWishlistForm__radioText {
@@ -114,46 +112,46 @@
 }
 
 .editWishlistForm__radioText strong {
-    font-size: 14px;
-    color: #111827;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
 }
 
 .editWishlistForm__radioText small {
-    font-size: 12px;
-    color: #6b7280;
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
 }
 
 /* Settings Group */
 .editWishlistForm__settingsGroup {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--spacing-200);
 }
 
 .editWishlistForm__checkboxLabel {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 12px;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
+    gap: var(--spacing-200);
+    padding: var(--spacing-200);
+    border: var(--border-width-medium) solid var(--color-neutral-200);
+    border-radius: var(--border-radius-lg);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-all-fast);
 }
 
 .editWishlistForm__checkboxLabel:hover {
-    border-color: #d1d5db;
-    background: #f9fafb;
+    border-color: var(--color-border);
+    background: var(--color-background-secondary);
 }
 
 .editWishlistForm__checkboxLabel:has(.editWishlistForm__checkbox:checked) {
-    border-color: #10b981;
-    background: #ecfdf5;
+    border-color: var(--color-success-main);
+    background: var(--color-success-light);
 }
 
 .editWishlistForm__checkbox {
     margin: 0;
-    accent-color: #10b981;
+    accent-color: var(--color-success-main);
 }
 
 .editWishlistForm__checkboxText {
@@ -163,47 +161,47 @@
 }
 
 .editWishlistForm__checkboxText strong {
-    font-size: 14px;
-    color: #111827;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
 }
 
 .editWishlistForm__checkboxText small {
-    font-size: 12px;
-    color: #6b7280;
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
 }
 
 /* Preview Section */
 .editWishlistForm__preview {
-    margin-bottom: 24px;
-    padding: 20px;
-    background: #f9fafb;
-    border-radius: 12px;
-    border: 2px dashed #d1d5db;
+    margin-bottom: var(--spacing-300);
+    padding: var(--spacing-300);
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-xl);
+    border: var(--border-width-medium) dashed var(--color-border);
 }
 
 .editWishlistForm__previewTitle {
-    font-size: 16px;
-    font-weight: 600;
-    color: #374151;
-    margin: 0 0 12px 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin: 0 0 var(--spacing-200) 0;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: var(--letter-spacing-wide);
 }
 
 .editWishlistForm__previewCard {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--color-background);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-300);
+    box-shadow: var(--shadow-card);
 }
 
 .editWishlistForm__previewImage {
     width: 100%;
     height: 120px;
-    border-radius: 8px;
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
-    background: #e5e7eb;
-    margin-bottom: 16px;
+    background: var(--color-neutral-200);
+    margin-bottom: var(--spacing-200);
 }
 
 .editWishlistForm__previewImage img {
@@ -215,92 +213,92 @@
 .editWishlistForm__previewContent {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-200);
 }
 
 .editWishlistForm__previewHeader {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 16px;
+    gap: var(--spacing-200);
 }
 
 .editWishlistForm__previewName {
-    font-size: 20px;
-    font-weight: 700;
-    color: #111827;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
     margin: 0;
-    line-height: 1.3;
+    line-height: var(--line-height-normal);
     flex: 1;
 }
 
 .editWishlistForm__previewBadges {
     display: flex;
-    gap: 6px;
+    gap: var(--spacing-100);
     flex-wrap: wrap;
 }
 
 .editWishlistForm__previewBadge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-    font-weight: 600;
+    padding: var(--spacing-100) var(--spacing-100);
+    border-radius: var(--border-radius-xl);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: var(--letter-spacing-wide);
     white-space: nowrap;
 }
 
 .editWishlistForm__previewBadge--public {
-    background: #10b981;
-    color: white;
+    background: var(--color-success-main);
+    color: var(--color-text-inverse);
 }
 
 .editWishlistForm__previewBadge--private {
-    background: #6b7280;
-    color: white;
+    background: var(--color-neutral-500);
+    color: var(--color-text-inverse);
 }
 
 .editWishlistForm__previewDescription {
-    font-size: 14px;
-    color: #6b7280;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
     margin: 0;
-    line-height: 1.5;
+    line-height: var(--line-height-loose);
 }
 
 .editWishlistForm__previewSettings {
     display: flex;
-    gap: 12px;
+    gap: var(--spacing-200);
     flex-wrap: wrap;
 }
 
 .editWishlistForm__previewSetting {
-    font-size: 12px;
-    color: #059669;
-    background: #ecfdf5;
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-weight: 500;
+    font-size: var(--font-size-base);
+    color: var(--color-success-hover);
+    background: var(--color-success-light);
+    padding: var(--spacing-100) var(--spacing-100);
+    border-radius: var(--border-radius-lg);
+    font-weight: var(--font-weight-medium);
 }
 
 /* Actions */
 .editWishlistForm__actions {
     display: flex;
-    gap: 12px;
+    gap: var(--spacing-200);
     justify-content: flex-end;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
+    padding-top: var(--spacing-300);
+    border-top: var(--border-width-thin) solid var(--color-neutral-200);
 }
 
 .editWishlistForm__button {
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
+    padding: var(--spacing-200) var(--spacing-300);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-all-fast);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: var(--letter-spacing-wide);
     min-width: 140px;
 }
 
@@ -310,37 +308,37 @@
 }
 
 .editWishlistForm__button--primary {
-    background: #3b82f6;
-    color: white;
+    background: var(--color-primary-main);
+    color: var(--color-text-inverse);
 }
 
 .editWishlistForm__button--primary:hover:not(:disabled) {
-    background: #2563eb;
+    background: var(--color-primary-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: var(--shadow-button-hover);
 }
 
 .editWishlistForm__button--secondary {
     background: transparent;
-    color: #6b7280;
-    border: 2px solid #d1d5db;
+    color: var(--color-text-secondary);
+    border: var(--border-width-medium) solid var(--color-border);
 }
 
 .editWishlistForm__button--secondary:hover:not(:disabled) {
-    background: #f9fafb;
-    color: #374151;
-    border-color: #9ca3af;
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-hover);
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .editWishlistForm {
-        padding: 0 20px 20px 20px;
+        padding: 0 var(--spacing-300) var(--spacing-300) var(--spacing-300);
     }
 
     .editWishlistForm__formGrid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: var(--spacing-200);
     }
 
     .editWishlistForm__field--full {
@@ -350,7 +348,7 @@
     .editWishlistForm__previewHeader {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: var(--spacing-100);
     }
 
     .editWishlistForm__previewBadges {
@@ -368,16 +366,16 @@
 
 @media (max-width: 480px) {
     .editWishlistForm {
-        padding: 0 16px 16px 16px;
+        padding: 0 var(--spacing-200) var(--spacing-200) var(--spacing-200);
     }
 
     .editWishlistForm__radioGroup,
     .editWishlistForm__settingsGroup {
-        gap: 12px;
+        gap: var(--spacing-200);
     }
 
     .editWishlistForm__radioLabel,
     .editWishlistForm__checkboxLabel {
-        padding: 10px;
+        padding: var(--spacing-200);
     }
 }
