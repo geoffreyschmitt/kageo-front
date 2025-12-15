@@ -1,6 +1,7 @@
 export type TMarkPurchasedButton = {
     wishId: string
-    onMarkPurchased?: (wishId: string) => void
+    userId: string
+    onMarkPurchased?: (wishId: string, userId: string) => void
     onError?: (wishId: string) => void
     useMock?: boolean
 }

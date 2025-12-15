@@ -5,6 +5,7 @@ import {TWishCard} from '@/widgets/WishCard/WishCard.types';
 import {ReserveButton} from "@/features/reserveWish";
 import {CancelReservationButton} from "@/features/cancelReservation";
 import {MarkPurchasedButton} from "@/features/markPurchasedWish";
+import {RemovePurchasedButton} from "@/features/removePurchasedWish";
 import {DeleteWishButton} from "@/features/DeleteWish";
 
 import styles from './WishCard.module.css'
@@ -50,6 +51,7 @@ export const WishCard = ({
     notes,
     addedDate,
     reservedBy,
+    purchasedBy,
     showOwnerAction = false,
     showGuestAction = false,
     onReserve,
@@ -58,6 +60,8 @@ export const WishCard = ({
     onCancelError,
     onMarkPurchased,
     onMarkPurchasedError,
+    onRemovePurchased,
+    onRemovePurchasedError,
     onDeleteWish,
     onDeleteError,
     onEditWish,
@@ -109,6 +113,9 @@ export const WishCard = ({
                     {status === 'reserved' && reservedBy && (
                         <span className={styles['wish-card__reservedBy']}>Reserved by {reservedBy}</span>
                     )}
+                    {status === 'purchased' && purchasedBy && (
+                        <span className={styles['wish-card__purchasedBy']}>Purchased by {purchasedBy}</span>
+                    )}
                 </div>
 
                 <div className={styles['wish-card__actions']}>
@@ -133,9 +140,10 @@ export const WishCard = ({
                                 </a>
                             )}
 
-                            {status === 'reserved' && reservedBy === userId && (
+                            {status === 'reserved' && reservedBy === userId && userId && (
                                 <MarkPurchasedButton 
-                                    wishId={id} 
+                                    wishId={id}
+                                    userId={userId}
                                     onMarkPurchased={onMarkPurchased} 
                                     onError={onMarkPurchasedError} 
                                     useMock={useMock}
@@ -145,11 +153,20 @@ export const WishCard = ({
                     )}
                     {showOwnerAction && (
                         <>
-                            {(status === 'wanted' || status === 'reserved') && (
+                            {(status === 'wanted' || status === 'reserved') && userId && (
                                 <MarkPurchasedButton 
-                                    wishId={id} 
+                                    wishId={id}
+                                    userId={userId}
                                     onMarkPurchased={onMarkPurchased} 
                                     onError={onMarkPurchasedError} 
+                                    useMock={useMock}
+                                />
+                            )}
+                            {status === 'purchased' && purchasedBy === userId && (
+                                <RemovePurchasedButton 
+                                    wishId={id} 
+                                    onRemovePurchased={onRemovePurchased} 
+                                    onError={onRemovePurchasedError} 
                                     useMock={useMock}
                                 />
                             )}
@@ -168,6 +185,7 @@ export const WishCard = ({
                                     notes,
                                     addedDate,
                                     reservedBy,
+                                    purchasedBy,
                                     showOwnerAction,
                                     showGuestAction,
                                     onReserve,
@@ -176,6 +194,8 @@ export const WishCard = ({
                                     onCancelError,
                                     onMarkPurchased,
                                     onMarkPurchasedError,
+                                    onRemovePurchased,
+                                    onRemovePurchasedError,
                                     onDeleteWish,
                                     onDeleteError,
                                     onEditWish,

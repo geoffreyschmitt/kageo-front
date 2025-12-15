@@ -35,8 +35,10 @@ type TWishlistPageProps = {
   onReserveError?: (wishId: string) => void
   onCancelReservation?: (wishId: string) => void
   onCancelError?: (wishId: string) => void
-  onMarkPurchasedWish?: (wishId: string) => void
+  onMarkPurchasedWish?: (wishId: string, userId: string) => void
   onMarkPurchasedError?: (wishId: string) => void
+  onRemovePurchasedWish?: (wishId: string) => void
+  onRemovePurchasedError?: (wishId: string) => void
   onDeleteWish?: (wishId: string) => void
   onDeleteError?: (wishId: string) => void
   onEditWish?: (wish: TWishCard) => void
@@ -63,6 +65,8 @@ export default function Wishlist({
   onCancelError,
   onMarkPurchasedWish,
   onMarkPurchasedError,
+  onRemovePurchasedWish,
+  onRemovePurchasedError,
   onDeleteWish,
   onDeleteError,
   onEditWish,
@@ -410,6 +414,7 @@ export default function Wishlist({
                 notes={item.notes}
                 addedDate={item.addedDate}
                 reservedBy={item.reservedBy}
+                purchasedBy={item.purchasedBy}
                 showOwnerAction={!!userIsOwner}
                 showGuestAction={Boolean(user.id && !userIsOwner)}
                 onReserve={onReserveWish}
@@ -418,6 +423,8 @@ export default function Wishlist({
                 onCancelError={onCancelError}
                 onMarkPurchased={onMarkPurchasedWish}
                 onMarkPurchasedError={onMarkPurchasedError}
+                onRemovePurchased={onRemovePurchasedWish}
+                onRemovePurchasedError={onRemovePurchasedError}
                 onDeleteWish={onDeleteWish}
                 onDeleteError={onDeleteError}
                 onEditWish={handleEditWish}

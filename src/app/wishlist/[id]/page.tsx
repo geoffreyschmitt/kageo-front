@@ -184,22 +184,48 @@ export default function WishlistPage() {
         // TODO: Add toast/notification system for better UX
     }
 
-    const handleMarkPurchased = (wishId: string) => {
-        // Optimistic update: immediately update status to 'purchased'
+    const handleMarkPurchased = (wishId: string, userId: string) => {
+        // Optimistic update: immediately update status to 'purchased' and store purchaser
         setItems(prev => prev.map(item =>
             item.id === wishId
-                ? {...item, status: 'purchased'}
+                ? {...item, status: 'purchased', purchasedBy: userId}
                 : item
         ))
     }
 
     const handleMarkPurchasedError = (wishId: string) => {
-        // Revert optimistic update on error: restore previous status
+        // Revert optimistic update on error: restore previous status and clear purchasedBy
         // If reservedBy exists, it was 'reserved', otherwise it was 'wanted'
         setItems(prev => prev.map(item => {
             if (item.id === wishId) {
                 const previousStatus = item.reservedBy ? 'reserved' : 'wanted'
-                return {...item, status: previousStatus}
+                return {...item, status: previousStatus, purchasedBy: undefined}
+            }
+            return item
+        }))
+        // TODO: Add toast/notification system for better UX
+    }
+
+    const handleRemovePurchased = (wishId: string) => {
+        // Optimistic update: immediately update status to 'wanted' and clear purchasedBy
+        setItems(prev => prev.map(item =>
+            item.id === wishId
+                ? {...item, status: 'wanted', purchasedBy: undefined}
+                : item
+        ))
+    }
+
+    const handleRemovePurchasedError = (wishId: string) => {
+        // Revert optimistic update on error: restore to 'purchased' status
+        // We need to restore the purchasedBy from the previous state
+        setItems(prev => prev.map(item => {
+            if (item.id === wishId) {
+                // Find the original item to get the purchasedBy value
+                const originalItem = initialData.items.find(original => original.id === wishId)
+                const restoredPurchasedBy = originalItem && originalItem.status === 'purchased' 
+                    ? (originalItem as any).purchasedBy 
+                    : item.purchasedBy
+                return {...item, status: 'purchased', purchasedBy: restoredPurchasedBy}
             }
             return item
         }))
@@ -292,8 +318,10 @@ export default function WishlistPage() {
                 onReserveError={handleReserveError}
                 onCancelReservation={handleCancelReservation}
                 onCancelError={handleCancelError}
-                onMarkPurchasedWish={handleMarkPurchased}
+                onMarkPurchasedWish={handleMarkPurchased as (wishId: string) => void}
                 onMarkPurchasedError={handleMarkPurchasedError}
+                onRemovePurchasedWish={handleRemovePurchased}
+                onRemovePurchasedError={handleRemovePurchasedError}
                 onDeleteWish={handleDeleteWish}
                 onDeleteError={handleDeleteError}
                 onEditWish={handleEditWish}

@@ -171,6 +171,20 @@
     font-weight: 500;
 }
 
+.wish-card__reservedBy {
+    font-size: 12px;
+    color: #8b5cf6;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.wish-card__purchasedBy {
+    font-size: 12px;
+    color: #10b981;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
 .wish-card__actions {
     display: flex;
     flex-wrap: wrap;
