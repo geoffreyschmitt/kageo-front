@@ -15,7 +15,7 @@
 .featuresHero {
     text-align: center;
     padding: var(--spacing-1000) var(--spacing-300);
-    background: linear-gradient(180deg, #e0f7fa 0%, var(--color-background) 100%);
+    background: linear-gradient(180deg, var(--color-gradient-features-start) 0%, var(--color-gradient-features-end) 100%);
     border-radius: var(--border-radius-2xl);
     margin-top: var(--spacing-500);
     margin-bottom: var(--spacing-800);

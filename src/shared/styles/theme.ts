@@ -79,6 +79,12 @@ export interface ColorTokens {
     tertiary: string;
     inverse: string;
   };
+  gradient: {
+    heroStart: string;
+    heroEnd: string;
+    featuresStart: string;
+    featuresEnd: string;
+  };
 }
 
 export interface SpacingTokens {
@@ -257,6 +263,12 @@ export const theme: Theme = {
       secondary: 'var(--color-text-secondary)',
       tertiary: 'var(--color-text-tertiary)',
       inverse: 'var(--color-text-inverse)',
+    },
+    gradient: {
+      heroStart: 'var(--color-gradient-hero-start)',
+      heroEnd: 'var(--color-gradient-hero-end)',
+      featuresStart: 'var(--color-gradient-features-start)',
+      featuresEnd: 'var(--color-gradient-features-end)',
     },
   },
   spacing: {

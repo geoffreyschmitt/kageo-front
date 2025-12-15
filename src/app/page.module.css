@@ -18,7 +18,7 @@
   align-items: center;
   text-align: center;
   padding: var(--spacing-1000) var(--spacing-300);
-  background: linear-gradient(180deg, #f0f9ff 0%, var(--color-background) 100%);
+  background: linear-gradient(180deg, var(--color-gradient-hero-start) 0%, var(--color-gradient-hero-end) 100%);
   border-radius: var(--border-radius-2xl);
   margin-top: var(--spacing-500);
   gap: var(--spacing-500);

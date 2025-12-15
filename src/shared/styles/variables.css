@@ -19,12 +19,18 @@
    COLOR TOKENS - LIGHT MODE
    ============================================ */
 :root {
-    /* Primary Colors */
-    --color-primary-main: #3b82f6;
-    --color-primary-hover: #2563eb;
-    --color-primary-active: #1e40af;
-    --color-primary-light: rgba(59, 130, 246, 0.1);
-    --color-primary-light-hover: rgba(59, 130, 246, 0.2);
+    /* Primary Colors - Cyan/Teal theme based on site design */
+    --color-primary-main: #0ea5e9;
+    --color-primary-hover: #0284c7;
+    --color-primary-active: #0369a1;
+    --color-primary-light: rgba(14, 165, 233, 0.1);
+    --color-primary-light-hover: rgba(14, 165, 233, 0.2);
+    
+    /* Gradient Colors */
+    --color-gradient-hero-start: #f0f9ff;
+    --color-gradient-hero-end: #ffffff;
+    --color-gradient-features-start: #e0f7fa;
+    --color-gradient-features-end: #ffffff;
 
     /* Semantic Colors */
     --color-success-main: #10b981;
@@ -39,9 +45,9 @@
     --color-warning-hover: #d97706;
     --color-warning-light: rgba(245, 158, 11, 0.1);
 
-    --color-info-main: #3b82f6;
-    --color-info-hover: #2563eb;
-    --color-info-light: rgba(59, 130, 246, 0.1);
+    --color-info-main: #0ea5e9;
+    --color-info-hover: #0284c7;
+    --color-info-light: rgba(14, 165, 233, 0.1);
 
     /* Neutral Colors */
     --color-neutral-50: #f9fafb;
@@ -56,7 +62,7 @@
     --color-neutral-900: #111827;
 
     /* Status Colors */
-    --color-status-wanted: #3b82f6;
+    --color-status-wanted: #0ea5e9;
     --color-status-purchased: #10b981;
     --color-status-reserved: #8b5cf6;
     --color-status-proposed: #f59e0b;
@@ -77,7 +83,7 @@
     /* Borders */
     --color-border: #d1d5db;
     --color-border-hover: #9ca3af;
-    --color-border-focus: #3b82f6;
+    --color-border-focus: #0ea5e9;
 
     /* Text Colors */
     --color-text-primary: #111827;
@@ -91,12 +97,18 @@
    ============================================ */
 @media (prefers-color-scheme: dark) {
     :root {
-        /* Primary Colors */
-        --color-primary-main: #60a5fa;
-        --color-primary-hover: #3b82f6;
-        --color-primary-active: #2563eb;
-        --color-primary-light: rgba(96, 165, 250, 0.15);
-        --color-primary-light-hover: rgba(96, 165, 250, 0.25);
+        /* Primary Colors - Cyan/Teal theme for dark mode */
+        --color-primary-main: #38bdf8;
+        --color-primary-hover: #0ea5e9;
+        --color-primary-active: #0284c7;
+        --color-primary-light: rgba(56, 189, 248, 0.15);
+        --color-primary-light-hover: rgba(56, 189, 248, 0.25);
+        
+        /* Gradient Colors - Dark Mode */
+        --color-gradient-hero-start: #0c4a6e;
+        --color-gradient-hero-end: #1e293b;
+        --color-gradient-features-start: #164e63;
+        --color-gradient-features-end: #1e293b;
 
         /* Semantic Colors */
         --color-success-main: #34d399;
@@ -111,9 +123,9 @@
         --color-warning-hover: #f59e0b;
         --color-warning-light: rgba(251, 191, 36, 0.15);
 
-        --color-info-main: #60a5fa;
-        --color-info-hover: #3b82f6;
-        --color-info-light: rgba(96, 165, 250, 0.15);
+        --color-info-main: #38bdf8;
+        --color-info-hover: #0ea5e9;
+        --color-info-light: rgba(56, 189, 248, 0.15);
 
         /* Neutral Colors */
         --color-neutral-50: #1f2937;
@@ -128,7 +140,7 @@
         --color-neutral-900: #ffffff;
 
         /* Status Colors */
-        --color-status-wanted: #60a5fa;
+        --color-status-wanted: #38bdf8;
         --color-status-purchased: #34d399;
         --color-status-reserved: #a78bfa;
         --color-status-proposed: #fbbf24;
@@ -149,7 +161,7 @@
         /* Borders */
         --color-border: #374151;
         --color-border-hover: #4b5563;
-        --color-border-focus: #60a5fa;
+        --color-border-focus: #38bdf8;
 
         /* Text Colors */
         --color-text-primary: #f9fafb;
@@ -204,7 +216,7 @@
     --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.1);
 
     /* Semantic Shadows */
-    --shadow-button-hover: 0 4px 12px rgba(59, 130, 246, 0.3);
+    --shadow-button-hover: 0 4px 12px rgba(14, 165, 233, 0.3);
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
     --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
     --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -219,7 +231,7 @@
         --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.6);
 
         /* Semantic Shadows - Dark Mode */
-        --shadow-button-hover: 0 4px 12px rgba(96, 165, 250, 0.4);
+        --shadow-button-hover: 0 4px 12px rgba(56, 189, 248, 0.4);
         --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
         --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.5);
         --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.7);
