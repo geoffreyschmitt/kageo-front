@@ -1,6 +1,6 @@
 import React from "react";
 
-import {TWishPriority} from "@/entities/wish/Wish.types";
+import {TWishPriority} from "@/entities/wish/model";
 
 
 export type TWishFormData = {
