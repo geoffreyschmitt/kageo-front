@@ -9,7 +9,7 @@ import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
 import {mockCreateWishlist} from "./lib/mockCreateWishlist"
 
 type TUseCreateWishlistModel = {
-    onSubmit: (wishlistData: TWishlistFormData & { id: string }) => void
+    onSubmit: (wishlistData: TWishlistFormData) => void
     onClose: () => void
     useMock?: boolean
 }
