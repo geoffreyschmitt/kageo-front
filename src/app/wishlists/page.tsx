@@ -77,7 +77,7 @@ export default function WishlistsPage() {
       coverImage: wishlistData.coverImage,
       isPublic: wishlistData.isPublic,
       ownerId: user.id,
-      ownerName: user.name,
+      ownerName: user.name ?? user.email ?? 'Unknown',
       createdAt: new Date(),
       itemCount: 0,
     }
