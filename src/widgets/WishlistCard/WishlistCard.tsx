@@ -29,7 +29,8 @@ export const WishlistCard = ({
     isPublic,
     itemCount = 0,
     ownerId,
-    ownerName
+    ownerName,
+    isPending = false
 }: TWishlistCard) => {
     const user = mockUserPrivate
     const isOwnedByCurrentUser = user.id === ownerId;
@@ -96,10 +97,23 @@ export const WishlistCard = ({
                                 Edit
                             </button>
                         )}
-                        <Button href={`/wishlist/${id}`} variant={'primary'}
-                                className={`${styles.wishlistCard__button}`}>
-                            View
-                        </Button>
+                        {isPending ? (
+                            <Button 
+                                variant={'primary'}
+                                className={`${styles.wishlistCard__button}`}
+                                disabled
+                            >
+                                View
+                            </Button>
+                        ) : (
+                            <Button 
+                                href={`/wishlist/${id}`} 
+                                variant={'primary'}
+                                className={`${styles.wishlistCard__button}`}
+                            >
+                                View
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>

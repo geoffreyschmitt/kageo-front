@@ -1,6 +1,6 @@
 import {TWishlistFormData} from "@/entities/wishlist";
 
-export type TCreateWishlistResponse = TWishlistFormData
+export type TCreateWishlistResponse = TWishlistFormData & { id: string }
 
 export const createWishlist = async (data: TWishlistFormData): Promise<TCreateWishlistResponse> => {
     const res = await fetch("/api/wishlist", {

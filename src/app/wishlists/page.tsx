@@ -68,22 +68,49 @@ export default function WishlistsPage() {
     return allInvitedWishlists.filter((wishlist) => wishlist.ownerId === selectedOwnerFilter.id)
   }, [allInvitedWishlists, selectedOwnerFilter])
 
-  const handleCreateWishlist = (wishlistData: TWishlistFormData & { id: string }) => {
-    // Convert form data to TWishlistCard format
-    const newWishlist: TWishlistCard = {
-      id: wishlistData.id,
-      name: wishlistData.name,
-      description: wishlistData.description,
-      coverImage: wishlistData.coverImage,
-      isPublic: wishlistData.isPublic,
-      ownerId: user.id,
-      ownerName: user.name ?? user.email ?? 'Unknown',
-      createdAt: new Date(),
-      itemCount: 0,
-    }
+  const handleCreateWishlist = (wishlistData: TWishlistFormData & { id: string; isPending?: boolean }) => {
+    const isPending = wishlistData.isPending ?? false
     
-    // Add new wishlist to state (optimistic update)
-    setWishlists((prev) => [newWishlist, ...prev])
+    if (isPending) {
+      // Optimistic update: add wishlist with temp ID and pending flag
+      const newWishlist: TWishlistCard = {
+        id: wishlistData.id,
+        name: wishlistData.name,
+        description: wishlistData.description,
+        coverImage: wishlistData.coverImage,
+        isPublic: wishlistData.isPublic,
+        ownerId: user.id,
+        ownerName: user.name ?? user.email ?? 'Unknown',
+        createdAt: new Date(),
+        itemCount: 0,
+        isPending: true,
+      }
+      
+      setWishlists((prev) => [newWishlist, ...prev])
+    } else {
+      // Final update: replace temp ID with real ID from API
+      setWishlists((prev) =>
+        prev.map((wishlist) => {
+          // Find the pending wishlist that matches this data (by matching form fields)
+          // This handles the case where we need to replace temp ID with real ID
+          if (
+            wishlist.isPending &&
+            wishlist.ownerId === user.id &&
+            wishlist.name === wishlistData.name &&
+            wishlist.description === wishlistData.description &&
+            wishlist.isPublic === wishlistData.isPublic &&
+            wishlist.coverImage === wishlistData.coverImage
+          ) {
+            return {
+              ...wishlist,
+              id: wishlistData.id,
+              isPending: false,
+            }
+          }
+          return wishlist
+        })
+      )
+    }
   }
 
   const handleUpdateWishlist = (wishlistData: TWishlistFormData & { id: string }) => {

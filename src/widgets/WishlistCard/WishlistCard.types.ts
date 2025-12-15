@@ -8,4 +8,5 @@ export type TWishlistCard = {
     createdAt: Date
     isPublic: boolean
     itemCount?: number
+    isPending?: boolean
 }

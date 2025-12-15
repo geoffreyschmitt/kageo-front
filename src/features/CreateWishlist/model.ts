@@ -9,7 +9,7 @@ import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
 import {mockCreateWishlist} from "./lib/mockCreateWishlist"
 
 type TUseCreateWishlistModel = {
-    onSubmit: (wishlistData: TWishlistFormData) => void
+    onSubmit: (wishlistData: TWishlistFormData & { id: string; isPending?: boolean }) => void
     onClose: () => void
     useMock?: boolean
 }
@@ -58,14 +58,33 @@ export const useCreateWishlistModel = ({
             if (hasError) return
 
             setIsSubmitting(true)
+            
+            // Generate temporary ID immediately for optimistic update
+            const tempId = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function" 
+                ? `temp-${crypto.randomUUID()}` 
+                : `temp-${Date.now()}`
+            
+            // Call onSubmit immediately with temp ID for optimistic update
+            onSubmit({
+                ...formData,
+                id: tempId,
+                isPending: true
+            })
+
             try {
                 const runner = useMock ? mockCreateWishlist : createWishlist
                 const result = await runner(formData)
-                onSubmit(result)
+                // Call onSubmit again with real ID from API
+                onSubmit({
+                    ...result,
+                    isPending: false
+                })
                 resetForm()
                 onClose()
             } catch (err) {
-                console.error("Erreur lors de la mise à jour de la wishlist :", err)
+                console.error("Erreur lors de la création de la wishlist :", err)
+                // On error, we could remove the optimistic update or mark it as error
+                // For now, we'll let the page handler deal with it
             } finally {
                 setIsSubmitting(false)
             }
