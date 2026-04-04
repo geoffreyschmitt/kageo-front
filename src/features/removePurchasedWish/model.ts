@@ -2,7 +2,7 @@
 
 import {useCallback, useState} from "react"
 
-import {removePurchased} from "@/services/wish/removePurchased";
+import {removePurchased} from "@/shared/api/wish/removePurchased";
 import {mockRemovePurchasedWish} from "./lib/mockRemovePurchasedWish"
 
 type TUseRemovePurchasedWishModelParams = {

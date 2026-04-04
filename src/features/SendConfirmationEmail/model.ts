@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react"
 
 import { mockSendConfirmationEmail } from "./lib/mockSendConfirmationEmail"
-// Future: import { sendConfirmationEmail } from "@/services/auth/sendConfirmationEmail"
+// Future: import { sendConfirmationEmail } from "@/shared/api/auth/sendConfirmationEmail"
 
 type TUseSendConfirmationEmailModelParams = {
     useMock?: boolean

@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react'
 
-import {updateWishlist} from '@/services/wishlist/updateWishlist'
+import {updateWishlist} from '@/shared/api/wishlist/updateWishlist'
 
 import {TWishlistFormData, TWishlistValidationErrors, validateWishlistForm} from '@/entities/wishlist'
 import {DEFAULT_WISHLIST_SETTINGS} from '@/entities/wishlist/model/constants';

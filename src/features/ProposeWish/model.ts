@@ -2,7 +2,7 @@
 
 import {useCallback, useState} from "react"
 
-import {addWish as addWishService} from "@/services/wishlist/addWish";
+import {addWish as addWishService} from "@/shared/api/wishlist/addWish";
 
 import type { TProposedWishFormData, TProposedWishValidationErrors } from "@/entities/wish"
 

@@ -2,7 +2,7 @@
 
 import {useCallback, useState} from "react"
 
-import {reserveWish} from "@/services/wish/reserveWish";
+import {reserveWish} from "@/shared/api/wish/reserveWish";
 import {mockReserveWish} from "./lib/mockReserveWish"
 
 type TUseReserveWishModelParams = {

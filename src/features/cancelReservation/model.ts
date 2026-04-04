@@ -2,7 +2,7 @@
 
 import {useCallback, useState} from "react"
 
-import {cancelReservation} from "@/services/wish/cancelReservation";
+import {cancelReservation} from "@/shared/api/wish/cancelReservation";
 import {mockCancelReservation} from "./lib/mockCancelReservation"
 
 type TUseCancelReservationModelParams = {

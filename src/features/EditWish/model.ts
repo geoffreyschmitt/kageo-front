@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react"
 
-import { editWish as editWishService } from "@/services/wish/editWish"
+import { editWish as editWishService } from "@/shared/api/wish/editWish"
 
 import type { TWishFormData, TWishValidationErrors, TWishPriority} from "@/entities/wish"
 

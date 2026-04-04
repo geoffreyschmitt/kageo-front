@@ -2,7 +2,7 @@
 
 import {useCallback, useState} from "react"
 
-import {deleteWish} from "@/services/wish/deleteWish";
+import {deleteWish} from "@/shared/api/wish/deleteWish";
 import {mockDeleteWish} from "./lib/mockDeleteWish"
 
 type TUseDeleteWishModelParams = {

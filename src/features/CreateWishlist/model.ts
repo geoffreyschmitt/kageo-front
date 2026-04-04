@@ -1,6 +1,6 @@
 import {useCallback, useState} from "react"
 
-import {createWishlist} from "@/services/wishlist/createWishlist";
+import {createWishlist} from "@/shared/api/wishlist/createWishlist";
 
 import type {TWishlistFormData, TWishlistValidationErrors} from "@/entities/wishlist"
 import {validateWishlistForm} from '@/entities/wishlist/lib/validateWishlistForm';
