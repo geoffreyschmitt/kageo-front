@@ -28,7 +28,7 @@ Always follow FSD when adding functionality. Place new code in the appropriate l
 - Business logic and state → `features/<FeatureName>/model.ts` (custom hook)
 - UI for the feature → `features/<FeatureName>/ui/`
 - Reusable domain types/forms → `entities/<domain>/`
-- API calls → `services/<domain>/`
+- API calls → `shared/api/<domain>/`
 - Reusable UI primitives → `shared/ui/`
 
 Never skip layers or import upward (e.g. `shared` must not import from `features`).
@@ -37,18 +37,19 @@ Never skip layers or import upward (e.g. `shared` must not import from `features
 
 | Layer | Path | Purpose |
 |-------|------|---------|
-| `shared/` | Infrastructure | UI primitives, providers, hooks, utils, event bus, styles |
+| `shared/` | Infrastructure | UI primitives, providers, hooks, utils, event bus, api wrappers, styles |
 | `entities/` | Domain models | Types and forms for `user`, `wish`, `wishlist` |
 | `features/` | User interactions | Each feature has a `model.ts` (hook) + `ui/` (modal/form) |
 | `widgets/` | Page composites | `Header`, `WishCard`, `WishlistCard`, `WishlistList` |
-| `services/` | API layer | Thin fetch wrappers that call Next.js API routes |
+| `pages/` | Page components | Full-page client components (e.g. wishlist detail) |
 | `app/` | Pages & routes | App Router pages + `/api` route handlers |
 
 ### Data flow
 
-1. A **feature hook** (e.g. `useAddWishModel`) holds local form state and calls a **service** (e.g. `services/wish/addWish.ts`).
-2. Services call internal Next.js API routes via `fetch` (POST `/api/wishlist`, etc.).
-3. API routes read/write **Vercel KV**.
+1. A **feature hook** (e.g. `useAddWishModel`) holds local form state and calls an **API wrapper** (e.g. `shared/api/wish/addWish.ts`).
+2. API wrappers call internal Next.js App Router route handlers via `fetch`.
+3. Route handlers (`app/api/**\/route.ts`) authenticate via `getServerSession(authOptions)` and read/write **Vercel KV**.
+4. Cross-component communication uses the **Event Bus** (`shared/eventBus`).
 4. Cross-component communication uses the **Event Bus** (`shared/eventBus`) — a singleton pub/sub with typed events defined in `shared/eventBus/config/eventTypes.ts`. Example: `wishlist:openCreationModal` fires from the header to open a modal rendered elsewhere.
 
 ### Styling

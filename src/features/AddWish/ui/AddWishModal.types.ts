@@ -4,5 +4,6 @@ export type TAddWishModal = {
     isOpen: boolean
     onClose: () => void
     onSubmit: (itemData: TWishFormData & { id: string }) => void
+    wishlistId: string
     useMock?: boolean
 }

@@ -5,12 +5,13 @@ export type TAddWishResponse<T extends TWishFormData | TProposedWishFormData> = 
 }
 
 export const addWish = async <T extends TWishFormData | TProposedWishFormData>(
-    data: T
+    wishlistId: string,
+    data: T,
 ): Promise<TAddWishResponse<T>> => {
-    const res = await fetch("/api/wishlist", {
+    const res = await fetch("/api/wish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, wishlistId }),
     })
 
     if (!res.ok) {

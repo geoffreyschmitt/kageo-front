@@ -13,12 +13,14 @@ import { mockAddWish } from "./lib/mockAddWish"
 type TUseAddWishModelParams = {
     onSubmit: (item: TWishFormData & { id: string }) => void
     onClose: () => void
+    wishlistId: string
     useMock?: boolean
 }
 
 export const useAddWishModel = ({
     onSubmit,
     onClose,
+    wishlistId,
     useMock = false,
 }: TUseAddWishModelParams) => {
     const [formData, setFormData] = useState<TWishFormData>({
@@ -105,7 +107,9 @@ export const useAddWishModel = ({
 
             setIsSubmitting(true)
             try {
-                const runner = useMock ? mockAddWish : addWishService
+                const runner = useMock
+                    ? (data: TWishFormData) => mockAddWish(data)
+                    : (data: TWishFormData) => addWishService(wishlistId, data)
                 const result = await runner(formData)
                 // ensure id exists in result
                 onSubmit(result)
@@ -118,7 +122,7 @@ export const useAddWishModel = ({
                 setIsSubmitting(false)
             }
         },
-        [formData, onSubmit, onClose, resetForm, useMock, validateForm],
+        [formData, onSubmit, onClose, resetForm, wishlistId, useMock, validateForm],
     )
 
     return {

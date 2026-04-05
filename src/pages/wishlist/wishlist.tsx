@@ -464,6 +464,7 @@ export default function Wishlist({
         isOpen={isAddItemModalOpen}
         onClose={() => setIsAddItemModalOpen(false)}
         onSubmit={handleAddWish}
+        wishlistId={id}
         useMock
       />
 
@@ -492,6 +493,7 @@ export default function Wishlist({
         isOpen={isProposeItemModalOpen}
         onClose={() => setIsProposeItemModalOpen(false)}
         onSubmit={handleProposeWish}
+        wishlistId={id}
       />
 
       {editingWish && (

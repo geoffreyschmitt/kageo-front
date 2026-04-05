@@ -71,9 +71,9 @@ export const useEditWishlistModel = ({
 
             setIsSubmitting(true)
             try {
+                if (!wishlistId) throw new Error('Missing wishlist ID')
+                const dataWithId = { ...formData, id: wishlistId }
                 const runner = useMock ? mockUpdateWishlist : updateWishlist
-                // Include the ID when calling the service
-                const dataWithId = wishlistId ? { ...formData, id: wishlistId } : formData
                 const result = await runner(dataWithId)
                 onSubmit(result)
                 resetForm()

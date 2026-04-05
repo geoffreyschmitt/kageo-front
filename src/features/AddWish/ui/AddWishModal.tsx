@@ -19,6 +19,7 @@ export const AddWishModal = ({
     isOpen,
     onClose,
     onSubmit,
+    wishlistId,
     useMock = false,
 }: TAddWishModal) => {
     const {
@@ -31,6 +32,7 @@ export const AddWishModal = ({
     } = useAddWishModel({
         onSubmit,
         onClose,
+        wishlistId,
         useMock,
     });
 

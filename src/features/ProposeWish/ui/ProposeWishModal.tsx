@@ -12,9 +12,9 @@ import {useProposeWishForm} from "../model"
 import styles from "./ProposeWishModal.module.css"
 import type {TProposeWishModal} from "./ProposeWishModal.types"
 
-export const ProposeWishModal = ({isOpen, onClose, onSubmit}: TProposeWishModal) => {
+export const ProposeWishModal = ({isOpen, onClose, onSubmit, wishlistId, useMock = false}: TProposeWishModal) => {
     const {formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit} =
-        useProposeWishForm({onSubmit, onClose})
+        useProposeWishForm({onSubmit, onClose, wishlistId, useMock})
 
     const handleSelectChange =
         (field: keyof TProposedWishFormData) =>

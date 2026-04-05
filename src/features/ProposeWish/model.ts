@@ -13,12 +13,14 @@ import { mockProposeWish } from "./lib/mockProposeWish"
 type TUseProposeWishFormParams = {
     onSubmit: (item: TProposedWishFormData & { id: string }) => void
     onClose: () => void
+    wishlistId: string
     useMock?: boolean
 }
 
 export const useProposeWishForm = ({
    onSubmit,
    onClose,
+   wishlistId,
    useMock = false,
 }: TUseProposeWishFormParams) => {
     const [formData, setFormData] = useState<TProposedWishFormData>({
@@ -102,7 +104,9 @@ export const useProposeWishForm = ({
         if (!validateForm()) return
         setIsSubmitting(true)
         try {
-            const runner = useMock ? mockProposeWish : addWishService
+            const runner = useMock
+                ? (data: TProposedWishFormData) => mockProposeWish(data)
+                : (data: TProposedWishFormData) => addWishService(wishlistId, data)
             const result = await runner(formData)
 
             await onSubmit(result)
