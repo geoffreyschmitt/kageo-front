@@ -1,160 +1,22 @@
-.page {
-  display: grid;
-  grid-template-rows: var(--spacing-300) 1fr var(--spacing-300);
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh;
-  padding: var(--spacing-1000);
-  gap: var(--spacing-800);
-  font-family: var(--font-geist-sans);
-}
+/* ============================================
+   WISHLISTS PAGE — Garden Party
+   ============================================ */
 
 .pageLayout {
-  max-width: 1200px; /* Equivalent to max-w-6xl */
-  margin-left: auto;
-  margin-right: auto; /* Equivalent to mx-auto */
-  padding: var(--spacing-300);
+    background: #f7f4ef;
+    min-height: 100vh;
+    padding: 48px 32px 80px;
+    max-width: 1300px;
+    margin: 0 auto;
+    box-sizing: content-box;
 }
 
-@media (min-width: 768px) {
-  .pageLayout {
-    padding: var(--spacing-400);
-  }
+.filterContainer {
+    margin-bottom: 28px;
 }
 
-.main {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-400);
-  grid-row-start: 2;
-}
-
-.main ol {
-  font-family: var(--font-geist-mono);
-  padding-left: 0;
-  margin: 0;
-  font-size: var(--font-size-lg);
-  line-height: var(--spacing-300);
-  letter-spacing: -0.01em;
-  list-style-position: inside;
-}
-
-.main li:not(:last-of-type) {
-  margin-bottom: var(--spacing-100);
-}
-
-.main code {
-  font-family: inherit;
-  background: var(--color-background-tertiary);
-  padding: 2px var(--spacing-100);
-  border-radius: var(--border-radius-sm);
-  font-weight: var(--font-weight-semibold);
-}
-
-.ctas {
-  display: flex;
-  gap: var(--spacing-200);
-}
-
-.ctas a {
-  appearance: none;
-  border-radius: var(--border-radius-full);
-  height: var(--spacing-600);
-  padding: 0 var(--spacing-300);
-  border: none;
-  border: var(--border-width-thin) solid transparent;
-  transition: var(--transition-fast) var(--easing-standard), var(--transition-fast) var(--easing-standard), var(--transition-fast) var(--easing-standard);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-xl);
-  line-height: var(--spacing-300);
-  font-weight: var(--font-weight-medium);
-}
-
-a.primary {
-  background: var(--color-foreground);
-  color: var(--color-background);
-  gap: var(--spacing-100);
-}
-
-a.secondary {
-  border-color: var(--color-border);
-  min-width: 158px;
-}
-
-.footer {
-  grid-row-start: 3;
-  display: flex;
-  gap: var(--spacing-300);
-}
-
-.footer a {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-100);
-}
-
-.footer img {
-  flex-shrink: 0;
-}
-
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--color-text-primary);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--color-background-secondary);
-    border-color: transparent;
-  }
-
-  .footer a:hover {
-    text-decoration: underline;
-    text-underline-offset: var(--spacing-100);
-  }
-}
-
-@media (max-width: 600px) {
-  .page {
-    padding: var(--spacing-400);
-    padding-bottom: var(--spacing-1000);
-  }
-
-  .main {
-    align-items: center;
-  }
-
-  .main ol {
-    text-align: center;
-  }
-
-  .ctas {
-    flex-direction: column;
-  }
-
-  .ctas a {
-    font-size: var(--font-size-lg);
-    height: var(--spacing-500);
-    padding: 0 var(--spacing-200);
-  }
-
-  a.secondary {
-    min-width: auto;
-  }
-
-  .footer {
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
+@media (max-width: 768px) {
+    .pageLayout {
+        padding: 28px 16px 60px;
+    }
 }

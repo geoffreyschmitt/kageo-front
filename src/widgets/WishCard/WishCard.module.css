@@ -1,103 +1,163 @@
+/* ============================================
+   WISH CARD — Garden Party (light, warm, airy)
+   ============================================ */
+
+/* Contrast ratios verified against WCAG AA (4.5:1 normal text, 3:1 large/UI)       */
+/* --wc-text-2  #4e443c on white      9.2:1  ✓ AAA                                  */
+/* --wc-text-3  #6b6258 on white      5.4:1  ✓ AA                                   */
+/* --wc-sage    #3f6845 on white      6.4:1  ✓ AA  |  on #eaf2eb  5.7:1  ✓ AA      */
+/* --wc-wanted  #1a5491 on #edf3fb   7.4:1  ✓ AA                                   */
+/* --wc-purch   #3f6845 on #eaf2eb   5.7:1  ✓ AA                                   */
+/* --wc-reserv  #4e3278 on #f0ebf8   7.8:1  ✓ AA                                   */
+/* --wc-propos  #6e3c0c on #fdf0e6   7.8:1  ✓ AA                                   */
+/* --wc-high    #8a2318 on #fdecea   7.2:1  ✓ AA                                   */
+
+:root {
+    --wc-surface:      #ffffff;
+    --wc-surface-2:    #f7f4ef;
+    --wc-border:       #d6cec4;
+    --wc-border-hover: #b8b0a8;
+    --wc-text:         #1e1a16;
+    --wc-text-2:       #4e443c;   /* darkened — 9.2:1 on white */
+    --wc-text-3:       #6b6258;   /* darkened — 5.4:1 on white */
+    --wc-sage:         #3f6845;   /* darkened — 6.4:1 on white */
+    --wc-sage-light:   #eaf2eb;
+    --wc-wanted:       #1a5491;   /* darkened — 7.4:1 on wanted-bg */
+    --wc-wanted-bg:    #edf3fb;
+    --wc-purch:        #3f6845;   /* darkened — 5.7:1 on purch-bg */
+    --wc-purch-bg:     #eaf2eb;
+    --wc-reserv:       #4e3278;   /* darkened — 7.8:1 on reserv-bg */
+    --wc-reserv-bg:    #f0ebf8;
+    --wc-propos:       #6e3c0c;   /* darkened — 7.8:1 on propos-bg */
+    --wc-propos-bg:    #fdf0e6;
+    --wc-high:         #8a2318;   /* darkened — 7.2:1 on high-bg */
+    --wc-high-bg:      #fdecea;
+    --wc-medium-bg:    #fdf0e6;
+    --wc-low-bg:       #eaf2eb;
+    --wc-shadow:       0 2px 12px rgba(60, 45, 25, 0.08);
+    --wc-shadow-hover: 0 8px 28px rgba(60, 45, 25, 0.13);
+    --wc-font-serif:   var(--font-cormorant, Georgia, serif);
+    --wc-font-sans:    var(--font-dm-sans, system-ui, sans-serif);
+    --wc-font-mono:    var(--font-mono, monospace);
+}
+
+/* ── Card shell ───────────────────────────── */
+
 .wish-card {
-    background: var(--color-background);
-    border-radius: var(--border-radius-xl);
-    box-shadow: var(--shadow-card);
+    background: var(--wc-surface);
+    border: 1px solid var(--wc-border);
+    border-radius: 16px;
     overflow: hidden;
-    transition: var(--transition-transform-fast), var(--transition-fast) var(--easing-standard);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 }
 
 .wish-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-card-hover);
+    border-color: var(--wc-border-hover);
+    box-shadow: var(--wc-shadow-hover);
+    transform: translateY(-3px);
 }
 
 .wish-card--purchased {
-    opacity: 0.7;
-    background: var(--color-background-secondary);
+    opacity: 0.72;
 }
+
+/* ── Image container ──────────────────────── */
 
 .wish-card__imageContainer {
     position: relative;
     width: 100%;
-    height: 200px;
+    height: 220px;
     overflow: hidden;
+    flex-shrink: 0;
+    background: var(--wc-surface-2);
 }
 
 .wish-card__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: var(--transition-transform-base);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block;
 }
 
 .wish-card:hover .wish-card__image {
     transform: scale(1.05);
 }
 
+/* ── Priority badge ───────────────────────── */
+
 .wish-card__priority {
     position: absolute;
-    top: var(--spacing-100);
-    left: var(--spacing-100);
-    padding: var(--spacing-100) var(--spacing-100);
-    border-radius: var(--border-radius-xl);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-bold);
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    font-family: var(--wc-font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    padding: 4px 10px 5px;
+    border-radius: 100px;
 }
 
 .wish-card__priority--high {
-    background: var(--color-priority-high);
-    color: var(--color-text-inverse);
+    background: var(--wc-high-bg);
+    color: var(--wc-high);
 }
 
 .wish-card__priority--medium {
-    background: var(--color-priority-medium);
-    color: var(--color-text-inverse);
+    background: var(--wc-medium-bg);
+    color: var(--wc-propos);
 }
 
 .wish-card__priority--low {
-    background: var(--color-priority-low);
-    color: var(--color-text-inverse);
+    background: var(--wc-low-bg);
+    color: var(--wc-sage);
 }
+
+/* ── Status badge ─────────────────────────── */
 
 .wish-card__status {
     position: absolute;
-    top: var(--spacing-100);
-    right: var(--spacing-100);
-    padding: var(--spacing-100) var(--spacing-100);
-    border-radius: var(--border-radius-xl);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-bold);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    font-family: var(--wc-font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 4px 10px 5px;
+    border-radius: 100px;
 }
 
 .wish-card__status--wanted {
-    background: var(--color-status-wanted);
-    color: var(--color-text-inverse);
+    background: var(--wc-wanted-bg);
+    color: var(--wc-wanted);
 }
 
 .wish-card__status--purchased {
-    background: var(--color-status-purchased);
-    color: var(--color-text-inverse);
+    background: var(--wc-purch-bg);
+    color: var(--wc-purch);
 }
 
 .wish-card__status--reserved {
-    background: var(--color-status-reserved);
-    color: var(--color-text-inverse);
+    background: var(--wc-reserv-bg);
+    color: var(--wc-reserv);
 }
 
 .wish-card__status--proposed {
-    background: var(--color-status-proposed);
-    color: var(--color-text-inverse);
+    background: var(--wc-propos-bg);
+    color: var(--wc-propos);
 }
 
+/* ── Content ──────────────────────────────── */
+
 .wish-card__content {
-    padding: var(--spacing-200);
+    padding: 18px 20px 16px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -107,147 +167,187 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: var(--spacing-100);
-    gap: var(--spacing-200);
+    gap: 10px;
+    margin-bottom: 8px;
 }
 
 .wish-card__title {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-primary);
+    font-family: var(--wc-font-serif);
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--wc-text);
     margin: 0;
-    line-height: var(--line-height-normal);
+    line-height: 1.2;
     flex: 1;
+    letter-spacing: 0.1px;
 }
 
 .wish-card__price {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-success-hover);
+    font-family: var(--wc-font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--wc-sage);
     white-space: nowrap;
+    background: var(--wc-sage-light);
+    padding: 3px 8px;
+    border-radius: 6px;
 }
 
 .wish-card__description {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
-    line-height: var(--line-height-relaxed);
-    margin: 0 0 var(--spacing-200) 0;
+    font-family: var(--wc-font-sans);
+    font-size: 13px;
+    color: var(--wc-text-2);
+    line-height: 1.55;
+    margin: 0 0 14px;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     flex: 1;
 }
 
+/* ── Notes ────────────────────────────────── */
+
 .wish-card__notes {
-    background: var(--color-background-tertiary);
-    padding: var(--spacing-100) var(--spacing-200);
-    border-radius: var(--border-radius-md);
-    margin-bottom: var(--spacing-200);
+    background: #fffbf5;
+    border: 1px solid #f0e8d8;
+    border-left: 3px solid #e8c87a;
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 12px;
 }
 
 .wish-card__notesLabel {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    color: #6b5210;  /* 7.3:1 on cream bg — was #a08040, only 3.7:1 */
+    display: block;
+    margin-bottom: 3px;
 }
 
 .wish-card__notesText {
-    font-size: var(--font-size-md);
-    color: var(--color-text-secondary);
-    margin: var(--spacing-100) 0 0 0;
-    line-height: var(--line-height-relaxed);
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    color: var(--wc-text-2);
+    margin: 0;
+    line-height: 1.5;
 }
 
+/* ── Meta info ────────────────────────────── */
+
 .wish-card__meta {
-    margin-bottom: var(--spacing-200);
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
 }
 
 .wish-card__date {
-    font-size: var(--font-size-base);
-    color: var(--color-text-tertiary);
-    font-weight: var(--font-weight-medium);
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    color: var(--wc-text-3);
 }
 
 .wish-card__reservedBy {
-    font-size: var(--font-size-base);
-    color: var(--color-status-reserved);
-    font-weight: var(--font-weight-medium);
-    margin-left: var(--spacing-100);
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    color: var(--wc-reserv);
+    font-weight: 500;
+    background: var(--wc-reserv-bg);
+    padding: 2px 8px;
+    border-radius: 100px;
 }
 
 .wish-card__purchasedBy {
-    font-size: var(--font-size-base);
-    color: var(--color-status-purchased);
-    font-weight: var(--font-weight-medium);
-    margin-left: var(--spacing-100);
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    color: var(--wc-purch);
+    font-weight: 500;
+    background: var(--wc-purch-bg);
+    padding: 2px 8px;
+    border-radius: 100px;
 }
+
+/* ── Actions ──────────────────────────────── */
 
 .wish-card__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-100);
+    gap: 6px;
     margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid #f0ebe4;
 }
 
 .wish-card__button {
-    padding: var(--spacing-100) var(--spacing-200);
-    border-radius: var(--border-radius-md);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    border: none;
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--wc-border);
     cursor: pointer;
-    transition: var(--transition-all-fast);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    transition: all 0.2s ease;
     text-decoration: none;
     display: inline-block;
     text-align: center;
+    background: var(--wc-surface);
+    color: var(--wc-text-2);
 }
 
 .wish-card__button--primary {
-    background: var(--color-primary-main);
-    color: var(--color-text-inverse);
+    background: var(--wc-sage);
+    border-color: var(--wc-sage);
+    color: #fff;
 }
 
 .wish-card__button--primary:hover {
-    background: var(--color-primary-hover);
+    background: #4a7250;
+    border-color: #4a7250;
+    box-shadow: 0 3px 12px rgba(92, 138, 98, 0.3);
     transform: translateY(-1px);
 }
 
 .wish-card__button--secondary {
-    background: transparent;
-    color: var(--color-text-secondary);
-    border: var(--border-width-thin) solid var(--color-border);
+    background: var(--wc-surface);
+    border-color: var(--wc-border);
+    color: var(--wc-text-2);
 }
 
 .wish-card__button--secondary:hover {
-    background: var(--color-background-secondary);
-    color: var(--color-text-primary);
-    border-color: var(--color-border-hover);
+    background: var(--wc-surface-2);
+    border-color: var(--wc-border-hover);
+    color: var(--wc-text);
 }
 
 .wish-card__button--danger {
-    background: var(--color-error-main);
-    color: var(--color-text-inverse);
+    background: var(--wc-surface);
+    border-color: rgba(196, 77, 58, 0.3);
+    color: var(--wc-high);
 }
 
 .wish-card__button--danger:hover {
-    background: var(--color-error-hover);
-    transform: translateY(-1px);
+    background: var(--wc-high-bg);
+    border-color: rgba(196, 77, 58, 0.5);
 }
 
 .wish-card__button--success {
-    background: var(--color-success-main);
-    color: var(--color-text-inverse);
+    background: var(--wc-surface);
+    border-color: rgba(92, 138, 98, 0.3);
+    color: var(--wc-sage);
 }
 
 .wish-card__button--success:hover {
-    background: var(--color-success-hover);
-    transform: translateY(-1px);
+    background: var(--wc-sage-light);
+    border-color: rgba(92, 138, 98, 0.5);
 }
+
+/* ── Mobile ───────────────────────────────── */
 
 @media (max-width: 768px) {
     .wish-card__actions {
@@ -256,11 +356,6 @@
 
     .wish-card__button {
         width: 100%;
-    }
-
-    .wish-card__header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-100);
+        text-align: center;
     }
 }

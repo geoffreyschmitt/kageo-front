@@ -1,50 +1,91 @@
+/* ============================================
+   TABS — Garden Party
+   ============================================ */
+
+:root {
+    --tab-font-sans: var(--font-dm-sans, system-ui, sans-serif);
+    --tab-sage:      #3f6845;   /* 6.4:1 on white */
+    --tab-text:      #1e1a16;
+    --tab-text-2:    #4e443c;   /* 9.2:1 on white */
+    --tab-text-3:    #6b6258;   /* 5.4:1 on white */
+    --tab-border:    #d6cec4;
+    --tab-surface:   #ffffff;
+    --tab-sage-bg:   #eaf2eb;
+}
+
 .tabs {
     width: 100%;
 }
 
 .tabs__header {
     display: flex;
-    border-bottom: var(--border-width-medium) solid var(--color-neutral-200);
-    margin-bottom: var(--spacing-300);
+    gap: 6px;
+    margin-bottom: 32px;
+    background: #fff;
+    border: 1px solid var(--tab-border);
+    border-radius: 100px;
+    padding: 5px;
+    width: fit-content;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .tabs__header::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
 }
 
 .tabs__button {
-    padding: var(--spacing-200) var(--spacing-300);
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-secondary);
-    background: none;
+    padding: 9px 22px;
+    font-family: var(--tab-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--tab-text-3);
+    background: transparent;
     border: none;
-    border-bottom: var(--border-width-medium) solid transparent;
+    border-radius: 100px;
     cursor: pointer;
-    transition: var(--transition-all-fast);
+    transition: all 0.2s ease;
     white-space: nowrap;
+    letter-spacing: 0.1px;
 }
 
 .tabs__button:hover {
-    color: var(--color-text-primary);
+    color: var(--tab-sage);
+    background: var(--tab-sage-bg);
 }
 
 .tabs__button--active {
-    color: var(--color-primary-main);
-    border-bottom-color: var(--color-primary-main);
+    background: var(--tab-sage);
+    color: #fff;
+    font-weight: 600;
+}
+
+.tabs__button--active:hover {
+    background: #2e5033;
+    color: #fff;
 }
 
 .tabs__content {
-    padding-top: var(--spacing-200);
+    padding-top: 0;
+    animation: tabIn 0.25s ease both;
 }
 
-@media (max-width: 768px) {
+@keyframes tabIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+    .tabs__header {
+        width: 100%;
+        border-radius: 12px;
+    }
+
     .tabs__button {
-        padding: var(--spacing-200) var(--spacing-200);
-        font-size: var(--font-size-lg);
+        flex: 1;
+        text-align: center;
+        padding: 9px 14px;
     }
 }

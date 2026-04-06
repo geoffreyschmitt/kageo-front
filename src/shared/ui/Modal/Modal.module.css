@@ -1,3 +1,19 @@
+/* ============================================
+   MODAL SHELL — Garden Party
+   ============================================ */
+
+:root {
+    --modal-font-serif: var(--font-cormorant, Georgia, serif);
+    --modal-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+    --modal-text:       #1e1a16;
+    --modal-text-2:     #4e443c;   /* 9.2:1 on white ✓ */
+    --modal-text-3:     #6b6258;   /* 5.4:1 on white ✓ */
+    --modal-border:     #ece7de;
+    --modal-surface:    #ffffff;
+    --modal-surface-2:  #f7f4ef;
+    --modal-shadow:     0 24px 64px rgba(30, 22, 10, 0.18), 0 4px 16px rgba(30, 22, 10, 0.08);
+}
+
 .modal {
     position: fixed;
     top: 0;
@@ -8,7 +24,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-300);
+    padding: 24px;
+    animation: overlayIn 0.2s ease both;
+}
+
+@keyframes overlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 .modal__overlay {
@@ -17,30 +39,42 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(30, 22, 10, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .modal__container {
     position: relative;
-    background: var(--color-background);
-    border-radius: var(--border-radius-2xl);
-    box-shadow: var(--shadow-modal);
+    background: var(--modal-surface);
+    border: 1px solid var(--modal-border);
+    border-radius: 20px;
+    box-shadow: var(--modal-shadow);
     width: 100%;
     max-width: 700px;
     max-height: 90vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    animation: containerIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.04s;
 }
+
+@keyframes containerIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Header ───────────────────────────────── */
 
 .modal__header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-300) var(--spacing-300) 0 var(--spacing-300);
-    border-bottom: var(--border-width-thin) solid var(--color-neutral-200);
-    margin-bottom: var(--spacing-300);
+    align-items: flex-start;
+    padding: 28px 28px 0;
+    border-bottom: 1px solid var(--modal-border);
+    padding-bottom: 18px;
+    margin-bottom: 0;
 }
 
 .modal__headerContent {
@@ -48,38 +82,51 @@
 }
 
 .modal__title {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-primary);
+    font-family: var(--modal-font-serif);
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--modal-text);
     margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.2px;
 }
+
 .modal__subtitle {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
-    margin: 0;
-    font-style: italic;
+    font-family: var(--modal-font-sans);
+    font-size: 13px;
+    color: var(--modal-text-3);
+    margin: 4px 0 0;
+    font-style: normal;
+    line-height: 1.5;
 }
 
 .modal__closeButton {
-    background: none;
-    border: none;
-    font-size: var(--font-size-3xl);
-    color: var(--color-text-secondary);
+    background: var(--modal-surface-2);
+    border: 1px solid var(--modal-border);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--modal-text-3);
     cursor: pointer;
-    padding: var(--spacing-100);
-    border-radius: var(--border-radius-sm);
-    transition: var(--transition-all-fast);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
     line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
 }
 
 .modal__closeButton:hover {
-    background: var(--color-background-tertiary);
-    color: var(--color-text-primary);
+    background: var(--modal-border);
+    color: var(--modal-text);
+    border-color: #c5bdb3;
 }
 
 @media (max-width: 768px) {
     .modal {
-        padding: var(--spacing-200);
+        padding: 16px;
     }
 
     .modal__container {
@@ -87,16 +134,18 @@
     }
 
     .modal__header {
-        padding: var(--spacing-300) var(--spacing-300) 0 var(--spacing-300);
+        padding: 20px 20px 0;
+        padding-bottom: 14px;
+    }
+
+    .modal__title {
+        font-size: 24px;
     }
 }
 
 @media (max-width: 480px) {
     .modal__header {
-        padding: var(--spacing-200) var(--spacing-200) 0 var(--spacing-200);
-    }
-
-    .modal__title {
-        font-size: var(--font-size-3xl);
+        padding: 16px 16px 0;
+        padding-bottom: 12px;
     }
 }

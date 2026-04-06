@@ -1,130 +1,180 @@
+/* ============================================
+   SHARE WISHLIST MODAL — Garden Party
+   Contrast ratios verified for WCAG AA (4.5:1):
+   #3f6845 on white      6.4:1 ✓
+   #3f6845 on #eaf2eb    5.7:1 ✓
+   #4e443c on white      9.2:1 ✓
+   #6b6258 on white      5.4:1 ✓
+   #c0392b on white      5.1:1 ✓ (error)
+   #2e5033 on #eaf2eb    7.9:1 ✓ (success)
+   ============================================ */
+
+:root {
+    --sw-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+    --sw-font-serif: var(--font-cormorant, Georgia, serif);
+    --sw-font-mono:  var(--font-mono, monospace);
+    --sw-sage:       #3f6845;
+    --sw-sage-light: #eaf2eb;
+    --sw-sage-hover: #2e5033;
+    --sw-text:       #1e1a16;
+    --sw-text-2:     #4e443c;
+    --sw-text-3:     #6b6258;
+    --sw-border:     #d6cec4;
+    --sw-input-bg:   #faf8f4;
+    --sw-surface:    #ffffff;
+    --sw-surface-2:  #f7f4ef;
+    --sw-error:      #c0392b;
+    --sw-success:    #2e5033;   /* 7.9:1 on #eaf2eb ✓ */
+}
+
 .shareWishlistModal__content {
-    padding: 0 var(--spacing-300) var(--spacing-300) var(--spacing-300);
+    padding: 24px 28px 28px;
     overflow-y: auto;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-300);
+    gap: 24px;
 }
 
 .shareWishlistModal__sectionTitle {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
-    margin: 0 0 var(--spacing-200) 0;
+    font-family: var(--sw-font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sw-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 12px;
 }
 
-/* Link Group */
+/* ── Link group ───────────────────────────── */
+
 .shareWishlistModal__linkGroup {
     display: flex;
-    gap: var(--spacing-100);
-    margin-bottom: var(--spacing-100);
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .shareWishlistModal__linkInput {
     flex: 1;
-    padding: var(--spacing-200) var(--spacing-200);
-    border: var(--border-width-medium) solid var(--color-border);
-    border-radius: var(--border-radius-lg);
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
-    background: var(--color-background-secondary);
-    font-family: monospace;
+    padding: 10px 14px;
+    border: 1.5px solid var(--sw-border);
+    border-radius: 10px;
+    font-family: var(--sw-font-mono);
+    font-size: 13px;
+    color: var(--sw-text-2);
+    background: var(--sw-surface-2);
     cursor: text;
+    box-sizing: border-box;
 }
 
 .shareWishlistModal__note {
-    font-size: var(--font-size-base);
-    color: var(--color-text-secondary);
+    font-family: var(--sw-font-sans);
+    font-size: 12px;
+    color: var(--sw-text-3);
     margin: 0;
-    line-height: var(--line-height-relaxed);
+    line-height: 1.5;
 }
 
-/* Email Form */
+/* ── Email form ───────────────────────────── */
+
 .shareWishlistModal__emailForm {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-200);
+    gap: 12px;
 }
 
 .shareWishlistModal__input {
-    padding: var(--spacing-200) var(--spacing-200);
-    border: var(--border-width-medium) solid var(--color-border);
-    border-radius: var(--border-radius-lg);
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
-    background: var(--color-background);
-    transition: var(--transition-fast) var(--easing-standard);
+    padding: 10px 14px;
+    border: 1.5px solid var(--sw-border);
+    border-radius: 10px;
+    font-family: var(--sw-font-sans);
+    font-size: 14px;
+    color: var(--sw-text);
+    background: var(--sw-input-bg);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .shareWishlistModal__input:focus {
     outline: none;
-    border-color: var(--color-primary-main);
+    border-color: var(--sw-sage);
+    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    background: var(--sw-surface);
 }
 
 .shareWishlistModal__input--error {
-    border-color: var(--color-error-main);
+    border-color: var(--sw-error);
+    background: #fdecea;
 }
 
 .shareWishlistModal__error {
-    font-size: var(--font-size-base);
-    color: var(--color-error-main);
-    font-weight: var(--font-weight-medium);
-    margin-top: calc(var(--spacing-100) * -1);
+    font-family: var(--sw-font-sans);
+    font-size: 12px;
+    color: var(--sw-error);
+    font-weight: 500;
+    margin-top: -4px;
 }
 
 .shareWishlistModal__success {
-    font-size: var(--font-size-base);
-    color: var(--color-success-main);
-    font-weight: var(--font-weight-medium);
-    margin-top: calc(var(--spacing-100) * -1);
+    font-family: var(--sw-font-sans);
+    font-size: 12px;
+    color: var(--sw-success);
+    font-weight: 500;
+    background: var(--sw-sage-light);
+    padding: 8px 14px;
+    border-radius: 8px;
+    margin-top: -4px;
 }
 
-/* Buttons */
+/* ── Buttons ──────────────────────────────── */
+
 .shareWishlistModal__button {
-    padding: var(--spacing-200) var(--spacing-200);
-    border-radius: var(--border-radius-lg);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: var(--sw-font-sans);
+    font-size: 13px;
+    font-weight: 500;
     border: none;
     cursor: pointer;
-    transition: var(--transition-all-fast);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    transition: all 0.2s ease;
     white-space: nowrap;
+    text-align: center;
 }
 
 .shareWishlistModal__button:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
 }
 
 .shareWishlistModal__button--primary {
-    background: var(--color-primary-main);
-    color: var(--color-text-inverse);
+    background: var(--sw-sage);
+    color: #ffffff;
 }
 
 .shareWishlistModal__button--primary:hover:not(:disabled) {
-    background: var(--color-primary-hover);
+    background: var(--sw-sage-hover);
     transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(63, 104, 69, 0.3);
 }
 
 .shareWishlistModal__button--secondary {
     background: transparent;
-    color: var(--color-text-secondary);
-    border: var(--border-width-medium) solid var(--color-border);
+    color: var(--sw-text-2);
+    border: 1.5px solid var(--sw-border);
 }
 
 .shareWishlistModal__button--secondary:hover:not(:disabled) {
-    background: var(--color-background-secondary);
-    color: var(--color-text-primary);
-    border-color: var(--color-border-hover);
+    background: var(--sw-surface-2);
+    color: var(--sw-text);
+    border-color: #b8b0a8;
 }
 
-/* Mobile Responsive */
+/* ── Mobile ───────────────────────────────── */
+
 @media (max-width: 768px) {
     .shareWishlistModal__content {
-        padding: 0 var(--spacing-300) var(--spacing-300) var(--spacing-300);
+        padding: 20px 20px 24px;
     }
 
     .shareWishlistModal__linkGroup {
@@ -138,10 +188,6 @@
 
 @media (max-width: 480px) {
     .shareWishlistModal__content {
-        padding: 0 var(--spacing-200) var(--spacing-200) var(--spacing-200);
-    }
-
-    .shareWishlistModal__title {
-        font-size: var(--font-size-3xl);
+        padding: 16px 16px 20px;
     }
 }

@@ -1,18 +1,36 @@
+/* ============================================
+   OWNER FILTER — Garden Party
+   ============================================ */
+
+:root {
+    --of-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+    --of-sage:       #3f6845;   /* 6.4:1 on white ✓ */
+    --of-sage-bg:    #eaf2eb;
+    --of-text:       #1e1a16;
+    --of-text-2:     #4e443c;
+    --of-text-3:     #6b6258;
+    --of-border:     #d6cec4;
+    --of-surface:    #ffffff;
+    --of-surface-2:  #f7f4ef;
+    --of-shadow:     0 4px 20px rgba(60, 45, 25, 0.1);
+}
+
 .ownerFilterSelect {
     position: relative;
     width: 100%;
-    max-width: 300px;
-    margin-bottom: var(--spacing-300); /* Add some spacing */
+    max-width: 280px;
+    margin-bottom: 0;
 }
 
 .ownerFilterSelect__label {
     display: block;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-100);
+    font-family: var(--of-font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    color: var(--of-text-3);
+    margin-bottom: 7px;
 }
 
 .ownerFilterSelect__inputContainer {
@@ -23,52 +41,70 @@
 
 .ownerFilterSelect__input {
     width: 100%;
-    padding: var(--spacing-200) var(--spacing-200);
-    padding-right: 30px; /* Space for clear button */
-    border: var(--border-width-medium) solid var(--color-border);
-    border-radius: var(--border-radius-lg);
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
-    background: var(--color-background);
-    transition: var(--transition-fast) var(--easing-standard), var(--transition-fast) var(--easing-standard);
+    padding: 10px 36px 10px 14px;
+    border: 1.5px solid var(--of-border);
+    border-radius: 100px;
+    font-family: var(--of-font-sans);
+    font-size: 13px;
+    color: var(--of-text);
+    background: var(--of-surface);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.ownerFilterSelect__input::placeholder {
+    color: var(--of-text-3);
 }
 
 .ownerFilterSelect__input:focus {
     outline: none;
-    border-color: var(--color-primary-main);
-    box-shadow: 0 0 0 3px var(--color-primary-light);
+    border-color: var(--of-sage);
+    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
 }
 
 .ownerFilterSelect__clearButton {
     position: absolute;
-    right: var(--spacing-100);
+    right: 12px;
     background: none;
     border: none;
-    font-size: var(--font-size-2xl);
-    color: var(--color-text-tertiary);
-    cursor: pointer;
+    font-size: 18px;
     line-height: 1;
+    color: var(--of-text-3);
+    cursor: pointer;
     padding: 0;
-    transition: var(--transition-fast) var(--easing-standard);
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
 }
 
 .ownerFilterSelect__clearButton:hover {
-    color: var(--color-text-secondary);
+    color: var(--of-text);
 }
+
+/* ── Dropdown ─────────────────────────────── */
 
 .ownerFilterSelect__dropdown {
     position: absolute;
-    top: 100%; /* Position below the input */
+    top: calc(100% + 6px);
     left: 0;
     right: 0;
-    background: var(--color-background);
-    border: var(--border-width-thin) solid var(--color-neutral-200);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
+    background: var(--of-surface);
+    border: 1px solid var(--of-border);
+    border-radius: 14px;
+    box-shadow: var(--of-shadow);
     max-height: 200px;
     overflow-y: auto;
-    z-index: 500; /* Ensure it's above other content */
-    margin-top: var(--spacing-100);
+    z-index: 500;
+    padding: 6px;
+    animation: dropIn 0.15s ease both;
+}
+
+@keyframes dropIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .ownerFilterSelect__list {
@@ -84,33 +120,41 @@
 .ownerFilterSelect__optionButton {
     width: 100%;
     text-align: left;
-    padding: var(--spacing-200) var(--spacing-200);
+    padding: 9px 12px;
     background: none;
     border: none;
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
+    border-radius: 8px;
+    font-family: var(--of-font-sans);
+    font-size: 13px;
+    color: var(--of-text-2);
     cursor: pointer;
-    transition: var(--transition-fast) var(--easing-standard);
+    transition: background 0.15s, color 0.15s;
 }
 
 .ownerFilterSelect__optionButton:hover {
-    background-color: var(--color-background-tertiary);
+    background: var(--of-surface-2);
+    color: var(--of-text);
 }
 
 .ownerFilterSelect__optionButton--selected {
-    background-color: var(--color-primary-light);
-    color: var(--color-primary-hover);
-    font-weight: var(--font-weight-semibold);
+    background: var(--of-sage-bg);
+    color: var(--of-sage);
+    font-weight: 600;
+}
+
+.ownerFilterSelect__optionButton--selected:hover {
+    background: var(--of-sage-bg);
+    color: var(--of-sage);
 }
 
 .ownerFilterSelect__noResults {
-    padding: var(--spacing-200);
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
+    padding: 12px;
+    font-family: var(--of-font-sans);
+    font-size: 13px;
+    color: var(--of-text-3);
     text-align: center;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .ownerFilterSelect {
         max-width: 100%;

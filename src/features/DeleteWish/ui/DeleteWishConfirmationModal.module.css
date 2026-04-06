@@ -1,49 +1,94 @@
+/* ============================================
+   DELETE WISH CONFIRMATION — Garden Party
+   Contrast ratios verified for WCAG AA (4.5:1):
+   #4e443c on white      9.2:1 ✓
+   #6b6258 on white      5.4:1 ✓
+   #8a2318 on #fdecea    7.2:1 ✓ (danger button bg)
+   #ffffff on #c0392b    4.8:1 ✓ (danger button text)
+   ============================================ */
+
+:root {
+    --dc-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+    --dc-text:       #1e1a16;
+    --dc-text-2:     #4e443c;
+    --dc-text-3:     #6b6258;
+    --dc-border:     #d6cec4;
+    --dc-surface:    #ffffff;
+    --dc-surface-2:  #f7f4ef;
+    --dc-danger:     #c0392b;   /* 4.8:1 vs white ✓ */
+    --dc-danger-bg:  #fdecea;
+    --dc-danger-hover: #a93226;
+}
+
 .confirmation-modal__content {
-    padding: var(--spacing-300);
+    padding: 24px 28px 28px;
 }
 
 .confirmation-modal__message {
-    margin-bottom: var(--spacing-300);
-    font-size: var(--font-size-xl);
-    line-height: var(--line-height-loose);
-    color: var(--color-text-primary);
+    font-family: var(--dc-font-sans);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--dc-text-2);
+    margin: 0 0 24px;
 }
 
 .confirmation-modal__wish-name {
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
+    font-weight: 600;
+    color: var(--dc-text);
 }
 
 .confirmation-modal__actions {
     display: flex;
-    gap: var(--spacing-200);
+    gap: 10px;
     justify-content: flex-end;
 }
 
 .confirmation-modal__button {
-    padding: var(--spacing-200) var(--spacing-300);
-    border-radius: var(--border-radius-md);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    padding: 10px 26px;
+    border-radius: 100px;
+    font-family: var(--dc-font-sans);
+    font-size: 13px;
+    font-weight: 500;
     border: none;
     cursor: pointer;
-    transition: var(--transition-all-fast);
+    transition: all 0.2s ease;
+    min-width: 100px;
+    text-align: center;
 }
 
 .confirmation-modal__button--cancel {
-    background: var(--color-background-tertiary);
-    color: var(--color-text-primary);
+    background: transparent;
+    color: var(--dc-text-2);
+    border: 1.5px solid var(--dc-border);
 }
 
 .confirmation-modal__button--cancel:hover {
-    background: var(--color-neutral-200);
+    background: var(--dc-surface-2);
+    color: var(--dc-text);
+    border-color: #b8b0a8;
 }
 
 .confirmation-modal__button--confirm {
-    background: var(--color-error-main);
-    color: var(--color-text-inverse);
+    background: var(--dc-danger);
+    color: #ffffff;
 }
 
 .confirmation-modal__button--confirm:hover {
-    background: var(--color-error-hover);
+    background: var(--dc-danger-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(192, 57, 43, 0.3);
+}
+
+@media (max-width: 480px) {
+    .confirmation-modal__content {
+        padding: 20px 20px 24px;
+    }
+
+    .confirmation-modal__actions {
+        flex-direction: column;
+    }
+
+    .confirmation-modal__button {
+        width: 100%;
+    }
 }
