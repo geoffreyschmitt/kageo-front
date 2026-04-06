@@ -1,6 +1,7 @@
 import {useCallback, useState} from "react"
 
 import {createWishlist} from "@/shared/api/wishlist/createWishlist";
+import {eventBus} from "@/shared/eventBus";
 
 import type {TWishlistFormData, TWishlistValidationErrors} from "@/entities/wishlist"
 import {validateWishlistForm} from '@/entities/wishlist/lib/validateWishlistForm';
@@ -10,12 +11,14 @@ import {mockCreateWishlist} from "./lib/mockCreateWishlist"
 
 type TUseCreateWishlistModel = {
     onSubmit: (wishlistData: TWishlistFormData & { id: string; isPending?: boolean }) => void
+    onError?: (tempId: string) => void
     onClose: () => void
     useMock?: boolean
 }
 
 export const useCreateWishlistModel = ({
     onSubmit,
+    onError,
     onClose,
     useMock = false,
 }: TUseCreateWishlistModel) => {
@@ -83,8 +86,8 @@ export const useCreateWishlistModel = ({
                 onClose()
             } catch (err) {
                 console.error("Erreur lors de la création de la wishlist :", err)
-                // On error, we could remove the optimistic update or mark it as error
-                // For now, we'll let the page handler deal with it
+                onError?.(tempId)
+                eventBus.emit('ui:toast', { message: 'Could not create wishlist — please try again', type: 'error' })
             } finally {
                 setIsSubmitting(false)
             }

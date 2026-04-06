@@ -9,7 +9,7 @@ import {TCreateWishlistModal} from '@/features/CreateWishlist/ui/CreateWishlistM
 import {useCreateWishlistModel} from '@/features/CreateWishlist';
 import {eventBus} from '@/shared/eventBus/lib/eventBus';
 
-export const CreateWishlistModal = ({onClose, onSubmit}: TCreateWishlistModal) => {
+export const CreateWishlistModal = ({onClose, onSubmit, onError}: TCreateWishlistModal) => {
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
@@ -38,6 +38,7 @@ export const CreateWishlistModal = ({onClose, onSubmit}: TCreateWishlistModal) =
     handleSubmit,
   } = useCreateWishlistModel({
     onSubmit,
+    onError,
     onClose: handleClose,
     useMock: true,
   })

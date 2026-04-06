@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useState} from 'react'
 
 import {updateWishlist} from '@/shared/api/wishlist/updateWishlist'
+import {eventBus} from '@/shared/eventBus'
 
 import {TWishlistFormData, TWishlistValidationErrors, validateWishlistForm} from '@/entities/wishlist'
 import {DEFAULT_WISHLIST_SETTINGS} from '@/entities/wishlist/model/constants';
@@ -80,6 +81,7 @@ export const useEditWishlistModel = ({
                 onClose()
             } catch (err) {
                 console.error('Erreur lors de la mise à jour de la wishlist :', err)
+                eventBus.emit('ui:toast', { message: 'Could not update wishlist — please try again', type: 'error' })
             } finally {
                 setIsSubmitting(false)
             }

@@ -14,6 +14,9 @@ import {mockUserPrivate} from '@/entities/user';
 import {Tabs} from '@/shared/ui'
 import {eventBus} from '@/shared/eventBus';
 
+const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
+  eventBus.emit('ui:toast', { message, type })
+
 import pageStyles from './page.module.css'
 import {CreateWishlistModal} from '@/features/CreateWishlist';
 import {TWishlistFormData} from '@/entities/wishlist';
@@ -70,9 +73,8 @@ export default function WishlistsPage() {
 
   const handleCreateWishlist = (wishlistData: TWishlistFormData & { id: string; isPending?: boolean }) => {
     const isPending = wishlistData.isPending ?? false
-    
+
     if (isPending) {
-      // Optimistic update: add wishlist with temp ID and pending flag
       const newWishlist: TWishlistCard = {
         id: wishlistData.id,
         name: wishlistData.name,
@@ -85,14 +87,10 @@ export default function WishlistsPage() {
         itemCount: 0,
         isPending: true,
       }
-      
       setWishlists((prev) => [newWishlist, ...prev])
     } else {
-      // Final update: replace temp ID with real ID from API
       setWishlists((prev) =>
         prev.map((wishlist) => {
-          // Find the pending wishlist that matches this data (by matching form fields)
-          // This handles the case where we need to replace temp ID with real ID
           if (
             wishlist.isPending &&
             wishlist.ownerId === user.id &&
@@ -101,20 +99,16 @@ export default function WishlistsPage() {
             wishlist.isPublic === wishlistData.isPublic &&
             wishlist.coverImage === wishlistData.coverImage
           ) {
-            return {
-              ...wishlist,
-              id: wishlistData.id,
-              isPending: false,
-            }
+            return { ...wishlist, id: wishlistData.id, isPending: false }
           }
           return wishlist
         })
       )
+      toast(`"${wishlistData.name}" created`, 'success')
     }
   }
 
   const handleUpdateWishlist = (wishlistData: TWishlistFormData & { id: string }) => {
-    // Find and update the wishlist in state (optimistic update)
     setWishlists((prev) =>
       prev.map((wishlist) =>
         wishlist.id === wishlistData.id
@@ -129,6 +123,7 @@ export default function WishlistsPage() {
       )
     )
     setUpdatingWishlistId(null)
+    toast(`"${wishlistData.name}" updated`, 'success')
   }
 
   // Define the tabs for the Tabs component
@@ -145,6 +140,10 @@ export default function WishlistsPage() {
           />
           <CreateWishlistModal
             onSubmit={handleCreateWishlist}
+            onError={(tempId) => {
+              setWishlists((prev) => prev.filter((w) => w.id !== tempId))
+              toast('Could not create wishlist — please try again', 'error')
+            }}
           />
           <UpdateWishlistModal
             onSubmit={handleUpdateWishlist}
