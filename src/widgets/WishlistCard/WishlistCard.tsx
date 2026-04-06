@@ -83,14 +83,14 @@ export const WishlistCard = ({
                         {isPublic ? 'Public' : 'Private'}
                     </div>
                 )}
+                <span className={styles.wishlistCard__countOverlay}>
+                    {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                </span>
             </div>
 
             <div className={styles.wishlistCard__content}>
                 <div className={styles.wishlistCard__header}>
                     <h3 className={styles.wishlistCard__title}>{name}</h3>
-                    <span className={styles.wishlistCard__count}>
-            {itemCount} {itemCount === 1 ? 'item' : 'items'}
-          </span>
                 </div>
 
                 <p className={styles.wishlistCard__description}>{description}</p>
