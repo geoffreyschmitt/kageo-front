@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Cormorant_Garamond, DM_Sans, JetBrains_Mono } from 'next/font/google'
+import { Fraunces, DM_Sans, JetBrains_Mono } from 'next/font/google'
 
 import '@/shared/styles/reset.css'
 import '@/shared/styles/variables.css'
@@ -8,7 +8,7 @@ import { Header } from "@/widgets"
 
 import { AuthProvider } from '@/shared/providers/AuthProvider'
 
-const cormorant = Cormorant_Garamond({
+const fraunces = Fraunces({
     subsets: ['latin'],
     weight: ['300', '400', '500', '600', '700'],
     style: ['normal', 'italic'],
@@ -60,7 +60,7 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     return (
-        <html lang="en" className={`${cormorant.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
+        <html lang="en" className={`${fraunces.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
           <body>
               <AuthProvider>
                 <Header/>
