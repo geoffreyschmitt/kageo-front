@@ -6,6 +6,7 @@ import Wishlist from '@/pages/wishlist/wishlist'
 import {mockUserPrivate} from '@/entities/user';
 import type {TWishCard} from '@/widgets/WishCard/WishCard.types';
 import type {TWishFormData, TProposedWishFormData} from '@/entities/wish';
+import {eventBus} from '@/shared/eventBus';
 
 // Sample data for a single wishlist
 const sampleOwnerWishlistData = {
@@ -145,57 +146,57 @@ export default function WishlistPage() {
     const initialData = userIsOwner ? sampleOwnerWishlistData : sampleGuestWishlistData
     const [items, setItems] = useState<TWishCard[]>(initialData.items)
 
+    const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
+        eventBus.emit('ui:toast', { message, type })
+
     const handleReserveWish = (wishId: string, reservedBy: string) => {
-        // Optimistic update: immediately update items state
         setItems(prev => prev.map(item =>
             item.id === wishId
                 ? {...item, status: 'reserved', reservedBy}
                 : item
         ))
+        const name = items.find(i => i.id === wishId)?.name
+        toast(name ? `"${name}" reserved` : 'Wish reserved', 'success')
     }
 
     const handleReserveError = (wishId: string) => {
-        // Revert optimistic update on error
         setItems(prev => prev.map(item =>
             item.id === wishId
                 ? {...item, status: 'wanted', reservedBy: undefined}
                 : item
         ))
-        // TODO: Add toast/notification system for better UX
+        toast('Could not reserve wish — please try again', 'error')
     }
 
     const handleCancelReservation = (wishId: string) => {
-        // Optimistic update: immediately revert status to 'wanted' and clear reservedBy
         setItems(prev => prev.map(item =>
             item.id === wishId
                 ? {...item, status: 'wanted', reservedBy: undefined}
                 : item
         ))
+        toast('Reservation cancelled', 'info')
     }
 
     const handleCancelError = (wishId: string) => {
-        // Revert optimistic update on error: restore to 'reserved' status
-        // Since cancel button only shows when reservedBy === userId, we can restore to user.id
         setItems(prev => prev.map(item =>
             item.id === wishId
                 ? {...item, status: 'reserved', reservedBy: user.id}
                 : item
         ))
-        // TODO: Add toast/notification system for better UX
+        toast('Could not cancel reservation — please try again', 'error')
     }
 
     const handleMarkPurchased = (wishId: string, userId: string) => {
-        // Optimistic update: immediately update status to 'purchased' and store purchaser
         setItems(prev => prev.map(item =>
             item.id === wishId
                 ? {...item, status: 'purchased', purchasedBy: userId}
                 : item
         ))
+        const name = items.find(i => i.id === wishId)?.name
+        toast(name ? `"${name}" marked as purchased` : 'Wish marked as purchased', 'success')
     }
 
     const handleMarkPurchasedError = (wishId: string) => {
-        // Revert optimistic update on error: restore previous status and clear purchasedBy
-        // If reservedBy exists, it was 'reserved', otherwise it was 'wanted'
         setItems(prev => prev.map(item => {
             if (item.id === wishId) {
                 const previousStatus = item.reservedBy ? 'reserved' : 'wanted'
@@ -203,33 +204,30 @@ export default function WishlistPage() {
             }
             return item
         }))
-        // TODO: Add toast/notification system for better UX
+        toast('Could not mark as purchased — please try again', 'error')
     }
 
     const handleRemovePurchased = (wishId: string) => {
-        // Optimistic update: immediately update status to 'wanted' and clear purchasedBy
         setItems(prev => prev.map(item =>
             item.id === wishId
                 ? {...item, status: 'wanted', purchasedBy: undefined}
                 : item
         ))
+        toast('Marked as available again', 'info')
     }
 
     const handleRemovePurchasedError = (wishId: string) => {
-        // Revert optimistic update on error: restore to 'purchased' status
-        // We need to restore the purchasedBy from the previous state
         setItems(prev => prev.map(item => {
             if (item.id === wishId) {
-                // Find the original item to get the purchasedBy value
                 const originalItem = initialData.items.find(original => original.id === wishId)
-                const restoredPurchasedBy = originalItem && originalItem.status === 'purchased' 
-                    ? (originalItem as any).purchasedBy 
+                const restoredPurchasedBy = originalItem && originalItem.status === 'purchased'
+                    ? (originalItem as any).purchasedBy
                     : item.purchasedBy
                 return {...item, status: 'purchased', purchasedBy: restoredPurchasedBy}
             }
             return item
         }))
-        // TODO: Add toast/notification system for better UX
+        toast('Could not update wish — please try again', 'error')
     }
 
     const handleEditWish = (wish: TWishCard) => {
@@ -258,18 +256,17 @@ export default function WishlistPage() {
     }
 
     const handleDeleteWish = (wishId: string) => {
-        // Optimistic update: immediately remove the wish from items state
+        const name = items.find(i => i.id === wishId)?.name
         setItems(prev => prev.filter(item => item.id !== wishId))
+        toast(name ? `"${name}" deleted` : 'Wish deleted', 'info')
     }
 
     const handleDeleteError = (wishId: string) => {
-        // Revert optimistic update on error: restore the wish
-        // We need to find the original wish from initialData
         const originalWish = initialData.items.find(item => item.id === wishId)
         if (originalWish) {
             setItems(prev => [...prev, originalWish])
         }
-        // TODO: Add toast/notification system for better UX
+        toast('Could not delete wish — please try again', 'error')
     }
 
     const handleAddWish = (wish: TWishFormData & { id: string }) => {

@@ -25,6 +25,7 @@ export const WishlistCard = ({
     name,
     description,
     coverImage,
+    previewImages,
     createdAt,
     isPublic,
     itemCount = 0,
@@ -35,23 +36,46 @@ export const WishlistCard = ({
     const user = mockUserPrivate
     const isOwnedByCurrentUser = user.id === ownerId;
 
+    const displayPreviews = previewImages?.filter(Boolean).slice(0, 4) ?? []
+    const usePreviewGrid = displayPreviews.length >= 2
+
     return (
         <div className={styles.wishlistCard}>
             <div className={styles.wishlistCard__imageContainer}>
-                <Image
-                    src={coverImage || '/placeholder.svg'}
-                    alt={`${name} wishlist cover`}
-                    width={300}
-                    height={200}
-                    className={styles.wishlistCard__image}
-                    placeholder="blur"
-                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2UyZTJlMiIvPjwvc3ZnPg=="
-                    onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.backgroundColor = '#e2e2e2';
-                        target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Image transparente 1x1
-                    }}
-                />
+                {usePreviewGrid ? (
+                    <div className={styles.wishlistCard__previewGrid}>
+                        {([0, 1, 2, 3] as const).map(i =>
+                            displayPreviews[i] ? (
+                                <div key={i} className={styles.wishlistCard__previewCell}>
+                                    <Image
+                                        src={displayPreviews[i]}
+                                        alt=""
+                                        fill
+                                        sizes="150px"
+                                        className={styles.wishlistCard__previewImage}
+                                    />
+                                </div>
+                            ) : (
+                                <div key={i} className={`${styles.wishlistCard__previewCell} ${styles['wishlistCard__previewCell--empty']}`} />
+                            )
+                        )}
+                    </div>
+                ) : (
+                    <Image
+                        src={coverImage || '/placeholder.svg'}
+                        alt={`${name} wishlist cover`}
+                        width={300}
+                        height={200}
+                        className={styles.wishlistCard__image}
+                        placeholder="blur"
+                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2UyZTJlMiIvPjwvc3ZnPg=="
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.backgroundColor = '#e2e2e2';
+                            target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                        }}
+                    />
+                )}
                 {isOwnedByCurrentUser && (
                     <div
                         className={`${styles.wishlistCard__badge} ${isPublic ? styles['wishlistCard__badge--public'] : styles['wishlistCard__badge--private']}`}

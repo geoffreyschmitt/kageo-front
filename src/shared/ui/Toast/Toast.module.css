@@ -1,0 +1,153 @@
+/* ============================================
+   TOASTER — Garden Party
+   ============================================ */
+
+:root {
+    --toast-surface:      #ffffff;
+    --toast-border:       #e5dfd5;
+    --toast-text:         #1e1a16;
+    --toast-text-2:       #4e443c;
+    --toast-success:      #3f6845;
+    --toast-success-bg:   #eaf2eb;
+    --toast-error:        #8a2318;
+    --toast-error-bg:     #fdecea;
+    --toast-warning:      #6e3c0c;
+    --toast-warning-bg:   #fdf0e6;
+    --toast-info:         #1a5491;
+    --toast-info-bg:      #edf3fb;
+    --toast-shadow:       0 4px 20px rgba(60, 45, 25, 0.14), 0 1px 4px rgba(60, 45, 25, 0.06);
+    --toast-font-sans:    var(--font-dm-sans, system-ui, sans-serif);
+}
+
+.toaster {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: all;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--toast-surface);
+    border: 1px solid var(--toast-border);
+    border-radius: 12px;
+    padding: 13px 16px 16px 13px;
+    width: 308px;
+    box-shadow: var(--toast-shadow);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.toast--exiting {
+    animation: toastOut 0.28s ease forwards;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes toastOut {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        max-height: 80px;
+        margin-bottom: 0;
+    }
+    to {
+        opacity: 0;
+        transform: translateX(20px) scale(0.95);
+        max-height: 0;
+        margin-bottom: -8px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+/* ── Left accent border ───────────────────── */
+
+.toast--success { border-left: 3px solid var(--toast-success); }
+.toast--error   { border-left: 3px solid var(--toast-error); }
+.toast--warning { border-left: 3px solid var(--toast-warning); }
+.toast--info    { border-left: 3px solid var(--toast-info); }
+
+/* ── Icon pill ────────────────────────────── */
+
+.toast__icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.toast--success .toast__icon { background: var(--toast-success-bg); color: var(--toast-success); }
+.toast--error   .toast__icon { background: var(--toast-error-bg);   color: var(--toast-error); }
+.toast--warning .toast__icon { background: var(--toast-warning-bg); color: var(--toast-warning); }
+.toast--info    .toast__icon { background: var(--toast-info-bg);    color: var(--toast-info); }
+
+/* ── Message ──────────────────────────────── */
+
+.toast__message {
+    font-family: var(--toast-font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--toast-text-2);
+    margin: 0;
+    flex: 1;
+    padding-top: 2px;
+}
+
+/* ── Progress bar ─────────────────────────── */
+
+.toast__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2.5px;
+    width: 100%;
+    animation: toastProgress linear both;
+    transform-origin: left center;
+}
+
+@keyframes toastProgress {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+}
+
+.toast--success .toast__progress { background: var(--toast-success); opacity: 0.5; }
+.toast--error   .toast__progress { background: var(--toast-error);   opacity: 0.5; }
+.toast--warning .toast__progress { background: var(--toast-warning); opacity: 0.5; }
+.toast--info    .toast__progress { background: var(--toast-info);    opacity: 0.5; }
+
+/* ── Mobile ───────────────────────────────── */
+
+@media (max-width: 480px) {
+    .toaster {
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+    }
+
+    .toast {
+        width: 100%;
+    }
+}

@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import { useState } from 'react'
 
 import {TWishCard} from '@/widgets/WishCard/WishCard.types';
 
@@ -68,24 +71,38 @@ export const WishCard = ({
     userId,
     useMock
 }: TWishCard) => {
+    const [imgError, setImgError] = useState(false)
+
     return (
         <div className={`${styles['wish-card']} ${status === 'purchased' ? styles['wish-card--purchased'] : ''}`}
              data-id={id}>
             <div className={styles['wish-card__imageContainer']}>
-                <Image
-                    src={imageUrl || '/placeholder.svg'}
-                    alt={name}
-                    width={200}
-                    height={200}
-                    className={styles['wish-card__image']}
-                    placeholder="blur"
-                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2UyZTJlMiIvPjwvc3ZnPg=="
-                    onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.backgroundColor = '#e2e2e2';
-                        target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Image transparente 1x1
-                    }}
-                />
+                {imageUrl && !imgError ? (
+                    <Image
+                        src={imageUrl}
+                        alt={name}
+                        width={200}
+                        height={200}
+                        className={styles['wish-card__image']}
+                        placeholder="blur"
+                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YyZWRlNSIvPjwvc3ZnPg=="
+                        onError={() => setImgError(true)}
+                    />
+                ) : (
+                    <div className={styles['wish-card__imagePlaceholder']}>
+                        <span className={styles['wish-card__imagePlaceholderInitial']}>
+                            {name.charAt(0).toUpperCase()}
+                        </span>
+                        <svg className={styles['wish-card__imagePlaceholderDecor']} viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                            <path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/>
+                            <path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/>
+                            <path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/>
+                            <circle cx="100" cy="55" r="5" fill="#6e3c0c" opacity="0.1"/>
+                            <circle cx="72" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
+                            <circle cx="128" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
+                        </svg>
+                    </div>
+                )}
                 <div className={`${styles['wish-card__priority']} ${getPriorityClass(priority)}`}>{priority}</div>
                 <div className={`${styles['wish-card__status']} ${getStatusClass(status)}`}>{status}</div>
             </div>

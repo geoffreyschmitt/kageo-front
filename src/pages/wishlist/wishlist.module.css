@@ -585,34 +585,75 @@
 
 .wishlist__empty {
     text-align: center;
-    padding: 80px 32px;
-    max-width: 440px;
-    margin: 40px auto;
+    padding: 64px 48px 56px;
+    max-width: 480px;
+    margin: 60px auto;
     background: var(--g-surface);
     border: 1px solid var(--g-border);
-    border-radius: 20px;
+    border-radius: 24px;
     box-shadow: var(--g-shadow);
+    position: relative;
+    overflow: hidden;
 }
 
-.wishlist__emptyIcon {
-    font-size: 52px;
-    margin-bottom: 20px;
+/* Ambient gradient corners */
+.wishlist__empty::before {
+    content: '';
+    position: absolute;
+    top: -32px;
+    right: -32px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(63, 104, 69, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.wishlist__empty::after {
+    content: '';
+    position: absolute;
+    bottom: -24px;
+    left: -24px;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(110, 60, 12, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.wishlist__emptyIllustration {
+    width: 120px;
+    height: 105px;
+    margin: 0 auto 28px;
     display: block;
+    position: relative;
+    z-index: 1;
+}
+
+.wishlist__emptyIllustration svg {
+    width: 100%;
+    height: 100%;
 }
 
 .wishlist__emptyTitle {
     font-family: var(--g-font-serif);
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 400;
+    font-style: italic;
     color: var(--g-text);
-    margin: 0 0 10px;
+    margin: 0 0 12px;
+    position: relative;
+    z-index: 1;
 }
 
 .wishlist__emptyMessage {
+    font-family: var(--g-font-sans);
     font-size: 14px;
-    color: var(--g-text-2);
-    line-height: 1.6;
-    margin: 0 0 28px;
+    color: var(--g-text-3);
+    line-height: 1.65;
+    margin: 0 0 32px;
+    position: relative;
+    z-index: 1;
 }
 
 .wishlist__emptyButton {
@@ -621,15 +662,18 @@
     font-weight: 500;
     padding: 11px 28px;
     border-radius: 100px;
-    border: none;
+    border: 1.5px solid var(--g-sage);
     background: var(--g-sage);
     color: #fff;
     cursor: pointer;
     transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
 }
 
 .wishlist__emptyButton:hover {
     background: var(--g-sage-hover);
+    border-color: var(--g-sage-hover);
     box-shadow: 0 4px 16px rgba(92, 138, 98, 0.3);
     transform: translateY(-1px);
 }

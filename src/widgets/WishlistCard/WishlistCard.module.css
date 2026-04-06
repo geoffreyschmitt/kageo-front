@@ -69,6 +69,46 @@
     transform: scale(1.04);
 }
 
+/* ── Preview mosaic grid ──────────────────── */
+
+.wishlistCard__previewGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: 100%;
+    gap: 2px;
+    background: var(--wc2-border);
+}
+
+.wishlistCard__previewCell {
+    position: relative;
+    overflow: hidden;
+}
+
+.wishlistCard__previewImage {
+    object-fit: cover;
+}
+
+.wishlistCard__previewCell--empty {
+    background: var(--wc2-surface-2);
+    position: relative;
+}
+
+.wishlistCard__previewCell--empty::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle, rgba(63, 104, 69, 0.06) 1px, transparent 1px);
+    background-size: 16px 16px;
+}
+
+/* Hover zoom on preview images */
+.wishlistCard:hover .wishlistCard__previewImage {
+    transform: scale(1.04);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* ── Visibility badge ─────────────────────── */
 
 .wishlistCard__badge {

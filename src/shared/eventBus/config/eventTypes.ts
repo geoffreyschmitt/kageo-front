@@ -3,6 +3,7 @@ export type AppEvents = UIEvents & UserEvents & WishlistEvents & WishEvents;
 type UIEvents = {
   'ui:themeChanged': 'light' | 'dark';
   'ui:languageChanged': 'en' | 'fr';
+  'ui:toast': { message: string; type?: 'success' | 'error' | 'info' | 'warning'; duration?: number };
 };
 
 

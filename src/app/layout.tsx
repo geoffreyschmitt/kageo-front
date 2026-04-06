@@ -7,6 +7,7 @@ import '@/shared/styles/globals.css'
 import { Header } from "@/widgets"
 
 import { AuthProvider } from '@/shared/providers/AuthProvider'
+import { Toaster } from '@/shared/ui'
 
 const fraunces = Fraunces({
     subsets: ['latin'],
@@ -65,6 +66,7 @@ export default function RootLayout({
               <AuthProvider>
                 <Header/>
                 {children}
+                <Toaster/>
               </AuthProvider>
           </body>
         </html>

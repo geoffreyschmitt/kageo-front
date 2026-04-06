@@ -5,6 +5,7 @@ export type TWishlistCard = {
     name: string
     description: string
     coverImage?: string
+    previewImages?: string[]
     createdAt: Date
     isPublic: boolean
     itemCount?: number
