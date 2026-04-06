@@ -14,24 +14,21 @@ import {mockUserPrivate} from '@/entities/user';
 import {Tabs} from '@/shared/ui'
 import {eventBus} from '@/shared/eventBus';
 
-const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
-  eventBus.emit('ui:toast', { message, type })
-
-import pageStyles from './page.module.css'
 import {CreateWishlistModal} from '@/features/CreateWishlist';
 import {TWishlistFormData} from '@/entities/wishlist';
 import {UpdateWishlistModal} from '@/features/UpdateWishlist';
 
+import pageStyles from './page.module.css'
+
+const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
+  eventBus.emit('ui:toast', { message, type })
+
 export default function WishlistsPage() {
   const user = mockUserPrivate
-  // Convert static mock data to state
   const [wishlists, setWishlists] = useState<TWishlistCard[]>(wishlistCardListMock)
   const [selectedOwnerFilter, setSelectedOwnerFilter] = useState<TWishlistOwner | null>(null)
-  
-  // Track which wishlist is being updated (from event bus)
   const [updatingWishlistId, setUpdatingWishlistId] = useState<string | null>(null)
 
-  // Listen to update modal open event to track the wishlist being updated
   useEffect(() => {
     const removeOpenModalEvent = eventBus.on('wishlist:openUpdateModal', (payload: { id?: string }) => {
       if (payload.id) {
@@ -43,16 +40,14 @@ export default function WishlistsPage() {
     }
   }, [])
 
-  // Compute owned and invited wishlists from state
-  const ownedWishlists = useMemo(() => 
+  const ownedWishlists = useMemo(() =>
     wishlists.filter((w) => w.ownerId === user.id),
     [wishlists, user.id]
   )
-  const allInvitedWishlists = useMemo(() => 
+  const allInvitedWishlists = useMemo(() =>
     wishlists.filter((w) => w.ownerId !== user.id),
     [wishlists, user.id]
   )
-
 
   const uniqueInvitedOwners = useMemo(() => {
     const ownersMap = new Map<string, { id: string, name: string }>();
@@ -126,7 +121,11 @@ export default function WishlistsPage() {
     toast(`"${wishlistData.name}" updated`, 'success')
   }
 
-  // Define the tabs for the Tabs component
+  const displayName = user.name?.split(' ')[0] ?? 'there'
+  const totalWishlists = wishlists.length
+  const ownedCount = ownedWishlists.length
+  const sharedCount = allInvitedWishlists.length
+
   const tabs = [
     {
       label: 'My Wishlists',
@@ -174,8 +173,36 @@ export default function WishlistsPage() {
   ]
 
   return (
-    <main className={pageStyles.pageLayout}>
-      <Tabs tabs={tabs}/>
+    <main>
+      <div className={pageStyles.pageHero}>
+        <div className={pageStyles.pageHero__inner}>
+          <p className={pageStyles.pageHero__greeting}>Hello, {displayName}</p>
+          <h1 className={pageStyles.pageHero__title}>Your Wishlists</h1>
+          <div className={pageStyles.pageHero__stats}>
+            <span className={pageStyles.pageHero__stat}>
+              <strong>{totalWishlists}</strong> total
+            </span>
+            <span className={pageStyles.pageHero__statDivider}>·</span>
+            <span className={pageStyles.pageHero__stat}>
+              <strong>{ownedCount}</strong> yours
+            </span>
+            <span className={pageStyles.pageHero__statDivider}>·</span>
+            <span className={pageStyles.pageHero__stat}>
+              <strong>{sharedCount}</strong> shared with you
+            </span>
+          </div>
+          <button
+            className={pageStyles.pageHero__cta}
+            onClick={() => eventBus.emit('wishlist:openCreationModal', {})}
+          >
+            New Wishlist
+          </button>
+        </div>
+      </div>
+
+      <div className={pageStyles.pageContent}>
+        <Tabs tabs={tabs}/>
+      </div>
     </main>
   )
 }

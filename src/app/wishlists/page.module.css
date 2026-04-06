@@ -2,9 +2,107 @@
    WISHLISTS PAGE — Garden Party
    ============================================ */
 
-.pageLayout {
+/* ── Hero section ─────────────────────────── */
+
+.pageHero {
+    background: #ffffff;
+    border-bottom: 1px solid #e5dfd5;
+    padding: 56px 40px 52px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ambient gradient mesh */
+.pageHero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(ellipse 70% 60% at 50% -5%, rgba(92, 138, 98, 0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 35% at 90% 105%, rgba(110, 60, 12, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 30% at 5% 95%, rgba(92, 138, 98, 0.04) 0%, transparent 55%);
+    pointer-events: none;
+}
+
+.pageHero__inner {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.pageHero__greeting {
+    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: #3f6845;
+    margin: 0 0 16px;
+}
+
+.pageHero__title {
+    font-family: var(--font-cormorant, Georgia, serif);
+    font-size: clamp(44px, 7vw, 68px);
+    font-weight: 400;
+    color: #1e1a16;
+    line-height: 1.0;
+    letter-spacing: -0.5px;
+    margin: 0 0 24px;
+}
+
+.pageHero__stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.pageHero__stat {
+    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-size: 13px;
+    color: #6b6258;
+}
+
+.pageHero__stat strong {
+    font-weight: 600;
+    color: #1e1a16;
+}
+
+.pageHero__statDivider {
+    color: #d6cec4;
+    font-size: 14px;
+}
+
+.pageHero__cta {
+    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 11px 28px;
+    border-radius: 100px;
+    border: 1.5px solid #3f6845;
+    background: #3f6845;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.1px;
+}
+
+.pageHero__cta:hover {
+    background: #2e5033;
+    border-color: #2e5033;
+    box-shadow: 0 4px 16px rgba(92, 138, 98, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ── Page content ─────────────────────────── */
+
+.pageContent {
     background: #f7f4ef;
-    min-height: 100vh;
+    min-height: calc(100vh - 60px);
     padding: 48px 32px 80px;
     max-width: 1300px;
     margin: 0 auto;
@@ -15,8 +113,25 @@
     margin-bottom: 28px;
 }
 
+/* ── Mobile ───────────────────────────────── */
+
 @media (max-width: 768px) {
-    .pageLayout {
+    .pageHero {
+        padding: 40px 20px 36px;
+    }
+
+    .pageContent {
         padding: 28px 16px 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pageHero__title {
+        font-size: clamp(36px, 11vw, 48px);
+    }
+
+    .pageHero__cta {
+        width: 100%;
+        max-width: 220px;
     }
 }

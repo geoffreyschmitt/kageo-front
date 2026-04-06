@@ -392,6 +392,26 @@
     z-index: 50;
 }
 
+/* Toggle button — hidden on desktop, visible on mobile */
+.wishlist__controlsToggle {
+    display: none;
+}
+
+/* Collapsible body — full-width flex row on desktop */
+.wishlist__controlsBody {
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+    width: 100%;
+}
+
+.wishlist__controlsBodyInner {
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+    width: 100%;
+}
+
 .wishlist__controlsSection {
     display: flex;
     flex-direction: column;
@@ -684,11 +704,25 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
-    animation: gridIn 0.5s ease both;
 }
 
-@keyframes gridIn {
-    from { opacity: 0; transform: translateY(12px); }
+/* Staggered card entrance */
+.wishlist__itemsGrid > * {
+    animation: wishCardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.wishlist__itemsGrid > *:nth-child(1)   { animation-delay: 0ms; }
+.wishlist__itemsGrid > *:nth-child(2)   { animation-delay: 50ms; }
+.wishlist__itemsGrid > *:nth-child(3)   { animation-delay: 100ms; }
+.wishlist__itemsGrid > *:nth-child(4)   { animation-delay: 150ms; }
+.wishlist__itemsGrid > *:nth-child(5)   { animation-delay: 200ms; }
+.wishlist__itemsGrid > *:nth-child(6)   { animation-delay: 250ms; }
+.wishlist__itemsGrid > *:nth-child(7)   { animation-delay: 300ms; }
+.wishlist__itemsGrid > *:nth-child(8)   { animation-delay: 350ms; }
+.wishlist__itemsGrid > *:nth-child(n+9) { animation-delay: 400ms; }
+
+@keyframes wishCardIn {
+    from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -802,8 +836,62 @@
     .wishlist__controls {
         flex-direction: column;
         border-radius: 12px;
-        /* Sticky: account for slightly shorter header on mobile */
         top: 56px;
+    }
+
+    /* Mobile toggle button */
+    .wishlist__controlsToggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 18px;
+        background: transparent;
+        border: none;
+        font-family: var(--g-font-sans);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--g-text-2);
+        cursor: pointer;
+        letter-spacing: 0.2px;
+        transition: color 0.2s;
+    }
+
+    .wishlist__controlsToggle:hover {
+        color: var(--g-text);
+    }
+
+    .wishlist__controlsToggleIcon {
+        color: var(--g-text-3);
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+    }
+
+    .wishlist__controlsToggleIcon--open {
+        transform: rotate(180deg);
+    }
+
+    /* Collapse animation using CSS grid rows trick */
+    .wishlist__controlsBody {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.28s ease;
+        border-top: 0px solid var(--g-border-soft);
+        flex: unset;
+        width: 100%;
+    }
+
+    .wishlist__controlsBody--open {
+        grid-template-rows: 1fr;
+        border-top-width: 1px;
+    }
+
+    .wishlist__controlsBodyInner {
+        min-height: 0;
+        overflow: hidden;
+        flex-direction: column;
+        flex: unset;
+        width: 100%;
     }
 
     .wishlist__controlsSection {

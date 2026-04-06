@@ -82,6 +82,7 @@ export default function Wishlist({
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed')[]>(['all'])
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({min: 0, max: 1000})
+  const [isControlsOpen, setIsControlsOpen] = useState(false)
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isProposeItemModalOpen, setIsProposeItemModalOpen] = useState(false)
@@ -327,6 +328,21 @@ export default function Wishlist({
       ) : (
         <div className={styles.wishlist__items}>
           <div className={styles.wishlist__controls}>
+            <button
+              className={styles.wishlist__controlsToggle}
+              onClick={() => setIsControlsOpen(prev => !prev)}
+              aria-expanded={isControlsOpen}
+            >
+              <span>Filters &amp; Sort</span>
+              <svg
+                className={`${styles.wishlist__controlsToggleIcon} ${isControlsOpen ? styles['wishlist__controlsToggleIcon--open'] : ''}`}
+                width="14" height="14" viewBox="0 0 14 14" fill="none"
+              >
+                <path d="M3 5l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <div className={`${styles.wishlist__controlsBody} ${isControlsOpen ? styles['wishlist__controlsBody--open'] : ''}`}>
+            <div className={styles.wishlist__controlsBodyInner}>
             <div className={styles.wishlist__controlsSection}>
               <h4 className={styles.wishlist__controlsTitle}>Sort By</h4>
               <div className={styles.wishlist__sortControls}>
@@ -427,6 +443,8 @@ export default function Wishlist({
                 </button>
               </div>
             </div>
+            </div>{/* wishlist__controlsBodyInner */}
+            </div>{/* wishlist__controlsBody */}
           </div>
 
           <div className={styles.wishlist__itemsGrid}>
