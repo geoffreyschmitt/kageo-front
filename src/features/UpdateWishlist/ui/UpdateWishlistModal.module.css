@@ -1,0 +1,9 @@
+/* ============================================
+   UPDATE WISHLIST MODAL — Garden Party
+   Uses shared Modal shell (Modal.module.css).
+   No overrides needed.
+   ============================================ */
+
+.updateWishlistModal {
+    /* wrapper-level class — shell styles from Modal.module.css */
+}

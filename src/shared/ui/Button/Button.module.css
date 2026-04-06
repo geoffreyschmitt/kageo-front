@@ -1,82 +1,118 @@
+/* ============================================
+   BUTTON — Garden Party
+   ============================================ */
+
+:root {
+    --btn-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+    --btn-sage:       #3f6845;
+    --btn-sage-hover: #2e5033;
+    --btn-sage-light: #eaf2eb;
+    --btn-text:       #1e1a16;
+    --btn-text-2:     #4e443c;
+    --btn-text-3:     #6b6258;
+    --btn-border:     #d6cec4;
+    --btn-surface:    #ffffff;
+    --btn-surface-2:  #f7f4ef;
+}
+
 .button {
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-200) var(--spacing-300);
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
-    border-radius: var(--border-radius-lg);
+    padding: 9px 22px;
+    font-family: var(--btn-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 100px;
     cursor: pointer;
-    transition: var(--transition-all-fast);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    transition: all 0.2s ease;
+    letter-spacing: 0.1px;
     white-space: nowrap;
+    border: none;
 }
+
+.button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ── Primary ──────────────────────────────── */
 
 .button--primary {
-    background-color: var(--color-primary-main);
-    color: var(--color-text-inverse);
+    background: var(--btn-sage);
+    color: #ffffff;
     border: none;
 }
 
-.button--primary:hover {
-    background-color: var(--color-primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-button-hover);
+.button--primary:hover:not(:disabled) {
+    background: var(--btn-sage-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(63, 104, 69, 0.3);
 }
 
-.button--primary:active {
-    background-color: var(--color-primary-active);
+.button--primary:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
 }
+
+/* ── Secondary ────────────────────────────── */
 
 .button--secondary {
-    background-color: transparent;
-    color: var(--color-text-secondary);
-    border: var(--border-width-medium) solid var(--color-border);
+    background: transparent;
+    color: var(--btn-text-2);
+    border: 1.5px solid var(--btn-border);
 }
 
-.button--secondary:hover {
-    background-color: var(--color-background-secondary);
-    color: var(--color-text-primary);
-    border-color: var(--color-border-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
+.button--secondary:hover:not(:disabled) {
+    background: var(--btn-surface-2);
+    color: var(--btn-text);
+    border-color: #b8b0a8;
+    transform: translateY(-1px);
 }
 
-.button--secondary:active {
-    background-color: var(--color-background-tertiary);
+.button--secondary:active:not(:disabled) {
+    background: #ede8e0;
+    transform: translateY(0);
 }
+
+/* ── Outline ──────────────────────────────── */
 
 .button--outline {
-    background-color: transparent;
-    color: var(--color-primary-main);
-    border: var(--border-width-medium) solid var(--color-primary-main);
+    background: transparent;
+    color: var(--btn-sage);
+    border: 1.5px solid var(--btn-sage);
 }
 
-.button--outline:hover {
-    background-color: var(--color-primary-main);
-    color: var(--color-text-inverse);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-button-hover);
+.button--outline:hover:not(:disabled) {
+    background: var(--btn-sage);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(63, 104, 69, 0.3);
 }
 
-.button--outline:active {
-    background-color: var(--color-primary-hover);
-    border-color: var(--color-primary-hover);
+.button--outline:active:not(:disabled) {
+    background: var(--btn-sage-hover);
+    border-color: var(--btn-sage-hover);
+    transform: translateY(0);
 }
+
+/* ── Ghost ────────────────────────────────── */
 
 .button--ghost {
-    background-color: transparent;
-    color: var(--color-primary-main);
+    background: transparent;
+    color: var(--btn-sage);
     border: none;
 }
 
-.button--ghost:hover {
-    background-color: var(--color-primary-light);
-    transform: translateY(-2px);
+.button--ghost:hover:not(:disabled) {
+    background: var(--btn-sage-light);
+    transform: translateY(-1px);
 }
 
-.button--ghost:active {
-    background-color: var(--color-primary-light-hover);
+.button--ghost:active:not(:disabled) {
+    background: #d4e9d6;
+    transform: translateY(0);
 }

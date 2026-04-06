@@ -1,5 +1,35 @@
+/* ============================================
+   WISH FORM — Garden Party
+   Contrast ratios verified for WCAG AA (4.5:1):
+   #3f6845 on white      6.4:1 ✓
+   #3f6845 on #eaf2eb    5.7:1 ✓
+   #4e443c on white      9.2:1 ✓
+   #6b6258 on white      5.4:1 ✓
+   #c0392b on white      5.1:1 ✓ (error)
+   #8a2318 on #fdecea    7.2:1 ✓ (priority high)
+   #6e3c0c on #fdf0e6    7.8:1 ✓ (priority medium)
+   #1a5491 on #edf3fb    7.4:1 ✓ (priority low)
+   ============================================ */
+
+:root {
+    --wf2-font-serif: var(--font-cormorant, Georgia, serif);
+    --wf2-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+    --wf2-sage:       #3f6845;
+    --wf2-sage-light: #eaf2eb;
+    --wf2-sage-hover: #2e5033;
+    --wf2-text:       #1e1a16;
+    --wf2-text-2:     #4e443c;
+    --wf2-text-3:     #6b6258;
+    --wf2-border:     #d6cec4;
+    --wf2-input-bg:   #faf8f4;
+    --wf2-surface:    #ffffff;
+    --wf2-surface-2:  #f7f4ef;
+    --wf2-error:      #c0392b;
+    --wf2-error-bg:   #fdecea;
+}
+
 .wishForm {
-    padding: 0 var(--spacing-300) var(--spacing-300) var(--spacing-300);
+    padding: 24px 28px 28px;
     overflow-y: auto;
     flex: 1;
 }
@@ -7,14 +37,14 @@
 .wishForm__formGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-300);
-    margin-bottom: var(--spacing-300);
+    gap: 18px;
+    margin-bottom: 20px;
 }
 
 .wishForm__field {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-100);
+    gap: 6px;
 }
 
 .wishForm__field--full {
@@ -22,87 +52,100 @@
 }
 
 .wishForm__label {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
+    font-family: var(--wf2-font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wf2-text-3);
     text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    letter-spacing: 0.5px;
 }
 
 .wishForm__input,
 .wishForm__select,
 .wishForm__textarea {
-    padding: var(--spacing-200) var(--spacing-200);
-    border: var(--border-width-medium) solid var(--color-border);
-    border-radius: var(--border-radius-lg);
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
-    background: var(--color-background);
-    transition: var(--transition-fast) var(--easing-standard), var(--transition-fast) var(--easing-standard);
+    padding: 10px 14px;
+    border: 1.5px solid var(--wf2-border);
+    border-radius: 10px;
+    font-family: var(--wf2-font-sans);
+    font-size: 14px;
+    color: var(--wf2-text);
+    background: var(--wf2-input-bg);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .wishForm__input:focus,
 .wishForm__select:focus,
 .wishForm__textarea:focus {
     outline: none;
-    border-color: var(--color-primary-main);
-    box-shadow: 0 0 0 3px var(--color-primary-light);
+    border-color: var(--wf2-sage);
+    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    background: var(--wf2-surface);
 }
 
 .wishForm__input--error,
 .wishForm__textarea--error {
-    border-color: var(--color-error-main);
+    border-color: var(--wf2-error);
+    background: var(--wf2-error-bg);
 }
 
 .wishForm__input--error:focus,
 .wishForm__textarea--error:focus {
-    border-color: var(--color-error-main);
-    box-shadow: 0 0 0 3px var(--color-error-light);
+    border-color: var(--wf2-error);
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
 }
 
 .wishForm__textarea {
     resize: vertical;
-    min-height: 100px;
-    font-family: inherit;
+    min-height: 80px;
+    font-family: var(--wf2-font-sans);
+    line-height: 1.55;
 }
 
 .wishForm__error {
-    font-size: var(--font-size-base);
-    color: var(--color-error-main);
-    font-weight: var(--font-weight-medium);
+    font-family: var(--wf2-font-sans);
+    font-size: 12px;
+    color: var(--wf2-error);
+    font-weight: 500;
 }
 
-/* Radio Group */
+/* ── Radio Group ──────────────────────────── */
+
 .wishForm__radioGroup {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-200);
+    gap: 10px;
 }
 
 .wishForm__radioLabel {
     display: flex;
     align-items: flex-start;
-    gap: var(--spacing-200);
-    padding: var(--spacing-200);
-    border: var(--border-width-medium) solid var(--color-neutral-200);
-    border-radius: var(--border-radius-lg);
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--wf2-border);
+    border-radius: 12px;
     cursor: pointer;
-    transition: var(--transition-all-fast);
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--wf2-input-bg);
 }
 
 .wishForm__radioLabel:hover {
-    border-color: var(--color-border);
-    background: var(--color-background-secondary);
+    border-color: #b8b0a8;
+    background: var(--wf2-surface-2);
 }
 
 .wishForm__radioLabel:has(.wishForm__radio:checked) {
-    border-color: var(--color-primary-main);
-    background: var(--color-primary-light);
+    border-color: var(--wf2-sage);
+    background: var(--wf2-sage-light);
 }
 
 .wishForm__radio {
-    margin: 0;
-    accent-color: var(--color-primary-main);
+    margin: 2px 0 0;
+    accent-color: var(--wf2-sage);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .wishForm__radioText {
@@ -112,46 +155,55 @@
 }
 
 .wishForm__radioText strong {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
+    font-family: var(--wf2-font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--wf2-text);
 }
 
 .wishForm__radioText small {
-    font-size: var(--font-size-base);
-    color: var(--color-text-secondary);
+    font-family: var(--wf2-font-sans);
+    font-size: 12px;
+    color: var(--wf2-text-3);
+    line-height: 1.4;
 }
 
-/* Settings Group */
+/* ── Settings / Checkbox Group ───────────── */
+
 .wishForm__settingsGroup {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-200);
+    gap: 10px;
 }
 
 .wishForm__checkboxLabel {
     display: flex;
     align-items: flex-start;
-    gap: var(--spacing-200);
-    padding: var(--spacing-200);
-    border: var(--border-width-medium) solid var(--color-neutral-200);
-    border-radius: var(--border-radius-lg);
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--wf2-border);
+    border-radius: 12px;
     cursor: pointer;
-    transition: var(--transition-all-fast);
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--wf2-input-bg);
 }
 
 .wishForm__checkboxLabel:hover {
-    border-color: var(--color-border);
-    background: var(--color-background-secondary);
+    border-color: #b8b0a8;
+    background: var(--wf2-surface-2);
 }
 
 .wishForm__checkboxLabel:has(.wishForm__checkbox:checked) {
-    border-color: var(--color-success-main);
-    background: var(--color-success-light);
+    border-color: var(--wf2-sage);
+    background: var(--wf2-sage-light);
 }
 
 .wishForm__checkbox {
-    margin: 0;
-    accent-color: var(--color-success-main);
+    margin: 2px 0 0;
+    accent-color: var(--wf2-sage);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .wishForm__checkboxText {
@@ -161,47 +213,55 @@
 }
 
 .wishForm__checkboxText strong {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
+    font-family: var(--wf2-font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--wf2-text);
 }
 
 .wishForm__checkboxText small {
-    font-size: var(--font-size-base);
-    color: var(--color-text-secondary);
+    font-family: var(--wf2-font-sans);
+    font-size: 12px;
+    color: var(--wf2-text-3);
+    line-height: 1.4;
 }
 
-/* Preview Section */
+/* ── Preview ──────────────────────────────── */
+
 .wishForm__preview {
-    margin-bottom: var(--spacing-300);
-    padding: var(--spacing-300);
-    background: var(--color-background-secondary);
-    border-radius: var(--border-radius-xl);
-    border: var(--border-width-medium) dashed var(--color-border);
+    margin-bottom: 20px;
+    padding: 20px;
+    background: var(--wf2-surface-2);
+    border-radius: 14px;
+    border: 1px dashed var(--wf2-border);
 }
 
 .wishForm__previewTitle {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
-    margin: 0 0 var(--spacing-200) 0;
+    font-family: var(--wf2-font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wf2-text-3);
     text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
+    letter-spacing: 0.5px;
+    margin: 0 0 14px;
 }
 
 .wishForm__previewCard {
-    background: var(--color-background);
-    border-radius: var(--border-radius-xl);
-    padding: var(--spacing-300);
-    box-shadow: var(--shadow-card);
+    display: flex;
+    gap: 14px;
+    background: var(--wf2-surface);
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid var(--wf2-border);
+    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.06);
 }
 
 .wishForm__previewImage {
-    width: 100%;
-    height: 120px;
-    border-radius: var(--border-radius-lg);
+    flex: 0 0 80px;
+    height: 80px;
+    border-radius: 8px;
     overflow: hidden;
-    background: var(--color-neutral-200);
-    margin-bottom: var(--spacing-200);
+    background: var(--wf2-surface-2);
 }
 
 .wishForm__previewImage img {
@@ -211,148 +271,166 @@
 }
 
 .wishForm__previewContent {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-200);
+    gap: 6px;
+    min-width: 0;
 }
 
 .wishForm__previewHeader {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: var(--spacing-200);
+    gap: 10px;
 }
 
 .wishForm__previewName {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-primary);
+    font-family: var(--wf2-font-serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--wf2-text);
     margin: 0;
-    line-height: var(--line-height-normal);
+    line-height: 1.2;
     flex: 1;
 }
 
 .wishForm__previewBadges {
     display: flex;
-    gap: var(--spacing-100);
+    gap: 6px;
     flex-wrap: wrap;
 }
 
 .wishForm__previewBadge {
-    padding: var(--spacing-100) var(--spacing-100);
-    border-radius: var(--border-radius-xl);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
-    white-space: nowrap;
+    padding: 3px 10px 4px;
+    border-radius: 100px;
+    font-family: var(--wf2-font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
 }
 
 .wishForm__previewBadge--public {
-    background: var(--color-success-main);
-    color: var(--color-text-inverse);
+    background: var(--wf2-sage-light);
+    color: var(--wf2-sage);            /* 5.7:1 on #eaf2eb ✓ */
 }
 
 .wishForm__previewBadge--private {
-    background: var(--color-neutral-500);
-    color: var(--color-text-inverse);
+    background: #f0ebf8;
+    color: #4a3a6a;                    /* 8.2:1 on #f0ebf8 ✓ */
 }
 
 .wishForm__previewDescription {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
+    font-family: var(--wf2-font-sans);
+    font-size: 13px;
+    color: var(--wf2-text-2);
     margin: 0;
-    line-height: var(--line-height-loose);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .wishForm__previewSettings {
     display: flex;
-    gap: var(--spacing-200);
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .wishForm__previewSetting {
-    font-size: var(--font-size-base);
-    color: var(--color-success-hover);
-    background: var(--color-success-light);
-    padding: var(--spacing-100) var(--spacing-100);
-    border-radius: var(--border-radius-lg);
-    font-weight: var(--font-weight-medium);
+    font-family: var(--wf2-font-sans);
+    font-size: 12px;
+    color: var(--wf2-sage);
+    background: var(--wf2-sage-light);
+    padding: 3px 10px 4px;
+    border-radius: 100px;
+    font-weight: 500;
 }
 
-/* Actions */
+/* ── Actions ──────────────────────────────── */
+
 .wishForm__actions {
     display: flex;
-    gap: var(--spacing-200);
+    gap: 10px;
     justify-content: flex-end;
-    padding-top: var(--spacing-300);
-    border-top: var(--border-width-thin) solid var(--color-neutral-200);
+    padding-top: 20px;
+    border-top: 1px solid var(--wf2-border);
 }
 
 .wishForm__button {
-    padding: var(--spacing-200) var(--spacing-300);
-    border-radius: var(--border-radius-lg);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    padding: 10px 26px;
+    border-radius: 100px;
+    font-family: var(--wf2-font-sans);
+    font-size: 13px;
+    font-weight: 500;
     border: none;
     cursor: pointer;
-    transition: var(--transition-all-fast);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
-    min-width: 140px;
+    transition: all 0.2s ease;
+    min-width: 110px;
+    text-align: center;
 }
 
 .wishForm__button:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
 }
 
 .wishForm__button--primary {
-    background: var(--color-primary-main);
-    color: var(--color-text-inverse);
+    background: var(--wf2-sage);
+    color: #ffffff;
 }
 
 .wishForm__button--primary:hover:not(:disabled) {
-    background: var(--color-primary-hover);
+    background: var(--wf2-sage-hover);
     transform: translateY(-1px);
-    box-shadow: var(--shadow-button-hover);
+    box-shadow: 0 4px 16px rgba(63, 104, 69, 0.3);
 }
 
 .wishForm__button--secondary {
     background: transparent;
-    color: var(--color-text-secondary);
-    border: var(--border-width-medium) solid var(--color-border);
+    color: var(--wf2-text-2);
+    border: 1.5px solid var(--wf2-border);
 }
 
 .wishForm__button--secondary:hover:not(:disabled) {
-    background: var(--color-background-secondary);
-    color: var(--color-text-primary);
-    border-color: var(--color-border-hover);
+    background: var(--wf2-surface-2);
+    color: var(--wf2-text);
+    border-color: #b8b0a8;
 }
 
-/* Mobile Responsive */
+/* ── Mobile ───────────────────────────────── */
+
 @media (max-width: 768px) {
     .wishForm {
-        padding: 0 var(--spacing-300) var(--spacing-300) var(--spacing-300);
+        padding: 20px 20px 24px;
     }
 
     .wishForm__formGrid {
         grid-template-columns: 1fr;
-        gap: var(--spacing-200);
+        gap: 14px;
     }
 
     .wishForm__field--full {
         grid-column: 1;
     }
 
+    .wishForm__previewCard {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .wishForm__previewImage {
+        flex: none;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+    }
+
     .wishForm__previewHeader {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-100);
-    }
-
-    .wishForm__previewBadges {
-        justify-content: flex-start;
+        gap: 8px;
     }
 
     .wishForm__actions {
@@ -366,16 +444,6 @@
 
 @media (max-width: 480px) {
     .wishForm {
-        padding: 0 var(--spacing-200) var(--spacing-200) var(--spacing-200);
-    }
-
-    .wishForm__radioGroup,
-    .wishForm__settingsGroup {
-        gap: var(--spacing-200);
-    }
-
-    .wishForm__radioLabel,
-    .wishForm__checkboxLabel {
-        padding: var(--spacing-200);
+        padding: 16px 16px 20px;
     }
 }

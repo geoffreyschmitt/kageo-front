@@ -1,0 +1,9 @@
+/* ============================================
+   CREATE WISHLIST MODAL — Garden Party
+   Uses shared Modal shell (Modal.module.css).
+   No overrides needed.
+   ============================================ */
+
+.createWishlistModal {
+    /* wrapper-level class — shell styles from Modal.module.css */
+}
