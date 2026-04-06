@@ -257,17 +257,19 @@ export default function Wishlist({
         <p className={styles.wishlist__description}>{description}</p>
 
         <div className={styles.wishlist__stats}>
+          {/* Completion — hero stat, visually dominant */}
+          <div className={`${styles.wishlist__stat} ${styles['wishlist__stat--hero']}`}>
+            <span className={styles.wishlist__statValue}>{completionPercentage.toFixed(0)}%</span>
+            <span className={styles.wishlist__statLabel}>Complete</span>
+          </div>
+          {/* Supporting stats */}
           <div className={styles.wishlist__stat}>
-            <span className={styles.wishlist__statLabel}>Items Wanted</span>
+            <span className={styles.wishlist__statLabel}>Wanted</span>
             <span className={styles.wishlist__statValue}>{wantedItems.length}</span>
           </div>
           <div className={styles.wishlist__stat}>
-            <span className={styles.wishlist__statLabel}>Items Purchased</span>
+            <span className={styles.wishlist__statLabel}>Purchased</span>
             <span className={styles.wishlist__statValue}>{purchasedItems.length}</span>
-          </div>
-          <div className={styles.wishlist__stat}>
-            <span className={styles.wishlist__statLabel}>Completion</span>
-            <span className={styles.wishlist__statValue}>{completionPercentage.toFixed(0)}%</span>
           </div>
         </div>
 

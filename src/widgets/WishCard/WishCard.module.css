@@ -61,8 +61,49 @@
     transform: translateY(-3px);
 }
 
+/* ── Purchased state — completion, not just dimness ── */
+
 .wish-card--purchased {
-    opacity: 0.72;
+    opacity: 1; /* targeted styles replace blanket dim */
+}
+
+/* Desaturated + sage wash over the image */
+.wish-card--purchased .wish-card__image {
+    filter: grayscale(30%) sepia(6%);
+}
+
+.wish-card--purchased .wish-card__imageContainer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        145deg,
+        rgba(63, 104, 69, 0.14) 0%,
+        rgba(63, 104, 69, 0.06) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Title strikethrough — universally understood as "done" */
+.wish-card--purchased .wish-card__title {
+    text-decoration: line-through;
+    text-decoration-color: rgba(63, 104, 69, 0.42);
+    text-decoration-thickness: 1.5px;
+    color: var(--wc-text-3);
+}
+
+/* Supporting details are no longer decision-relevant */
+.wish-card--purchased .wish-card__description,
+.wish-card--purchased .wish-card__price {
+    opacity: 0.55;
+}
+
+/* Purchased cards don't need the hover lift invitation */
+.wish-card--purchased:hover {
+    transform: none;
+    box-shadow: var(--wc-shadow);
+    border-color: var(--wc-border);
 }
 
 /* ── Image container ──────────────────────── */
