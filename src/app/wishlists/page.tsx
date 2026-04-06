@@ -130,24 +130,12 @@ export default function WishlistsPage() {
     {
       label: 'My Wishlists',
       content: (
-        <>
-          <WishlistList
-            wishlistCardList={ownedWishlists}
-            title="My Wishlists"
-            emptyMessage="You haven't created any wishlists yet. Start by creating one!"
-            showCreateButton={true}
-          />
-          <CreateWishlistModal
-            onSubmit={handleCreateWishlist}
-            onError={(tempId) => {
-              setWishlists((prev) => prev.filter((w) => w.id !== tempId))
-              toast('Could not create wishlist — please try again', 'error')
-            }}
-          />
-          <UpdateWishlistModal
-            onSubmit={handleUpdateWishlist}
-          />
-        </>
+        <WishlistList
+          wishlistCardList={ownedWishlists}
+          title="My Wishlists"
+          emptyMessage="You haven't created any wishlists yet. Start by creating one!"
+          showCreateButton={true}
+        />
       ),
     },
     {
@@ -203,6 +191,16 @@ export default function WishlistsPage() {
       <div className={pageStyles.pageContent}>
         <Tabs tabs={tabs}/>
       </div>
+      <CreateWishlistModal
+        onSubmit={handleCreateWishlist}
+        onError={(tempId) => {
+          setWishlists((prev) => prev.filter((w) => w.id !== tempId))
+          toast('Could not create wishlist — please try again', 'error')
+        }}
+      />
+      <UpdateWishlistModal
+        onSubmit={handleUpdateWishlist}
+      />
     </main>
   )
 }
