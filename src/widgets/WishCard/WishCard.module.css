@@ -103,6 +103,51 @@
     border-color: var(--wc-border);
 }
 
+/* ── Reserved state ───────────────────────── */
+
+.wish-card--reserved {
+    border-color: rgba(78, 50, 120, 0.3);
+}
+
+.wish-card--reserved:hover {
+    border-color: rgba(78, 50, 120, 0.5);
+    box-shadow: 0 12px 40px rgba(78, 50, 120, 0.1), 0 4px 12px rgba(78, 50, 120, 0.06);
+}
+
+.wish-card--reserved .wish-card__imageContainer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        145deg,
+        rgba(78, 50, 120, 0.1) 0%,
+        rgba(78, 50, 120, 0.03) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+.wish-card__reservedBanner {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--wc-reserv-bg);
+    border: 1px solid rgba(78, 50, 120, 0.18);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--wc-reserv);
+    letter-spacing: 0.1px;
+}
+
+.wish-card__reservedBanner svg {
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
 /* ── Image container ──────────────────────── */
 
 .wish-card__imageContainer {

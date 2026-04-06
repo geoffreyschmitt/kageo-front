@@ -95,6 +95,9 @@ export default function Wishlist({
 
   const filteredAndSortedItems = useMemo(() => {
     const filtered = items.filter((item) => {
+      // Proposed items are always shown in their own section, never in the main grid
+      if (item.status === 'proposed') return false
+
       if (!statusFilter.includes('all') && !statusFilter.includes(item.status)) {
         return false
       }
@@ -246,10 +249,10 @@ export default function Wishlist({
             )}
             {!userIsOwner && (
               <button
-                className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
+                className={`${styles.wishlist__button} ${styles['wishlist__button--amber']}`}
                 onClick={() => setIsProposeItemModalOpen(true)}
               >
-                Propose Item
+                Suggest a Wish
               </button>
             )}
           </div>
@@ -282,7 +285,9 @@ export default function Wishlist({
             <span className={styles.wishlist__progressStat}>{purchasedItems.length} purchased</span>
             <span className={styles.wishlist__progressStat}>{reservedItems.length} reserved</span>
             <span className={styles.wishlist__progressStat}>{wantedItems.length} wanted</span>
-            <span className={styles.wishlist__progressStat}>{proposedItems.length} proposed</span>
+            {!userIsOwner && proposedItems.length > 0 && (
+              <span className={styles.wishlist__progressStat}>{proposedItems.length} suggested</span>
+            )}
           </div>
         </div>
       </div>
@@ -372,7 +377,7 @@ export default function Wishlist({
                     className={`${styles.wishlist__filterButton} ${statusFilter.includes('all') ? styles['wishlist__filterButton--active'] : ''}`}
                     onClick={() => setStatusFilter(['all'])}
                   >
-                    All ({items.length})
+                    All ({items.filter(i => i.status !== 'proposed').length})
                   </button>
                   <button
                     className={`${styles.wishlist__filterButton} ${statusFilter.includes('wanted') ? styles['wishlist__filterButton--active'] : ''}`}
@@ -380,11 +385,11 @@ export default function Wishlist({
                       if (statusFilter.includes('wanted')) {
                         setStatusFilter(statusFilter.filter(s => s !== 'wanted'))
                       } else {
-                        setStatusFilter(prev => prev.includes('all') ? ['wanted', 'proposed'] : [...prev.filter(s => s !== 'all'), 'wanted'])
+                        setStatusFilter(prev => prev.includes('all') ? ['wanted'] : [...prev.filter(s => s !== 'all'), 'wanted'])
                       }
                     }}
                   >
-                    Open to Buy ({proposedItems.length + wantedItems.length})
+                    Open to Buy ({wantedItems.length})
                   </button>
                   <button
                     className={`${styles.wishlist__filterButton} ${statusFilter.includes('purchased') ? styles['wishlist__filterButton--active'] : ''}`}
@@ -483,7 +488,7 @@ export default function Wishlist({
             ))}
           </div>
 
-          {filteredAndSortedItems.length === 0 && items.length > 0 && (
+          {filteredAndSortedItems.length === 0 && items.filter(i => i.status !== 'proposed').length > 0 && (
             <div className={styles.wishlist__noResults}>
               <div className={styles.wishlist__noResultsIcon}>🔍</div>
               <h3 className={styles.wishlist__noResultsTitle}>No Items Match Your Filters</h3>
@@ -500,12 +505,93 @@ export default function Wishlist({
               </button>
             </div>
           )}
+
+          {/* ── Suggestions Section (non-owners only) ── */}
+          {!userIsOwner && (
+            <div className={styles.wishlist__suggestionsSection}>
+              <div className={styles.wishlist__suggestionsDivider} aria-hidden="true">
+                <div className={styles.wishlist__suggestionsDividerLine} />
+                <div className={styles.wishlist__suggestionsDividerIcon}>
+                  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 34 Q14 26 12 18 Q10 10 18 8 Q22 7 24 12 Q26 7 30 8 Q38 10 28 22 Q26 26 20 34Z" fill="currentColor" opacity="0.55"/>
+                    <path d="M20 34 Q20 28 20 20" stroke="currentColor" strokeWidth="1" opacity="0.4"/>
+                    <path d="M20 22 Q16 18 12 16" stroke="currentColor" strokeWidth="0.8" opacity="0.3"/>
+                    <path d="M20 26 Q24 22 28 20" stroke="currentColor" strokeWidth="0.8" opacity="0.3"/>
+                  </svg>
+                </div>
+                <div className={styles.wishlist__suggestionsDividerLine} />
+              </div>
+
+              <div className={styles.wishlist__suggestionsHeaderWrap}>
+                <div>
+                  <h2 className={styles.wishlist__suggestionsTitle}>Suggestions</h2>
+                  <p className={styles.wishlist__suggestionsMeta}>
+                    {proposedItems.length > 0
+                      ? `${proposedItems.length} idea${proposedItems.length !== 1 ? 's' : ''} proposed by friends`
+                      : 'No suggestions yet — yours could be first'}
+                  </p>
+                </div>
+              </div>
+
+              <div className={styles.wishlist__suggestionsCTA}>
+                <div className={styles.wishlist__suggestionsCTAText}>
+                  <p className={styles.wishlist__suggestionsCTATitle}>Have something in mind?</p>
+                  <p className={styles.wishlist__suggestionsCTASub}>
+                    Suggest a wish and let {ownerName} discover it
+                  </p>
+                </div>
+                <button
+                  className={`${styles.wishlist__button} ${styles['wishlist__button--amber']}`}
+                  onClick={() => setIsProposeItemModalOpen(true)}
+                >
+                  Suggest a Wish
+                </button>
+              </div>
+
+              {proposedItems.length > 0 ? (
+                <div className={styles.wishlist__itemsGrid}>
+                  {proposedItems.map((item) => (
+                    <WishCard
+                      key={item.id}
+                      id={item.id}
+                      name={item.name}
+                      description={item.description}
+                      price={item.price}
+                      currency={item.currency}
+                      imageUrl={item.imageUrl}
+                      priority={item.priority}
+                      status={item.status}
+                      purchaseUrl={item.purchaseUrl}
+                      notes={item.notes}
+                      addedDate={item.addedDate}
+                      reservedBy={item.reservedBy}
+                      purchasedBy={item.purchasedBy}
+                      showOwnerAction={false}
+                      showGuestAction={Boolean(user.id && !userIsOwner)}
+                      onReserve={onReserveWish}
+                      onReserveError={onReserveError}
+                      onCancelReservation={onCancelReservation}
+                      onCancelError={onCancelError}
+                      onMarkPurchased={onMarkPurchasedWish}
+                      onMarkPurchasedError={onMarkPurchasedError}
+                      userId={user.id}
+                      useMock={useMock}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.wishlist__suggestionsEmpty}>
+                  <p>No suggestions yet.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
       <div className={styles.wishlist__controlsSection}>
         <div className={styles.wishlist__resultsCount}>
-          Showing {filteredAndSortedItems.length} of {items.length} items
+          Showing {filteredAndSortedItems.length} of {items.filter(i => i.status !== 'proposed').length} items
         </div>
       </div>
 

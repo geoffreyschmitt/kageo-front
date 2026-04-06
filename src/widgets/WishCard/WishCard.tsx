@@ -74,7 +74,7 @@ export const WishCard = ({
     const [imgError, setImgError] = useState(false)
 
     return (
-        <div className={`${styles['wish-card']} ${status === 'purchased' ? styles['wish-card--purchased'] : ''}`}
+        <div className={`${styles['wish-card']} ${status === 'purchased' ? styles['wish-card--purchased'] : ''} ${status === 'reserved' ? styles['wish-card--reserved'] : ''}`}
              data-id={id}>
             <div className={styles['wish-card__imageContainer']}>
                 {imageUrl && !imgError ? (
@@ -116,6 +116,16 @@ export const WishCard = ({
                     </div>
                 </div>
 
+                {status === 'reserved' && (
+                    <div className={styles['wish-card__reservedBanner']}>
+                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                            <rect x="2" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                            <path d="M4 5.5V3.5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                        </svg>
+                        <span>Someone is planning to gift this</span>
+                    </div>
+                )}
+
                 <p className={styles['wish-card__description']}>{description}</p>
 
                 {notes && (
@@ -138,7 +148,7 @@ export const WishCard = ({
                 <div className={styles['wish-card__actions']}>
                     {showGuestAction && (
                         <>
-                            {status === 'wanted' && userId && (
+                            {(status === 'wanted' || status === 'proposed') && userId && (
                                 <ReserveButton wishId={id} userId={userId} onReserve={onReserve} onError={onReserveError} useMock={useMock}/>
                             )}
 
@@ -146,7 +156,7 @@ export const WishCard = ({
                                 <CancelReservationButton wishId={id} onCancel={onCancelReservation} onError={onCancelError} useMock={useMock}/>
                             )}
 
-                            {purchaseUrl && status === 'wanted' && (
+                            {purchaseUrl && (status === 'wanted' || status === 'proposed') && (
                                 <a
                                     href={purchaseUrl}
                                     target="_blank"

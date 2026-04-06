@@ -929,3 +929,153 @@
         text-align: center;
     }
 }
+
+/* ── Amber button variant (Suggest a Wish) ─── */
+
+.wishlist__button--amber {
+    background: var(--g-propos-bg);
+    border-color: rgba(110, 60, 12, 0.3);
+    color: var(--g-amber);
+}
+
+.wishlist__button--amber:hover {
+    background: var(--g-amber);
+    border-color: var(--g-amber);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(110, 60, 12, 0.25);
+    transform: translateY(-1px);
+}
+
+/* ── Suggestions Section ──────────────────── */
+
+.wishlist__suggestionsSection {
+    margin-top: 52px;
+}
+
+/* Botanical divider */
+
+.wishlist__suggestionsDivider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.wishlist__suggestionsDividerLine {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(110, 60, 12, 0.22) 40%,
+        rgba(110, 60, 12, 0.22) 60%,
+        transparent 100%
+    );
+}
+
+.wishlist__suggestionsDividerIcon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    color: var(--g-amber);
+    opacity: 0.55;
+}
+
+/* Section header */
+
+.wishlist__suggestionsHeaderWrap {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.wishlist__suggestionsTitle {
+    font-family: var(--g-font-serif);
+    font-size: clamp(26px, 3.5vw, 34px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--g-amber);
+    margin: 0 0 5px;
+    letter-spacing: -0.2px;
+}
+
+.wishlist__suggestionsMeta {
+    font-family: var(--g-font-sans);
+    font-size: 13px;
+    color: var(--g-text-3);
+    margin: 0;
+    letter-spacing: 0.1px;
+}
+
+/* CTA banner */
+
+.wishlist__suggestionsCTA {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--g-propos-bg);
+    border: 1px solid rgba(110, 60, 12, 0.14);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s;
+}
+
+.wishlist__suggestionsCTA:hover {
+    border-color: rgba(110, 60, 12, 0.25);
+}
+
+.wishlist__suggestionsCTAText {
+    min-width: 0;
+}
+
+.wishlist__suggestionsCTATitle {
+    font-family: var(--g-font-serif);
+    font-size: 19px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--g-amber);
+    margin: 0 0 3px;
+}
+
+.wishlist__suggestionsCTASub {
+    font-family: var(--g-font-sans);
+    font-size: 13px;
+    color: var(--g-text-3);
+    margin: 0;
+}
+
+/* Empty placeholder */
+
+.wishlist__suggestionsEmpty {
+    text-align: center;
+    padding: 28px 24px;
+    font-family: var(--g-font-sans);
+    font-size: 14px;
+    color: var(--g-text-3);
+    background: var(--g-propos-bg);
+    border: 1px dashed rgba(110, 60, 12, 0.22);
+    border-radius: 14px;
+    font-style: italic;
+}
+
+.wishlist__suggestionsEmpty p {
+    margin: 0;
+}
+
+/* Mobile adjustments */
+
+@media (max-width: 480px) {
+    .wishlist__suggestionsCTA {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .wishlist__button--amber {
+        width: 100%;
+        max-width: 220px;
+        text-align: center;
+    }
+}
