@@ -1,6 +1,6 @@
 'use client'
 
-import {useState} from 'react'
+import {use, useState} from 'react'
 
 import Wishlist from '@/pages/wishlist/wishlist'
 import {mockUserPrivate} from '@/entities/user';
@@ -138,10 +138,10 @@ const sampleGuestWishlistData = {
     ],
 }
 
-export default function WishlistPage() {
+export default function WishlistPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params)
+    const userIsOwner = id !== 'shared'
     const user = mockUserPrivate
-    //const userIsOwner = user.id && ownerId === user.id
-    const userIsOwner = true
 
     const initialData = userIsOwner ? sampleOwnerWishlistData : sampleGuestWishlistData
     const [items, setItems] = useState<TWishCard[]>(initialData.items)
@@ -330,3 +330,4 @@ export default function WishlistPage() {
         </main>
     )
 }
+

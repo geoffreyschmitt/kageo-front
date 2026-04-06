@@ -130,8 +130,8 @@ export const WishlistCard = ({
                                 View
                             </Button>
                         ) : (
-                            <Button 
-                                href={`/wishlist/${id}`} 
+                            <Button
+                                href={isOwnedByCurrentUser ? `/wishlist/owned` : `/wishlist/shared`}
                                 variant={'primary'}
                                 className={`${styles.wishlistCard__button}`}
                             >
