@@ -73,8 +73,10 @@ export const WishCard = ({
 }: TWishCard) => {
     const [imgError, setImgError] = useState(false)
 
+    const visibleStatus = showOwnerAction && (status === 'reserved' || status === 'purchased') ? 'wanted' : status
+
     return (
-        <div className={`${styles['wish-card']} ${status === 'purchased' ? styles['wish-card--purchased'] : ''} ${status === 'reserved' ? styles['wish-card--reserved'] : ''} ${priority === 'high' && status !== 'purchased' ? styles['wish-card--high-priority'] : ''}`}
+        <div className={`${styles['wish-card']} ${visibleStatus === 'purchased' ? styles['wish-card--purchased'] : ''} ${visibleStatus === 'reserved' ? styles['wish-card--reserved'] : ''} ${priority === 'high' && visibleStatus !== 'purchased' ? styles['wish-card--high-priority'] : ''}`}
              data-id={id}>
             <div className={styles['wish-card__imageContainer']}>
                 {imageUrl && !imgError ? (
@@ -103,6 +105,7 @@ export const WishCard = ({
                         </svg>
                     </div>
                 )}
+                {!showOwnerAction && <div className={`${styles['wish-card__status']} ${getStatusClass(visibleStatus)}`}>{visibleStatus}</div>}
                 <div className={`${styles['wish-card__priority']} ${getPriorityClass(priority)}`}>
                     {priority === 'high' && (
                         <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -111,7 +114,6 @@ export const WishCard = ({
                     )}
                     {priority}
                 </div>
-                <div className={`${styles['wish-card__status']} ${getStatusClass(status)}`}>{status}</div>
             </div>
 
             <div className={styles['wish-card__content']}>
@@ -123,7 +125,7 @@ export const WishCard = ({
                     </div>
                 </div>
 
-                {status === 'reserved' && (
+                {status === 'reserved' && !showOwnerAction && (
                     <div className={styles['wish-card__reservedBanner']}>
                         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
                             <rect x="2" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
@@ -144,10 +146,10 @@ export const WishCard = ({
 
                 <div className={styles['wish-card__meta']}>
                     <span className={styles['wish-card__date']}>Added {addedDate}</span>
-                    {status === 'reserved' && reservedBy && (
+                    {!showOwnerAction && status === 'reserved' && reservedBy && (
                         <span className={styles['wish-card__reservedBy']}>Reserved by {reservedBy}</span>
                     )}
-                    {status === 'purchased' && purchasedBy && (
+                    {!showOwnerAction && status === 'purchased' && purchasedBy && (
                         <span className={styles['wish-card__purchasedBy']}>Purchased by {purchasedBy}</span>
                     )}
                 </div>
@@ -187,23 +189,6 @@ export const WishCard = ({
                     )}
                     {showOwnerAction && (
                         <>
-                            {(status === 'wanted' || status === 'reserved') && userId && (
-                                <MarkPurchasedButton 
-                                    wishId={id}
-                                    userId={userId}
-                                    onMarkPurchased={onMarkPurchased} 
-                                    onError={onMarkPurchasedError} 
-                                    useMock={useMock}
-                                />
-                            )}
-                            {status === 'purchased' && purchasedBy === userId && (
-                                <RemovePurchasedButton 
-                                    wishId={id} 
-                                    onRemovePurchased={onRemovePurchased} 
-                                    onError={onRemovePurchasedError} 
-                                    useMock={useMock}
-                                />
-                            )}
                             <button
                                 className={`${styles['wish-card__button']} ${styles['wish-card__button--secondary']}`}
                                 onClick={() => onEditWish?.({
