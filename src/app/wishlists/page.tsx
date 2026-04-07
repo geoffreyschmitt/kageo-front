@@ -192,15 +192,18 @@ export default function WishlistsPage() {
               <strong>{sharedCount}</strong> shared with you
             </span>
           </div>
-          <button
-            className={pageStyles.pageHero__cta}
-            onClick={() => eventBus.emit('wishlist:openCreationModal', {})}
-          >
-            New Wishlist
-          </button>
-          <Link href="/history" className={pageStyles.pageHero__historyLink}>
-            View past wishlists
-          </Link>
+          <div className={pageStyles.pageHero__actions}>
+            <button
+              className={pageStyles.pageHero__cta}
+              onClick={() => eventBus.emit('wishlist:openCreationModal', {})}
+            >
+              New Wishlist
+            </button>
+            <Link href="/history" className={pageStyles.pageHero__historyLink}>
+              <span className={pageStyles.pageHero__historyIcon}>↩</span>
+              View past wishlists
+            </Link>
+          </div>
         </div>
       </div>
 
