@@ -93,6 +93,30 @@ export default function Wishlist({
   const minPrice = Math.min(...itemPrices, 0)
   const maxPrice = Math.max(...itemPrices, 1000)
 
+  const compareItems = (a: TWishCard, b: TWishCard) => {
+    let comparison = 0
+    switch (sortBy) {
+      case 'name':
+        comparison = a.name.localeCompare(b.name)
+        break
+      case 'price':
+        comparison = a.price - b.price
+        break
+      case 'date':
+        // For demo purposes, using a simple comparison
+        // In real app, you'd parse actual dates
+        const dateA = new Date(
+          a.addedDate.includes('week') ? Date.now() - 7 * 24 * 60 * 60 * 1000 : Date.now() - 24 * 60 * 60 * 1000,
+        )
+        const dateB = new Date(
+          b.addedDate.includes('week') ? Date.now() - 7 * 24 * 60 * 60 * 1000 : Date.now() - 24 * 60 * 60 * 1000,
+        )
+        comparison = dateA.getTime() - dateB.getTime()
+        break
+    }
+    return sortOrder === 'asc' ? comparison : -comparison
+  }
+
   const filteredAndSortedItems = useMemo(() => {
     const filtered = items.filter((item) => {
       // Proposed items are always shown in their own section, never in the main grid
@@ -109,31 +133,7 @@ export default function Wishlist({
       return true
     })
 
-    filtered.sort((a, b) => {
-      let comparison = 0
-
-      switch (sortBy) {
-        case 'name':
-          comparison = a.name.localeCompare(b.name)
-          break
-        case 'price':
-          comparison = a.price - b.price
-          break
-        case 'date':
-          // For demo purposes, using a simple comparison
-          // In real app, you'd parse actual dates
-          const dateA = new Date(
-            a.addedDate.includes('week') ? Date.now() - 7 * 24 * 60 * 60 * 1000 : Date.now() - 24 * 60 * 60 * 1000,
-          )
-          const dateB = new Date(
-            b.addedDate.includes('week') ? Date.now() - 7 * 24 * 60 * 60 * 1000 : Date.now() - 24 * 60 * 60 * 1000,
-          )
-          comparison = dateA.getTime() - dateB.getTime()
-          break
-      }
-
-      return sortOrder === 'asc' ? comparison : -comparison
-    })
+    filtered.sort(compareItems)
 
     return filtered
   }, [items, sortBy, sortOrder, statusFilter, priceRange])
@@ -141,7 +141,12 @@ export default function Wishlist({
   const purchasedItems = items.filter((item) => item.status === 'purchased')
   const wantedItems = items.filter((item) => item.status === 'wanted')
   const reservedItems = items.filter((item) => item.status === 'reserved')
-  const proposedItems = items.filter((item) => item.isProposed || item.status === 'proposed')
+  const allProposedItems = items.filter((item) => item.isProposed || item.status === 'proposed')
+  const proposedItems = useMemo(() => {
+    const filtered = allProposedItems.filter((item) => item.price >= priceRange.min && item.price <= priceRange.max)
+    filtered.sort(compareItems)
+    return filtered
+  }, [allProposedItems, sortBy, sortOrder, priceRange])
 
   const completionPercentage = items.length > 0 ? (purchasedItems.length / items.length) * 100 : 0
 
@@ -526,9 +531,11 @@ export default function Wishlist({
                 <div>
                   <h2 className={styles.wishlist__suggestionsTitle}>Suggestions</h2>
                   <p className={styles.wishlist__suggestionsMeta}>
-                    {proposedItems.length > 0
-                      ? `${proposedItems.length} idea${proposedItems.length !== 1 ? 's' : ''} proposed by friends`
-                      : 'No suggestions yet — yours could be first'}
+                    {allProposedItems.length === 0
+                      ? 'No suggestions yet — yours could be first'
+                      : proposedItems.length < allProposedItems.length
+                        ? `${proposedItems.length} of ${allProposedItems.length} idea${allProposedItems.length !== 1 ? 's' : ''} match your filters`
+                        : `${proposedItems.length} idea${proposedItems.length !== 1 ? 's' : ''} proposed by friends`}
                   </p>
                 </div>
               </div>

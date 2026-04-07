@@ -122,7 +122,7 @@ export const WishCard = ({
                             <rect x="2" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
                             <path d="M4 5.5V3.5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
                         </svg>
-                        <span>Someone is planning to gift this</span>
+                        <span>{reservedBy === userId ? 'You are planning to gift this' : 'Someone is planning to gift this'}</span>
                     </div>
                 )}
 
