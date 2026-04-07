@@ -139,8 +139,16 @@ const sampleGuestWishlistData = {
     ],
 }
 
-export default function WishlistPage({ params }: { params: Promise<{ id: string }> }) {
+export default function WishlistPage({
+    params,
+    searchParams,
+}: {
+    params: Promise<{ id: string }>
+    searchParams: Promise<{ mode?: string }>
+}) {
     const { id } = use(params)
+    const { mode } = use(searchParams)
+    const isHistory = mode === 'history'
     const userIsOwner = id !== 'shared'
     const user = mockUserPrivate
 
@@ -313,6 +321,7 @@ export default function WishlistPage({ params }: { params: Promise<{ id: string 
                 {...initialData}
                 items={items}
                 userIsOwner={userIsOwner}
+                isHistory={isHistory}
                 onReserveWish={handleReserveWish}
                 onReserveError={handleReserveError}
                 onCancelReservation={handleCancelReservation}

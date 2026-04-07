@@ -147,13 +147,14 @@ export const WishCard = ({
                 <div className={styles['wish-card__meta']}>
                     <span className={styles['wish-card__date']}>Added {addedDate}</span>
                     {!showOwnerAction && status === 'reserved' && reservedBy && (
-                        <span className={styles['wish-card__reservedBy']}>Reserved by {reservedBy}</span>
+                        <span className={styles['wish-card__reservedBy']}>Reserved by {reservedBy === userId ? 'you' : reservedBy}</span>
                     )}
                     {!showOwnerAction && status === 'purchased' && purchasedBy && (
                         <span className={styles['wish-card__purchasedBy']}>Purchased by {purchasedBy}</span>
                     )}
                 </div>
 
+                {(showGuestAction || showOwnerAction) && (
                 <div className={styles['wish-card__actions']}>
                     {showGuestAction && (
                         <>
@@ -177,11 +178,11 @@ export const WishCard = ({
                             )}
 
                             {status === 'reserved' && reservedBy === userId && userId && (
-                                <MarkPurchasedButton 
+                                <MarkPurchasedButton
                                     wishId={id}
                                     userId={userId}
-                                    onMarkPurchased={onMarkPurchased} 
-                                    onError={onMarkPurchasedError} 
+                                    onMarkPurchased={onMarkPurchased}
+                                    onError={onMarkPurchasedError}
                                     useMock={useMock}
                                 />
                             )}
@@ -234,6 +235,7 @@ export const WishCard = ({
                         </>
                     )}
                 </div>
+                )}
             </div>
         </div>
     )

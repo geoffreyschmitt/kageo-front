@@ -106,6 +106,11 @@ export const Header = () => {
                   Wishlists
                 </Link>
               </li>
+              <li className={styles.header__navItem}>
+                <Link href="/history" className={styles.header__navLink}>
+                  History
+                </Link>
+              </li>
             </ul>
           </nav>
           <div className={styles.header__actions}>
@@ -130,6 +135,11 @@ export const Header = () => {
               <li className={styles.header__navItem}>
                 <Link href="/wishlists" className={styles.header__navLink}>
                   Wishlists
+                </Link>
+              </li>
+              <li className={styles.header__navItem}>
+                <Link href="/history" className={styles.header__navLink}>
+                  History
                 </Link>
               </li>
             </ul>

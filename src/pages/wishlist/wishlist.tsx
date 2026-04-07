@@ -47,6 +47,7 @@ type TWishlistPageProps = {
   onProposeWish?: (wish: TProposedWishFormData & { id: string }) => void
   useMock?: boolean
   userIsOwner: boolean
+  isHistory?: boolean
 }
 
 export default function Wishlist({
@@ -75,6 +76,7 @@ export default function Wishlist({
   onProposeWish,
   useMock = false,
   userIsOwner = false,
+  isHistory = false,
 }: TWishlistPageProps) {
   const user = mockUserPrivate
 
@@ -236,7 +238,7 @@ export default function Wishlist({
           </div>
 
           <div className={styles.wishlist__actions}>
-            {userIsOwner && (
+            {userIsOwner && !isHistory && (
               <button
                 className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
                 onClick={() => {
@@ -258,13 +260,13 @@ export default function Wishlist({
             >
               Share
             </button>
-            {userIsOwner && (
+            {userIsOwner && !isHistory && (
               <button className={`${styles.wishlist__button} ${styles['wishlist__button--primary']}`}
                       onClick={() => setIsAddItemModalOpen(true)}>
                 Add Item
               </button>
             )}
-            {!userIsOwner && (
+            {!userIsOwner && !isHistory && (
               <button
                 className={`${styles.wishlist__button} ${styles['wishlist__button--amber']}`}
                 onClick={() => setIsProposeItemModalOpen(true)}
@@ -501,8 +503,8 @@ export default function Wishlist({
                     addedDate={item.addedDate}
                     reservedBy={item.reservedBy}
                     purchasedBy={item.purchasedBy}
-                    showOwnerAction={!!userIsOwner}
-                    showGuestAction={Boolean(user.id && !userIsOwner)}
+                    showOwnerAction={!isHistory && !!userIsOwner}
+                    showGuestAction={!isHistory && Boolean(user.id && !userIsOwner)}
                     onReserve={onReserveWish}
                     onReserveError={onReserveError}
                     onCancelReservation={onCancelReservation}
@@ -541,8 +543,8 @@ export default function Wishlist({
                 addedDate={item.addedDate}
                 reservedBy={item.reservedBy}
                 purchasedBy={item.purchasedBy}
-                showOwnerAction={!!userIsOwner}
-                showGuestAction={Boolean(user.id && !userIsOwner)}
+                showOwnerAction={!isHistory && !!userIsOwner}
+                showGuestAction={!isHistory && Boolean(user.id && !userIsOwner)}
                 onReserve={onReserveWish}
                 onReserveError={onReserveError}
                 onCancelReservation={onCancelReservation}
@@ -578,8 +580,8 @@ export default function Wishlist({
             </div>
           )}
 
-          {/* ── Suggestions Section (non-owners only) ── */}
-          {!userIsOwner && (
+          {/* ── Suggestions Section (non-owners only, not in history) ── */}
+          {!userIsOwner && !isHistory && (
             <div className={styles.wishlist__suggestionsSection}>
               <div className={styles.wishlist__suggestionsDivider} aria-hidden="true">
                 <div className={styles.wishlist__suggestionsDividerLine} />
@@ -669,26 +671,60 @@ export default function Wishlist({
         </div>
       </div>
 
-      <AddWishModal
-        isOpen={isAddItemModalOpen}
-        onClose={() => setIsAddItemModalOpen(false)}
-        onSubmit={handleAddWish}
-        wishlistId={id}
-        useMock
-      />
+      {!isHistory && (
+        <>
+          <AddWishModal
+            isOpen={isAddItemModalOpen}
+            onClose={() => setIsAddItemModalOpen(false)}
+            onSubmit={handleAddWish}
+            wishlistId={id}
+            useMock
+          />
 
-      <UpdateWishlistModal
-        onSubmit={handleUpdateWishlist}
-        initialData={{
-          name,
-          description,
-          isPublic,
-          coverImage: '',
-          allowComments: true,
-          allowSuggestions: true,
-          notifyOnPurchase: true,
-        }}
-      />
+          <UpdateWishlistModal
+            onSubmit={handleUpdateWishlist}
+            initialData={{
+              name,
+              description,
+              isPublic,
+              coverImage: '',
+              allowComments: true,
+              allowSuggestions: true,
+              notifyOnPurchase: true,
+            }}
+          />
+
+          <ProposeWishModal
+            isOpen={isProposeItemModalOpen}
+            onClose={() => setIsProposeItemModalOpen(false)}
+            onSubmit={handleProposeWish}
+            wishlistId={id}
+          />
+
+          {editingWish && (
+            <EditWishModal
+              isOpen={isEditWishModalOpen}
+              onClose={() => {
+                setIsEditWishModalOpen(false)
+                setEditingWish(null)
+              }}
+              onSubmit={handleUpdateWish}
+              wishId={editingWish.id}
+              initialData={{
+                name: editingWish.name,
+                description: editingWish.description,
+                price: editingWish.price,
+                currency: editingWish.currency,
+                imageUrl: editingWish.imageUrl,
+                priority: editingWish.priority,
+                purchaseUrl: editingWish.purchaseUrl || '',
+                notes: editingWish.notes || '',
+              }}
+              useMock={useMock}
+            />
+          )}
+        </>
+      )}
 
       <ShareWishlistModal
         isOpen={isShareModalOpen}
@@ -697,36 +733,6 @@ export default function Wishlist({
         wishlistName={name}
         onSendEmail={handleSendShareEmail}
       />
-
-      <ProposeWishModal
-        isOpen={isProposeItemModalOpen}
-        onClose={() => setIsProposeItemModalOpen(false)}
-        onSubmit={handleProposeWish}
-        wishlistId={id}
-      />
-
-      {editingWish && (
-        <EditWishModal
-          isOpen={isEditWishModalOpen}
-          onClose={() => {
-            setIsEditWishModalOpen(false)
-            setEditingWish(null)
-          }}
-          onSubmit={handleUpdateWish}
-          wishId={editingWish.id}
-          initialData={{
-            name: editingWish.name,
-            description: editingWish.description,
-            price: editingWish.price,
-            currency: editingWish.currency,
-            imageUrl: editingWish.imageUrl,
-            priority: editingWish.priority,
-            purchaseUrl: editingWish.purchaseUrl || '',
-            notes: editingWish.notes || '',
-          }}
-          useMock={useMock}
-        />
-      )}
     </div>
   )
 }

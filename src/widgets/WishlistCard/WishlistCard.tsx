@@ -35,7 +35,8 @@ export const WishlistCard = ({
     itemCount = 0,
     ownerId,
     ownerName,
-    isPending = false
+    isPending = false,
+    isHistory = false,
 }: TWishlistCard) => {
     const user = mockUserPrivate
     const isOwnedByCurrentUser = user.id === ownerId;
@@ -105,7 +106,7 @@ export const WishlistCard = ({
                         <span className={styles.wishlistCard__owner}>By {ownerName}</span>
                     )}
                     <div className={styles.wishlistCard__actions}>
-                        {isOwnedByCurrentUser && (
+                        {isOwnedByCurrentUser && !isHistory && (
                             <button
                                 className={`${styles.wishlistCard__button} ${styles['wishlistCard__button--secondary']}`}
                                 onClick={() => {
@@ -127,7 +128,7 @@ export const WishlistCard = ({
                             </button>
                         )}
                         {isPending ? (
-                            <Button 
+                            <Button
                                 variant={'primary'}
                                 className={`${styles.wishlistCard__button}`}
                                 disabled
@@ -136,7 +137,10 @@ export const WishlistCard = ({
                             </Button>
                         ) : (
                             <Button
-                                href={isOwnedByCurrentUser ? `/wishlist/owned` : `/wishlist/shared`}
+                                href={isOwnedByCurrentUser
+                                    ? `/wishlist/owned${isHistory ? '?mode=history' : ''}`
+                                    : `/wishlist/shared${isHistory ? '?mode=history' : ''}`
+                                }
                                 variant={'primary'}
                                 className={`${styles.wishlistCard__button}`}
                             >

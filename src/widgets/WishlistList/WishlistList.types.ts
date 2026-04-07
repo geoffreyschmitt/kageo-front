@@ -5,4 +5,5 @@ export type TWishlistList = {
     title?: string
     emptyMessage?: string
     showCreateButton?: boolean
+    isHistory?: boolean
 }

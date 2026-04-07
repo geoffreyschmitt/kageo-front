@@ -9,6 +9,7 @@ export const WishlistList = ({
   title = 'My Wishlists',
   emptyMessage = 'No wishlists found. Create your first wishlist to get started!',
   showCreateButton = false, // Default to false
+  isHistory = false,
 }: TWishlistList) => {
   return (
     <div className={styles.wishlistList}>
@@ -83,6 +84,7 @@ export const WishlistList = ({
               ownerName={wishlistCard.ownerName}
               isPublic={wishlistCard.isPublic}
               itemCount={wishlistCard.itemCount}
+              isHistory={isHistory}
             />
           ))}
         </div>

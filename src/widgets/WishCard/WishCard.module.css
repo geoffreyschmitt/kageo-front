@@ -131,12 +131,14 @@
 /* ── Reserved state ───────────────────────── */
 
 .wish-card--reserved {
-    border-color: rgba(78, 50, 120, 0.3);
+    border-color: rgba(78, 50, 120, 0.55);
+    border-left: 3px solid var(--wc-reserv);
+    box-shadow: 0 4px 16px rgba(78, 50, 120, 0.1);
 }
 
 .wish-card--reserved:hover {
-    border-color: rgba(78, 50, 120, 0.5);
-    box-shadow: 0 12px 40px rgba(78, 50, 120, 0.1), 0 4px 12px rgba(78, 50, 120, 0.06);
+    border-color: rgba(78, 50, 120, 0.75);
+    box-shadow: 0 12px 40px rgba(78, 50, 120, 0.15), 0 4px 12px rgba(78, 50, 120, 0.08);
 }
 
 .wish-card--reserved .wish-card__imageContainer::after {

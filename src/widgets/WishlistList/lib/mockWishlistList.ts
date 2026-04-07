@@ -85,4 +85,40 @@ export const wishlistCardListMock: TWishlistCard[] = [
         ownerName: "Mike R.",
         itemCount: 10
     },
+    {
+        id: "8",
+        name: "Christmas 2024",
+        description: "Holiday gifts I was hoping to receive. A mix of cozy and useful items.",
+        coverImage: "/placeholder.svg?height=200&width=300",
+        eventDate: new Date('2024-12-25'),
+        createdAt: new Date('2024-11-01'),
+        isPublic: true,
+        ownerId: "u123",
+        ownerName: "Geoffrey S.",
+        itemCount: 7
+    },
+    {
+        id: "9",
+        name: "Spring Birthday Party",
+        description: "Wishlist for Alice's birthday gathering last spring.",
+        coverImage: "/placeholder.svg?height=200&width=300",
+        eventDate: new Date('2025-03-15'),
+        createdAt: new Date('2025-02-01'),
+        isPublic: true,
+        ownerId: "1",
+        ownerName: "Alice M.",
+        itemCount: 9
+    },
+    {
+        id: "10",
+        name: "New Year Gadgets 2025",
+        description: "Tech picks I wanted for the new year. All about productivity upgrades.",
+        coverImage: "/placeholder.svg?height=200&width=300",
+        eventDate: new Date('2025-01-01'),
+        createdAt: new Date('2024-12-10'),
+        isPublic: false,
+        ownerId: "u123",
+        ownerName: "Geoffrey S.",
+        itemCount: 4
+    },
 ]

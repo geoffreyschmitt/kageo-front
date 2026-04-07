@@ -17,6 +17,9 @@ import {eventBus} from '@/shared/eventBus';
 import {CreateWishlistModal} from '@/features/CreateWishlist';
 import {TWishlistFormData} from '@/entities/wishlist';
 import {UpdateWishlistModal} from '@/features/UpdateWishlist';
+import {isEventPast} from '@/shared/lib/isEventPast';
+
+import Link from 'next/link'
 
 import pageStyles from './page.module.css'
 
@@ -43,13 +46,18 @@ export default function WishlistsPage() {
   const sortByEventDate = (a: TWishlistCard, b: TWishlistCard) =>
     a.eventDate.getTime() - b.eventDate.getTime()
 
+  const activeWishlists = useMemo(() =>
+    wishlists.filter((w) => !isEventPast(w.eventDate)),
+    [wishlists]
+  )
+
   const ownedWishlists = useMemo(() =>
-    wishlists.filter((w) => w.ownerId === user.id).sort(sortByEventDate),
-    [wishlists, user.id]
+    activeWishlists.filter((w) => w.ownerId === user.id).sort(sortByEventDate),
+    [activeWishlists, user.id]
   )
   const allInvitedWishlists = useMemo(() =>
-    wishlists.filter((w) => w.ownerId !== user.id).sort(sortByEventDate),
-    [wishlists, user.id]
+    activeWishlists.filter((w) => w.ownerId !== user.id).sort(sortByEventDate),
+    [activeWishlists, user.id]
   )
 
   const uniqueInvitedOwners = useMemo(() => {
@@ -127,7 +135,7 @@ export default function WishlistsPage() {
   }
 
   const displayName = user.name?.split(' ')[0] ?? 'there'
-  const totalWishlists = wishlists.length
+  const totalWishlists = activeWishlists.length
   const ownedCount = ownedWishlists.length
   const sharedCount = allInvitedWishlists.length
 
@@ -190,6 +198,9 @@ export default function WishlistsPage() {
           >
             New Wishlist
           </button>
+          <Link href="/history" className={pageStyles.pageHero__historyLink}>
+            View past wishlists
+          </Link>
         </div>
       </div>
 
