@@ -78,7 +78,7 @@ export default function Wishlist({
 }: TWishlistPageProps) {
   const user = mockUserPrivate
 
-  const [sortBy, setSortBy] = useState<'name' | 'price' | 'date'>('date')
+  const [sortBy, setSortBy] = useState<'name' | 'price' | 'date' | 'priority'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed')[]>(['all'])
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({min: 0, max: 1000})
@@ -113,6 +113,11 @@ export default function Wishlist({
         )
         comparison = dateA.getTime() - dateB.getTime()
         break
+      case 'priority': {
+        const priorityOrder = { high: 3, medium: 2, low: 1 }
+        comparison = (priorityOrder[a.priority] ?? 2) - (priorityOrder[b.priority] ?? 2)
+        break
+      }
     }
     return sortOrder === 'asc' ? comparison : -comparison
   }
@@ -137,6 +142,16 @@ export default function Wishlist({
 
     return filtered
   }, [items, sortBy, sortOrder, statusFilter, priceRange])
+
+  const { mostWantedItems, regularItems } = useMemo(() => {
+    const mostWanted = filteredAndSortedItems.filter(
+      (item) => item.priority === 'high' && item.status !== 'purchased'
+    )
+    const regular = filteredAndSortedItems.filter(
+      (item) => item.priority !== 'high' || item.status === 'purchased'
+    )
+    return { mostWantedItems: mostWanted, regularItems: regular }
+  }, [filteredAndSortedItems])
 
   const purchasedItems = items.filter((item) => item.status === 'purchased')
   const wantedItems = items.filter((item) => item.status === 'wanted')
@@ -356,11 +371,12 @@ export default function Wishlist({
                 <select
                   className={styles.wishlist__select}
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'name' | 'price' | 'date')}
+                  onChange={(e) => setSortBy(e.target.value as 'name' | 'price' | 'date' | 'priority')}
                 >
                   <option value="date">Date Added</option>
                   <option value="name">Name</option>
                   <option value="price">Price</option>
+                  <option value="priority">Priority</option>
                 </select>
                 <button
                   className={`${styles.wishlist__sortButton} ${sortOrder === 'asc' ? styles['wishlist__sortButton--active'] : ''}`}
@@ -454,8 +470,62 @@ export default function Wishlist({
             </div>{/* wishlist__controlsBody */}
           </div>
 
+          {mostWantedItems.length > 0 && (
+            <div className={styles.wishlist__mostWantedSection}>
+              <div className={styles.wishlist__mostWantedPanel}>
+              <div className={styles.wishlist__mostWantedHeaderWrap}>
+                <h2 className={styles.wishlist__mostWantedTitle}>
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M8 0l2.35 4.76 5.25.77-3.8 3.7.9 5.24L8 12.18l-4.7 2.29.9-5.24-3.8-3.7 5.25-.77z"/>
+                  </svg>
+                  Most Wanted
+                </h2>
+                <p className={styles.wishlist__mostWantedMeta}>
+                  {mostWantedItems.length} high-priority wish{mostWantedItems.length !== 1 ? 'es' : ''}
+                </p>
+              </div>
+              <div className={styles.wishlist__itemsGrid}>
+                {mostWantedItems.map((item) => (
+                  <WishCard
+                    key={item.id}
+                    id={item.id}
+                    name={item.name}
+                    description={item.description}
+                    price={item.price}
+                    currency={item.currency}
+                    imageUrl={item.imageUrl}
+                    priority={item.priority}
+                    status={item.status}
+                    purchaseUrl={item.purchaseUrl}
+                    notes={item.notes}
+                    addedDate={item.addedDate}
+                    reservedBy={item.reservedBy}
+                    purchasedBy={item.purchasedBy}
+                    showOwnerAction={!!userIsOwner}
+                    showGuestAction={Boolean(user.id && !userIsOwner)}
+                    onReserve={onReserveWish}
+                    onReserveError={onReserveError}
+                    onCancelReservation={onCancelReservation}
+                    onCancelError={onCancelError}
+                    onMarkPurchased={onMarkPurchasedWish}
+                    onMarkPurchasedError={onMarkPurchasedError}
+                    onRemovePurchased={onRemovePurchasedWish}
+                    onRemovePurchasedError={onRemovePurchasedError}
+                    onDeleteWish={onDeleteWish}
+                    onDeleteError={onDeleteError}
+                    onEditWish={handleEditWish}
+                    userId={user.id}
+                    useMock={useMock}
+                  />
+                ))}
+              </div>
+              </div>
+            </div>
+          )}
+
+
           <div className={styles.wishlist__itemsGrid}>
-            {filteredAndSortedItems.map((item) => (
+            {regularItems.map((item) => (
               <WishCard
                 key={item.id}
                 id={item.id}
@@ -490,7 +560,7 @@ export default function Wishlist({
             ))}
           </div>
 
-          {filteredAndSortedItems.length === 0 && items.filter(i => i.status !== 'proposed').length > 0 && (
+          {mostWantedItems.length === 0 && regularItems.length === 0 && items.filter(i => i.status !== 'proposed').length > 0 && (
             <div className={styles.wishlist__noResults}>
               <div className={styles.wishlist__noResultsIcon}>🔍</div>
               <h3 className={styles.wishlist__noResultsTitle}>No Items Match Your Filters</h3>

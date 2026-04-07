@@ -74,7 +74,7 @@ export const WishCard = ({
     const [imgError, setImgError] = useState(false)
 
     return (
-        <div className={`${styles['wish-card']} ${status === 'purchased' ? styles['wish-card--purchased'] : ''} ${status === 'reserved' ? styles['wish-card--reserved'] : ''}`}
+        <div className={`${styles['wish-card']} ${status === 'purchased' ? styles['wish-card--purchased'] : ''} ${status === 'reserved' ? styles['wish-card--reserved'] : ''} ${priority === 'high' && status !== 'purchased' ? styles['wish-card--high-priority'] : ''}`}
              data-id={id}>
             <div className={styles['wish-card__imageContainer']}>
                 {imageUrl && !imgError ? (
@@ -103,7 +103,14 @@ export const WishCard = ({
                         </svg>
                     </div>
                 )}
-                <div className={`${styles['wish-card__priority']} ${getPriorityClass(priority)}`}>{priority}</div>
+                <div className={`${styles['wish-card__priority']} ${getPriorityClass(priority)}`}>
+                    {priority === 'high' && (
+                        <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M8 0l2.35 4.76 5.25.77-3.8 3.7.9 5.24L8 12.18l-4.7 2.29.9-5.24-3.8-3.7 5.25-.77z"/>
+                        </svg>
+                    )}
+                    {priority}
+                </div>
                 <div className={`${styles['wish-card__status']} ${getStatusClass(status)}`}>{status}</div>
             </div>
 
