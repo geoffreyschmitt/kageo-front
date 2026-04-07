@@ -14,6 +14,7 @@ type TWishlistKV = {
     allowComments: boolean
     allowSuggestions: boolean
     notifyOnPurchase: boolean
+    eventDate: string
     createdAt: string
     updatedAt: string
 }
@@ -66,10 +67,14 @@ export async function PUT(
 
     try {
         const body = await request.json()
-        const { name, description, isPublic, coverImage, allowComments, allowSuggestions, notifyOnPurchase } = body
+        const { name, description, isPublic, coverImage, allowComments, allowSuggestions, notifyOnPurchase, eventDate } = body
 
         if (!name?.trim()) {
             return NextResponse.json({ message: 'Name is required' }, { status: 400 })
+        }
+
+        if (!eventDate) {
+            return NextResponse.json({ message: 'Event date is required' }, { status: 400 })
         }
 
         const updated: TWishlistKV = {
@@ -81,6 +86,7 @@ export async function PUT(
             allowComments: Boolean(allowComments),
             allowSuggestions: Boolean(allowSuggestions),
             notifyOnPurchase: Boolean(notifyOnPurchase),
+            eventDate: new Date(eventDate).toISOString(),
             updatedAt: new Date().toISOString(),
         }
 

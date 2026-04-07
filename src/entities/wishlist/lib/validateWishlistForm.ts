@@ -24,6 +24,12 @@ export const validateWishlistForm = (formData): {
         errorList.coverImage = "URL d'image invalide"
     }
 
+    if (!formData.eventDate) {
+        errorList.eventDate = "La date de l'événement est requise"
+    } else if (isNaN(new Date(formData.eventDate).getTime())) {
+        errorList.eventDate = "Date invalide"
+    }
+
     return {
         errorList,
         hasError: Object.keys(errorList).length > 0,

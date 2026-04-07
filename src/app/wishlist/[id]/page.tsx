@@ -15,7 +15,7 @@ const sampleOwnerWishlistData = {
     description:
         'All the amazing things I\'m hoping to get for my birthday this year. From the latest tech gadgets to cozy home decor, this list has everything that would make my special day even more memorable!',
     isPublic: true,
-    createdDate: 'January 15, 2024',
+    eventDate: 'August 15, 2026',
     ownerId: '1',
     ownerName: 'Sarah Johnson',
     totalValue: 1247.5,

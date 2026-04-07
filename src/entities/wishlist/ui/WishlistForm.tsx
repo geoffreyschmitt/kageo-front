@@ -50,6 +50,21 @@ export const WishlistForm = ({
                     {errors.description && <span className={styles.editWishlistForm__error}>{errors.description}</span>}
                 </div>
 
+                {/* Event Date */}
+                <div className={`${styles.editWishlistForm__field} ${styles["editWishlistForm__field--full"]}`}>
+                    <label className={styles.editWishlistForm__label} htmlFor="eventDate">
+                        Date de l&#39;événement *
+                    </label>
+                    <input
+                        type="date"
+                        id="eventDate"
+                        className={`${styles.editWishlistForm__input} ${errors.eventDate ? styles["editWishlistForm__input--error"] : ""}`}
+                        value={formData.eventDate || ""}
+                        onChange={(e) => handleInputChange("eventDate", e.target.value)}
+                    />
+                    {errors.eventDate && <span className={styles.editWishlistForm__error}>{errors.eventDate}</span>}
+                </div>
+
                 {/* Privacy Setting */}
                 <div className={styles.editWishlistForm__field}>
                     <label className={styles.editWishlistForm__label}>Confidentialité</label>

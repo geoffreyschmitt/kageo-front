@@ -8,12 +8,14 @@ export type TWishlistFormData = {
     allowComments: boolean
     allowSuggestions: boolean
     notifyOnPurchase: boolean
+    eventDate: string
 }
 
 export type TWishlistValidationErrors = {
     name?: string
     description?: string
     coverImage?: string
+    eventDate?: string
 }
 
 type TFormChangeHandler<T> = (field: keyof T, value: T[keyof T]) => void;

@@ -40,12 +40,15 @@ export default function WishlistsPage() {
     }
   }, [])
 
+  const sortByEventDate = (a: TWishlistCard, b: TWishlistCard) =>
+    a.eventDate.getTime() - b.eventDate.getTime()
+
   const ownedWishlists = useMemo(() =>
-    wishlists.filter((w) => w.ownerId === user.id),
+    wishlists.filter((w) => w.ownerId === user.id).sort(sortByEventDate),
     [wishlists, user.id]
   )
   const allInvitedWishlists = useMemo(() =>
-    wishlists.filter((w) => w.ownerId !== user.id),
+    wishlists.filter((w) => w.ownerId !== user.id).sort(sortByEventDate),
     [wishlists, user.id]
   )
 
@@ -78,6 +81,7 @@ export default function WishlistsPage() {
         isPublic: wishlistData.isPublic,
         ownerId: user.id,
         ownerName: user.name ?? user.email ?? 'Unknown',
+        eventDate: wishlistData.eventDate ? new Date(wishlistData.eventDate) : new Date(),
         createdAt: new Date(),
         itemCount: 0,
         isPending: true,
@@ -113,6 +117,7 @@ export default function WishlistsPage() {
               description: wishlistData.description,
               coverImage: wishlistData.coverImage,
               isPublic: wishlistData.isPublic,
+              eventDate: wishlistData.eventDate ? new Date(wishlistData.eventDate) : wishlist.eventDate,
             }
           : wishlist
       )

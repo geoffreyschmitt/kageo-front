@@ -6,4 +6,5 @@ export const DEFAULT_WISHLIST_SETTINGS = {
     allowComments: true,
     allowSuggestions: true,
     notifyOnPurchase: true,
+    eventDate: '',
 } as const

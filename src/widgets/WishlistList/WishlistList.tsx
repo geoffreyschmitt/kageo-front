@@ -77,6 +77,7 @@ export const WishlistList = ({
               name={wishlistCard.name}
               description={wishlistCard.description}
               coverImage={wishlistCard.coverImage}
+              eventDate={wishlistCard.eventDate}
               createdAt={wishlistCard.createdAt}
               ownerId={wishlistCard.ownerId}
               ownerName={wishlistCard.ownerName}

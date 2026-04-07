@@ -20,12 +20,16 @@ const getRelativeTime = (date: Date) => {
     return `${diffInMonths} month${diffInMonths !== 1 ? 's' : ''} ago`;
 };
 
+const formatEventDate = (date: Date) =>
+    date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+
 export const WishlistCard = ({
     id,
     name,
     description,
     coverImage,
     previewImages,
+    eventDate,
     createdAt,
     isPublic,
     itemCount = 0,
@@ -96,7 +100,7 @@ export const WishlistCard = ({
                 <p className={styles.wishlistCard__description}>{description}</p>
 
                 <div className={styles.wishlistCard__footer}>
-                    <span className={styles.wishlistCard__date}>Created {getRelativeTime(createdAt)}</span>
+                    <span className={styles.wishlistCard__date}>{formatEventDate(eventDate)}</span>
                     {!isOwnedByCurrentUser && (
                         <span className={styles.wishlistCard__owner}>By {ownerName}</span>
                     )}
@@ -110,6 +114,7 @@ export const WishlistCard = ({
                                         name,
                                         description,
                                         coverImage,
+                                        eventDate,
                                         createdAt,
                                         isPublic,
                                         itemCount,

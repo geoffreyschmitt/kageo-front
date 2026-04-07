@@ -14,7 +14,18 @@ type WishlistEvents = {
   'wishlist:closeCreationModal': {};
   'wishlist:create': {};
 
-  'wishlist:openUpdateModal': {};
+  'wishlist:openUpdateModal': {
+    id?: string
+    name?: string
+    description?: string
+    coverImage?: string
+    eventDate?: Date | string
+    isPublic?: boolean
+    itemCount?: number
+    ownerId?: string
+    ownerName?: string
+    createdAt?: Date
+  };
   'wishlist:closeUpdateModal': {};
 
   'wishlist:update': {};

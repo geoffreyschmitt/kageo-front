@@ -5,6 +5,7 @@ export const wishlistCardMock: TWishlistCard = {
     name: "Birthday Wishlist 2024",
     description: "All the things I'm hoping to get for my birthday this year. From books to gadgets!",
     coverImage: "/placeholder.svg?height=200&width=300",
+    eventDate: new Date('2026-08-15'),
     createdAt: new Date('2023-08-15'),
     isPublic: true,
     ownerId: "u123",

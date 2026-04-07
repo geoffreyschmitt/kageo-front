@@ -25,7 +25,7 @@ type TWishlistPageProps = {
   description: string
   items: TWishCard[]
   isPublic: boolean
-  createdDate: string
+  eventDate: string
   ownerId: string
   ownerName: string
   onAddItem?: () => void
@@ -55,7 +55,7 @@ export default function Wishlist({
   description,
   items = [],
   isPublic,
-  createdDate,
+  eventDate,
   ownerId,
   ownerName,
   onAddItem,
@@ -207,8 +207,8 @@ export default function Wishlist({
             {ownerName && (
               <p className={styles.wishlist__owner}>Owned by {ownerName}</p>
             )}
-            {createdDate && (
-              <p className={styles.wishlist__creationDate}>Created on {createdDate}</p>
+            {eventDate && (
+              <p className={styles.wishlist__creationDate}>Event on {eventDate}</p>
             )}
             <div className={styles.wishlist__badges}>
               <span
@@ -231,9 +231,6 @@ export default function Wishlist({
                     description,
                     isPublic,
                     coverImage: '',
-                    allowComments: true,
-                    allowSuggestions: true,
-                    notifyOnPurchase: true,
                   })
                 }}
               >
