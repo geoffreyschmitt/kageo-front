@@ -37,8 +37,6 @@ export default function ProfilePage() {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [passwordSaved, setPasswordSaved] = useState(false)
 
-    const [notifyEmail, setNotifyEmail] = useState(true)
-    const [notifyReservations, setNotifyReservations] = useState(true)
     const [publicProfile, setPublicProfile] = useState(false)
 
     const handleSaveName = () => {
@@ -227,44 +225,6 @@ export default function ProfilePage() {
                         </div>
                     </div>
                     <div className={s.section__body}>
-                        <div className={s.preference}>
-                            <div className={s.preference__text}>
-                                <p className={s.preference__title}>Email notifications</p>
-                                <p className={s.preference__desc}>
-                                    Receive an email when someone reserves or purchases a wish.
-                                </p>
-                            </div>
-                            <label className={s.toggle} aria-label="Toggle email notifications">
-                                <input
-                                    type="checkbox"
-                                    className={s.toggle__input}
-                                    checked={notifyEmail}
-                                    onChange={(e) => setNotifyEmail(e.target.checked)}
-                                />
-                                <span className={s.toggle__track} />
-                                <span className={s.toggle__thumb} />
-                            </label>
-                        </div>
-
-                        <div className={s.preference}>
-                            <div className={s.preference__text}>
-                                <p className={s.preference__title}>Reservation reminders</p>
-                                <p className={s.preference__desc}>
-                                    Get notified when a reservation on your wishlist is about to expire.
-                                </p>
-                            </div>
-                            <label className={s.toggle} aria-label="Toggle reservation reminders">
-                                <input
-                                    type="checkbox"
-                                    className={s.toggle__input}
-                                    checked={notifyReservations}
-                                    onChange={(e) => setNotifyReservations(e.target.checked)}
-                                />
-                                <span className={s.toggle__track} />
-                                <span className={s.toggle__thumb} />
-                            </label>
-                        </div>
-
                         <div className={s.preference}>
                             <div className={s.preference__text}>
                                 <p className={s.preference__title}>Public profile</p>
