@@ -544,7 +544,7 @@ export default function Wishlist({
                 <div className={styles.wishlist__suggestionsCTAText}>
                   <p className={styles.wishlist__suggestionsCTATitle}>Have something in mind?</p>
                   <p className={styles.wishlist__suggestionsCTASub}>
-                    Suggest a wish and let {ownerName} discover it
+                    Give other gifters a head start — propose what to buy for {ownerName}
                   </p>
                 </div>
                 <button
