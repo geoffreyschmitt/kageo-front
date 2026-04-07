@@ -96,7 +96,7 @@ export default function Wishlist({
   const filteredAndSortedItems = useMemo(() => {
     const filtered = items.filter((item) => {
       // Proposed items are always shown in their own section, never in the main grid
-      if (item.status === 'proposed') return false
+      if (item.status === 'proposed' || item.isProposed) return false
 
       if (!statusFilter.includes('all') && !statusFilter.includes(item.status)) {
         return false
@@ -141,7 +141,7 @@ export default function Wishlist({
   const purchasedItems = items.filter((item) => item.status === 'purchased')
   const wantedItems = items.filter((item) => item.status === 'wanted')
   const reservedItems = items.filter((item) => item.status === 'reserved')
-  const proposedItems = items.filter((item) => item.status === 'proposed')
+  const proposedItems = items.filter((item) => item.isProposed || item.status === 'proposed')
 
   const completionPercentage = items.length > 0 ? (purchasedItems.length / items.length) * 100 : 0
 

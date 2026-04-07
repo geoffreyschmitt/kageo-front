@@ -130,22 +130,34 @@
 .wish-card__reservedBanner {
     display: flex;
     align-items: center;
-    gap: 7px;
-    background: var(--wc-reserv-bg);
-    border: 1px solid rgba(78, 50, 120, 0.18);
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 10px;
+    gap: 9px;
+    background: linear-gradient(135deg, rgba(78, 50, 120, 0.1) 0%, rgba(78, 50, 120, 0.06) 100%);
+    border: 1px solid rgba(78, 50, 120, 0.32);
+    border-left: 3px solid var(--wc-reserv);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 12px;
     font-family: var(--wc-font-sans);
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
     color: var(--wc-reserv);
-    letter-spacing: 0.1px;
+    letter-spacing: 0.15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.wish-card__reservedBanner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(78, 50, 120, 0.06) 0%, transparent 60%);
+    pointer-events: none;
 }
 
 .wish-card__reservedBanner svg {
     flex-shrink: 0;
-    opacity: 0.85;
+    width: 15px;
+    height: 15px;
 }
 
 /* ── Image container ──────────────────────── */

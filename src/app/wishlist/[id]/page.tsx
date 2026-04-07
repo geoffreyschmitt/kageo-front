@@ -130,7 +130,8 @@ const sampleGuestWishlistData = {
             currency: '$',
             imageUrl: '/placeholder.svg?height=200&width=200',
             priority: 'medium' as const,
-            status: 'proposed' as const, // TODO change system, wont work if proposed and purchased
+            status: 'proposed' as const,
+            isProposed: true,
             purchaseUrl: 'https://example.com/security-system',
             notes: 'Looking for a system compatible with existing smart home setup.',
             addedDate: '2 days ago',
@@ -162,7 +163,7 @@ export default function WishlistPage({ params }: { params: Promise<{ id: string 
     const handleReserveError = (wishId: string) => {
         setItems(prev => prev.map(item =>
             item.id === wishId
-                ? {...item, status: 'wanted', reservedBy: undefined}
+                ? {...item, status: item.isProposed ? 'proposed' : 'wanted', reservedBy: undefined}
                 : item
         ))
         toast('Could not reserve wish — please try again', 'error')
@@ -298,6 +299,7 @@ export default function WishlistPage({ params }: { params: Promise<{ id: string 
             imageUrl: wish.imageUrl,
             priority: 'medium', // default since proposed wishes don't have priority in form
             status: 'proposed',
+            isProposed: true,
             purchaseUrl: wish.purchaseUrl,
             notes: wish.notes,
             addedDate: 'just now',

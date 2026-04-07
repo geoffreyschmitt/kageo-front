@@ -15,6 +15,7 @@ export type TWishCard = {
   addedDate: string
   reservedBy?: string
   purchasedBy?: string
+  isProposed?: boolean
   showOwnerAction?: boolean
   showGuestAction?: boolean
   onReserve?: (wishId: string, reservedBy: string) => void
