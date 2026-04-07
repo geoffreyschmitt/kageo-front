@@ -1,9 +1,34 @@
 import Image from "next/image"
 import Link from "next/link"
+import { getServerSession } from "next-auth"
+import { kv } from "@vercel/kv"
+
+import { authOptions } from "@/shared/config/authOptions"
+import DashboardPage from "@/pages/dashboard/dashboard"
 
 import pageStyles from "./page.module.css"
 
-export default function HomePage() {
+export default async function HomePage() {
+    const session = await getServerSession(authOptions)
+
+    if (session?.user?.id) {
+        const wishlistIds = await kv.smembers<string[]>(`user:${session.user.id}:wishlists`)
+        const rawWishlists = wishlistIds?.length
+            ? (
+                await Promise.all(
+                    wishlistIds.map((id) => kv.get<Record<string, unknown>>(`wishlist:${id}`)),
+                )
+              ).filter(Boolean) as Record<string, unknown>[]
+            : []
+
+        return (
+            <DashboardPage
+                userName={session.user.name ?? null}
+                wishlists={rawWishlists as Parameters<typeof DashboardPage>[0]['wishlists']}
+            />
+        )
+    }
+
     return (
         <main className={pageStyles.pageLayout}>
             <section className={pageStyles.hero}>
