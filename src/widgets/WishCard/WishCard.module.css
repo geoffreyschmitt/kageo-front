@@ -389,12 +389,38 @@
     font-size: 13.5px;
     color: var(--wc-text-2);
     line-height: 1.6;
-    margin: 0 0 14px;
+    margin: 0 0 6px;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    flex: 1;
+}
+
+.wish-card__description--expanded {
+    display: block;
+    overflow: visible;
+}
+
+.wish-card__desc-toggle {
+    display: inline-block;
+    margin: 0 0 14px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--wc-sage);
+    letter-spacing: 0.3px;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 2px;
+    transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+
+.wish-card__desc-toggle:hover {
+    text-decoration-color: var(--wc-sage);
 }
 
 /* ── Notes ────────────────────────────────── */

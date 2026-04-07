@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import {TWishCard} from '@/widgets/WishCard/WishCard.types';
 
@@ -72,6 +72,14 @@ export const WishCard = ({
     useMock
 }: TWishCard) => {
     const [imgError, setImgError] = useState(false)
+    const [descExpanded, setDescExpanded] = useState(false)
+    const [descOverflows, setDescOverflows] = useState(false)
+    const descRef = useRef<HTMLParagraphElement>(null)
+
+    useEffect(() => {
+        const el = descRef.current
+        if (el) setDescOverflows(el.scrollHeight > el.clientHeight)
+    }, [description])
 
     const visibleStatus = showOwnerAction && (status === 'reserved' || status === 'purchased') ? 'wanted' : status
 
@@ -135,7 +143,18 @@ export const WishCard = ({
                     </div>
                 )}
 
-                <p className={styles['wish-card__description']}>{description}</p>
+                <p
+                    ref={descRef}
+                    className={`${styles['wish-card__description']} ${descExpanded ? styles['wish-card__description--expanded'] : ''}`}
+                >{description}</p>
+                {(descOverflows || descExpanded) && (
+                    <button
+                        className={styles['wish-card__desc-toggle']}
+                        onClick={() => setDescExpanded(v => !v)}
+                    >
+                        {descExpanded ? 'Show less' : 'Show more'}
+                    </button>
+                )}
 
                 {notes && (
                     <div className={styles['wish-card__notes']}>
