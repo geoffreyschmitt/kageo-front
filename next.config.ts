@@ -1,4 +1,5 @@
 import withSerwistInit from "@serwist/next";
+import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
 
 const withSerwist = withSerwistInit({
@@ -7,8 +8,10 @@ const withSerwist = withSerwistInit({
     disable: process.env.NODE_ENV === "development",
 });
 
+const withNextIntl = createNextIntlPlugin("./src/shared/i18n/request.ts");
+
 const nextConfig: NextConfig = {
     turbopack: {},
 };
 
-export default withSerwist(nextConfig);
+export default withSerwist(withNextIntl(nextConfig));

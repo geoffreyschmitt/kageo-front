@@ -1,6 +1,6 @@
 "use client"
 
-import NextLink from "next/link";
+import { Link as NextLink } from "@/shared/i18n/navigation";
 
 import {TButton, TButtonAsButton, TButtonAsLink} from "shared/ui/Button/Button.types";
 

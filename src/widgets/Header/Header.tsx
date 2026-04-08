@@ -1,14 +1,18 @@
 'use client';
 import {useState} from 'react'
 
-import Link from 'next/link'
-
 import {signIn, signOut, useSession} from 'next-auth/react'
+import {useTranslations} from 'next-intl'
+
+import {Link} from '@/shared/i18n/navigation'
+import {LanguageSwitcher} from '@/features/LanguageSwitcher'
 
 import styles from './Header.module.css'
 
 export const Header = () => {
   const {data: session, status} = useSession()
+  const t = useTranslations('auth')
+  const tNav = useTranslations('nav')
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
   const [formData, setFormData] = useState({
@@ -39,13 +43,12 @@ export const Header = () => {
       })
 
       if (result?.error) {
-        setError('Invalid credentials')
+        setError(t('invalidCredentials'))
       } else {
         setShowAuthModal(false)
         setFormData({email: '', password: '', name: ''})
       }
     } else {
-      // Register
       try {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
@@ -54,7 +57,6 @@ export const Header = () => {
         })
 
         if (res.ok) {
-          // Auto login after registration
           const result = await signIn('credentials', {
             email: formData.email,
             password: formData.password,
@@ -67,10 +69,10 @@ export const Header = () => {
           }
         } else {
           const data = await res.json()
-          setError(data.message || 'Registration failed')
+          setError(data.message || t('registrationFailed'))
         }
       } catch {
-        setError('Network error')
+        setError(t('networkError'))
       }
     }
     setLoading(false)
@@ -103,18 +105,19 @@ export const Header = () => {
             <ul className={styles.header__navList}>
               <li className={styles.header__navItem}>
                 <Link href="/wishlists" className={styles.header__navLink}>
-                  Wishlists
+                  {tNav('wishlists')}
                 </Link>
               </li>
               <li className={styles.header__navItem}>
                 <Link href="/history" className={styles.header__navLink}>
-                  History
+                  {tNav('history')}
                 </Link>
               </li>
             </ul>
           </nav>
           <div className={styles.header__actions}>
-            <div className={styles.header__loading}>Loading...</div>
+            <LanguageSwitcher />
+            <div className={styles.header__loading}>{t('loading')}</div>
           </div>
         </div>
       </header>
@@ -134,27 +137,28 @@ export const Header = () => {
             <ul className={styles.header__navList}>
               <li className={styles.header__navItem}>
                 <Link href="/wishlists" className={styles.header__navLink}>
-                  Wishlists
+                  {tNav('wishlists')}
                 </Link>
               </li>
               <li className={styles.header__navItem}>
                 <Link href="/history" className={styles.header__navLink}>
-                  History
+                  {tNav('history')}
                 </Link>
               </li>
             </ul>
           </nav>
           <div className={styles.header__actions}>
+            <LanguageSwitcher />
             {session?.user ? (
               <div className={styles.header__userMenu}>
-                                <span className={styles.header__userName}>
-                                    Hello, {session.user.name || session.user.email}
-                                </span>
+                <span className={styles.header__userName}>
+                  {t('hello', {name: session.user.name || session.user.email || ''})}
+                </span>
                 <button
                   onClick={handleSignOut}
                   className={styles.header__logoutButton}
                 >
-                  Logout
+                  {t('logout')}
                 </button>
               </div>
             ) : (
@@ -162,19 +166,18 @@ export const Header = () => {
                 onClick={() => setShowAuthModal(true)}
                 className={styles.header__loginButton}
               >
-                Login
+                {t('login')}
               </button>
             )}
           </div>
         </div>
       </header>
 
-      {/* Auth Modal */}
       {showAuthModal && (
         <div className={styles.modal__overlay} onClick={closeModal}>
           <div className={styles.modal__content} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modal__header}>
-              <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
+              <h2>{isLogin ? t('login') : t('signUp')}</h2>
               <button
                 className={styles.modal__close}
                 onClick={closeModal}
@@ -186,7 +189,7 @@ export const Header = () => {
             <form onSubmit={handleSubmit} className={styles.auth__form}>
               {!isLogin && (
                 <div className={styles.form__group}>
-                  <label htmlFor="name">Name</label>
+                  <label htmlFor="name">{t('name')}</label>
                   <input
                     type="text"
                     id="name"
@@ -200,7 +203,7 @@ export const Header = () => {
               )}
 
               <div className={styles.form__group}>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{t('email')}</label>
                 <input
                   type="email"
                   id="email"
@@ -213,7 +216,7 @@ export const Header = () => {
               </div>
 
               <div className={styles.form__group}>
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">{t('password')}</label>
                 <input
                   type="password"
                   id="password"
@@ -232,12 +235,12 @@ export const Header = () => {
                 disabled={loading}
                 className={styles.form__submit}
               >
-                {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Sign Up')}
+                {loading ? t('pleaseWait') : (isLogin ? t('login') : t('signUp'))}
               </button>
             </form>
 
             <div className={styles.auth__divider}>
-              <span>or</span>
+              <span>{t('or')}</span>
             </div>
 
             <button
@@ -254,11 +257,11 @@ export const Header = () => {
                 <path fill="#EA4335"
                       d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
-              Continue with Google
+              {t('continueWithGoogle')}
             </button>
 
             <div className={styles.auth__switch}>
-              {isLogin ? 'Don\'t have an account? ' : 'Already have an account? '}
+              {isLogin ? t('noAccount') + ' ' : t('hasAccount') + ' '}
               <button
                 type="button"
                 onClick={() => {
@@ -268,7 +271,7 @@ export const Header = () => {
                 }}
                 className={styles.switch__button}
               >
-                {isLogin ? 'Sign up' : 'Login'}
+                {isLogin ? t('signUpLink') : t('loginLink')}
               </button>
             </div>
           </div>

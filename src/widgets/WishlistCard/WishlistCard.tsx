@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import {useTranslations, useFormatter} from 'next-intl'
 
 import {TWishlistCard} from '@/widgets/WishlistCard';
 
@@ -8,20 +9,6 @@ import {Button} from '@/shared/ui';
 
 import styles from './WishlistCard.module.css'
 import {eventBus} from '@/shared/eventBus';
-
-const getRelativeTime = (date: Date) => {
-    const now = new Date();
-    const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-    const diffInWeeks = Math.floor(diffInDays / 7);
-    const diffInMonths = Math.floor(diffInDays / 30);
-
-    if (diffInDays < 7) return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
-    if (diffInWeeks < 4) return `${diffInWeeks} week${diffInWeeks !== 1 ? 's' : ''} ago`;
-    return `${diffInMonths} month${diffInMonths !== 1 ? 's' : ''} ago`;
-};
-
-const formatEventDate = (date: Date) =>
-    date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 
 export const WishlistCard = ({
     id,
@@ -38,11 +25,15 @@ export const WishlistCard = ({
     isPending = false,
     isHistory = false,
 }: TWishlistCard) => {
+    const t = useTranslations('wishlistCard')
+    const format = useFormatter()
     const user = mockUserPrivate
     const isOwnedByCurrentUser = user.id === ownerId;
 
     const displayPreviews = previewImages?.filter(Boolean).slice(0, 4) ?? []
     const usePreviewGrid = displayPreviews.length >= 2
+
+    const formattedDate = format.dateTime(eventDate, { day: 'numeric', month: 'long', year: 'numeric' })
 
     return (
         <div className={styles.wishlistCard}>
@@ -85,11 +76,11 @@ export const WishlistCard = ({
                     <div
                         className={`${styles.wishlistCard__badge} ${isPublic ? styles['wishlistCard__badge--public'] : styles['wishlistCard__badge--private']}`}
                     >
-                        {isPublic ? 'Public' : 'Private'}
+                        {isPublic ? t('public') : t('private')}
                     </div>
                 )}
                 <span className={styles.wishlistCard__countOverlay}>
-                    {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                    {t('items', {count: itemCount})}
                 </span>
             </div>
 
@@ -101,9 +92,9 @@ export const WishlistCard = ({
                 <p className={styles.wishlistCard__description}>{description}</p>
 
                 <div className={styles.wishlistCard__footer}>
-                    <span className={styles.wishlistCard__date}>{formatEventDate(eventDate)}</span>
+                    <span className={styles.wishlistCard__date}>{formattedDate}</span>
                     {!isOwnedByCurrentUser && (
-                        <span className={styles.wishlistCard__owner}>By {ownerName}</span>
+                        <span className={styles.wishlistCard__owner}>{t('by', {name: ownerName})}</span>
                     )}
                     <div className={styles.wishlistCard__actions}>
                         {isOwnedByCurrentUser && !isHistory && (
@@ -124,7 +115,7 @@ export const WishlistCard = ({
                                     })
                                 }}
                             >
-                                Edit
+                                {t('edit')}
                             </button>
                         )}
                         {isPending ? (
@@ -133,7 +124,7 @@ export const WishlistCard = ({
                                 className={`${styles.wishlistCard__button}`}
                                 disabled
                             >
-                                View
+                                {t('view')}
                             </Button>
                         ) : (
                             <Button
@@ -144,7 +135,7 @@ export const WishlistCard = ({
                                 variant={'primary'}
                                 className={`${styles.wishlistCard__button}`}
                             >
-                                View
+                                {t('view')}
                             </Button>
                         )}
                     </div>

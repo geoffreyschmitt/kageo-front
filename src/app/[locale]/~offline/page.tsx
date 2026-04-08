@@ -1,8 +1,11 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import styles from './offline.module.css'
 
 export default function OfflinePage() {
+    const t = useTranslations('offline')
+
     return (
         <main className={styles.container}>
             <div className={styles.card}>
@@ -17,12 +20,10 @@ export default function OfflinePage() {
                         <line x1="12" y1="20" x2="12.01" y2="20"/>
                     </svg>
                 </div>
-                <h1 className={styles.title}>You&apos;re offline</h1>
-                <p className={styles.description}>
-                    Check your internet connection and try again.
-                </p>
+                <h1 className={styles.title}>{t('title')}</h1>
+                <p className={styles.description}>{t('description')}</p>
                 <button className={styles.button} onClick={() => window.location.reload()}>
-                    Try again
+                    {t('retry')}
                 </button>
             </div>
         </main>

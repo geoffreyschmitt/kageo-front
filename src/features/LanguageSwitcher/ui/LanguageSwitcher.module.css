@@ -1,0 +1,30 @@
+.switcher {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+
+.option {
+    color: var(--color-text-muted, #888);
+    text-decoration: none;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: color 0.15s;
+}
+
+.option:hover {
+    color: var(--color-text, #222);
+}
+
+.option--active {
+    color: var(--color-text, #222);
+    font-weight: 600;
+}
+
+.divider {
+    color: var(--color-border, #ccc);
+    user-select: none;
+}

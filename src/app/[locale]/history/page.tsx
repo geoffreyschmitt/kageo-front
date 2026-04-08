@@ -1,5 +1,6 @@
 'use client';
 import {useMemo, useState} from 'react';
+import {useTranslations} from 'next-intl';
 
 import {WishlistList} from '@/widgets'
 import {TWishlistCard} from '@/widgets/WishlistCard';
@@ -17,6 +18,7 @@ import {isEventPast} from '@/shared/lib/isEventPast';
 import pageStyles from './page.module.css'
 
 export default function HistoryPage() {
+  const t = useTranslations('history')
   const user = mockUserPrivate
   const [wishlists] = useState<TWishlistCard[]>(
     wishlistCardListMock.filter((w) => isEventPast(w.eventDate))
@@ -59,19 +61,19 @@ export default function HistoryPage() {
 
   const tabs = [
     {
-      label: 'My Past Wishlists',
+      label: t('tabMine'),
       content: (
         <WishlistList
           wishlistCardList={ownedWishlists}
-          title="My Past Wishlists"
-          emptyMessage="None of your wishlists have passed yet."
+          title={t('listTitleMine')}
+          emptyMessage={t('emptyMine')}
           showCreateButton={false}
           isHistory={true}
         />
       ),
     },
     {
-      label: 'Shared with Me',
+      label: t('tabShared'),
       content: (
         <>
           <div className={pageStyles.filterContainer}>
@@ -83,8 +85,8 @@ export default function HistoryPage() {
           </div>
           <WishlistList
             wishlistCardList={filteredInvitedWishlists}
-            title="Past Wishlists Shared with Me"
-            emptyMessage="No past wishlists have been shared with you."
+            title={t('listTitleShared')}
+            emptyMessage={t('emptyShared')}
             showCreateButton={false}
             isHistory={true}
           />
@@ -97,24 +99,22 @@ export default function HistoryPage() {
     <main>
       <div className={pageStyles.pageHero}>
         <div className={pageStyles.pageHero__inner}>
-          <p className={pageStyles.pageHero__greeting}>Hello, {displayName}</p>
-          <h1 className={pageStyles.pageHero__title}>History</h1>
+          <p className={pageStyles.pageHero__greeting}>{t('greeting', {name: displayName})}</p>
+          <h1 className={pageStyles.pageHero__title}>{t('title')}</h1>
           <div className={pageStyles.pageHero__stats}>
             <span className={pageStyles.pageHero__stat}>
-              <strong>{totalPast}</strong> past events
+              {t('statPast', {count: totalPast})}
             </span>
             <span className={pageStyles.pageHero__statDivider}>·</span>
             <span className={pageStyles.pageHero__stat}>
-              <strong>{ownedCount}</strong> yours
+              <strong>{ownedCount}</strong> {t('statYours')}
             </span>
             <span className={pageStyles.pageHero__statDivider}>·</span>
             <span className={pageStyles.pageHero__stat}>
-              <strong>{sharedCount}</strong> shared with you
+              <strong>{sharedCount}</strong> {t('statShared')}
             </span>
           </div>
-          <p className={pageStyles.pageHero__subtitle}>
-            A read-only record of past wishlists and how they were gifted.
-          </p>
+          <p className={pageStyles.pageHero__subtitle}>{t('subtitle')}</p>
         </div>
       </div>
 

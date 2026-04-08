@@ -1,15 +1,17 @@
 import Image from "next/image"
-import Link from "next/link"
 import { getServerSession } from "next-auth"
+import { getTranslations } from 'next-intl/server'
 import { kv } from "@vercel/kv"
 
 import { authOptions } from "@/shared/config/authOptions"
 import DashboardPage from "@/pages/dashboard/dashboard"
+import { Link } from '@/shared/i18n/navigation'
 
 import pageStyles from "./page.module.css"
 
 export default async function HomePage() {
     const session = await getServerSession(authOptions)
+    const t = await getTranslations('landing')
 
     if (session?.user?.id) {
         const wishlistIds = await kv.smembers<string[]>(`user:${session.user.id}:wishlists`)
@@ -33,17 +35,14 @@ export default async function HomePage() {
         <main className={pageStyles.pageLayout}>
             <section className={pageStyles.hero}>
                 <div className={pageStyles.hero__content}>
-                    <h1 className={pageStyles.hero__title}>Organize Your Desires, Share Your Dreams.</h1>
-                    <p className={pageStyles.hero__description}>
-                        Kageo is the ultimate platform to create, manage, and share personalized wishlists for any occasion. From
-                        birthdays to holidays, make sure you get exactly what you want, and help others do the same!
-                    </p>
+                    <h1 className={pageStyles.hero__title}>{t('heroTitle')}</h1>
+                    <p className={pageStyles.hero__description}>{t('heroDescription')}</p>
                     <div className={pageStyles.hero__actions}>
-                        <Link href="/wishlist" className={pageStyles.hero__buttonPrimary}>
-                            Get Started - It&#39;s Free!
+                        <Link href="/wishlists" className={pageStyles.hero__buttonPrimary}>
+                            {t('getStarted')}
                         </Link>
                         <Link href="/features" className={pageStyles.hero__buttonSecondary}>
-                            Learn More
+                            {t('learnMore')}
                         </Link>
                     </div>
                 </div>
@@ -59,46 +58,36 @@ export default async function HomePage() {
             </section>
 
             <section className={pageStyles.features}>
-                <h2 className={pageStyles.features__title}>Why Choose Kageo?</h2>
+                <h2 className={pageStyles.features__title}>{t('whyChoose')}</h2>
                 <div className={pageStyles.features__grid}>
                     <div className={pageStyles.featureCard}>
                         <div className={pageStyles.featureCard__icon}>✨</div>
-                        <h3 className={pageStyles.featureCard__title}>Effortless Creation</h3>
-                        <p className={pageStyles.featureCard__description}>
-                            Quickly add items with details, images, and links. Organize them by priority and status.
-                        </p>
+                        <h3 className={pageStyles.featureCard__title}>{t('effortlessCreationTitle')}</h3>
+                        <p className={pageStyles.featureCard__description}>{t('effortlessCreationDesc')}</p>
                     </div>
                     <div className={pageStyles.featureCard}>
                         <div className={pageStyles.featureCard__icon}>🤝</div>
-                        <h3 className={pageStyles.featureCard__title}>Seamless Collaboration</h3>
-                        <p className={pageStyles.featureCard__description}>
-                            Invite friends and family to view, suggest, or even mark items as purchased.
-                        </p>
+                        <h3 className={pageStyles.featureCard__title}>{t('collaborationTitle')}</h3>
+                        <p className={pageStyles.featureCard__description}>{t('collaborationDesc')}</p>
                     </div>
                     <div className={pageStyles.featureCard}>
                         <div className={pageStyles.featureCard__icon}>🎁</div>
-                        <h3 className={pageStyles.featureCard__title}>Never Miss a Gift</h3>
-                        <p className={pageStyles.featureCard__description}>
-                            Ensure you receive thoughtful gifts by sharing exactly what you desire.
-                        </p>
+                        <h3 className={pageStyles.featureCard__title}>{t('neverMissTitle')}</h3>
+                        <p className={pageStyles.featureCard__description}>{t('neverMissDesc')}</p>
                     </div>
                     <div className={pageStyles.featureCard}>
                         <div className={pageStyles.featureCard__icon}>🔒</div>
-                        <h3 className={pageStyles.featureCard__title}>Privacy Control</h3>
-                        <p className={pageStyles.featureCard__description}>
-                            Keep wishlists private or make them public for easy sharing. You&#39;re in control.
-                        </p>
+                        <h3 className={pageStyles.featureCard__title}>{t('privacyTitle')}</h3>
+                        <p className={pageStyles.featureCard__description}>{t('privacyDesc')}</p>
                     </div>
                 </div>
             </section>
 
             <section className={pageStyles.cta}>
-                <h2 className={pageStyles.cta__title}>Ready to Start Your Wishlist Journey?</h2>
-                <p className={pageStyles.cta__description}>
-                    Join thousands of happy users who are simplifying their gift-giving and receiving with Kageo.
-                </p>
-                <Link href="/wishlist" className={pageStyles.cta__button}>
-                    Create Your First Wishlist Now
+                <h2 className={pageStyles.cta__title}>{t('ctaTitle')}</h2>
+                <p className={pageStyles.cta__description}>{t('ctaDescription')}</p>
+                <Link href="/wishlists" className={pageStyles.cta__button}>
+                    {t('ctaButton')}
                 </Link>
             </section>
         </main>

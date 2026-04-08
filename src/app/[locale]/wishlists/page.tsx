@@ -1,5 +1,6 @@
 'use client';
 import {useEffect, useMemo, useState} from 'react';
+import {useTranslations} from 'next-intl';
 
 import {WishlistList} from '@/widgets'
 import {TWishlistCard} from '@/widgets/WishlistCard';
@@ -13,13 +14,12 @@ import {mockUserPrivate} from '@/entities/user';
 
 import {Tabs} from '@/shared/ui'
 import {eventBus} from '@/shared/eventBus';
+import {Link} from '@/shared/i18n/navigation';
 
 import {CreateWishlistModal} from '@/features/CreateWishlist';
 import {TWishlistFormData} from '@/entities/wishlist';
 import {UpdateWishlistModal} from '@/features/UpdateWishlist';
 import {isEventPast} from '@/shared/lib/isEventPast';
-
-import Link from 'next/link'
 
 import pageStyles from './page.module.css'
 
@@ -27,6 +27,7 @@ const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' =
   eventBus.emit('ui:toast', { message, type })
 
 export default function WishlistsPage() {
+  const t = useTranslations('wishlists')
   const user = mockUserPrivate
   const [wishlists, setWishlists] = useState<TWishlistCard[]>(wishlistCardListMock)
   const [selectedOwnerFilter, setSelectedOwnerFilter] = useState<TWishlistOwner | null>(null)
@@ -141,18 +142,18 @@ export default function WishlistsPage() {
 
   const tabs = [
     {
-      label: 'My Wishlists',
+      label: t('tabMine'),
       content: (
         <WishlistList
           wishlistCardList={ownedWishlists}
-          title="My Wishlists"
-          emptyMessage="You haven't created any wishlists yet. Start by creating one!"
+          title={t('listTitleMine')}
+          emptyMessage={t('emptyMine')}
           showCreateButton={true}
         />
       ),
     },
     {
-      label: 'Shared with Me',
+      label: t('tabShared'),
       content: (
         <>
           <div className={pageStyles.filterContainer}>
@@ -164,8 +165,8 @@ export default function WishlistsPage() {
           </div>
           <WishlistList
             wishlistCardList={filteredInvitedWishlists}
-            title="Wishlists Shared with Me"
-            emptyMessage="No wishlists have been shared with you yet."
+            title={t('listTitleShared')}
+            emptyMessage={t('emptyShared')}
             showCreateButton={false}
           />
         </>
@@ -177,19 +178,19 @@ export default function WishlistsPage() {
     <main>
       <div className={pageStyles.pageHero}>
         <div className={pageStyles.pageHero__inner}>
-          <p className={pageStyles.pageHero__greeting}>Hello, {displayName}</p>
-          <h1 className={pageStyles.pageHero__title}>Your Wishlists</h1>
+          <p className={pageStyles.pageHero__greeting}>{t('greeting', {name: displayName})}</p>
+          <h1 className={pageStyles.pageHero__title}>{t('title')}</h1>
           <div className={pageStyles.pageHero__stats}>
             <span className={pageStyles.pageHero__stat}>
-              <strong>{totalWishlists}</strong> total
+              <strong>{totalWishlists}</strong> {t('statTotal')}
             </span>
             <span className={pageStyles.pageHero__statDivider}>·</span>
             <span className={pageStyles.pageHero__stat}>
-              <strong>{ownedCount}</strong> yours
+              <strong>{ownedCount}</strong> {t('statYours')}
             </span>
             <span className={pageStyles.pageHero__statDivider}>·</span>
             <span className={pageStyles.pageHero__stat}>
-              <strong>{sharedCount}</strong> shared with you
+              <strong>{sharedCount}</strong> {t('statShared')}
             </span>
           </div>
           <div className={pageStyles.pageHero__actions}>
@@ -197,11 +198,11 @@ export default function WishlistsPage() {
               className={pageStyles.pageHero__cta}
               onClick={() => eventBus.emit('wishlist:openCreationModal', {})}
             >
-              New Wishlist
+              {t('newWishlist')}
             </button>
             <Link href="/history" className={pageStyles.pageHero__historyLink}>
               <span className={pageStyles.pageHero__historyIcon}>↩</span>
-              View past wishlists
+              {t('viewPast')}
             </Link>
           </div>
         </div>
@@ -214,7 +215,7 @@ export default function WishlistsPage() {
         onSubmit={handleCreateWishlist}
         onError={(tempId) => {
           setWishlists((prev) => prev.filter((w) => w.id !== tempId))
-          toast('Could not create wishlist — please try again', 'error')
+          toast(t('createError'), 'error')
         }}
       />
       <UpdateWishlistModal

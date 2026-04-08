@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 import { useFilterWishlistOwner } from "@/features/FilterWishlistOwner/model";
 import {TFilterWishlistOwner, TWishlistOwner} from "@/features/FilterWishlistOwner/ui/FilterWishlistOwner.types";
@@ -9,6 +10,7 @@ import {TFilterWishlistOwner, TWishlistOwner} from "@/features/FilterWishlistOwn
 import styles from "./FilterWishlistOwner.module.css";
 
 export const OwnerFilter = ({ owners, selectedOwner, onSelectOwner }:TFilterWishlistOwner) => {
+    const t = useTranslations('filterOwner');
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,14 +44,14 @@ export const OwnerFilter = ({ owners, selectedOwner, onSelectOwner }:TFilterWish
     return (
         <div className={styles.ownerFilterSelect} ref={dropdownRef}>
             <label htmlFor="owner-search" className={styles.ownerFilterSelect__label}>
-                Filter by Owner
+                {t('filterLabel')}
             </label>
             <div className={styles.ownerFilterSelect__inputContainer}>
                 <input
                     id="owner-search"
                     type="text"
                     className={styles.ownerFilterSelect__input}
-                    placeholder="Search or select owner..."
+                    placeholder={t('searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => {
                         setSearchTerm(e.target.value);
@@ -89,7 +91,7 @@ export const OwnerFilter = ({ owners, selectedOwner, onSelectOwner }:TFilterWish
                             ))}
                         </ul>
                     ) : (
-                        <div className={styles.ownerFilterSelect__noResults}>No owners found.</div>
+                        <div className={styles.ownerFilterSelect__noResults}>{t('noResults')}</div>
                     )}
                 </div>
             )}

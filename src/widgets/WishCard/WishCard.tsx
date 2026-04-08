@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
+import {useTranslations} from 'next-intl'
 
 import {TWishCard} from '@/widgets/WishCard/WishCard.types';
 
@@ -71,6 +72,7 @@ export const WishCard = ({
     userId,
     useMock
 }: TWishCard) => {
+    const t = useTranslations('wishCard')
     const [imgError, setImgError] = useState(false)
     const [descExpanded, setDescExpanded] = useState(false)
     const [descOverflows, setDescOverflows] = useState(false)
@@ -139,7 +141,7 @@ export const WishCard = ({
                             <rect x="2" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
                             <path d="M4 5.5V3.5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
                         </svg>
-                        <span>{reservedBy === userId ? 'You are planning to gift this' : 'Someone is planning to gift this'}</span>
+                        <span>{reservedBy === userId ? t('youPlanningToGift') : t('someonePlanningToGift')}</span>
                     </div>
                 )}
 
@@ -152,24 +154,26 @@ export const WishCard = ({
                         className={styles['wish-card__desc-toggle']}
                         onClick={() => setDescExpanded(v => !v)}
                     >
-                        {descExpanded ? 'Show less' : 'Show more'}
+                        {descExpanded ? t('showLess') : t('showMore')}
                     </button>
                 )}
 
                 {notes && (
                     <div className={styles['wish-card__notes']}>
-                        <span className={styles['wish-card__notesLabel']}>Notes:</span>
+                        <span className={styles['wish-card__notesLabel']}>{t('notes')}</span>
                         <p className={styles['wish-card__notesText']}>{notes}</p>
                     </div>
                 )}
 
                 <div className={styles['wish-card__meta']}>
-                    <span className={styles['wish-card__date']}>Added {addedDate}</span>
+                    <span className={styles['wish-card__date']}>{t('added', {date: addedDate})}</span>
                     {!showOwnerAction && status === 'reserved' && reservedBy && (
-                        <span className={styles['wish-card__reservedBy']}>Reserved by {reservedBy === userId ? 'you' : reservedBy}</span>
+                        <span className={styles['wish-card__reservedBy']}>
+                            {reservedBy === userId ? t('reservedByYou') : t('reservedBy', {name: reservedBy})}
+                        </span>
                     )}
                     {!showOwnerAction && status === 'purchased' && purchasedBy && (
-                        <span className={styles['wish-card__purchasedBy']}>Purchased by {purchasedBy}</span>
+                        <span className={styles['wish-card__purchasedBy']}>{t('purchasedBy', {name: purchasedBy})}</span>
                     )}
                 </div>
 
@@ -192,7 +196,7 @@ export const WishCard = ({
                                     rel="noopener noreferrer"
                                     className={`${styles['wish-card__button']} ${styles['wish-card__button--primary']}`}
                                 >
-                                    Buy Now
+                                    {t('buyNow')}
                                 </a>
                             )}
 
@@ -242,7 +246,7 @@ export const WishCard = ({
                                     useMock
                                 })}
                             >
-                                Edit
+                                {t('edit')}
                             </button>
                             <DeleteWishButton
                                 wishId={id}

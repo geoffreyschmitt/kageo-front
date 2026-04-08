@@ -1,12 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 import { WishlistCard } from '@/widgets/WishlistCard'
 import { TWishlistCard } from '@/widgets/WishlistCard'
 import { CreateWishlistModal } from '@/features/CreateWishlist'
 import { eventBus } from '@/shared/eventBus'
+import { Link } from '@/shared/i18n/navigation'
 
 import styles from './dashboard.module.css'
 
@@ -36,16 +37,17 @@ function getDaysUntil(date: Date): number {
     return Math.round((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
-function getCountdownLabel(days: number): string {
-    if (days === 0) return 'Today'
-    if (days === 1) return 'Tomorrow'
-    if (days < 0) return `${Math.abs(days)} day${Math.abs(days) !== 1 ? 's' : ''} ago`
-    return `In ${days} day${days !== 1 ? 's' : ''}`
-}
-
 export default function DashboardPage({ userName, wishlists }: TDashboardPageProps) {
     const router = useRouter()
+    const t = useTranslations('dashboard')
     const firstName = userName?.split(' ')[0] ?? 'there'
+
+    const getCountdownLabel = (days: number): string => {
+        if (days === 0) return t('today')
+        if (days === 1) return t('tomorrow')
+        if (days < 0) return t('daysAgo', { count: Math.abs(days) })
+        return t('inDays', { count: days })
+    }
 
     const hydrated: TWishlistCard[] = wishlists.map((w) => ({
         id: w.id,
@@ -83,19 +85,19 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
             {/* ── Greeting ── */}
             <section className={styles.greeting}>
                 <div className={styles.greeting__inner}>
-                    <p className={styles.greeting__eyebrow}>Welcome back</p>
-                    <h1 className={styles.greeting__title}>Hello, {firstName}</h1>
+                    <p className={styles.greeting__eyebrow}>{t('welcomeBack')}</p>
+                    <h1 className={styles.greeting__title}>{t('hello', { name: firstName })}</h1>
 
                     {nextEvent && nextDays !== null ? (
                         <div className={`${styles.nextEvent} ${nextDays <= 3 ? styles['nextEvent--urgent'] : nextDays === 0 ? styles['nextEvent--today'] : ''}`}>
-                            <span className={styles.nextEvent__label}>Next event</span>
+                            <span className={styles.nextEvent__label}>{t('nextEvent')}</span>
                             <span className={styles.nextEvent__name}>{nextEvent.name}</span>
                             <span className={styles.nextEvent__countdown}>{getCountdownLabel(nextDays)}</span>
                         </div>
                     ) : hydrated.length === 0 ? (
-                        <p className={styles.greeting__sub}>You have no wishlists yet. Create one to get started.</p>
+                        <p className={styles.greeting__sub}>{t('noWishlists')}</p>
                     ) : (
-                        <p className={styles.greeting__sub}>No upcoming events — all past.</p>
+                        <p className={styles.greeting__sub}>{t('noUpcoming')}</p>
                     )}
 
                     <div className={styles.greeting__actions}>
@@ -103,10 +105,10 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                             className={styles.greeting__ctaPrimary}
                             onClick={() => eventBus.emit('wishlist:openCreationModal', {})}
                         >
-                            New Wishlist
+                            {t('newWishlist')}
                         </button>
                         <Link href="/wishlists" className={styles.greeting__ctaSecondary}>
-                            All Wishlists
+                            {t('allWishlists')}
                         </Link>
                     </div>
                 </div>
@@ -124,13 +126,13 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                                 <path d="M40 28 C48 18 60 20 58 28 C56 35 42 31 40 28Z" fill="#eaf2eb" stroke="#3f6845" strokeWidth="1" opacity="0.8"/>
                             </svg>
                         </div>
-                        <h2 className={styles.empty__title}>Nothing here yet</h2>
-                        <p className={styles.empty__text}>Create your first wishlist for an upcoming occasion.</p>
+                        <h2 className={styles.empty__title}>{t('nothingYet')}</h2>
+                        <p className={styles.empty__text}>{t('createFirst')}</p>
                         <button
                             className={styles.empty__cta}
                             onClick={() => eventBus.emit('wishlist:openCreationModal', {})}
                         >
-                            Create a Wishlist
+                            {t('createWishlist')}
                         </button>
                     </section>
                 )}
@@ -138,9 +140,9 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                 {thisWeek.length > 0 && (
                     <section className={styles.section}>
                         <div className={styles.section__header}>
-                            <h2 className={styles.section__title}>This Week</h2>
+                            <h2 className={styles.section__title}>{t('thisWeek')}</h2>
                             <span className={`${styles.section__badge} ${styles['section__badge--urgent']}`}>
-                                {thisWeek.length} event{thisWeek.length !== 1 ? 's' : ''}
+                                {t('events', { count: thisWeek.length })}
                             </span>
                         </div>
                         <div className={styles.section__grid}>
@@ -159,9 +161,9 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                 {thisMonth.length > 0 && (
                     <section className={styles.section}>
                         <div className={styles.section__header}>
-                            <h2 className={styles.section__title}>This Month</h2>
+                            <h2 className={styles.section__title}>{t('thisMonth')}</h2>
                             <span className={styles.section__badge}>
-                                {thisMonth.length} event{thisMonth.length !== 1 ? 's' : ''}
+                                {t('events', { count: thisMonth.length })}
                             </span>
                         </div>
                         <div className={styles.section__grid}>
@@ -180,9 +182,9 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                 {later.length > 0 && (
                     <section className={styles.section}>
                         <div className={styles.section__header}>
-                            <h2 className={styles.section__title}>Further Ahead</h2>
+                            <h2 className={styles.section__title}>{t('furtherAhead')}</h2>
                             <span className={styles.section__badge}>
-                                {later.length} event{later.length !== 1 ? 's' : ''}
+                                {t('events', { count: later.length })}
                             </span>
                         </div>
                         <div className={styles.section__grid}>
@@ -201,8 +203,8 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                 {past.length > 0 && (
                     <section className={styles.section}>
                         <div className={styles.section__header}>
-                            <h2 className={`${styles.section__title} ${styles['section__title--muted']}`}>Past Events</h2>
-                            <Link href="/history" className={styles.section__link}>View all history →</Link>
+                            <h2 className={`${styles.section__title} ${styles['section__title--muted']}`}>{t('pastEvents')}</h2>
+                            <Link href="/history" className={styles.section__link}>{t('viewAllHistory')}</Link>
                         </div>
                         <div className={styles.section__grid}>
                             {past.slice(0, 3).map((w) => (
