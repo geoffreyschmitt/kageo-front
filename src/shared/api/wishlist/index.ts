@@ -6,3 +6,6 @@ export type { TCreateWishlistResponse } from './createWishlist'
 
 export { updateWishlist } from './updateWishlist'
 export type { TUpdateWishlistResponse } from './updateWishlist'
+
+export { contributePot } from './contributePot'
+export type { TWishlistContributeResponse } from './contributePot'

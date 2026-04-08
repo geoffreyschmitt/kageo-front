@@ -1,1 +1,1 @@
-export type {TWishPriority, TWishStatus} from './types'
+export type {TWishPriority, TWishStatus, TContribution} from './types'

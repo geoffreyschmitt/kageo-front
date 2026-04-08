@@ -9,6 +9,7 @@ import {ProposeWishModal} from '@/features/ProposeWish';
 import {ShareWishlistModal, mockShareWishlistByEmail} from '@/features/ShareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
 import {EditWishModal} from '@/features/EditWish'
+import {ContributeModal} from '@/features/ContributePot'
 
 import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
 import {TWishlistFormData} from '@/entities/wishlist';
@@ -45,6 +46,11 @@ type TWishlistPageProps = {
   onUpdateWish?: (wishId: string, updatedWish: TWishFormData & { id: string }) => void
   onAddWish?: (wish: TWishFormData & { id: string }) => void
   onProposeWish?: (wish: TProposedWishFormData & { id: string }) => void
+  currency?: string
+  onContribute?: (wishlistId: string, amount: number) => void
+  onContributeError?: (wishlistId: string, amount: number) => void
+  totalContributed?: number
+  userContributed?: number
   useMock?: boolean
   userIsOwner: boolean
   isHistory?: boolean
@@ -72,8 +78,13 @@ export default function Wishlist({
   onDeleteError,
   onEditWish,
   onUpdateWish,
+  currency = '$',
   onAddWish,
   onProposeWish,
+  onContribute,
+  onContributeError,
+  totalContributed = 0,
+  userContributed = 0,
   useMock = false,
   userIsOwner = false,
   isHistory = false,
@@ -90,6 +101,7 @@ export default function Wishlist({
   const [isProposeItemModalOpen, setIsProposeItemModalOpen] = useState(false)
   const [isEditWishModalOpen, setIsEditWishModalOpen] = useState(false)
   const [editingWish, setEditingWish] = useState<TWishCard | null>(null)
+  const [isContributeModalOpen, setIsContributeModalOpen] = useState(false)
 
   const itemPrices = items.map((item) => item.price)
   const minPrice = Math.min(...itemPrices, 0)
@@ -351,6 +363,42 @@ export default function Wishlist({
         </div>
       ) : (
         <div className={styles.wishlist__items}>
+          {!userIsOwner && !isHistory && (
+            <div className={styles.wishlist__pot}>
+              <div className={styles.wishlist__potInner}>
+                <div className={styles.wishlist__potIcon} aria-hidden="true">
+                  <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="18" cy="18" r="16" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1.2"/>
+                    <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="#3f6845" opacity="0.7"/>
+                    <path d="M18 27 Q18 21 18 16" stroke="#3f6845" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
+                    <path d="M18 18 Q15 15 12 14" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                    <path d="M18 22 Q21 19 24 18" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <div className={styles.wishlist__potText}>
+                  <p className={styles.wishlist__potTitle}>Gift pot</p>
+                  <p className={styles.wishlist__potSub}>
+                    {totalContributed > 0
+                      ? <><strong>{currency}{totalContributed.toFixed(2)}</strong> pooled by friends</>
+                      : 'Chip in a collective gift for ' + ownerName
+                    }
+                  </p>
+                  {userContributed > 0 && (
+                    <p className={styles.wishlist__potUserContrib}>
+                      You&apos;ve gifted <strong>{currency}{userContributed.toFixed(2)}</strong>
+                    </p>
+                  )}
+                </div>
+              </div>
+              <button
+                className={`${styles.wishlist__button} ${styles['wishlist__button--pot']}`}
+                onClick={() => setIsContributeModalOpen(true)}
+              >
+                Contribute to the pot
+              </button>
+            </div>
+          )}
+
           <div className={styles.wishlist__controls}>
             <button
               className={styles.wishlist__controlsToggle}
@@ -670,6 +718,22 @@ export default function Wishlist({
           Showing {filteredAndSortedItems.length} of {items.filter(i => i.status !== 'proposed').length} items
         </div>
       </div>
+
+      {!isHistory && !userIsOwner && (
+        <ContributeModal
+          isOpen={isContributeModalOpen}
+          onClose={() => setIsContributeModalOpen(false)}
+          wishlistId={id}
+          eventName={name}
+          ownerName={ownerName}
+          totalContributed={totalContributed}
+          userContributed={userContributed}
+          currency={currency}
+          onContribute={onContribute}
+          onError={onContributeError}
+          useMock={useMock}
+        />
+      )}
 
       {!isHistory && (
         <>

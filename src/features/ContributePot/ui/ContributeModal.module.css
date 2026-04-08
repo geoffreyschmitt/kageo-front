@@ -1,0 +1,251 @@
+/* ============================================
+   CONTRIBUTE POT MODAL — Garden Party
+   ============================================ */
+
+:root {
+    --cp-font-serif: var(--font-cormorant, Georgia, serif);
+    --cp-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+    --cp-sage:       #3f6845;
+    --cp-sage-light: #eaf2eb;
+    --cp-sage-hover: #2e5033;
+    --cp-text:       #1e1a16;
+    --cp-text-2:     #4e443c;
+    --cp-text-3:     #6b6258;
+    --cp-border:     #d6cec4;
+    --cp-input-bg:   #faf8f4;
+    --cp-surface:    #ffffff;
+    --cp-surface-2:  #f7f4ef;
+    --cp-error:      #c0392b;
+    --cp-error-bg:   #fdecea;
+}
+
+/* Override modal title to use serif font */
+.contribute__modalTitle {
+    font-family: var(--cp-font-serif);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+/* ── Body wrapper ───────────────────────────── */
+
+.contribute {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ── Hero section ───────────────────────────── */
+
+.contribute__hero {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--cp-sage-light);
+    border: 1px solid #b8dbb9;
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+.contribute__heroIcon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+}
+
+.contribute__heroIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.contribute__heroText {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.contribute__heroMessage {
+    font-family: var(--cp-font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cp-text);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.contribute__heroMessage strong {
+    font-weight: 700;
+    color: var(--cp-sage);
+}
+
+.contribute__heroSub {
+    font-family: var(--cp-font-sans);
+    font-size: 12px;
+    color: var(--cp-text-3);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.contribute__heroUserContrib {
+    font-family: var(--cp-font-sans);
+    font-size: 12px;
+    color: var(--cp-sage);
+    font-weight: 500;
+    margin: 4px 0 0;
+    line-height: 1.4;
+}
+
+/* ── Amount field ───────────────────────────── */
+
+.contribute__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contribute__label {
+    font-family: var(--cp-font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--cp-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.contribute__amountWrap {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--cp-border);
+    border-radius: 10px;
+    background: var(--cp-input-bg);
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.contribute__amountWrap:focus-within {
+    border-color: var(--cp-sage);
+    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    background: var(--cp-surface);
+}
+
+.contribute__currency {
+    padding: 0 14px;
+    font-family: var(--cp-font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--cp-text-3);
+    background: var(--cp-surface-2);
+    border-right: 1.5px solid var(--cp-border);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    min-width: 44px;
+    justify-content: center;
+}
+
+.contribute__input {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    font-family: var(--cp-font-sans);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--cp-text);
+    outline: none;
+    width: 100%;
+}
+
+.contribute__input::placeholder {
+    color: var(--cp-border);
+}
+
+.contribute__input--error {
+    color: var(--cp-error);
+}
+
+.contribute__error {
+    font-family: var(--cp-font-sans);
+    font-size: 12px;
+    color: var(--cp-error);
+    font-weight: 500;
+    margin: 0;
+}
+
+/* ── Actions ────────────────────────────────── */
+
+.contribute__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 4px;
+}
+
+.contribute__button {
+    padding: 11px 28px;
+    border-radius: 100px;
+    font-family: var(--cp-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 110px;
+    text-align: center;
+}
+
+.contribute__button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.contribute__button--primary {
+    background: var(--cp-sage);
+    color: #ffffff;
+}
+
+.contribute__button--primary:hover:not(:disabled) {
+    background: var(--cp-sage-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(63, 104, 69, 0.3);
+}
+
+.contribute__button--secondary {
+    background: transparent;
+    color: var(--cp-text-2);
+    border: 1.5px solid var(--cp-border);
+}
+
+.contribute__button--secondary:hover:not(:disabled) {
+    background: var(--cp-surface-2);
+    color: var(--cp-text);
+    border-color: #b8b0a8;
+}
+
+/* ── Mobile ─────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .contribute {
+        padding: 20px 20px 24px;
+        gap: 20px;
+    }
+
+    .contribute__hero {
+        padding: 14px 16px;
+        gap: 12px;
+    }
+
+    .contribute__heroIcon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .contribute__actions {
+        flex-direction: column;
+    }
+
+    .contribute__button {
+        width: 100%;
+    }
+}

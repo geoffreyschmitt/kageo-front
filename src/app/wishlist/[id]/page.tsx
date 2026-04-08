@@ -154,6 +154,9 @@ export default function WishlistPage({
 
     const initialData = userIsOwner ? sampleOwnerWishlistData : sampleGuestWishlistData
     const [items, setItems] = useState<TWishCard[]>(initialData.items)
+    const initialTotalContributed = userIsOwner ? 0 : 47.50
+    const [totalContributed, setTotalContributed] = useState(initialTotalContributed)
+    const [userContributed, setUserContributed] = useState(userIsOwner ? 0 : 20.00)
 
     const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
         eventBus.emit('ui:toast', { message, type })
@@ -270,6 +273,18 @@ export default function WishlistPage({
         toast(name ? `"${name}" deleted` : 'Wish deleted', 'info')
     }
 
+    const handleContribute = (wishlistId: string, amount: number) => {
+        setTotalContributed(prev => prev + amount)
+        setUserContributed(prev => prev + amount)
+        toast(`Thank you! Your gift has been added to the pot`, 'success')
+    }
+
+    const handleContributeError = (wishlistId: string, amount: number) => {
+        setTotalContributed(prev => prev - amount)
+        setUserContributed(prev => prev - amount)
+        toast('Could not add your contribution — please try again', 'error')
+    }
+
     const handleDeleteError = (wishId: string) => {
         const originalWish = initialData.items.find(item => item.id === wishId)
         if (originalWish) {
@@ -336,6 +351,10 @@ export default function WishlistPage({
                 onUpdateWish={handleUpdateWish}
                 onAddWish={handleAddWish}
                 onProposeWish={handleProposeWish}
+                onContribute={handleContribute}
+                onContributeError={handleContributeError}
+                totalContributed={totalContributed}
+                userContributed={userContributed}
                 useMock={true}
             />
         </main>
