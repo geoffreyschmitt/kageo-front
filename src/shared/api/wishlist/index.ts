@@ -9,3 +9,5 @@ export type { TUpdateWishlistResponse } from './updateWishlist'
 
 export { contributePot } from './contributePot'
 export type { TWishlistContributeResponse } from './contributePot'
+
+export { shareWishlist } from './shareWishlist'
