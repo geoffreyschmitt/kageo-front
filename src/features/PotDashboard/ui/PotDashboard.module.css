@@ -1,0 +1,110 @@
+:root {
+    --pd-sage:       #3f6845;
+    --pd-sage-light: #eaf2eb;
+    --pd-text:       #1e1a16;
+    --pd-text-2:     #4e443c;
+    --pd-text-3:     #6b6258;
+    --pd-border:     #d6cec4;
+    --pd-surface-2:  #f7f4ef;
+    --pd-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+    --pd-font-serif: var(--font-cormorant, Georgia, serif);
+}
+
+.potDashboard {
+    border: 1px solid var(--pd-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.potDashboard__header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--pd-sage-light);
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.potDashboard__title {
+    font-family: var(--pd-font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--pd-sage);
+    flex: 1;
+}
+
+.potDashboard__total {
+    font-family: var(--pd-font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--pd-sage);
+}
+
+.potDashboard__chevron {
+    flex-shrink: 0;
+    color: var(--pd-sage);
+    transition: transform 0.2s;
+}
+
+.potDashboard__chevron--open {
+    transform: rotate(180deg);
+}
+
+.potDashboard__body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.potDashboard__myContrib {
+    font-family: var(--pd-font-sans);
+    font-size: 13px;
+    color: var(--pd-text-2);
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--pd-border);
+}
+
+.potDashboard__myContrib strong {
+    color: var(--pd-sage);
+}
+
+.potDashboard__empty {
+    font-family: var(--pd-font-sans);
+    font-size: 13px;
+    color: var(--pd-text-3);
+    margin: 0;
+}
+
+.potDashboard__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.potDashboard__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.potDashboard__name {
+    font-family: var(--pd-font-sans);
+    font-size: 13px;
+    color: var(--pd-text-2);
+}
+
+.potDashboard__amount {
+    font-family: var(--pd-font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--pd-text);
+}
