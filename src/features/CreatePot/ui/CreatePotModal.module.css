@@ -43,8 +43,7 @@
     justify-content: flex-end;
 }
 
-.createPot__button,
-a.createPot__button {
+.createPot__button {
     padding: 11px 28px;
     border-radius: 100px;
     font-family: var(--cp2-font-sans);
@@ -62,8 +61,7 @@ a.createPot__button {
     cursor: not-allowed;
 }
 
-.createPot__button--primary,
-a.createPot__button--primary {
+.createPot__button--primary {
     background: var(--cp2-sage);
     color: #ffffff;
 }
