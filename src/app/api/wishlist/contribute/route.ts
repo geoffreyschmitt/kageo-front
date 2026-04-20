@@ -34,6 +34,11 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
         }
 
+        const pot = await kv.get(`wishlist:${wishlistId}:pot`)
+        if (!pot) {
+            return NextResponse.json({ message: 'No pot has been started for this wishlist' }, { status: 409 })
+        }
+
         // Pot is a surprise — owner cannot contribute to their own pot
         if (wishlist.ownerId === session.user.id) {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
