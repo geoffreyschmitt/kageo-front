@@ -86,7 +86,8 @@ export async function GET(request: NextRequest) {
         const contributors = await Promise.all(
             Array.from(totalsById.entries()).map(async ([userId, amount]) => {
                 const email = await kv.get<string>(`user:id:${userId}`)
-                const user = email ? await kv.get<TUserKV>(`user:${email}`) : null
+                if (!email) return { name: 'Anonymous', amount }
+                const user = await kv.get<TUserKV>(`user:${email}`)
                 return { name: user?.name ?? 'Anonymous', amount }
             })
         )
@@ -136,11 +137,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'You must be invited to start a pot' }, { status: 403 })
         }
 
-        const existing = await kv.get(`wishlist:${wishlistId}:pot`)
-        if (existing) {
-            return NextResponse.json({ message: 'A pot already exists for this wishlist' }, { status: 409 })
-        }
-
         const now = new Date().toISOString()
         const pot: TPotKV = {
             creatorId: session.user.id,
@@ -148,7 +144,10 @@ export async function POST(request: NextRequest) {
             createdAt: now,
         }
 
-        await kv.set(`wishlist:${wishlistId}:pot`, pot)
+        const wasSet = await kv.set(`wishlist:${wishlistId}:pot`, pot, { nx: true })
+        if (!wasSet) {
+            return NextResponse.json({ message: 'A pot already exists for this wishlist' }, { status: 409 })
+        }
 
         return NextResponse.json(pot, { status: 201 })
     } catch (error) {
