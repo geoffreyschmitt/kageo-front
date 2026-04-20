@@ -223,6 +223,49 @@
     border-color: #b8b0a8;
 }
 
+/* ── Organizer line ─────────────────────────── */
+
+.contribute__heroOrganizer {
+    font-family: var(--cp-font-sans);
+    font-size: 12px;
+    color: var(--cp-text-3);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ── Login banner (non-logged-in view) ──────── */
+
+.contribute__loginBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--cp-surface-2);
+    border: 1px solid var(--cp-border);
+    border-radius: 10px;
+    padding: 14px 18px;
+}
+
+.contribute__loginBannerText {
+    font-family: var(--cp-font-sans);
+    font-size: 13px;
+    color: var(--cp-text-2);
+    margin: 0;
+}
+
+.contribute__loginBannerLink {
+    font-family: var(--cp-font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cp-sage);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.contribute__loginBannerLink:hover {
+    text-decoration: underline;
+}
+
 /* ── Mobile ─────────────────────────────────── */
 
 @media (max-width: 768px) {
