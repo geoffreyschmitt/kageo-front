@@ -1,7 +1,9 @@
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 import { kv } from '@vercel/kv'
 import bcrypt from 'bcryptjs'
+import { randomUUID } from 'crypto'
 
 type KVUser = {
     id: string
@@ -14,6 +16,10 @@ type KVUser = {
 
 export const authOptions: NextAuthOptions = {
     providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        }),
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
@@ -38,6 +44,29 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
+        async signIn({ user, account }) {
+            if (account?.provider === 'google' && user.email) {
+                const email = user.email.toLowerCase()
+                const existing = await kv.get<KVUser>(`user:${email}`)
+                if (!existing) {
+                    const id = randomUUID()
+                    const newUser: KVUser = {
+                        id,
+                        email,
+                        name: user.name ?? email,
+                        password: '',
+                        provider: 'google',
+                        createdAt: new Date().toISOString(),
+                    }
+                    await kv.set(`user:${email}`, newUser)
+                    await kv.set(`user:id:${id}`, email)
+                    user.id = id
+                } else {
+                    user.id = existing.id
+                }
+            }
+            return true
+        },
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id
