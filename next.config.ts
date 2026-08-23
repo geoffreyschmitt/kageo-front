@@ -10,8 +10,6 @@ const withSerwist = withSerwistInit({
 
 const withNextIntl = createNextIntlPlugin("./src/shared/i18n/request.ts");
 
-const nextConfig: NextConfig = {
-    turbopack: {},
-};
+const nextConfig: NextConfig = {};
 
 export default withSerwist(withNextIntl(nextConfig));
