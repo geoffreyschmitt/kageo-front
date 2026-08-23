@@ -10,6 +10,8 @@ const withSerwist = withSerwistInit({
 
 const withNextIntl = createNextIntlPlugin("./src/shared/i18n/request.ts");
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+    transpilePackages: ['next-intl'],
+};
 
 export default withSerwist(withNextIntl(nextConfig));
