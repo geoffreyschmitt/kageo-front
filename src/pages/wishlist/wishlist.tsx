@@ -726,6 +726,8 @@ export default function Wishlist({
           wishlistId={id}
           eventName={name}
           ownerName={ownerName}
+          creatorName={ownerName}
+          isLoggedIn={!!user}
           totalContributed={totalContributed}
           userContributed={userContributed}
           currency={currency}
