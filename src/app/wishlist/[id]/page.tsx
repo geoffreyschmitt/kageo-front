@@ -2,7 +2,7 @@
 
 import {use, useState} from 'react'
 
-import Wishlist from '@/pages/wishlist/wishlist'
+import Wishlist from '@/views/wishlist/wishlist'
 import {mockUserPrivate} from '@/entities/user';
 import type {TWishCard} from '@/widgets/WishCard/WishCard.types';
 import type {TWishFormData, TProposedWishFormData} from '@/entities/wish';

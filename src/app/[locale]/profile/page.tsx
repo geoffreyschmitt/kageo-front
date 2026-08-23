@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import ProfilePage from '@/pages/profile/ui/ProfilePage'
+import ProfilePage from '@/views/profile/ui/ProfilePage'
 
 export async function generateMetadata() {
     const t = await getTranslations('metadata')

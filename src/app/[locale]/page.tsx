@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { kv } from "@vercel/kv"
 
 import { authOptions } from "@/shared/config/authOptions"
-import DashboardPage from "@/pages/dashboard/dashboard"
+import DashboardPage from "@/views/dashboard/dashboard"
 import { Link } from '@/shared/i18n/navigation'
 
 import pageStyles from "./page.module.css"
