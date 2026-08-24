@@ -40,7 +40,6 @@ export const CreateWishlistModal = ({onClose, onSubmit, onError}: TCreateWishlis
     onSubmit,
     onError,
     onClose: handleClose,
-    useMock: true,
   })
 
 

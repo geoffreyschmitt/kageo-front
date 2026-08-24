@@ -52,7 +52,6 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpda
         onSubmit,
         onClose: handleClose,
         initialData: initialDataToUse,
-        useMock: true,
     })
 
     return (
