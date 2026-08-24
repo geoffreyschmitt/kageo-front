@@ -1,0 +1,1 @@
+export { useManageAccountModel } from './model'

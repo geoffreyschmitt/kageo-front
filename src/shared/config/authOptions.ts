@@ -12,6 +12,7 @@ type KVUser = {
     password: string
     provider: string
     createdAt: string
+    isPublic?: boolean
 }
 
 export const authOptions: NextAuthOptions = {
@@ -67,9 +68,12 @@ export const authOptions: NextAuthOptions = {
             }
             return true
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
             if (user) {
                 token.id = user.id
+            }
+            if (trigger === 'update' && session?.name) {
+                token.name = session.name
             }
             return token
         },

@@ -1,14 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { mockUserPrivate } from '@/entities/user'
-import s from './profile.module.css'
 
-const MOCK_STATS = {
-    wishlists: 7,
-    wishes: 43,
-    shared: 3,
-}
+import { useManageAccountModel } from '@/features/ManageAccount'
+import { Modal } from '@/shared/ui'
+
+import s from './profile.module.css'
 
 function getInitials(name: string | null): string {
     if (!name) return '?'
@@ -26,34 +23,72 @@ function formatMemberSince(iso?: string): string {
 }
 
 export default function ProfilePage() {
-    const user = mockUserPrivate
+    const {
+        profile,
+        stats,
+        isLoading,
+        loadError,
 
-    const [nameValue, setNameValue] = useState(user.name ?? '')
-    const [emailValue] = useState(user.email ?? '')
-    const [nameSaved, setNameSaved] = useState(false)
+        nameValue,
+        setNameValue,
+        isSavingName,
+        nameSaved,
+        nameError,
+        handleSaveName,
 
-    const [currentPassword, setCurrentPassword] = useState('')
-    const [newPassword, setNewPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [passwordSaved, setPasswordSaved] = useState(false)
+        isTogglingPublic,
+        handleTogglePublicProfile,
 
-    const [publicProfile, setPublicProfile] = useState(false)
+        currentPassword,
+        setCurrentPassword,
+        newPassword,
+        setNewPassword,
+        confirmPassword,
+        setConfirmPassword,
+        isSavingPassword,
+        passwordSaved,
+        passwordError,
+        handleSavePassword,
 
-    const handleSaveName = () => {
-        setNameSaved(true)
-        setTimeout(() => setNameSaved(false), 2500)
+        isExporting,
+        handleExportData,
+
+        isDeleting,
+        deleteError,
+        handleDeleteAccount,
+    } = useManageAccountModel()
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
+    if (isLoading) {
+        return (
+            <main className={s.profile}>
+                <div className={s.hero}>
+                    <div className={s.hero__inner}>
+                        <p className={s.hero__eyebrow}>My Account</p>
+                        <h1 className={s.hero__name}>Loading…</h1>
+                    </div>
+                </div>
+            </main>
+        )
     }
 
-    const handleSavePassword = () => {
-        setPasswordSaved(true)
-        setCurrentPassword('')
-        setNewPassword('')
-        setConfirmPassword('')
-        setTimeout(() => setPasswordSaved(false), 2500)
+    if (loadError || !profile) {
+        return (
+            <main className={s.profile}>
+                <div className={s.hero}>
+                    <div className={s.hero__inner}>
+                        <p className={s.hero__eyebrow}>My Account</p>
+                        <h1 className={s.hero__name}>Could not load your profile</h1>
+                        <p className={s.hero__email}>{loadError}</p>
+                    </div>
+                </div>
+            </main>
+        )
     }
 
-    const initials = getInitials(user.name)
-    const memberSince = formatMemberSince(user.createdAt)
+    const initials = getInitials(profile.name)
+    const memberSince = formatMemberSince(profile.createdAt)
 
     return (
         <main className={s.profile}>
@@ -65,8 +100,8 @@ export default function ProfilePage() {
                     </div>
 
                     <p className={s.hero__eyebrow}>My Account</p>
-                    <h1 className={s.hero__name}>{user.name ?? 'Anonymous'}</h1>
-                    <p className={s.hero__email}>{user.email}</p>
+                    <h1 className={s.hero__name}>{profile.name || 'Anonymous'}</h1>
+                    <p className={s.hero__email}>{profile.email}</p>
 
                     <div className={s.hero__meta}>
                         <span className={`${s.hero__badge} ${s['hero__badge--since']}`}>
@@ -76,15 +111,15 @@ export default function ProfilePage() {
 
                     <div className={s.stats}>
                         <div className={s.stat}>
-                            <span className={s.stat__value}>{MOCK_STATS.wishlists}</span>
+                            <span className={s.stat__value}>{stats?.wishlists ?? 0}</span>
                             <span className={s.stat__label}>Wishlists</span>
                         </div>
                         <div className={s.stat}>
-                            <span className={s.stat__value}>{MOCK_STATS.wishes}</span>
+                            <span className={s.stat__value}>{stats?.wishes ?? 0}</span>
                             <span className={s.stat__label}>Wishes</span>
                         </div>
                         <div className={s.stat}>
-                            <span className={s.stat__value}>{MOCK_STATS.shared}</span>
+                            <span className={s.stat__value}>{stats?.shared ?? 0}</span>
                             <span className={s.stat__label}>Shared</span>
                         </div>
                     </div>
@@ -127,7 +162,7 @@ export default function ProfilePage() {
                                         id="profile-email"
                                         className={s.field__input}
                                         type="email"
-                                        value={emailValue}
+                                        value={profile.email}
                                         disabled
                                         aria-describedby="email-hint"
                                     />
@@ -136,12 +171,14 @@ export default function ProfilePage() {
                                     </p>
                                 </div>
                             </div>
+                            {nameError && <p className={s.field__error}>{nameError}</p>}
                             <div className={s.form__footer}>
                                 <button
                                     className={`${s.btn} ${s['btn--primary']}`}
                                     onClick={handleSaveName}
+                                    disabled={isSavingName}
                                 >
-                                    Save changes
+                                    {isSavingName ? 'Saving…' : 'Save changes'}
                                 </button>
                             </div>
                         </div>
@@ -153,67 +190,74 @@ export default function ProfilePage() {
                     <div className={s.section__header}>
                         <div>
                             <h2 className={s.section__title}>Security</h2>
-                            <p className={s.section__subtitle}>Update your password to keep your account secure.</p>
+                            <p className={s.section__subtitle}>
+                                {profile.hasPassword
+                                    ? 'Update your password to keep your account secure.'
+                                    : 'You signed in with Google — there is no password to update.'}
+                            </p>
                         </div>
                         {passwordSaved && <span className={s.savedDot}>Updated</span>}
                     </div>
-                    <div className={s.section__body}>
-                        <div className={s.form}>
-                            <div className={s.field}>
-                                <label className={s.field__label} htmlFor="current-password">
-                                    Current Password
-                                </label>
-                                <input
-                                    id="current-password"
-                                    className={s.field__input}
-                                    type="password"
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    placeholder="••••••••"
-                                    autoComplete="current-password"
-                                />
-                            </div>
-                            <div className={s.form__row}>
+                    {profile.hasPassword && (
+                        <div className={s.section__body}>
+                            <div className={s.form}>
                                 <div className={s.field}>
-                                    <label className={s.field__label} htmlFor="new-password">
-                                        New Password
+                                    <label className={s.field__label} htmlFor="current-password">
+                                        Current Password
                                     </label>
                                     <input
-                                        id="new-password"
+                                        id="current-password"
                                         className={s.field__input}
                                         type="password"
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        autoComplete="new-password"
+                                        autoComplete="current-password"
                                     />
                                 </div>
-                                <div className={s.field}>
-                                    <label className={s.field__label} htmlFor="confirm-password">
-                                        Confirm Password
-                                    </label>
-                                    <input
-                                        id="confirm-password"
-                                        className={s.field__input}
-                                        type="password"
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        placeholder="••••••••"
-                                        autoComplete="new-password"
-                                    />
+                                <div className={s.form__row}>
+                                    <div className={s.field}>
+                                        <label className={s.field__label} htmlFor="new-password">
+                                            New Password
+                                        </label>
+                                        <input
+                                            id="new-password"
+                                            className={s.field__input}
+                                            type="password"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            placeholder="••••••••"
+                                            autoComplete="new-password"
+                                        />
+                                    </div>
+                                    <div className={s.field}>
+                                        <label className={s.field__label} htmlFor="confirm-password">
+                                            Confirm Password
+                                        </label>
+                                        <input
+                                            id="confirm-password"
+                                            className={s.field__input}
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            placeholder="••••••••"
+                                            autoComplete="new-password"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className={s.form__footer}>
-                                <button
-                                    className={`${s.btn} ${s['btn--primary']}`}
-                                    onClick={handleSavePassword}
-                                    disabled={!currentPassword || !newPassword || !confirmPassword}
-                                >
-                                    Update password
-                                </button>
+                                {passwordError && <p className={s.field__error}>{passwordError}</p>}
+                                <div className={s.form__footer}>
+                                    <button
+                                        className={`${s.btn} ${s['btn--primary']}`}
+                                        onClick={handleSavePassword}
+                                        disabled={isSavingPassword || !currentPassword || !newPassword || !confirmPassword}
+                                    >
+                                        {isSavingPassword ? 'Updating…' : 'Update password'}
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Preferences */}
@@ -229,15 +273,26 @@ export default function ProfilePage() {
                             <div className={s.preference__text}>
                                 <p className={s.preference__title}>Public profile</p>
                                 <p className={s.preference__desc}>
-                                    Allow others to find your profile and public wishlists by name.
+                                    Let anyone with the link view your profile page and public wishlists.
                                 </p>
+                                {profile.isPublic && (
+                                    <a
+                                        href={`/u/${profile.id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={s.preference__link}
+                                    >
+                                        View your public profile ↗
+                                    </a>
+                                )}
                             </div>
                             <label className={s.toggle} aria-label="Toggle public profile">
                                 <input
                                     type="checkbox"
                                     className={s.toggle__input}
-                                    checked={publicProfile}
-                                    onChange={(e) => setPublicProfile(e.target.checked)}
+                                    checked={profile.isPublic}
+                                    disabled={isTogglingPublic}
+                                    onChange={(e) => handleTogglePublicProfile(e.target.checked)}
                                 />
                                 <span className={s.toggle__track} />
                                 <span className={s.toggle__thumb} />
@@ -262,8 +317,12 @@ export default function ProfilePage() {
                                     Download a copy of all your wishlists and wishes as JSON.
                                 </p>
                             </div>
-                            <button className={`${s.btn} ${s['btn--ghost']}`}>
-                                Export
+                            <button
+                                className={`${s.btn} ${s['btn--ghost']}`}
+                                onClick={handleExportData}
+                                disabled={isExporting}
+                            >
+                                {isExporting ? 'Exporting…' : 'Export'}
                             </button>
                         </div>
                         <div className={s.dangerAction}>
@@ -273,7 +332,10 @@ export default function ProfilePage() {
                                     Permanently delete your account and all associated data. This cannot be undone.
                                 </p>
                             </div>
-                            <button className={`${s.btn} ${s['btn--danger']}`}>
+                            <button
+                                className={`${s.btn} ${s['btn--danger']}`}
+                                onClick={() => setIsDeleteModalOpen(true)}
+                            >
                                 Delete account
                             </button>
                         </div>
@@ -281,6 +343,36 @@ export default function ProfilePage() {
                 </div>
 
             </div>
+
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                title="Delete your account?"
+            >
+                <div className={s.deleteModal}>
+                    <p className={s.deleteModal__message}>
+                        This permanently deletes your account, every wishlist you own, and all of their wishes.
+                        This cannot be undone.
+                    </p>
+                    {deleteError && <p className={s.field__error}>{deleteError}</p>}
+                    <div className={s.deleteModal__actions}>
+                        <button
+                            className={`${s.btn} ${s['btn--ghost']}`}
+                            onClick={() => setIsDeleteModalOpen(false)}
+                            disabled={isDeleting}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className={`${s.btn} ${s['btn--danger']}`}
+                            onClick={handleDeleteAccount}
+                            disabled={isDeleting}
+                        >
+                            {isDeleting ? 'Deleting…' : 'Yes, delete my account'}
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </main>
     )
 }

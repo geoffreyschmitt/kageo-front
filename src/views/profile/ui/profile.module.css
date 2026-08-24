@@ -407,6 +407,45 @@
     border-color: rgba(138, 35, 24, 0.35);
 }
 
+.btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Field error ──────────────────────────── */
+
+.field__error {
+    font-family: var(--p-font-sans);
+    font-size: 12px;
+    color: var(--p-error);
+    margin: 0;
+}
+
+/* ── Delete-account modal ─────────────────── */
+
+.deleteModal {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.deleteModal__message {
+    font-family: var(--p-font-sans);
+    font-size: 14px;
+    color: var(--p-text-2);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.deleteModal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
 /* ── Divider inside section ───────────────── */
 
 .divider {
@@ -453,6 +492,20 @@
     color: var(--p-text-3);
     margin: 0;
     line-height: 1.5;
+}
+
+.preference__link {
+    display: inline-block;
+    font-family: var(--p-font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--p-sage);
+    margin-top: 6px;
+    text-decoration: none;
+}
+
+.preference__link:hover {
+    text-decoration: underline;
 }
 
 /* ── Toggle switch ────────────────────────── */
