@@ -5,7 +5,9 @@ import { useTranslations } from 'next-intl'
 import Wishlist from '@/views/wishlist/wishlist'
 import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 import { TWishFormData, TProposedWishFormData } from '@/entities/wish'
+import { TWishlistFormData } from '@/entities/wishlist'
 import { eventBus } from '@/shared/eventBus'
+import { useRouter } from '@/shared/i18n/navigation'
 
 type Props = {
     id: string
@@ -19,6 +21,7 @@ type Props = {
     currency: string
     userIsOwner: boolean
     isHistory: boolean
+    hasActivity: boolean
     userId: string
     isLoggedIn: boolean
     isInvited: boolean
@@ -43,6 +46,7 @@ export default function WishlistPageClient({
     currency,
     userIsOwner,
     isHistory,
+    hasActivity,
     userId,
     isLoggedIn,
     isInvited,
@@ -52,10 +56,12 @@ export default function WishlistPageClient({
     initialPotCreatorName,
 }: Props) {
     const t = useTranslations('wishlistToast')
+    const router = useRouter()
     const [items, setItems] = useState<TWishCard[]>(initialItems)
     const [totalContributed, setTotalContributed] = useState(initialTotalContributed)
     const [userContributed, setUserContributed] = useState(initialUserContributed)
     const [potCreatorName, setPotCreatorName] = useState(initialPotCreatorName)
+    const [wishlistMeta, setWishlistMeta] = useState({ name, description, isPublic, eventDate })
 
     const handlePotCreated = (_creatorId: string, creatorName: string) => {
         setPotCreatorName(creatorName)
@@ -196,6 +202,25 @@ export default function WishlistPageClient({
         toast(t('contributionAdded'), 'success')
     }
 
+    const handleUpdateWishlistMeta = (updated: TWishlistFormData & { id: string }) => {
+        setWishlistMeta({
+            name: updated.name,
+            description: updated.description,
+            isPublic: updated.isPublic,
+            eventDate: updated.eventDate,
+        })
+        toast(t('wishlistUpdated'), 'success')
+    }
+
+    const handleDeleteWishlist = () => {
+        toast(t('wishlistDeleted'), 'success')
+        router.push(isHistory ? '/history' : '/wishlists')
+    }
+
+    const handleDeleteWishlistError = () => {
+        toast(t('wishlistDeleteError'), 'error')
+    }
+
     const handleContributeError = (_wishlistId: string, amount: number) => {
         setTotalContributed((prev) => prev - amount)
         setUserContributed((prev) => prev - amount)
@@ -206,10 +231,10 @@ export default function WishlistPageClient({
         <main>
             <Wishlist
                 id={id}
-                name={name}
-                description={description}
-                isPublic={isPublic}
-                eventDate={eventDate}
+                name={wishlistMeta.name}
+                description={wishlistMeta.description}
+                isPublic={wishlistMeta.isPublic}
+                eventDate={wishlistMeta.eventDate}
                 ownerId={ownerId}
                 ownerName={ownerName}
                 ownerProfileUrl={ownerProfileUrl}
@@ -217,6 +242,7 @@ export default function WishlistPageClient({
                 items={items}
                 userIsOwner={userIsOwner}
                 isHistory={isHistory}
+                hasActivity={hasActivity}
                 userId={userId}
                 onReserveWish={handleReserveWish}
                 onReserveError={handleReserveError}
@@ -231,6 +257,9 @@ export default function WishlistPageClient({
                 onUpdateWish={handleUpdateWish}
                 onAddWish={handleAddWish}
                 onProposeWish={handleProposeWish}
+                onUpdateWishlistMeta={handleUpdateWishlistMeta}
+                onDeleteWishlist={handleDeleteWishlist}
+                onDeleteWishlistError={handleDeleteWishlistError}
                 onContribute={handleContribute}
                 onContributeError={handleContributeError}
                 totalContributed={totalContributed}

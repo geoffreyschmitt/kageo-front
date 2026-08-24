@@ -1,0 +1,77 @@
+:root {
+    --dwc-font-sans: var(--font-dm-sans, system-ui, sans-serif);
+    --dwc-text-2: #4e443c;
+    --dwc-text-3: #6b6258;
+    --dwc-border: #d6cec4;
+    --dwc-surface-2: #f7f4ef;
+    --dwc-danger: #c0392b;
+    --dwc-danger-hover: #a93226;
+}
+
+.confirmation-modal__content {
+    padding: 24px 28px 28px;
+}
+
+.confirmation-modal__message {
+    font-family: var(--dwc-font-sans);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--dwc-text-2);
+    margin: 0 0 24px;
+}
+
+.confirmation-modal__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.confirmation-modal__button {
+    padding: 10px 26px;
+    border-radius: 100px;
+    font-family: var(--dwc-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    text-align: center;
+}
+
+.confirmation-modal__button--cancel {
+    background: transparent;
+    color: var(--dwc-text-2);
+    border: 1.5px solid var(--dwc-border);
+}
+
+.confirmation-modal__button--cancel:hover {
+    background: var(--dwc-surface-2);
+    color: var(--dwc-text-2);
+    border-color: #b8b0a8;
+}
+
+.confirmation-modal__button--confirm {
+    background: var(--dwc-danger);
+    color: #ffffff;
+}
+
+.confirmation-modal__button--confirm:hover {
+    background: var(--dwc-danger-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(192, 57, 43, 0.3);
+}
+
+@media (max-width: 480px) {
+    .confirmation-modal__content {
+        padding: 20px 20px 24px;
+    }
+
+    .confirmation-modal__actions {
+        flex-direction: column;
+    }
+
+    .confirmation-modal__button {
+        width: 100%;
+    }
+}

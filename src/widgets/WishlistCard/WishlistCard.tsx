@@ -94,7 +94,7 @@ export const WishlistCard = ({
                         <span className={styles.wishlistCard__owner}>{t('by', {name: ownerName})}</span>
                     )}
                     <div className={styles.wishlistCard__actions}>
-                        {isOwnedByCurrentUser && (
+                        {isOwnedByCurrentUser && !isHistory && (
                             <button
                                 className={`${styles.wishlistCard__button} ${styles['wishlistCard__button--secondary']}`}
                                 onClick={() => {

@@ -149,6 +149,8 @@
     "private": "Privé",
     "items": "{count, plural, one {# article} other {# articles}}",
     "editWishlist": "Modifier la Wishlist",
+    "deleteWishlist": "Supprimer la Wishlist",
+    "cannotEditNotice": "Cette wishlist a de l'activité (réservation, achat, cagnotte ou suggestion) et ne peut plus être modifiée ni supprimée.",
     "share": "Partager",
     "addItem": "Ajouter un article",
     "suggestWish": "Suggérer un souhait",
@@ -213,7 +215,11 @@
     "wishDeletedFallback": "Souhait supprimé",
     "deleteError": "Impossible de supprimer le souhait — veuillez réessayer",
     "contributionAdded": "Merci ! Votre don a été ajouté à la cagnotte",
-    "contributionError": "Impossible d'ajouter votre contribution — veuillez réessayer"
+    "contributionError": "Impossible d'ajouter votre contribution — veuillez réessayer",
+    "wishlistUpdated": "Wishlist mise à jour",
+    "wishlistUpdateError": "Impossible de mettre à jour la wishlist — veuillez réessayer",
+    "wishlistDeleted": "Wishlist supprimée",
+    "wishlistDeleteError": "Impossible de supprimer la wishlist — veuillez réessayer"
   },
   "wishCard": {
     "youPlanningToGift": "Vous planifiez d'offrir ceci",
@@ -336,6 +342,13 @@
     "title": "Supprimer le souhait",
     "subtitle": "Cette action est irréversible",
     "message": "Êtes-vous sûr de vouloir supprimer {wishName} ? Cette action est irréversible.",
+    "cancel": "Annuler",
+    "delete": "Supprimer"
+  },
+  "deleteWishlistModal": {
+    "title": "Supprimer la wishlist",
+    "subtitle": "Cette action est irréversible",
+    "message": "Êtes-vous sûr de vouloir supprimer {wishlistName} ? Tous ses articles seront définitivement supprimés. Cette action est irréversible.",
     "cancel": "Annuler",
     "delete": "Supprimer"
   },

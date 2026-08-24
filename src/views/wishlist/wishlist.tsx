@@ -10,6 +10,7 @@ import {ProposeWishModal} from '@/features/ProposeWish';
 import {ShareWishlistModal, mockShareWishlistByEmail} from '@/features/ShareWishlist'
 import {shareWishlist} from '@/shared/api/wishlist/shareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
+import {DeleteWishlistButton} from '@/features/DeleteWishlist'
 import {EditWishModal} from '@/features/EditWish'
 import {ContributeModal} from '@/features/ContributePot'
 import {CreatePotButton} from '@/features/CreatePot'
@@ -63,6 +64,10 @@ type TWishlistPageProps = {
   useMock?: boolean
   userIsOwner: boolean
   isHistory?: boolean
+  hasActivity?: boolean
+  onUpdateWishlistMeta?: (wishlist: TWishlistFormData & { id: string }) => void
+  onDeleteWishlist?: (wishlistId: string) => void
+  onDeleteWishlistError?: (wishlistId: string) => void
 }
 
 export default function Wishlist({
@@ -103,6 +108,10 @@ export default function Wishlist({
   useMock = false,
   userIsOwner = false,
   isHistory = false,
+  hasActivity = false,
+  onUpdateWishlistMeta,
+  onDeleteWishlist,
+  onDeleteWishlistError,
 }: TWishlistPageProps) {
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'date' | 'priority'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
@@ -118,6 +127,13 @@ export default function Wishlist({
 
   const t = useTranslations('wishlist')
   const tComments = useTranslations('comments')
+
+  // Owned wishlists can always be edited while active; once in history,
+  // editing/deleting is only safe if no one has interacted with it yet
+  // (no reservations/purchases/suggestions, no pot, no comments).
+  const canEditWishlist = userIsOwner && (!isHistory || !hasActivity)
+  const canDeleteWishlist = userIsOwner && isHistory && !hasActivity
+  const showLockedNotice = userIsOwner && isHistory && hasActivity
 
   const itemPrices = items.map((item) => item.price)
   const minPrice = Math.min(...itemPrices, 0)
@@ -211,9 +227,16 @@ export default function Wishlist({
     setIsProposeItemModalOpen(false)
   }
 
-  const handleUpdateWishlist = (wishlist: TWishlistFormData) => {
-    console.log('Wishlist updated:', wishlist)
+  const handleUpdateWishlist = (wishlist: TWishlistFormData & { id: string }) => {
+    onUpdateWishlistMeta?.(wishlist)
+  }
 
+  const handleDeleteWishlist = (wishlistId: string) => {
+    onDeleteWishlist?.(wishlistId)
+  }
+
+  const handleDeleteWishlistError = (wishlistId: string) => {
+    onDeleteWishlistError?.(wishlistId)
   }
 
   const handleEditWish = (wish: TWishCard) => {
@@ -276,7 +299,7 @@ export default function Wishlist({
           </div>
 
           <div className={styles.wishlist__actions}>
-            {userIsOwner && (
+            {canEditWishlist && (
               <button
                 className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
                 onClick={() => {
@@ -284,6 +307,7 @@ export default function Wishlist({
                     id,
                     name,
                     description,
+                    eventDate: eventDate ? new Date(eventDate) : undefined,
                     isPublic,
                     coverImage: '',
                   })
@@ -291,6 +315,17 @@ export default function Wishlist({
               >
                 {t('editWishlist')}
               </button>
+            )}
+            {canDeleteWishlist && (
+              <DeleteWishlistButton
+                wishlistId={id}
+                wishlistName={name}
+                onDelete={handleDeleteWishlist}
+                onError={handleDeleteWishlistError}
+                className={`${styles.wishlist__button} ${styles['wishlist__button--danger']}`}
+              >
+                {t('deleteWishlist')}
+              </DeleteWishlistButton>
             )}
             <button
               className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
@@ -313,6 +348,9 @@ export default function Wishlist({
               </button>
             )}
           </div>
+          {showLockedNotice && (
+            <p className={styles.wishlist__lockedNotice}>{t('cannotEditNotice')}</p>
+          )}
         </div>
 
         <p className={styles.wishlist__description}>{description}</p>
@@ -806,6 +844,20 @@ export default function Wishlist({
         />
       )}
 
+      {canEditWishlist && (
+        <UpdateWishlistModal
+          onSubmit={handleUpdateWishlist}
+          initialData={{
+            name,
+            description,
+            eventDate: eventDate ? new Date(eventDate).toISOString().slice(0, 10) : '',
+            isPublic,
+            coverImage: '',
+            allowSuggestions: true,
+          }}
+        />
+      )}
+
       {!isHistory && (
         <>
           <AddWishModal
@@ -814,17 +866,6 @@ export default function Wishlist({
             onSubmit={handleAddWish}
             wishlistId={id}
             useMock={useMock}
-          />
-
-          <UpdateWishlistModal
-            onSubmit={handleUpdateWishlist}
-            initialData={{
-              name,
-              description,
-              isPublic,
-              coverImage: '',
-              allowSuggestions: true,
-            }}
           />
 
           <ProposeWishModal

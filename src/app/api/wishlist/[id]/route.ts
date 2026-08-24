@@ -99,3 +99,66 @@ export async function PUT(
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }
 }
+
+type TWishKV = { id: string; status: 'wanted' | 'purchased' | 'reserved' | 'proposed' }
+
+// DELETE /api/wishlist/[id] — permanently delete a wishlist
+// Only allowed for the owner, and only if nothing has happened on it yet:
+// no reserved/purchased/proposed wishes, no pot, no comments.
+export async function DELETE(
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> },
+) {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { id } = await params
+    const wishlist = await kv.get<TWishlistKV>(`wishlist:${id}`)
+
+    if (!wishlist) {
+        return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
+    }
+    if (wishlist.ownerId !== session.user.id) {
+        return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+
+    try {
+        const wishIds = (await kv.smembers<string[]>(`wishlist:${id}:wishes`)) ?? []
+        const wishes = wishIds.length
+            ? (await Promise.all(wishIds.map((wid) => kv.get<TWishKV>(`wish:${wid}`)))).filter(Boolean) as TWishKV[]
+            : []
+
+        const hasWishActivity = wishes.some((w) => w.status !== 'wanted')
+        const pot = await kv.get(`wishlist:${id}:pot`)
+        const comments = (await kv.lrange<string>(`wishlist:${id}:comments`, 0, -1)) ?? []
+
+        if (hasWishActivity || pot || comments.length > 0) {
+            return NextResponse.json(
+                { message: 'This wishlist has activity and can no longer be deleted' },
+                { status: 409 },
+            )
+        }
+
+        await Promise.all(wishIds.map((wid) => kv.del(`wish:${wid}`)))
+
+        const invitees = (await kv.smembers<string[]>(`wishlist:${id}:invitees`)) ?? []
+        await Promise.all(invitees.map((email) => kv.srem(`email:${email}:invitedWishlists`, id)))
+
+        await Promise.all([
+            kv.del(`wishlist:${id}:wishes`),
+            kv.del(`wishlist:${id}:invitees`),
+            kv.del(`wishlist:${id}:contributions`),
+            kv.del(`wishlist:${id}:comments`),
+            kv.srem(`user:${session.user.id}:wishlists`, id),
+        ])
+
+        await kv.del(`wishlist:${id}`)
+
+        return NextResponse.json({ id, deleted: true })
+    } catch (error) {
+        console.error('Delete wishlist error:', error)
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
+    }
+}
