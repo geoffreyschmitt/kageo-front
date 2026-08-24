@@ -215,6 +215,7 @@
     "preview": "Aperçu",
     "previewName": "Nom de l'article",
     "previewDescription": "Description de l'article",
+    "previewImageAlt": "Aperçu de l'image",
     "noImage": "Pas d'image",
     "cancel": "Annuler",
     "adding": "Ajout...",

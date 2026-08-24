@@ -1,6 +1,7 @@
 import React from "react"
 
 import Image from "next/image";
+import { useTranslations } from "next-intl"
 
 import {TProposedWishForm, TProposedWishFormData, TWishForm} from "@/entities/wish/ui/WishForm.types";
 
@@ -19,6 +20,8 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
     onCancel,
     isProposedWish
 }: T) => {
+    const t = useTranslations('wishForm')
+
     return (
         <form
             className={styles.wishForm}
@@ -27,7 +30,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
             <div className={styles.wishForm__formGrid}>
                 {/* Nom */}
                 <label className={styles.wishForm__field}>
-                    <span className={styles.wishForm__label}>Nom *</span>
+                    <span className={styles.wishForm__label}>{t('nameLabel')}</span>
                     <input
                         name="name"
                         value={formData.name}
@@ -47,7 +50,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                 {/* Priorité */}
                 {!isProposedWish && (
                     <label className={styles.wishForm__field}>
-                        <span className={styles.wishForm__label}>Priorité</span>
+                        <span className={styles.wishForm__label}>{t('priorityLabel')}</span>
                         <select
                             name="priority"
                             value={formData.priority}
@@ -55,9 +58,9 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                             disabled={isSubmitting}
                             className={styles.wishForm__select}
                         >
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
+                            <option value="low">{t('priorityLow')}</option>
+                            <option value="medium">{t('priorityMedium')}</option>
+                            <option value="high">{t('priorityHigh')}</option>
                         </select>
                     </label>
                 )}
@@ -66,7 +69,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                 <label
                     className={`${styles.wishForm__field} ${styles['wishForm__field--full']}`}
                 >
-                    <span className={styles.wishForm__label}>Description *</span>
+                    <span className={styles.wishForm__label}>{t('descriptionLabel')}</span>
                     <textarea
                         name="description"
                         value={formData.description}
@@ -86,7 +89,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
 
                 {/* Prix */}
                 <label className={styles.wishForm__field}>
-                    <span className={styles.wishForm__label}>Prix *</span>
+                    <span className={styles.wishForm__label}>{t('priceLabel')}</span>
                     <div className={styles.wishForm__priceGroup}>
                         <select
                             name="currency"
@@ -128,7 +131,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
 
                 {/* Image URL */}
                 <label className={styles.wishForm__field}>
-                    <span className={styles.wishForm__label}>Image URL</span>
+                    <span className={styles.wishForm__label}>{t('imageUrlLabel')}</span>
                     <input
                         name="imageUrl"
                         value={formData.imageUrl}
@@ -147,7 +150,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                 <label
                     className={`${styles.wishForm__field} ${styles['wishForm__field--full']}`}
                 >
-                    <span className={styles.wishForm__label}>Purchase URL</span>
+                    <span className={styles.wishForm__label}>{t('purchaseUrlLabel')}</span>
                     <input
                         name="purchaseUrl"
                         value={formData.purchaseUrl}
@@ -166,7 +169,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                 <label
                     className={`${styles.wishForm__field} ${styles['wishForm__field--full']}`}
                 >
-                    <span className={styles.wishForm__label}>Notes</span>
+                    <span className={styles.wishForm__label}>{t('notesLabel')}</span>
                     <textarea
                         name="notes"
                         value={formData.notes}
@@ -187,7 +190,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                             checked={(formData as unknown as TProposedWishFormData).showToOwner}
                             onChange={e => handleCheckboxChange("showToOwner", e.target.checked)}
                         />
-                        Show to Owner
+                        {t('showToOwner')}
                     </label>
                 </div>
             )}
@@ -195,26 +198,26 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
             {/* Preview */}
             {(formData.name || formData.imageUrl) && (
                 <section className={styles.wishForm__preview}>
-                    <h3 className={styles.wishForm__previewTitle}>Preview</h3>
+                    <h3 className={styles.wishForm__previewTitle}>{t('preview')}</h3>
                     <div className={styles.wishForm__previewCard}>
                         <div className={styles.wishForm__previewImage}>
                             {formData.imageUrl ? (
                                 <Image
                                     src={formData.imageUrl}
-                                    alt="Aperçu de l'image"
+                                    alt={t('previewImageAlt')}
                                     width={600}
                                     height={400}
                                 />
                             ) : (
-                                <div>No image</div>
+                                <div>{t('noImage')}</div>
                             )}
                         </div>
                         <div className={styles.wishForm__previewContent}>
                             <strong className={styles.wishForm__previewName}>
-                                {formData.name || "Item Name"}
+                                {formData.name || t('previewName')}
                             </strong>
                             <p className={styles.wishForm__previewDescription}>
-                                {formData.description || "Item description"}
+                                {formData.description || t('previewDescription')}
                             </p>
                             <div className={styles.wishForm__previewMeta}>
                     <span className={styles.wishForm__previewPrice}>
@@ -246,14 +249,14 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     onClick={onCancel}
                     disabled={isSubmitting}
                 >
-                    Cancel
+                    {t('cancel')}
                 </button>
                 <button
                     type="submit"
                     className={`${styles.wishForm__button} ${styles['wishForm__button--primary']}`}
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? "Adding..." : "Add Item"}
+                    {isSubmitting ? t('adding') : t('addItem')}
                 </button>
             </footer>
         </form>
