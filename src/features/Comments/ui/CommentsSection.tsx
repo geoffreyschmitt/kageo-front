@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useCommentsModel } from '../model'
 import type { TCommentTarget } from '@/shared/api/comment'
 import styles from './CommentsSection.module.css'
@@ -20,9 +21,13 @@ export const CommentsSection = ({
     target,
     enabled,
     autoLoad = true,
-    title = 'Comments',
-    emptyMessage = 'No comments yet — be the first to say something.',
+    title,
+    emptyMessage,
 }: TCommentsSectionProps) => {
+    const t = useTranslations('comments')
+    const resolvedTitle = title ?? t('defaultTitle')
+    const resolvedEmptyMessage = emptyMessage ?? t('defaultEmpty')
+
     const {
         comments,
         isLoading,
@@ -38,13 +43,13 @@ export const CommentsSection = ({
 
     return (
         <div className={styles.comments}>
-            <h4 className={styles.comments__title}>{title}</h4>
+            <h4 className={styles.comments__title}>{resolvedTitle}</h4>
 
-            {isLoading && <p className={styles.comments__status}>Loading comments…</p>}
+            {isLoading && <p className={styles.comments__status}>{t('loading')}</p>}
             {loadError && <p className={styles.comments__error}>{loadError}</p>}
 
             {!isLoading && !loadError && comments.length === 0 && (
-                <p className={styles.comments__empty}>{emptyMessage}</p>
+                <p className={styles.comments__empty}>{resolvedEmptyMessage}</p>
             )}
 
             {comments.length > 0 && (
@@ -72,7 +77,7 @@ export const CommentsSection = ({
                     className={styles.comments__input}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    placeholder="Add a comment…"
+                    placeholder={t('placeholder')}
                     rows={2}
                     disabled={isSubmitting}
                 />
@@ -82,7 +87,7 @@ export const CommentsSection = ({
                     className={styles.comments__submit}
                     disabled={isSubmitting || !text.trim()}
                 >
-                    {isSubmitting ? 'Posting…' : 'Post comment'}
+                    {isSubmitting ? t('posting') : t('postComment')}
                 </button>
             </form>
         </div>

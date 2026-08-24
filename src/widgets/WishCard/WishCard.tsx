@@ -75,6 +75,7 @@ export const WishCard = ({
     useMock
 }: TWishCard) => {
     const t = useTranslations('wishCard')
+    const tComments = useTranslations('comments')
     const [imgError, setImgError] = useState(false)
     const [descExpanded, setDescExpanded] = useState(false)
     const [descOverflows, setDescOverflows] = useState(false)
@@ -186,7 +187,7 @@ export const WishCard = ({
                         className={styles['wish-card__commentsToggle']}
                         onClick={() => setCommentsOpen((v) => !v)}
                     >
-                        💬 {commentsOpen ? 'Hide comments' : 'Comments'}
+                        💬 {commentsOpen ? tComments('toggleHide') : tComments('toggleShow')}
                     </button>
                 )}
                 {!isOwner && commentsOpen && (

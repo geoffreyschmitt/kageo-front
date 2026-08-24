@@ -343,5 +343,16 @@
     "filterLabel": "Filtrer par propriétaire",
     "searchPlaceholder": "Rechercher ou sélectionner un propriétaire...",
     "noResults": "Aucun propriétaire trouvé."
+  },
+  "comments": {
+    "defaultTitle": "Commentaires",
+    "defaultEmpty": "Aucun commentaire pour le moment — soyez le premier à en laisser un.",
+    "loading": "Chargement des commentaires…",
+    "placeholder": "Ajouter un commentaire…",
+    "posting": "Envoi…",
+    "postComment": "Publier",
+    "toggleShow": "Commentaires",
+    "toggleHide": "Masquer les commentaires",
+    "wishlistEmpty": "Aucun commentaire pour le moment — lancez la conversation sur la wishlist de {ownerName}."
   }
 }

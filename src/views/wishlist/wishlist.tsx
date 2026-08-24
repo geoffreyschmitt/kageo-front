@@ -1,6 +1,7 @@
 'use client'
 
 import {useMemo, useState} from 'react'
+import {useTranslations} from 'next-intl'
 
 import {TWishCard, WishCard} from '@/widgets/WishCard';
 
@@ -114,6 +115,8 @@ export default function Wishlist({
   const [isEditWishModalOpen, setIsEditWishModalOpen] = useState(false)
   const [editingWish, setEditingWish] = useState<TWishCard | null>(null)
   const [isContributeModalOpen, setIsContributeModalOpen] = useState(false)
+
+  const tComments = useTranslations('comments')
 
   const itemPrices = items.map((item) => item.price)
   const minPrice = Math.min(...itemPrices, 0)
@@ -771,8 +774,7 @@ export default function Wishlist({
               <CommentsSection
                 target={{ type: 'wishlist', wishlistId: id }}
                 enabled={!userIsOwner}
-                title="Comments"
-                emptyMessage={`No comments yet — start the conversation about ${ownerName}'s wishlist.`}
+                emptyMessage={tComments('wishlistEmpty', { ownerName })}
               />
             </div>
           )}

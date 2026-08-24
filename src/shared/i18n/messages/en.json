@@ -343,5 +343,16 @@
     "filterLabel": "Filter by Owner",
     "searchPlaceholder": "Search or select owner...",
     "noResults": "No owners found."
+  },
+  "comments": {
+    "defaultTitle": "Comments",
+    "defaultEmpty": "No comments yet — be the first to say something.",
+    "loading": "Loading comments…",
+    "placeholder": "Add a comment…",
+    "posting": "Posting…",
+    "postComment": "Post comment",
+    "toggleShow": "Comments",
+    "toggleHide": "Hide comments",
+    "wishlistEmpty": "No comments yet — start the conversation about {ownerName}'s wishlist."
   }
 }
