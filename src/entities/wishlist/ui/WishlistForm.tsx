@@ -1,6 +1,7 @@
 import React from "react"
 
 import Image from "next/image";
+import { useTranslations } from "next-intl"
 
 import {TWishlistForm} from "@/entities/wishlist/ui/WishlistForm.types";
 
@@ -15,13 +16,14 @@ export const WishlistForm = ({
      handleSubmit,
      onCancel,
  }: TWishlistForm) => {
+    const t = useTranslations('wishlistForm')
     return (
         <form className={styles.editWishlistForm} onSubmit={handleSubmit}>
             <div className={styles.editWishlistForm__formGrid}>
                 {/* Wishlist Name */}
                 <div className={`${styles.editWishlistForm__field} ${styles["editWishlistForm__field--full"]}`}>
                     <label className={styles.editWishlistForm__label} htmlFor="name">
-                        Nom de la Wishlist *
+                        {t('nameLabel')}
                     </label>
                     <input
                         type="text"
@@ -29,7 +31,7 @@ export const WishlistForm = ({
                         className={`${styles.editWishlistForm__input} ${errors.name ? styles["editWishlistForm__input--error"] : ""}`}
                         value={formData.name || ""}
                         onChange={(e) => handleInputChange("name", e.target.value)}
-                        placeholder="Entrez le nom de la wishlist"
+                        placeholder={t('namePlaceholder')}
                     />
                     {errors.name && <span className={styles.editWishlistForm__error}>{errors.name}</span>}
                 </div>
@@ -37,14 +39,14 @@ export const WishlistForm = ({
                 {/* Description */}
                 <div className={`${styles.editWishlistForm__field} ${styles["editWishlistForm__field--full"]}`}>
                     <label className={styles.editWishlistForm__label} htmlFor="description">
-                        Description *
+                        {t('descriptionLabel')}
                     </label>
                     <textarea
                         id="description"
                         className={`${styles.editWishlistForm__textarea} ${errors.description ? styles["editWishlistForm__textarea--error"] : ""}`}
                         value={formData.description || ""}
                         onChange={(e) => handleInputChange("description", e.target.value)}
-                        placeholder="Décrivez votre wishlist..."
+                        placeholder={t('descriptionPlaceholder')}
                         rows={4}
                     />
                     {errors.description && <span className={styles.editWishlistForm__error}>{errors.description}</span>}
@@ -53,7 +55,7 @@ export const WishlistForm = ({
                 {/* Event Date */}
                 <div className={`${styles.editWishlistForm__field} ${styles["editWishlistForm__field--full"]}`}>
                     <label className={styles.editWishlistForm__label} htmlFor="eventDate">
-                        Date de l&#39;événement *
+                        {t('eventDateLabel')}
                     </label>
                     <input
                         type="date"
@@ -67,7 +69,7 @@ export const WishlistForm = ({
 
                 {/* Privacy Setting */}
                 <div className={styles.editWishlistForm__field}>
-                    <label className={styles.editWishlistForm__label}>Confidentialité</label>
+                    <label className={styles.editWishlistForm__label}>{t('privacyLabel')}</label>
                     <div className={styles.editWishlistForm__radioGroup}>
                         <label className={styles.editWishlistForm__radioLabel}>
                             <input
@@ -78,8 +80,8 @@ export const WishlistForm = ({
                                 className={styles.editWishlistForm__radio}
                             />
                             <span className={styles.editWishlistForm__radioText}>
-                                <strong>Privée</strong>
-                                <small>Seulement vous pouvez voir cette wishlist</small>
+                                <strong>{t('privateLabel')}</strong>
+                                <small>{t('privateDesc')}</small>
                             </span>
                         </label>
                         <label className={styles.editWishlistForm__radioLabel}>
@@ -91,8 +93,8 @@ export const WishlistForm = ({
                                 className={styles.editWishlistForm__radio}
                             />
                             <span className={styles.editWishlistForm__radioText}>
-                                <strong>Publique</strong>
-                                <small>Toute personne avec le lien peut voir</small>
+                                <strong>{t('publicLabel')}</strong>
+                                <small>{t('publicDesc')}</small>
                             </span>
                         </label>
                     </div>
@@ -101,7 +103,7 @@ export const WishlistForm = ({
                 {/* Cover Image */}
                 <div className={`${styles.editWishlistForm__field} ${styles["editWishlistForm__field--full"]}`}>
                     <label className={styles.editWishlistForm__label} htmlFor="coverImage">
-                        URL de l&#39;image de couverture
+                        {t('coverImageLabel')}
                     </label>
                     <input
                         type="url"
@@ -116,7 +118,7 @@ export const WishlistForm = ({
 
                 {/* Settings Section */}
                 <div className={`${styles.editWishlistForm__field} ${styles["editWishlistForm__field--full"]}`}>
-                    <label className={styles.editWishlistForm__label}>Paramètres de la Wishlist</label>
+                    <label className={styles.editWishlistForm__label}>{t('settingsLabel')}</label>
                     <div className={styles.editWishlistForm__settingsGroup}>
                         <label className={styles.editWishlistForm__checkboxLabel}>
                             <input
@@ -126,8 +128,8 @@ export const WishlistForm = ({
                                 className={styles.editWishlistForm__checkbox}
                             />
                             <span className={styles.editWishlistForm__checkboxText}>
-                                <strong>Autoriser les suggestions</strong>
-                                <small>Permettre aux autres de suggérer des articles</small>
+                                <strong>{t('allowSuggestions')}</strong>
+                                <small>{t('allowSuggestionsDesc')}</small>
                             </span>
                         </label>
                     </div>
@@ -136,12 +138,12 @@ export const WishlistForm = ({
 
             {/* Preview */}
             <div className={styles.editWishlistForm__preview}>
-                <h3 className={styles.editWishlistForm__previewTitle}>Aperçu</h3>
+                <h3 className={styles.editWishlistForm__previewTitle}>{t('preview')}</h3>
                 <div className={styles.editWishlistForm__previewCard}>
                     {formData.coverImage && (
                         <div className={styles.editWishlistForm__previewImage}>
                             <Image
-                                src={formData.coverImage || "/placeholder.svg"} alt="Aperçu de la couverture"
+                                src={formData.coverImage || "/placeholder.svg"} alt={t('preview')}
                                 width={600}
                                 height={400}
                             />
@@ -149,22 +151,22 @@ export const WishlistForm = ({
                     )}
                     <div className={styles.editWishlistForm__previewContent}>
                         <div className={styles.editWishlistForm__previewHeader}>
-                            <h4 className={styles.editWishlistForm__previewName}>{formData.name || "Nom de la Wishlist"}</h4>
+                            <h4 className={styles.editWishlistForm__previewName}>{formData.name || t('previewName')}</h4>
                             <div className={styles.editWishlistForm__previewBadges}>
                                 <span
                                     className={`${styles.editWishlistForm__previewBadge} ${formData.isPublic ? styles["editWishlistForm__previewBadge--public"] : styles["editWishlistForm__previewBadge--private"]}`}
                                 >
-                                    {formData.isPublic ? "Publique" : "Privée"}
+                                    {formData.isPublic ? t('publicLabel') : t('privateLabel')}
                                 </span>
                             </div>
                         </div>
                         <p className={styles.editWishlistForm__previewDescription}>
-                            {formData.description || "Description de la wishlist"}
+                            {formData.description || t('previewDescription')}
                         </p>
                         <div className={styles.editWishlistForm__previewSettings}>
-                            <span className={styles.editWishlistForm__previewSetting}>💬 Comments always on</span>
+                            <span className={styles.editWishlistForm__previewSetting}>{t('commentsAlwaysOn')}</span>
                             {formData.allowSuggestions && (
-                                <span className={styles.editWishlistForm__previewSetting}>💡 Suggestions</span>
+                                <span className={styles.editWishlistForm__previewSetting}>{t('suggestionsBadge')}</span>
                             )}
                         </div>
                     </div>
@@ -178,14 +180,14 @@ export const WishlistForm = ({
                     onClick={onCancel}
                     disabled={isSubmitting}
                 >
-                    Annuler
+                    {t('cancel')}
                 </button>
                 <button
                     type="submit"
                     className={`${styles.editWishlistForm__button} ${styles["editWishlistForm__button--primary"]}`}
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? "Enregistrement..." : "Enregistrer"}
+                    {isSubmitting ? t('saving') : t('save')}
                 </button>
             </div>
         </form>
