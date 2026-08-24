@@ -15,7 +15,7 @@ export const OwnerFilter = ({ owners, selectedOwner, onSelectOwner }:TFilterWish
     const [searchTerm, setSearchTerm] = useState("");
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const { filteredOwners } = useFilterWishlistOwner({owners, search: selectedOwner});
+    const { filteredOwners } = useFilterWishlistOwner({owners, search: searchTerm});
 
 
 
