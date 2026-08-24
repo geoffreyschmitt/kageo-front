@@ -3,8 +3,6 @@ import {useTranslations, useFormatter} from 'next-intl'
 
 import {TWishlistCard} from '@/widgets/WishlistCard';
 
-import {mockUserPrivate} from '@/entities/user';
-
 import {Button} from '@/shared/ui';
 
 import styles from './WishlistCard.module.css'
@@ -24,11 +22,10 @@ export const WishlistCard = ({
     ownerName,
     isPending = false,
     isHistory = false,
+    isOwnedByCurrentUser = false,
 }: TWishlistCard) => {
     const t = useTranslations('wishlistCard')
     const format = useFormatter()
-    const user = mockUserPrivate
-    const isOwnedByCurrentUser = user.id === ownerId;
 
     const displayPreviews = previewImages?.filter(Boolean).slice(0, 4) ?? []
     const usePreviewGrid = displayPreviews.length >= 2
@@ -128,10 +125,7 @@ export const WishlistCard = ({
                             </Button>
                         ) : (
                             <Button
-                                href={isOwnedByCurrentUser
-                                    ? `/wishlist/owned${isHistory ? '?mode=history' : ''}`
-                                    : `/wishlist/shared${isHistory ? '?mode=history' : ''}`
-                                }
+                                href={`/wishlist/${id}${isHistory ? '?mode=history' : ''}`}
                                 variant={'primary'}
                                 className={`${styles.wishlistCard__button}`}
                             >

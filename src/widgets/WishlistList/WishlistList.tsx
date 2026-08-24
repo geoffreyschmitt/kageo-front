@@ -8,6 +8,7 @@ import {eventBus} from '@/shared/eventBus/lib/eventBus';
 
 export const WishlistList = ({
   wishlistCardList,
+  currentUserId,
   title,
   emptyMessage,
   showCreateButton = false,
@@ -81,6 +82,8 @@ export const WishlistList = ({
               isPublic={wishlistCard.isPublic}
               itemCount={wishlistCard.itemCount}
               isHistory={isHistory}
+              isPending={wishlistCard.isPending}
+              isOwnedByCurrentUser={wishlistCard.ownerId === currentUserId}
             />
           ))}
         </div>

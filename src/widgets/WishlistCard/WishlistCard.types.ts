@@ -12,4 +12,5 @@ export type TWishlistCard = {
     itemCount?: number
     isPending?: boolean
     isHistory?: boolean
+    isOwnedByCurrentUser?: boolean
 }
