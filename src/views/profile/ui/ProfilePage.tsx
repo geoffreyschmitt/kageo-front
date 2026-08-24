@@ -287,7 +287,7 @@ export default function ProfilePage() {
                                     </a>
                                 )}
                             </div>
-                            <label className={s.toggle} aria-label="Toggle public profile">
+                            <label className={s.toggle} aria-label={t('togglePublicProfile')}>
                                 <input
                                     type="checkbox"
                                     className={s.toggle__input}

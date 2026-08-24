@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { eventBus } from '@/shared/eventBus'
 import styles from './Toast.module.css'
 
@@ -36,6 +37,7 @@ const ICONS = {
 }
 
 export const Toaster = () => {
+    const t = useTranslations('toast')
     const [toasts, setToasts] = useState<ToastItem[]>([])
 
     const dismiss = useCallback((id: string) => {
@@ -61,7 +63,7 @@ export const Toaster = () => {
     if (toasts.length === 0) return null
 
     return (
-        <div className={styles.toaster} role="region" aria-label="Notifications" aria-live="polite">
+        <div className={styles.toaster} role="region" aria-label={t('notificationsRegion')} aria-live="polite">
             {toasts.map(toast => (
                 <div
                     key={toast.id}

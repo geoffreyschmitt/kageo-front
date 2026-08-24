@@ -44,7 +44,8 @@
     "privacyDesc": "Gardez vos wishlists privées ou rendez-les publiques pour les partager facilement. C'est vous qui décidez.",
     "ctaTitle": "Prêt à commencer votre aventure wishlist ?",
     "ctaDescription": "Rejoignez des milliers d'utilisateurs satisfaits qui simplifient leurs cadeaux avec Kageo.",
-    "ctaButton": "Créez votre première wishlist"
+    "ctaButton": "Créez votre première wishlist",
+    "heroImageAlt": "Illustration de wishlist"
   },
   "featuresPage": {
     "heroTitle": "Exploitez tout le potentiel de vos wishlists",
@@ -76,7 +77,16 @@
     "ownershipText": "Sachez toujours qui possède une wishlist, qu'elle soit à vous ou partagée par quelqu'un d'autre.",
     "ctaTitle": "Prêt à simplifier vos cadeaux ?",
     "ctaDescription": "Rejoignez Kageo aujourd'hui et transformez la façon dont vous créez, gérez et partagez vos désirs.",
-    "ctaButton": "Commencer maintenant"
+    "ctaButton": "Commencer maintenant",
+    "quickAddIconAlt": "Icône d'ajout d'article",
+    "priorityIconAlt": "Icône de priorité",
+    "sortingIconAlt": "Icône de filtre",
+    "easyShareIconAlt": "Icône de partage",
+    "multiUserIconAlt": "Icône de collaboration",
+    "privacyIconAlt": "Icône de confidentialité",
+    "tabbedIconAlt": "Icône d'onglets",
+    "customizeIconAlt": "Icône de personnalisation",
+    "ownershipIconAlt": "Icône de propriétaire"
   },
   "dashboard": {
     "welcomeBack": "Bon retour",
@@ -132,6 +142,7 @@
   },
   "wishlist": {
     "ownedBy": "Propriétaire : {name}",
+    "ownedByPrefix": "Propriétaire :",
     "eventOn": "Événement le {date}",
     "public": "Public",
     "private": "Privé",
@@ -147,7 +158,44 @@
     "purchasedCount": "{count, plural, one {# acheté} other {# achetés}}",
     "reservedCount": "{count, plural, one {# réservé} other {# réservés}}",
     "wantedCount": "{count, plural, one {# désiré} other {# désirés}}",
-    "proposedCount": "{count, plural, one {# suggéré} other {# suggérés}}"
+    "proposedCount": "{count, plural, one {# suggéré} other {# suggérés}}",
+    "potTitle": "Cagnotte cadeau",
+    "potPledgedSuffix": "promis par vos amis",
+    "potChipIn": "Participez à un cadeau collectif pour {ownerName}",
+    "potUserPledgedPrefix": "Vous avez promis",
+    "contributeToThePot": "Contribuer à la cagnotte",
+    "potNotStarted": "Aucune cagnotte encore lancée pour {ownerName}",
+    "emptyTitle": "Rien ici pour l'instant",
+    "emptyMessage": "Ajoutez votre premier souhait et commencez à créer quelque chose de beau.",
+    "emptyButton": "Ajouter votre premier souhait",
+    "filtersAndSort": "Filtres et tri",
+    "sortByLabel": "Trier par",
+    "sortDateAdded": "Date d'ajout",
+    "sortName": "Nom",
+    "sortPrice": "Prix",
+    "sortPriority": "Priorité",
+    "filterByStatus": "Filtrer par statut",
+    "filterAll": "Tous ({count})",
+    "filterOpenToBuy": "À acheter ({count})",
+    "filterPurchased": "Achetés ({count})",
+    "filterReserved": "Réservés ({count})",
+    "priceRangeLabel": "Plage de prix",
+    "priceMinPlaceholder": "Min",
+    "priceMaxPlaceholder": "Max",
+    "resetButton": "Réinitialiser",
+    "mostWantedTitle": "Les plus désirés",
+    "mostWantedMeta": "{count, plural, one {# souhait très désiré} other {# souhaits très désirés}}",
+    "noResultsTitle": "Aucun article ne correspond à vos filtres",
+    "noResultsMessage": "Essayez d'ajuster vos filtres ou vos critères de recherche pour voir plus d'articles.",
+    "resetAllFilters": "Réinitialiser tous les filtres",
+    "suggestionsTitle": "Suggestions",
+    "suggestionsEmptyMeta": "Aucune suggestion pour l'instant — la vôtre pourrait être la première",
+    "suggestionsPartialMeta": "{shown} sur {total, plural, one {# idée} other {# idées}} correspondent à vos filtres",
+    "suggestionsAllMeta": "{count, plural, one {# idée proposée par vos amis} other {# idées proposées par vos amis}}",
+    "suggestionsCtaTitle": "Une idée en tête ?",
+    "suggestionsCtaSub": "Donnez une longueur d'avance aux autres — proposez quoi acheter pour {ownerName}",
+    "suggestionsEmpty": "Aucune suggestion pour l'instant.",
+    "resultsCount": "Affichage de {shown} sur {total} articles"
   },
   "wishCard": {
     "youPlanningToGift": "Vous planifiez d'offrir ceci",
@@ -328,6 +376,7 @@
     "preferencesTitle": "Préférences",
     "preferencesSubtitle": "Gérez les notifications et les paramètres de confidentialité.",
     "publicProfile": "Profil public",
+    "togglePublicProfile": "Activer/désactiver le profil public",
     "publicProfileDesc": "Permettez à quiconque possède le lien de consulter votre page de profil et vos wishlists publiques.",
     "viewPublicProfile": "Voir votre profil public ↗",
     "dangerZoneTitle": "Zone dangereuse",
@@ -344,6 +393,9 @@
     "deleteModalCancel": "Annuler",
     "deleteModalConfirm": "Oui, supprimer mon compte",
     "deleting": "Suppression…"
+  },
+  "toast": {
+    "notificationsRegion": "Notifications"
   },
   "offline": {
     "title": "Vous êtes hors ligne",

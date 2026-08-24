@@ -44,7 +44,8 @@
     "privacyDesc": "Keep wishlists private or make them public for easy sharing. You're in control.",
     "ctaTitle": "Ready to Start Your Wishlist Journey?",
     "ctaDescription": "Join thousands of happy users who are simplifying their gift-giving and receiving with Kageo.",
-    "ctaButton": "Create Your First Wishlist Now"
+    "ctaButton": "Create Your First Wishlist Now",
+    "heroImageAlt": "Wishlist illustration"
   },
   "featuresPage": {
     "heroTitle": "Unlock the Full Potential of Your Wishlists",
@@ -76,7 +77,16 @@
     "ownershipText": "Always know who owns a wishlist, whether it's yours or shared by someone else.",
     "ctaTitle": "Ready to Simplify Your Gifting?",
     "ctaDescription": "Join Kageo today and transform the way you create, manage, and share your desires.",
-    "ctaButton": "Get Started Now"
+    "ctaButton": "Get Started Now",
+    "quickAddIconAlt": "Add Item Icon",
+    "priorityIconAlt": "Priority Icon",
+    "sortingIconAlt": "Filter Icon",
+    "easyShareIconAlt": "Share Icon",
+    "multiUserIconAlt": "Collaborate Icon",
+    "privacyIconAlt": "Privacy Icon",
+    "tabbedIconAlt": "Tabs Icon",
+    "customizeIconAlt": "Customization Icon",
+    "ownershipIconAlt": "Owner Icon"
   },
   "dashboard": {
     "welcomeBack": "Welcome back",
@@ -132,6 +142,7 @@
   },
   "wishlist": {
     "ownedBy": "Owned by {name}",
+    "ownedByPrefix": "Owned by",
     "eventOn": "Event on {date}",
     "public": "Public",
     "private": "Private",
@@ -147,7 +158,44 @@
     "purchasedCount": "{count, plural, one {# purchased} other {# purchased}}",
     "reservedCount": "{count, plural, one {# reserved} other {# reserved}}",
     "wantedCount": "{count, plural, one {# wanted} other {# wanted}}",
-    "proposedCount": "{count, plural, one {# proposed} other {# proposed}}"
+    "proposedCount": "{count, plural, one {# proposed} other {# proposed}}",
+    "potTitle": "Gift pot",
+    "potPledgedSuffix": "pledged by friends",
+    "potChipIn": "Chip in a collective gift for {ownerName}",
+    "potUserPledgedPrefix": "You've pledged",
+    "contributeToThePot": "Contribute to the pot",
+    "potNotStarted": "No pot started yet for {ownerName}",
+    "emptyTitle": "Nothing here yet",
+    "emptyMessage": "Add your first wish and start building something beautiful.",
+    "emptyButton": "Add your first wish",
+    "filtersAndSort": "Filters & Sort",
+    "sortByLabel": "Sort By",
+    "sortDateAdded": "Date Added",
+    "sortName": "Name",
+    "sortPrice": "Price",
+    "sortPriority": "Priority",
+    "filterByStatus": "Filter by Status",
+    "filterAll": "All ({count})",
+    "filterOpenToBuy": "Open to Buy ({count})",
+    "filterPurchased": "Purchased ({count})",
+    "filterReserved": "Reserved ({count})",
+    "priceRangeLabel": "Price Range",
+    "priceMinPlaceholder": "Min",
+    "priceMaxPlaceholder": "Max",
+    "resetButton": "Reset",
+    "mostWantedTitle": "Most Wanted",
+    "mostWantedMeta": "{count, plural, one {# high-priority wish} other {# high-priority wishes}}",
+    "noResultsTitle": "No Items Match Your Filters",
+    "noResultsMessage": "Try adjusting your filters or search criteria to see more items.",
+    "resetAllFilters": "Reset All Filters",
+    "suggestionsTitle": "Suggestions",
+    "suggestionsEmptyMeta": "No suggestions yet — yours could be first",
+    "suggestionsPartialMeta": "{shown} of {total, plural, one {# idea} other {# ideas}} match your filters",
+    "suggestionsAllMeta": "{count, plural, one {# idea proposed by friends} other {# ideas proposed by friends}}",
+    "suggestionsCtaTitle": "Have something in mind?",
+    "suggestionsCtaSub": "Give other gifters a head start — propose what to buy for {ownerName}",
+    "suggestionsEmpty": "No suggestions yet.",
+    "resultsCount": "Showing {shown} of {total} items"
   },
   "wishCard": {
     "youPlanningToGift": "You are planning to gift this",
@@ -328,6 +376,7 @@
     "preferencesTitle": "Preferences",
     "preferencesSubtitle": "Control notifications and privacy settings.",
     "publicProfile": "Public profile",
+    "togglePublicProfile": "Toggle public profile",
     "publicProfileDesc": "Let anyone with the link view your profile page and public wishlists.",
     "viewPublicProfile": "View your public profile ↗",
     "dangerZoneTitle": "Danger Zone",
@@ -344,6 +393,9 @@
     "deleteModalCancel": "Cancel",
     "deleteModalConfirm": "Yes, delete my account",
     "deleting": "Deleting…"
+  },
+  "toast": {
+    "notificationsRegion": "Notifications"
   },
   "offline": {
     "title": "You're offline",

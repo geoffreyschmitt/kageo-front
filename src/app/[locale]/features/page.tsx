@@ -28,7 +28,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Add Item Icon"
+                            alt={t('quickAddIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}
@@ -39,7 +39,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Priority Icon"
+                            alt={t('priorityIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}
@@ -50,7 +50,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Filter Icon"
+                            alt={t('sortingIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}
@@ -70,7 +70,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Share Icon"
+                            alt={t('easyShareIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}
@@ -81,7 +81,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Collaborate Icon"
+                            alt={t('multiUserIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}
@@ -92,7 +92,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Privacy Icon"
+                            alt={t('privacyIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}
@@ -112,7 +112,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Tabs Icon"
+                            alt={t('tabbedIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}
@@ -123,7 +123,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Customization Icon"
+                            alt={t('customizeIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}
@@ -134,7 +134,7 @@ export default async function FeaturesPage() {
                     <div className={styles.featureCard}>
                         <Image
                             src="/placeholder.svg?height=100&width=100"
-                            alt="Owner Icon"
+                            alt={t('ownershipIconAlt')}
                             width={100}
                             height={100}
                             className={styles.featureCard__icon}

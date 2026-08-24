@@ -49,7 +49,7 @@ export default async function HomePage() {
                 <div className={pageStyles.hero__imageContainer}>
                     <Image
                         src="/placeholder.svg"
-                        alt="Wishlist illustration"
+                        alt={t('heroImageAlt')}
                         className={pageStyles.hero__image}
                         width={600}
                         height={400}

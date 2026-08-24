@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslations } from 'next-intl'
 
 import {useShareWishlistModel} from "@/features/ShareWishlist/model";
 
@@ -9,6 +10,7 @@ import {TShareWishlistModal} from "./ShareWishlistModal.types";
 
 
 export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName, onSendEmail }: TShareWishlistModal) => {
+    const t = useTranslations('shareWishlistModal')
     const {
         email,
         emailError,
@@ -25,14 +27,14 @@ export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName,
         <Modal
             isOpen={isOpen}
             onClose={handleClose}
-            title="Share Wishlist"
+            title={t('title')}
             subtitle={`"${wishlistName}"`}
             className={styles.shareWishlistModal}
         >
             <div className={styles.shareWishlistModal__content}>
                 {/* Copy Link Section */}
                 <div className={styles.shareWishlistModal__section}>
-                    <h3 className={styles.shareWishlistModal__sectionTitle}>Copy Link</h3>
+                    <h3 className={styles.shareWishlistModal__sectionTitle}>{t('copyLinkTitle')}</h3>
                     <div className={styles.shareWishlistModal__linkGroup}>
                         <input
                             type="text"
@@ -44,24 +46,24 @@ export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName,
                             className={`${styles.shareWishlistModal__button} ${styles["shareWishlistModal__button--secondary"]}`}
                             onClick={handleCopyLink}
                         >
-                            {copySuccess ? "Copied!" : "Copy Link"}
+                            {copySuccess ? t('copied') : t('copyLink')}
                         </button>
                     </div>
                     <p className={styles.shareWishlistModal__note}>
-                        Anyone with this link can view your wishlist.
+                        {t('linkNote')}
                     </p>
                 </div>
 
                 {/* Send Email Section */}
                 <div className={styles.shareWishlistModal__section}>
-                    <h3 className={styles.shareWishlistModal__sectionTitle}>Send via Email</h3>
+                    <h3 className={styles.shareWishlistModal__sectionTitle}>{t('sendEmailTitle')}</h3>
                     <form className={styles.shareWishlistModal__emailForm} onSubmit={handleSendEmail}>
                         <input
                             type="email"
                             className={`${styles.shareWishlistModal__input} ${
                                 emailError ? styles["shareWishlistModal__input--error"] : ""
                             }`}
-                            placeholder="Enter recipient's email address"
+                            placeholder={t('emailPlaceholder')}
                             value={email}
                             onChange={handleEmailChange}
                         />
@@ -69,14 +71,14 @@ export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName,
                             <span className={styles.shareWishlistModal__error}>{emailError}</span>
                         )}
                         {sendSuccess && (
-                            <span className={styles.shareWishlistModal__success}>Email sent successfully!</span>
+                            <span className={styles.shareWishlistModal__success}>{t('emailSent')}</span>
                         )}
                         <button
                             type="submit"
                             className={`${styles.shareWishlistModal__button} ${styles["shareWishlistModal__button--primary"]}`}
                             disabled={isSending}
                         >
-                            {isSending ? "Sending..." : "Send Email"}
+                            {isSending ? t('sending') : t('sendEmail')}
                         </button>
                     </form>
                 </div>
