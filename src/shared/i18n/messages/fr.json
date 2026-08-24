@@ -228,7 +228,14 @@
     "noImage": "Pas d'image",
     "cancel": "Annuler",
     "adding": "Ajout...",
-    "addItem": "Ajouter"
+    "addItem": "Ajouter",
+    "errors": {
+      "nameRequired": "Le nom est requis",
+      "descriptionRequired": "La description est requise",
+      "priceMustBePositive": "Le prix doit être supérieur à 0",
+      "invalidUrl": "URL invalide",
+      "invalidImageUrl": "URL d'image invalide"
+    }
   },
   "createWishlistModal": {
     "title": "Créer une Wishlist"

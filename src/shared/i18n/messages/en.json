@@ -228,7 +228,14 @@
     "noImage": "No image",
     "cancel": "Cancel",
     "adding": "Adding...",
-    "addItem": "Add Item"
+    "addItem": "Add Item",
+    "errors": {
+      "nameRequired": "Name is required",
+      "descriptionRequired": "Description is required",
+      "priceMustBePositive": "Price must be greater than 0",
+      "invalidUrl": "Invalid URL",
+      "invalidImageUrl": "Invalid image URL"
+    }
   },
   "createWishlistModal": {
     "title": "Create a Wishlist"

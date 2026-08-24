@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react"
+import { useTranslations } from "next-intl"
 
 import { editWish as editWishService } from "@/shared/api/wish/editWish"
 
@@ -53,19 +54,21 @@ export const useEditWishModel = ({
         setErrors({})
     }, [initialData])
 
+    const t = useTranslations('wishForm')
+
     const validateForm = useCallback((): boolean => {
         const newErrors: TWishValidationErrors = {}
 
-        if (!formData.name.trim()) newErrors.name = "Le nom est requis"
-        if (!formData.description.trim()) newErrors.description = "La description est requise"
+        if (!formData.name.trim()) newErrors.name = t('errors.nameRequired')
+        if (!formData.description.trim()) newErrors.description = t('errors.descriptionRequired')
         if (!(typeof formData.price === "number") || Number.isNaN(formData.price) || formData.price <= 0)
-            newErrors.price = "Le prix doit être supérieur à 0"
-        if (formData.purchaseUrl && !isValidUrl(formData.purchaseUrl)) newErrors.purchaseUrl = "URL invalide"
-        if (formData.imageUrl && !isValidUrl(formData.imageUrl)) newErrors.imageUrl = "URL d'image invalide"
+            newErrors.price = t('errors.priceMustBePositive')
+        if (formData.purchaseUrl && !isValidUrl(formData.purchaseUrl)) newErrors.purchaseUrl = t('errors.invalidUrl')
+        if (formData.imageUrl && !isValidUrl(formData.imageUrl)) newErrors.imageUrl = t('errors.invalidImageUrl')
 
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
-    }, [formData])
+    }, [formData, t])
 
     // Generic setter that accepts string | number for fields.
     const handleInputChange = useCallback(
