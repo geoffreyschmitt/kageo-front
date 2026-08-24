@@ -85,7 +85,7 @@ export const useEditWishlistModel = ({
                 onClose()
             } catch (err) {
                 console.error('Erreur lors de la mise à jour de la wishlist :', err)
-                eventBus.emit('ui:toast', { message: 'Could not update wishlist — please try again', type: 'error' })
+                eventBus.emit('ui:toast', { message: t('updateError'), type: 'error' })
             } finally {
                 setIsSubmitting(false)
             }

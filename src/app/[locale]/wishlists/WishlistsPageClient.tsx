@@ -104,7 +104,7 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
                     return wishlist
                 })
             )
-            toast(`"${wishlistData.name}" created`, 'success')
+            toast(t('created', { name: wishlistData.name }), 'success')
         }
     }
 
@@ -124,7 +124,7 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
             )
         )
         setUpdatingWishlistId(null)
-        toast(`"${wishlistData.name}" updated`, 'success')
+        toast(t('updated', { name: wishlistData.name }), 'success')
     }
 
     const displayName = userName.split(' ')[0] ?? 'there'

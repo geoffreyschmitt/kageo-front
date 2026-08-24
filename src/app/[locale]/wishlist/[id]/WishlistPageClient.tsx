@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 import Wishlist from '@/views/wishlist/wishlist'
 import { TWishCard } from '@/widgets/WishCard/WishCard.types'
@@ -50,6 +51,7 @@ export default function WishlistPageClient({
     initialUserContributed,
     initialPotCreatorName,
 }: Props) {
+    const t = useTranslations('wishlistToast')
     const [items, setItems] = useState<TWishCard[]>(initialItems)
     const [totalContributed, setTotalContributed] = useState(initialTotalContributed)
     const [userContributed, setUserContributed] = useState(initialUserContributed)
@@ -57,7 +59,7 @@ export default function WishlistPageClient({
 
     const handlePotCreated = (_creatorId: string, creatorName: string) => {
         setPotCreatorName(creatorName)
-        toast('Pot started — friends can now chip in', 'success')
+        toast(t('potStarted'), 'success')
     }
 
     const handleReserveWish = (wishId: string, reservedBy: string) => {
@@ -65,7 +67,7 @@ export default function WishlistPageClient({
             item.id === wishId ? { ...item, status: 'reserved', reservedBy } : item
         ))
         const name = items.find((i) => i.id === wishId)?.name
-        toast(name ? `"${name}" reserved` : 'Wish reserved', 'success')
+        toast(name ? t('wishReserved', { name }) : t('wishReservedFallback'), 'success')
     }
 
     const handleReserveError = (wishId: string) => {
@@ -74,21 +76,21 @@ export default function WishlistPageClient({
                 ? { ...item, status: item.isProposed ? 'proposed' : 'wanted', reservedBy: undefined }
                 : item
         ))
-        toast('Could not reserve wish — please try again', 'error')
+        toast(t('reserveError'), 'error')
     }
 
     const handleCancelReservation = (wishId: string) => {
         setItems((prev) => prev.map((item) =>
             item.id === wishId ? { ...item, status: 'wanted', reservedBy: undefined } : item
         ))
-        toast('Reservation cancelled', 'info')
+        toast(t('reservationCancelled'), 'info')
     }
 
     const handleCancelError = (wishId: string) => {
         setItems((prev) => prev.map((item) =>
             item.id === wishId ? { ...item, status: 'reserved', reservedBy: userId } : item
         ))
-        toast('Could not cancel reservation — please try again', 'error')
+        toast(t('cancelError'), 'error')
     }
 
     const handleMarkPurchased = (wishId: string, purchasedBy: string) => {
@@ -96,7 +98,7 @@ export default function WishlistPageClient({
             item.id === wishId ? { ...item, status: 'purchased', purchasedBy } : item
         ))
         const name = items.find((i) => i.id === wishId)?.name
-        toast(name ? `"${name}" marked as purchased` : 'Wish marked as purchased', 'success')
+        toast(name ? t('wishMarkedPurchased', { name }) : t('wishMarkedPurchasedFallback'), 'success')
     }
 
     const handleMarkPurchasedError = (wishId: string) => {
@@ -104,14 +106,14 @@ export default function WishlistPageClient({
             if (item.id !== wishId) return item
             return { ...item, status: item.reservedBy ? 'reserved' : 'wanted', purchasedBy: undefined }
         }))
-        toast('Could not mark as purchased — please try again', 'error')
+        toast(t('markPurchasedError'), 'error')
     }
 
     const handleRemovePurchased = (wishId: string) => {
         setItems((prev) => prev.map((item) =>
             item.id === wishId ? { ...item, status: 'wanted', purchasedBy: undefined } : item
         ))
-        toast('Marked as available again', 'info')
+        toast(t('markedAvailable'), 'info')
     }
 
     const handleRemovePurchasedError = (wishId: string) => {
@@ -120,19 +122,19 @@ export default function WishlistPageClient({
             const original = initialItems.find((i) => i.id === wishId)
             return { ...item, status: 'purchased', purchasedBy: original?.purchasedBy }
         }))
-        toast('Could not update wish — please try again', 'error')
+        toast(t('updateError'), 'error')
     }
 
     const handleDeleteWish = (wishId: string) => {
         const name = items.find((i) => i.id === wishId)?.name
         setItems((prev) => prev.filter((item) => item.id !== wishId))
-        toast(name ? `"${name}" deleted` : 'Wish deleted', 'info')
+        toast(name ? t('wishDeleted', { name }) : t('wishDeletedFallback'), 'info')
     }
 
     const handleDeleteError = (wishId: string) => {
         const original = initialItems.find((item) => item.id === wishId)
         if (original) setItems((prev) => [...prev, original])
-        toast('Could not delete wish — please try again', 'error')
+        toast(t('deleteError'), 'error')
     }
 
     const handleUpdateWish = (wishId: string, updatedWish: TWishFormData & { id: string }) => {
@@ -191,13 +193,13 @@ export default function WishlistPageClient({
     const handleContribute = (_wishlistId: string, amount: number) => {
         setTotalContributed((prev) => prev + amount)
         setUserContributed((prev) => prev + amount)
-        toast('Thank you! Your gift has been added to the pot', 'success')
+        toast(t('contributionAdded'), 'success')
     }
 
     const handleContributeError = (_wishlistId: string, amount: number) => {
         setTotalContributed((prev) => prev - amount)
         setUserContributed((prev) => prev - amount)
-        toast('Could not add your contribution — please try again', 'error')
+        toast(t('contributionError'), 'error')
     }
 
     return (

@@ -91,7 +91,7 @@ export const useCreateWishlistModel = ({
             } catch (err) {
                 console.error("Erreur lors de la création de la wishlist :", err)
                 onError?.(tempId)
-                eventBus.emit('ui:toast', { message: 'Could not create wishlist — please try again', type: 'error' })
+                eventBus.emit('ui:toast', { message: t('createError'), type: 'error' })
             } finally {
                 setIsSubmitting(false)
             }

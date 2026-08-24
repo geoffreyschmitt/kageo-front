@@ -124,7 +124,9 @@
     "listTitleShared": "Wishlists Shared with Me",
     "emptyMine": "You haven't created any wishlists yet. Start by creating one!",
     "emptyShared": "No wishlists have been shared with you yet.",
-    "createError": "Could not create wishlist — please try again"
+    "createError": "Could not create wishlist — please try again",
+    "created": "\"{name}\" created",
+    "updated": "\"{name}\" updated"
   },
   "history": {
     "title": "History",
@@ -141,7 +143,6 @@
     "emptyShared": "No past wishlists have been shared with you."
   },
   "wishlist": {
-    "ownedBy": "Owned by {name}",
     "ownedByPrefix": "Owned by",
     "eventOn": "Event on {date}",
     "public": "Public",
@@ -154,7 +155,6 @@
     "complete": "Complete",
     "wanted": "Wanted",
     "purchased": "Purchased",
-    "reserved": "Reserved",
     "purchasedCount": "{count, plural, one {# purchased} other {# purchased}}",
     "reservedCount": "{count, plural, one {# reserved} other {# reserved}}",
     "wantedCount": "{count, plural, one {# wanted} other {# wanted}}",
@@ -196,6 +196,24 @@
     "suggestionsCtaSub": "Give other gifters a head start — propose what to buy for {ownerName}",
     "suggestionsEmpty": "No suggestions yet.",
     "resultsCount": "Showing {shown} of {total} items"
+  },
+  "wishlistToast": {
+    "potStarted": "Pot started — friends can now chip in",
+    "wishReserved": "\"{name}\" reserved",
+    "wishReservedFallback": "Wish reserved",
+    "reserveError": "Could not reserve wish — please try again",
+    "reservationCancelled": "Reservation cancelled",
+    "cancelError": "Could not cancel reservation — please try again",
+    "wishMarkedPurchased": "\"{name}\" marked as purchased",
+    "wishMarkedPurchasedFallback": "Wish marked as purchased",
+    "markPurchasedError": "Could not mark as purchased — please try again",
+    "markedAvailable": "Marked as available again",
+    "updateError": "Could not update wish — please try again",
+    "wishDeleted": "\"{name}\" deleted",
+    "wishDeletedFallback": "Wish deleted",
+    "deleteError": "Could not delete wish — please try again",
+    "contributionAdded": "Thank you! Your gift has been added to the pot",
+    "contributionError": "Could not add your contribution — please try again"
   },
   "wishCard": {
     "youPlanningToGift": "You are planning to gift this",
@@ -255,7 +273,9 @@
       "invalidImageUrl": "Invalid image URL",
       "eventDateRequired": "Event date is required",
       "invalidDate": "Invalid date"
-    }
+    },
+    "createError": "Could not create wishlist — please try again",
+    "updateError": "Could not update wishlist — please try again"
   },
   "wishForm": {
     "nameLabel": "Name *",
@@ -332,7 +352,8 @@
     "disclaimer": "This records a pledge — it isn't a payment. {creatorName} is collecting the money from everyone directly, so make sure you get it to them yourself.",
     "cancel": "Cancel",
     "adding": "Adding…",
-    "addPledge": "Add pledge"
+    "addPledge": "Add pledge",
+    "invalidAmount": "Please enter a valid amount greater than 0"
   },
   "createPotModal": {
     "triggerButton": "Start a gift pot",
@@ -403,7 +424,6 @@
     "retry": "Try again"
   },
   "filterOwner": {
-    "allOwners": "All owners",
     "filterLabel": "Filter by Owner",
     "searchPlaceholder": "Search or select owner...",
     "noResults": "No owners found."

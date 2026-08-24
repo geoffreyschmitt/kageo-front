@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 
 import { contributePot } from '@/shared/api/wishlist/contributePot'
 import { mockContributePot } from './lib/mockContributePot'
@@ -20,6 +21,7 @@ export const useContributePotModel = ({
     onClose,
     useMock = false,
 }: TUseContributePotModelParams) => {
+    const t = useTranslations('contributeModal')
     const [amount, setAmount] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -27,7 +29,7 @@ export const useContributePotModel = ({
     const handleSubmit = useCallback(async () => {
         const parsed = parseFloat(amount)
         if (!parsed || parsed <= 0) {
-            setError('Please enter a valid amount greater than 0')
+            setError(t('invalidAmount'))
             return
         }
         setError(null)
@@ -47,7 +49,7 @@ export const useContributePotModel = ({
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishlistId, amount, onContribute, onError, onClose, useMock])
+    }, [wishlistId, amount, onContribute, onError, onClose, useMock, t])
 
     return { amount, setAmount, isSubmitting, error, handleSubmit }
 }
