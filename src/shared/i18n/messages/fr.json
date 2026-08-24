@@ -366,5 +366,9 @@
     "toggleShow": "Commentaires",
     "toggleHide": "Masquer les commentaires",
     "wishlistEmpty": "Aucun commentaire pour le moment — lancez la conversation sur la wishlist de {ownerName}."
+  },
+  "publicProfile": {
+    "publicWishlistsTitle": "Wishlists publiques",
+    "emptyMessage": "{name} n'a pas encore partagé de wishlist publique."
   }
 }

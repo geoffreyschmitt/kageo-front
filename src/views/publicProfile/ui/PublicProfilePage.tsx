@@ -1,5 +1,6 @@
 'use client'
 
+import { useLocale, useTranslations } from 'next-intl'
 import { WishlistList } from '@/widgets'
 import { TWishlistCard } from '@/widgets/WishlistCard'
 
@@ -22,11 +23,15 @@ function getInitials(name: string): string {
         .toUpperCase()
 }
 
-function formatMemberSince(iso: string): string {
-    return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+function formatMemberSince(iso: string, locale: string): string {
+    return new Date(iso).toLocaleDateString(locale, { month: 'long', year: 'numeric' })
 }
 
 export default function PublicProfilePage({ name, createdAt, wishlists, currentUserId }: TPublicProfilePageProps) {
+    const t = useTranslations('publicProfile')
+    const tProfile = useTranslations('profile')
+    const locale = useLocale()
+
     return (
         <main className={s.publicProfile}>
             <div className={s.hero}>
@@ -35,7 +40,7 @@ export default function PublicProfilePage({ name, createdAt, wishlists, currentU
                         <span className={s.avatar__monogram}>{getInitials(name)}</span>
                     </div>
                     <h1 className={s.hero__name}>{name}</h1>
-                    <span className={s.hero__badge}>Member since {formatMemberSince(createdAt)}</span>
+                    <span className={s.hero__badge}>{tProfile('memberSince', { date: formatMemberSince(createdAt, locale) })}</span>
                 </div>
             </div>
 
@@ -43,8 +48,8 @@ export default function PublicProfilePage({ name, createdAt, wishlists, currentU
                 <WishlistList
                     wishlistCardList={wishlists}
                     currentUserId={currentUserId}
-                    title="Public Wishlists"
-                    emptyMessage={`${name} hasn't shared any public wishlists yet.`}
+                    title={t('publicWishlistsTitle')}
+                    emptyMessage={t('emptyMessage', { name })}
                     showCreateButton={false}
                 />
             </div>
