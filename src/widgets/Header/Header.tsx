@@ -1,11 +1,12 @@
 'use client';
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 import {signIn, signOut, useSession} from 'next-auth/react'
 import {useTranslations} from 'next-intl'
 
 import {Link} from '@/shared/i18n/navigation'
 import {LanguageSwitcher} from '@/features/LanguageSwitcher'
+import {eventBus} from '@/shared/eventBus'
 
 import styles from './Header.module.css'
 
@@ -22,6 +23,10 @@ export const Header = () => {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    return eventBus.on('auth:openLoginModal', () => setShowAuthModal(true))
+  }, [])
 
   const handleInputChange = (e) => {
     setFormData({

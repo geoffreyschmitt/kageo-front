@@ -7,7 +7,9 @@ type UIEvents = {
 };
 
 
-type UserEvents = {};
+type UserEvents = {
+  'auth:openLoginModal': {};
+};
 
 type WishlistEvents = {
   'wishlist:openCreationModal': {};
