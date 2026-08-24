@@ -29,6 +29,18 @@ export async function POST(request: NextRequest) {
         if (!name?.trim()) {
             return NextResponse.json({ message: 'Name is required' }, { status: 400 })
         }
+        if (name.trim().length > 200) {
+            return NextResponse.json({ message: 'Name must be 200 characters or fewer' }, { status: 400 })
+        }
+        if (description && description.length > 5000) {
+            return NextResponse.json({ message: 'Description must be 5000 characters or fewer' }, { status: 400 })
+        }
+        if (notes && notes.length > 2000) {
+            return NextResponse.json({ message: 'Notes must be 2000 characters or fewer' }, { status: 400 })
+        }
+        if (price !== undefined && (!Number.isFinite(Number(price)) || Number(price) < 0)) {
+            return NextResponse.json({ message: 'Price must be a non-negative number' }, { status: 400 })
+        }
 
         const wishlist = await kv.get<TWishlistKV>(`wishlist:${wishlistId}`)
         if (!wishlist) {
