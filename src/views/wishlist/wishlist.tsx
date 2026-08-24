@@ -276,7 +276,7 @@ export default function Wishlist({
           </div>
 
           <div className={styles.wishlist__actions}>
-            {userIsOwner && !isHistory && (
+            {userIsOwner && (
               <button
                 className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
                 onClick={() => {
