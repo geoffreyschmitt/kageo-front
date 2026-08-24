@@ -198,7 +198,16 @@
     "suggestionsBadge": "💡 Suggestions",
     "cancel": "Annuler",
     "saving": "Enregistrement...",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "errors": {
+      "nameRequired": "Le nom de la wishlist est requis",
+      "nameTooShort": "Le nom doit contenir au moins 3 caractères",
+      "descriptionRequired": "La description est requise",
+      "descriptionTooShort": "La description doit contenir au moins 10 caractères",
+      "invalidImageUrl": "URL d'image invalide",
+      "eventDateRequired": "La date de l'événement est requise",
+      "invalidDate": "Date invalide"
+    }
   },
   "wishForm": {
     "nameLabel": "Nom *",

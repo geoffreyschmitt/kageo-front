@@ -198,7 +198,16 @@
     "suggestionsBadge": "💡 Suggestions",
     "cancel": "Cancel",
     "saving": "Saving...",
-    "save": "Save"
+    "save": "Save",
+    "errors": {
+      "nameRequired": "Wishlist name is required",
+      "nameTooShort": "Name must be at least 3 characters",
+      "descriptionRequired": "Description is required",
+      "descriptionTooShort": "Description must be at least 10 characters",
+      "invalidImageUrl": "Invalid image URL",
+      "eventDateRequired": "Event date is required",
+      "invalidDate": "Invalid date"
+    }
   },
   "wishForm": {
     "nameLabel": "Name *",

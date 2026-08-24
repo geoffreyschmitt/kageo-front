@@ -1,5 +1,7 @@
 import {useCallback, useEffect, useState} from 'react'
 
+import {useTranslations} from 'next-intl'
+
 import {updateWishlist} from '@/shared/api/wishlist/updateWishlist'
 import {eventBus} from '@/shared/eventBus'
 
@@ -33,6 +35,8 @@ export const useEditWishlistModel = ({
     const [errors, setErrors] = useState<TWishlistValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
+    const t = useTranslations('wishlistForm')
+
     const handleInputChange = useCallback(
         (field: keyof TWishlistFormData, value?: string | boolean) => {
             setFormData((prev: TWishlistFormData) => ({...prev, [field]: value}))
@@ -65,7 +69,7 @@ export const useEditWishlistModel = ({
         async (e?: React.FormEvent) => {
             if (e) e.preventDefault()
 
-            const {errorList, hasError} = validateWishlistForm(formData);
+            const {errorList, hasError} = validateWishlistForm(formData, t);
             setErrors(errorList)
 
             if (hasError) return
@@ -86,7 +90,7 @@ export const useEditWishlistModel = ({
                 setIsSubmitting(false)
             }
         },
-        [formData, onSubmit, onClose, resetForm, useMock, wishlistId],
+        [formData, onSubmit, onClose, resetForm, useMock, wishlistId, t],
     )
 
     return {

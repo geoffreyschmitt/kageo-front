@@ -2,32 +2,42 @@ import type {TWishlistValidationErrors} from '@/entities/wishlist';
 
 import {isValidUrl} from '@/shared/lib/isValidUrl';
 
-export const validateWishlistForm = (formData): {
+type TValidateWishlistFormData = {
+    name: string
+    description: string
+    coverImage?: string
+    eventDate: string
+}
+
+export const validateWishlistForm = (
+    formData: TValidateWishlistFormData,
+    t: (key: string) => string,
+): {
     errorList: TWishlistValidationErrors,
     hasError: boolean
 } => {
     const errorList: TWishlistValidationErrors = {}
 
     if (!formData.name.trim()) {
-        errorList.name = "Le nom de la wishlist est requis"
+        errorList.name = t('errors.nameRequired')
     } else if (formData.name.trim().length < 3) {
-        errorList.name = "Le nom doit contenir au moins 3 caractères"
+        errorList.name = t('errors.nameTooShort')
     }
 
     if (!formData.description.trim()) {
-        errorList.description = "La description est requise"
+        errorList.description = t('errors.descriptionRequired')
     } else if (formData.description.trim().length < 10) {
-        errorList.description = "La description doit contenir au moins 10 caractères"
+        errorList.description = t('errors.descriptionTooShort')
     }
 
     if (formData.coverImage && !isValidUrl(formData.coverImage)) {
-        errorList.coverImage = "URL d'image invalide"
+        errorList.coverImage = t('errors.invalidImageUrl')
     }
 
     if (!formData.eventDate) {
-        errorList.eventDate = "La date de l'événement est requise"
+        errorList.eventDate = t('errors.eventDateRequired')
     } else if (isNaN(new Date(formData.eventDate).getTime())) {
-        errorList.eventDate = "Date invalide"
+        errorList.eventDate = t('errors.invalidDate')
     }
 
     return {
