@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+import { useLocale, useTranslations } from 'next-intl'
+
 import { useManageAccountModel } from '@/features/ManageAccount'
 import { Modal } from '@/shared/ui'
 
@@ -17,12 +19,13 @@ function getInitials(name: string | null): string {
         .toUpperCase()
 }
 
-function formatMemberSince(iso?: string): string {
-    if (!iso) return 'Unknown'
-    return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+function formatMemberSince(iso: string, locale: string): string {
+    return new Date(iso).toLocaleDateString(locale, { month: 'long', year: 'numeric' })
 }
 
 export default function ProfilePage() {
+    const t = useTranslations('profile')
+    const locale = useLocale()
     const {
         profile,
         stats,
@@ -65,8 +68,8 @@ export default function ProfilePage() {
             <main className={s.profile}>
                 <div className={s.hero}>
                     <div className={s.hero__inner}>
-                        <p className={s.hero__eyebrow}>My Account</p>
-                        <h1 className={s.hero__name}>Loading…</h1>
+                        <p className={s.hero__eyebrow}>{t('myAccount')}</p>
+                        <h1 className={s.hero__name}>{t('loading')}</h1>
                     </div>
                 </div>
             </main>
@@ -78,8 +81,8 @@ export default function ProfilePage() {
             <main className={s.profile}>
                 <div className={s.hero}>
                     <div className={s.hero__inner}>
-                        <p className={s.hero__eyebrow}>My Account</p>
-                        <h1 className={s.hero__name}>Could not load your profile</h1>
+                        <p className={s.hero__eyebrow}>{t('myAccount')}</p>
+                        <h1 className={s.hero__name}>{t('loadError')}</h1>
                         <p className={s.hero__email}>{loadError}</p>
                     </div>
                 </div>
@@ -88,7 +91,7 @@ export default function ProfilePage() {
     }
 
     const initials = getInitials(profile.name)
-    const memberSince = formatMemberSince(profile.createdAt)
+    const memberSince = formatMemberSince(profile.createdAt, locale)
 
     return (
         <main className={s.profile}>
@@ -99,28 +102,28 @@ export default function ProfilePage() {
                         <span className={s.avatar__monogram}>{initials}</span>
                     </div>
 
-                    <p className={s.hero__eyebrow}>My Account</p>
-                    <h1 className={s.hero__name}>{profile.name || 'Anonymous'}</h1>
+                    <p className={s.hero__eyebrow}>{t('myAccount')}</p>
+                    <h1 className={s.hero__name}>{profile.name || t('anonymous')}</h1>
                     <p className={s.hero__email}>{profile.email}</p>
 
                     <div className={s.hero__meta}>
                         <span className={`${s.hero__badge} ${s['hero__badge--since']}`}>
-                            Member since {memberSince}
+                            {t('memberSince', { date: memberSince })}
                         </span>
                     </div>
 
                     <div className={s.stats}>
                         <div className={s.stat}>
                             <span className={s.stat__value}>{stats?.wishlists ?? 0}</span>
-                            <span className={s.stat__label}>Wishlists</span>
+                            <span className={s.stat__label}>{t('wishlists')}</span>
                         </div>
                         <div className={s.stat}>
                             <span className={s.stat__value}>{stats?.wishes ?? 0}</span>
-                            <span className={s.stat__label}>Wishes</span>
+                            <span className={s.stat__label}>{t('wishes')}</span>
                         </div>
                         <div className={s.stat}>
                             <span className={s.stat__value}>{stats?.shared ?? 0}</span>
-                            <span className={s.stat__label}>Shared</span>
+                            <span className={s.stat__label}>{t('shared')}</span>
                         </div>
                     </div>
                 </div>
@@ -133,17 +136,17 @@ export default function ProfilePage() {
                 <div className={s.section}>
                     <div className={s.section__header}>
                         <div>
-                            <h2 className={s.section__title}>Account Info</h2>
-                            <p className={s.section__subtitle}>Update your name and review your email address.</p>
+                            <h2 className={s.section__title}>{t('accountInfoTitle')}</h2>
+                            <p className={s.section__subtitle}>{t('accountInfoSubtitle')}</p>
                         </div>
-                        {nameSaved && <span className={s.savedDot}>Saved</span>}
+                        {nameSaved && <span className={s.savedDot}>{t('saved')}</span>}
                     </div>
                     <div className={s.section__body}>
                         <div className={s.form}>
                             <div className={s.form__row}>
                                 <div className={s.field}>
                                     <label className={s.field__label} htmlFor="profile-name">
-                                        Display Name
+                                        {t('displayName')}
                                     </label>
                                     <input
                                         id="profile-name"
@@ -151,12 +154,12 @@ export default function ProfilePage() {
                                         type="text"
                                         value={nameValue}
                                         onChange={(e) => setNameValue(e.target.value)}
-                                        placeholder="Your name"
+                                        placeholder={t('namePlaceholder')}
                                     />
                                 </div>
                                 <div className={s.field}>
                                     <label className={s.field__label} htmlFor="profile-email">
-                                        Email Address
+                                        {t('emailAddress')}
                                     </label>
                                     <input
                                         id="profile-email"
@@ -167,7 +170,7 @@ export default function ProfilePage() {
                                         aria-describedby="email-hint"
                                     />
                                     <p id="email-hint" className={s.field__hint}>
-                                        Email cannot be changed at this time.
+                                        {t('emailHint')}
                                     </p>
                                 </div>
                             </div>
@@ -178,7 +181,7 @@ export default function ProfilePage() {
                                     onClick={handleSaveName}
                                     disabled={isSavingName}
                                 >
-                                    {isSavingName ? 'Saving…' : 'Save changes'}
+                                    {isSavingName ? t('saving') : t('saveChanges')}
                                 </button>
                             </div>
                         </div>
@@ -189,21 +192,19 @@ export default function ProfilePage() {
                 <div className={s.section}>
                     <div className={s.section__header}>
                         <div>
-                            <h2 className={s.section__title}>Security</h2>
+                            <h2 className={s.section__title}>{t('securityTitle')}</h2>
                             <p className={s.section__subtitle}>
-                                {profile.hasPassword
-                                    ? 'Update your password to keep your account secure.'
-                                    : 'You signed in with Google — there is no password to update.'}
+                                {profile.hasPassword ? t('securitySubtitle') : t('securitySubtitleGoogle')}
                             </p>
                         </div>
-                        {passwordSaved && <span className={s.savedDot}>Updated</span>}
+                        {passwordSaved && <span className={s.savedDot}>{t('updated')}</span>}
                     </div>
                     {profile.hasPassword && (
                         <div className={s.section__body}>
                             <div className={s.form}>
                                 <div className={s.field}>
                                     <label className={s.field__label} htmlFor="current-password">
-                                        Current Password
+                                        {t('currentPassword')}
                                     </label>
                                     <input
                                         id="current-password"
@@ -218,7 +219,7 @@ export default function ProfilePage() {
                                 <div className={s.form__row}>
                                     <div className={s.field}>
                                         <label className={s.field__label} htmlFor="new-password">
-                                            New Password
+                                            {t('newPassword')}
                                         </label>
                                         <input
                                             id="new-password"
@@ -232,7 +233,7 @@ export default function ProfilePage() {
                                     </div>
                                     <div className={s.field}>
                                         <label className={s.field__label} htmlFor="confirm-password">
-                                            Confirm Password
+                                            {t('confirmPassword')}
                                         </label>
                                         <input
                                             id="confirm-password"
@@ -252,7 +253,7 @@ export default function ProfilePage() {
                                         onClick={handleSavePassword}
                                         disabled={isSavingPassword || !currentPassword || !newPassword || !confirmPassword}
                                     >
-                                        {isSavingPassword ? 'Updating…' : 'Update password'}
+                                        {isSavingPassword ? t('updatingPassword') : t('updatePassword')}
                                     </button>
                                 </div>
                             </div>
@@ -264,16 +265,16 @@ export default function ProfilePage() {
                 <div className={s.section}>
                     <div className={s.section__header}>
                         <div>
-                            <h2 className={s.section__title}>Preferences</h2>
-                            <p className={s.section__subtitle}>Control notifications and privacy settings.</p>
+                            <h2 className={s.section__title}>{t('preferencesTitle')}</h2>
+                            <p className={s.section__subtitle}>{t('preferencesSubtitle')}</p>
                         </div>
                     </div>
                     <div className={s.section__body}>
                         <div className={s.preference}>
                             <div className={s.preference__text}>
-                                <p className={s.preference__title}>Public profile</p>
+                                <p className={s.preference__title}>{t('publicProfile')}</p>
                                 <p className={s.preference__desc}>
-                                    Let anyone with the link view your profile page and public wishlists.
+                                    {t('publicProfileDesc')}
                                 </p>
                                 {profile.isPublic && (
                                     <a
@@ -282,7 +283,7 @@ export default function ProfilePage() {
                                         rel="noopener noreferrer"
                                         className={s.preference__link}
                                     >
-                                        View your public profile ↗
+                                        {t('viewPublicProfile')}
                                     </a>
                                 )}
                             </div>
@@ -305,16 +306,16 @@ export default function ProfilePage() {
                 <div className={`${s.section} ${s['section--danger']}`}>
                     <div className={s.section__header}>
                         <div>
-                            <h2 className={s.section__title}>Danger Zone</h2>
-                            <p className={s.section__subtitle}>These actions are irreversible. Proceed with care.</p>
+                            <h2 className={s.section__title}>{t('dangerZoneTitle')}</h2>
+                            <p className={s.section__subtitle}>{t('dangerZoneSubtitle')}</p>
                         </div>
                     </div>
                     <div className={s.section__body}>
                         <div className={s.dangerAction}>
                             <div className={s.dangerAction__text}>
-                                <p className={s.dangerAction__title}>Export my data</p>
+                                <p className={s.dangerAction__title}>{t('exportTitle')}</p>
                                 <p className={s.dangerAction__desc}>
-                                    Download a copy of all your wishlists and wishes as JSON.
+                                    {t('exportDesc')}
                                 </p>
                             </div>
                             <button
@@ -322,21 +323,21 @@ export default function ProfilePage() {
                                 onClick={handleExportData}
                                 disabled={isExporting}
                             >
-                                {isExporting ? 'Exporting…' : 'Export'}
+                                {isExporting ? t('exporting') : t('export')}
                             </button>
                         </div>
                         <div className={s.dangerAction}>
                             <div className={s.dangerAction__text}>
-                                <p className={s.dangerAction__title}>Delete account</p>
+                                <p className={s.dangerAction__title}>{t('deleteAccountTitle')}</p>
                                 <p className={s.dangerAction__desc}>
-                                    Permanently delete your account and all associated data. This cannot be undone.
+                                    {t('deleteAccountDesc')}
                                 </p>
                             </div>
                             <button
                                 className={`${s.btn} ${s['btn--danger']}`}
                                 onClick={() => setIsDeleteModalOpen(true)}
                             >
-                                Delete account
+                                {t('deleteAccount')}
                             </button>
                         </div>
                     </div>
@@ -347,12 +348,11 @@ export default function ProfilePage() {
             <Modal
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
-                title="Delete your account?"
+                title={t('deleteModalTitle')}
             >
                 <div className={s.deleteModal}>
                     <p className={s.deleteModal__message}>
-                        This permanently deletes your account, every wishlist you own, and all of their wishes.
-                        This cannot be undone.
+                        {t('deleteModalMessage')}
                     </p>
                     {deleteError && <p className={s.field__error}>{deleteError}</p>}
                     <div className={s.deleteModal__actions}>
@@ -361,14 +361,14 @@ export default function ProfilePage() {
                             onClick={() => setIsDeleteModalOpen(false)}
                             disabled={isDeleting}
                         >
-                            Cancel
+                            {t('deleteModalCancel')}
                         </button>
                         <button
                             className={`${s.btn} ${s['btn--danger']}`}
                             onClick={handleDeleteAccount}
                             disabled={isDeleting}
                         >
-                            {isDeleting ? 'Deleting…' : 'Yes, delete my account'}
+                            {isDeleting ? t('deleting') : t('deleteModalConfirm')}
                         </button>
                     </div>
                 </div>
