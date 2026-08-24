@@ -128,3 +128,15 @@
     opacity: 0.55;
     cursor: not-allowed;
 }
+
+/* ── Mobile ───────────────────────────────── */
+
+@media (max-width: 480px) {
+    .comments__list {
+        max-height: 220px;
+    }
+
+    .comments__submit {
+        align-self: stretch;
+    }
+}

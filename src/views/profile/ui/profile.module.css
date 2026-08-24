@@ -689,4 +689,12 @@
         flex-direction: column;
         gap: 12px;
     }
+
+    .deleteModal__actions {
+        flex-direction: column-reverse;
+    }
+
+    .deleteModal__actions .btn {
+        width: 100%;
+    }
 }
