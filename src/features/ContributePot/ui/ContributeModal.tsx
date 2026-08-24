@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Modal } from '@/shared/ui'
 import { eventBus } from '@/shared/eventBus'
 import { useContributePotModel } from '../model'
@@ -21,6 +22,7 @@ export const ContributeModal = ({
     onError,
     useMock = false,
 }: TContributeModal) => {
+    const t = useTranslations('contributeModal')
     const { amount, setAmount, isSubmitting, error, handleSubmit } = useContributePotModel({
         wishlistId,
         onContribute,
@@ -33,7 +35,7 @@ export const ContributeModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={<span className={styles.contribute__modalTitle}>Pledge to the pot</span>}
+            title={<span className={styles.contribute__modalTitle}>{t('title')}</span>}
             subtitle={eventName}
         >
             <div className={styles.contribute}>
@@ -49,23 +51,23 @@ export const ContributeModal = ({
                     </div>
                     <div className={styles.contribute__heroText}>
                         <p className={styles.contribute__heroMessage}>
-                            A collective gift for <strong>{ownerName}</strong>
+                            {t('collectiveGift', { ownerName })}
                         </p>
                         <p className={styles.contribute__heroOrganizer}>
-                            Organised by {creatorName}
+                            {t('organisedBy', { creatorName })}
                         </p>
                         {totalContributed > 0 ? (
                             <p className={styles.contribute__heroSub}>
-                                {currency}{totalContributed.toFixed(2)} already pledged by friends
+                                {t('alreadyPledged', { currency, amount: totalContributed.toFixed(2) })}
                             </p>
                         ) : (
                             <p className={styles.contribute__heroSub}>
-                                Be the first to pledge to the pot
+                                {t('beFirst')}
                             </p>
                         )}
                         {userContributed > 0 && (
                             <p className={styles.contribute__heroUserContrib}>
-                                You&apos;ve pledged {currency}{userContributed.toFixed(2)}
+                                {t('youvePledged', { currency, amount: userContributed.toFixed(2) })}
                             </p>
                         )}
                     </div>
@@ -74,21 +76,21 @@ export const ContributeModal = ({
                 {!isLoggedIn ? (
                     <div className={styles.contribute__loginBanner}>
                         <p className={styles.contribute__loginBannerText}>
-                            Log in to contribute to this pot.
+                            {t('loginPrompt')}
                         </p>
                         <button
                             type="button"
                             className={styles.contribute__loginBannerLink}
                             onClick={() => eventBus.emit('auth:openLoginModal', {})}
                         >
-                            Log in
+                            {t('logIn')}
                         </button>
                     </div>
                 ) : (
                     <>
                         <div className={styles.contribute__field}>
                             <label className={styles.contribute__label} htmlFor="contribute-amount">
-                                Your contribution
+                                {t('contributionLabel')}
                             </label>
                             <div className={styles.contribute__amountWrap}>
                                 <span className={styles.contribute__currency}>{currency}</span>
@@ -107,8 +109,7 @@ export const ContributeModal = ({
                             </div>
                             {error && <p className={styles.contribute__error}>{error}</p>}
                             <p className={styles.contribute__disclaimer}>
-                                This records a pledge — it isn&apos;t a payment. {creatorName} is collecting
-                                the money from everyone directly, so make sure you get it to them yourself.
+                                {t('disclaimer', { creatorName })}
                             </p>
                         </div>
 
@@ -118,14 +119,14 @@ export const ContributeModal = ({
                                 onClick={onClose}
                                 disabled={isSubmitting}
                             >
-                                Cancel
+                                {t('cancel')}
                             </button>
                             <button
                                 className={`${styles.contribute__button} ${styles['contribute__button--primary']}`}
                                 onClick={handleSubmit}
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting ? 'Adding…' : 'Add pledge'}
+                                {isSubmitting ? t('adding') : t('addPledge')}
                             </button>
                         </div>
                     </>

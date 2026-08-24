@@ -272,15 +272,31 @@
     "delete": "Supprimer"
   },
   "contributeModal": {
-    "title": "Participer à la cagnotte",
+    "title": "Promettre au pot",
     "collectiveGift": "Un cadeau collectif pour {ownerName}",
-    "alreadyPooled": "{currency}{amount} déjà mis en cagnotte par des amis",
-    "beFirst": "Soyez le premier à contribuer",
-    "yourContribution": "Vous avez déjà offert {currency}{amount}",
+    "organisedBy": "Organisé par {creatorName}",
+    "alreadyPledged": "{currency}{amount} déjà promis par des amis",
+    "beFirst": "Soyez le premier à contribuer au pot",
+    "youvePledged": "Vous avez promis {currency}{amount}",
+    "loginPrompt": "Connectez-vous pour contribuer à ce pot.",
+    "logIn": "Se connecter",
     "contributionLabel": "Votre contribution",
+    "disclaimer": "Ceci enregistre une promesse — pas un paiement. {creatorName} collecte l'argent directement auprès de chacun, alors assurez-vous de le lui remettre vous-même.",
     "cancel": "Annuler",
-    "sending": "Envoi…",
-    "sendGift": "Envoyer le cadeau"
+    "adding": "Ajout…",
+    "addPledge": "Ajouter ma promesse"
+  },
+  "createPotModal": {
+    "triggerButton": "Démarrer un pot commun",
+    "title": "Démarrer un pot commun",
+    "loginRequired": "Connectez-vous pour démarrer un pot pour {ownerName}. Vous devrez aussi avoir été invité par le propriétaire de la wishlist.",
+    "cancel": "Annuler",
+    "logIn": "Se connecter",
+    "inviteRequired": "Seuls les invités de {ownerName} peuvent démarrer un pot. Demandez-leur de partager la wishlist avec vous par e-mail.",
+    "gotIt": "Compris",
+    "confirmMessage": "Vous serez l'organisateur d'un pot commun pour {ownerName}. Les autres invités verront que vous l'avez démarré et pourront contribuer anonymement.",
+    "starting": "Démarrage…",
+    "startThePot": "Démarrer le pot"
   },
   "profile": {
     "myAccount": "Mon Compte",

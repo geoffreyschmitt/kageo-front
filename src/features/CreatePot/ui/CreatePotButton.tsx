@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useCreatePotModel } from '../model'
 import { CreatePotModal } from './CreatePotModal'
 import type { TCreatePotButtonProps } from './CreatePotModal.types'
@@ -13,6 +14,7 @@ export const CreatePotButton = ({
     onPotCreated,
     useMock = false,
 }: TCreatePotButtonProps) => {
+    const t = useTranslations('createPotModal')
     const { modalState, openModal, closeModal, isCreating, error, handleConfirm } = useCreatePotModel({
         wishlistId,
         isLoggedIn,
@@ -24,7 +26,7 @@ export const CreatePotButton = ({
     return (
         <>
             <button className={styles.createPot__triggerButton} onClick={openModal}>
-                Start a gift pot
+                {t('triggerButton')}
             </button>
             <CreatePotModal
                 modalState={modalState}

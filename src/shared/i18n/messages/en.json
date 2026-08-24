@@ -272,15 +272,31 @@
     "delete": "Delete"
   },
   "contributeModal": {
-    "title": "Gift to the pot",
+    "title": "Pledge to the pot",
     "collectiveGift": "A collective gift for {ownerName}",
-    "alreadyPooled": "{currency}{amount} already pooled by friends",
-    "beFirst": "Be the first to add to the pot",
-    "yourContribution": "You've gifted {currency}{amount}",
+    "organisedBy": "Organised by {creatorName}",
+    "alreadyPledged": "{currency}{amount} already pledged by friends",
+    "beFirst": "Be the first to pledge to the pot",
+    "youvePledged": "You've pledged {currency}{amount}",
+    "loginPrompt": "Log in to contribute to this pot.",
+    "logIn": "Log in",
     "contributionLabel": "Your contribution",
+    "disclaimer": "This records a pledge — it isn't a payment. {creatorName} is collecting the money from everyone directly, so make sure you get it to them yourself.",
     "cancel": "Cancel",
-    "sending": "Sending…",
-    "sendGift": "Send gift"
+    "adding": "Adding…",
+    "addPledge": "Add pledge"
+  },
+  "createPotModal": {
+    "triggerButton": "Start a gift pot",
+    "title": "Start a gift pot",
+    "loginRequired": "Log in to start a pot for {ownerName}. You'll also need to be invited by the wishlist owner.",
+    "cancel": "Cancel",
+    "logIn": "Log in",
+    "inviteRequired": "Only guests invited by {ownerName} can start a pot. Ask them to share the wishlist with you via email.",
+    "gotIt": "Got it",
+    "confirmMessage": "You'll be the organizer of a collective gift pot for {ownerName}. Other guests can see that you started it and contribute anonymously.",
+    "starting": "Starting…",
+    "startThePot": "Start the pot"
   },
   "profile": {
     "myAccount": "My Account",
