@@ -11,6 +11,7 @@ import {CancelReservationButton} from "@/features/cancelReservation";
 import {MarkPurchasedButton} from "@/features/markPurchasedWish";
 import {RemovePurchasedButton} from "@/features/removePurchasedWish";
 import {DeleteWishButton} from "@/features/DeleteWish";
+import {CommentsSection} from "@/features/Comments";
 
 import styles from './WishCard.module.css'
 
@@ -58,6 +59,7 @@ export const WishCard = ({
     purchasedBy,
     showOwnerAction = false,
     showGuestAction = false,
+    isOwner = false,
     onReserve,
     onReserveError,
     onCancelReservation,
@@ -76,6 +78,7 @@ export const WishCard = ({
     const [imgError, setImgError] = useState(false)
     const [descExpanded, setDescExpanded] = useState(false)
     const [descOverflows, setDescOverflows] = useState(false)
+    const [commentsOpen, setCommentsOpen] = useState(false)
     const descRef = useRef<HTMLParagraphElement>(null)
 
     useEffect(() => {
@@ -176,6 +179,21 @@ export const WishCard = ({
                         <span className={styles['wish-card__purchasedBy']}>{t('purchasedBy', {name: purchasedBy})}</span>
                     )}
                 </div>
+
+                {!isOwner && (
+                    <button
+                        type="button"
+                        className={styles['wish-card__commentsToggle']}
+                        onClick={() => setCommentsOpen((v) => !v)}
+                    >
+                        💬 {commentsOpen ? 'Hide comments' : 'Comments'}
+                    </button>
+                )}
+                {!isOwner && commentsOpen && (
+                    <div className={styles['wish-card__comments']}>
+                        <CommentsSection target={{ type: 'wish', wishId: id }} enabled={commentsOpen} />
+                    </div>
+                )}
 
                 {(showGuestAction || showOwnerAction) && (
                 <div className={styles['wish-card__actions']}>

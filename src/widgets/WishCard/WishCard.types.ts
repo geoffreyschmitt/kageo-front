@@ -18,6 +18,10 @@ export type TWishCard = {
   isProposed?: boolean
   showOwnerAction?: boolean
   showGuestAction?: boolean
+  // Explicit ownership flag for gating comments — unlike showOwnerAction/showGuestAction,
+  // this must stay true for the owner in history mode too, since comments should never
+  // reach the owner regardless of view mode.
+  isOwner?: boolean
   onReserve?: (wishId: string, reservedBy: string) => void
   onReserveError?: (wishId: string) => void
   onCancelReservation?: (wishId: string) => void

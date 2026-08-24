@@ -490,6 +490,29 @@
     border-radius: 100px;
 }
 
+/* ── Comments ─────────────────────────────── */
+
+.wish-card__commentsToggle {
+    align-self: flex-start;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--wc-text-3);
+    background: none;
+    border: none;
+    padding: 2px 0;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.wish-card__commentsToggle:hover {
+    color: var(--wc-text-2);
+}
+
+.wish-card__comments {
+    margin-top: 6px;
+}
+
 /* ── Actions ──────────────────────────────── */
 
 .wish-card__actions {

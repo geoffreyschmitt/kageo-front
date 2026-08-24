@@ -121,19 +121,6 @@ export const WishlistForm = ({
                         <label className={styles.editWishlistForm__checkboxLabel}>
                             <input
                                 type="checkbox"
-                                checked={formData.allowComments}
-                                onChange={(e) => handleInputChange("allowComments", e.target.checked)}
-                                className={styles.editWishlistForm__checkbox}
-                            />
-                            <span className={styles.editWishlistForm__checkboxText}>
-                                <strong>Autoriser les commentaires</strong>
-                                <small>Permettre aux autres de laisser des commentaires</small>
-                            </span>
-                        </label>
-
-                        <label className={styles.editWishlistForm__checkboxLabel}>
-                            <input
-                                type="checkbox"
                                 checked={formData.allowSuggestions}
                                 onChange={(e) => handleInputChange("allowSuggestions", e.target.checked)}
                                 className={styles.editWishlistForm__checkbox}
@@ -141,19 +128,6 @@ export const WishlistForm = ({
                             <span className={styles.editWishlistForm__checkboxText}>
                                 <strong>Autoriser les suggestions</strong>
                                 <small>Permettre aux autres de suggérer des articles</small>
-                            </span>
-                        </label>
-
-                        <label className={styles.editWishlistForm__checkboxLabel}>
-                            <input
-                                type="checkbox"
-                                checked={formData.notifyOnPurchase}
-                                onChange={(e) => handleInputChange("notifyOnPurchase", e.target.checked)}
-                                className={styles.editWishlistForm__checkbox}
-                            />
-                            <span className={styles.editWishlistForm__checkboxText}>
-                                <strong>Notifications d&#39;achat</strong>
-                                <small>Être notifié quand quelqu&#39;un achète un article</small>
                             </span>
                         </label>
                     </div>
@@ -188,14 +162,9 @@ export const WishlistForm = ({
                             {formData.description || "Description de la wishlist"}
                         </p>
                         <div className={styles.editWishlistForm__previewSettings}>
-                            {formData.allowComments && (
-                                <span className={styles.editWishlistForm__previewSetting}>💬 Commentaires</span>
-                            )}
+                            <span className={styles.editWishlistForm__previewSetting}>💬 Comments always on</span>
                             {formData.allowSuggestions && (
                                 <span className={styles.editWishlistForm__previewSetting}>💡 Suggestions</span>
-                            )}
-                            {formData.notifyOnPurchase && (
-                                <span className={styles.editWishlistForm__previewSetting}>🔔 Notifications</span>
                             )}
                         </div>
                     </div>

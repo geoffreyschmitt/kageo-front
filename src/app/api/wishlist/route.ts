@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     try {
         const body = await request.json()
-        const { name, description, isPublic, coverImage, allowComments, allowSuggestions, notifyOnPurchase, eventDate } = body
+        const { name, description, isPublic, coverImage, allowSuggestions, eventDate } = body
 
         if (!name?.trim()) {
             return NextResponse.json({ message: 'Name is required' }, { status: 400 })
@@ -53,9 +53,7 @@ export async function POST(request: NextRequest) {
             description: description?.trim() ?? '',
             isPublic: Boolean(isPublic),
             coverImage: coverImage ?? null,
-            allowComments: Boolean(allowComments),
             allowSuggestions: Boolean(allowSuggestions),
-            notifyOnPurchase: Boolean(notifyOnPurchase),
             eventDate: new Date(eventDate).toISOString(),
             createdAt: now,
             updatedAt: now,

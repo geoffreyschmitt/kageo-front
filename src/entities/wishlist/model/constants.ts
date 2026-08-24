@@ -3,8 +3,6 @@ export const DEFAULT_WISHLIST_SETTINGS = {
     description: '',
     isPublic: false,
     coverImage: '',
-    allowComments: true,
     allowSuggestions: true,
-    notifyOnPurchase: true,
     eventDate: '',
 } as const

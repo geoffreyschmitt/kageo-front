@@ -11,9 +11,7 @@ export const wishlistsMock: TWishlist[] = [
         updatedAt: new Date('2024-01-15'),
         isPublic: true,
         ownerId: "u123",
-        allowComments: true,
         allowSuggestions: true,
-        notifyOnPurchase: true,
     },
     {
         id: "2",
@@ -25,9 +23,7 @@ export const wishlistsMock: TWishlist[] = [
         updatedAt: new Date('2025-11-15'),
         isPublic: false,
         ownerId: "u123",
-        allowComments: false,
         allowSuggestions: true,
-        notifyOnPurchase: false,
     },
     {
         id: "3",
@@ -39,9 +35,7 @@ export const wishlistsMock: TWishlist[] = [
         updatedAt: new Date('2024-01-26'),
         isPublic: true,
         ownerId: "3",
-        allowComments: true,
         allowSuggestions: false,
-        notifyOnPurchase: true,
     },
     {
         id: "4",
@@ -53,9 +47,7 @@ export const wishlistsMock: TWishlist[] = [
         updatedAt: new Date('2024-01-22'),
         isPublic: false,
         ownerId: "1",
-        allowComments: false,
         allowSuggestions: true,
-        notifyOnPurchase: true,
     },
     {
         id: "5",
@@ -67,9 +59,7 @@ export const wishlistsMock: TWishlist[] = [
         updatedAt: new Date('2024-01-24'),
         isPublic: true,
         ownerId: "4",
-        allowComments: true,
         allowSuggestions: true,
-        notifyOnPurchase: false,
     },
     {
         id: "6",
@@ -81,9 +71,7 @@ export const wishlistsMock: TWishlist[] = [
         updatedAt: new Date('2024-01-27'),
         isPublic: true,
         ownerId: "3",
-        allowComments: false,
         allowSuggestions: true,
-        notifyOnPurchase: true,
     },
     {
         id: "7",
@@ -95,8 +83,6 @@ export const wishlistsMock: TWishlist[] = [
         updatedAt: new Date('2025-01-25'),
         isPublic: false,
         ownerId: "5",
-        allowComments: true,
         allowSuggestions: false,
-        notifyOnPurchase: true,
     },
 ]
