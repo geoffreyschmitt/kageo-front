@@ -1,0 +1,74 @@
+:root {
+    --pp-font-serif: var(--font-cormorant, Georgia, serif);
+    --pp-font-sans: var(--font-dm-sans, system-ui, sans-serif);
+    --pp-sage: #3f6845;
+    --pp-sage-light: #eaf2eb;
+    --pp-text: #1e1a16;
+    --pp-text-2: #4e443c;
+    --pp-border-soft: #e5ded3;
+}
+
+.publicProfile {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero {
+    display: flex;
+    justify-content: center;
+    padding: 56px 24px 40px;
+    background: var(--pp-sage-light);
+    border-bottom: 1px solid var(--pp-border-soft);
+}
+
+.hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.avatar {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: var(--pp-sage);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+}
+
+.avatar__monogram {
+    font-family: var(--pp-font-serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.hero__name {
+    font-family: var(--pp-font-serif);
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--pp-text);
+    margin: 0;
+}
+
+.hero__badge {
+    font-family: var(--pp-font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--pp-sage);
+    background: #fff;
+    border: 1px solid var(--pp-border-soft);
+    border-radius: 100px;
+    padding: 5px 14px;
+}
+
+.body {
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 24px 64px;
+}
