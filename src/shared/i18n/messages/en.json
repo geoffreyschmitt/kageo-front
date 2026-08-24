@@ -225,13 +225,13 @@
     "title": "Create a Wishlist"
   },
   "addWishModal": {
-    "title": "Add a wish"
+    "title": " Add a wish"
   },
   "proposeWishModal": {
-    "title": "Suggest a wish"
+    "title": " Propose a wish"
   },
   "editWishModal": {
-    "title": "Edit wish"
+    "title": "Edit a wish"
   },
   "updateWishlistModal": {
     "title": "Edit Wishlist"

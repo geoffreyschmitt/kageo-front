@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import { useTranslations } from 'next-intl'
 
 import {WishlistForm} from '@/entities/wishlist/ui';
 
@@ -10,6 +11,7 @@ import {useCreateWishlistModel} from '@/features/CreateWishlist';
 import {eventBus} from '@/shared/eventBus/lib/eventBus';
 
 export const CreateWishlistModal = ({onClose, onSubmit, onError}: TCreateWishlistModal) => {
+  const t = useTranslations('createWishlistModal')
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export const CreateWishlistModal = ({onClose, onSubmit, onError}: TCreateWishlis
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Créer une Wishlist"
+      title={t('title')}
       className={styles.createWishlistModal}
     >
       <WishlistForm

@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react";
+import { useTranslations } from 'next-intl'
 
 import {TProposedWishFormData, WishForm} from "@/entities/wish";
 import {TProposedWishForm} from "@/entities/wish/ui/WishForm.types";
@@ -13,6 +14,7 @@ import styles from "./ProposeWishModal.module.css"
 import type {TProposeWishModal} from "./ProposeWishModal.types"
 
 export const ProposeWishModal = ({isOpen, onClose, onSubmit, wishlistId, useMock = false}: TProposeWishModal) => {
+    const t = useTranslations('proposeWishModal')
     const {formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit} =
         useProposeWishForm({onSubmit, onClose, wishlistId, useMock})
 
@@ -27,7 +29,7 @@ export const ProposeWishModal = ({isOpen, onClose, onSubmit, wishlistId, useMock
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title=" Proposer un souhait"
+            title={t('title')}
             className={styles.proposeWishModal}
         >
             <WishForm<TProposedWishForm>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslations } from 'next-intl'
 
 import {
     useAddWishModel,
@@ -22,6 +23,7 @@ export const AddWishModal = ({
     wishlistId,
     useMock = false,
 }: TAddWishModal) => {
+    const t = useTranslations('addWishModal')
     const {
         formData,
         errors,
@@ -47,7 +49,7 @@ export const AddWishModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title=" Ajouter un souhait"
+            title={t('title')}
             className={styles.addWishModal}
         >
                 <WishForm<TWishForm>

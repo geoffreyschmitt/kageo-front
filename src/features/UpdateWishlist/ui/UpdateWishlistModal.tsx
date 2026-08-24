@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import { useTranslations } from 'next-intl'
 
 import type {TUpdateWishlistModal} from '@/features/UpdateWishlist'
 import {useEditWishlistModel} from '@/features/UpdateWishlist/model'
@@ -11,6 +12,7 @@ import {Modal} from '@/shared/ui';
 import styles from './UpdateWishlistModal.module.css'
 
 export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpdateWishlistModal) => {
+    const t = useTranslations('updateWishlistModal')
     const [isOpen, setIsOpen] = useState(false)
     const [initialDataToUse, setIsInitialDataToUse] = useState(initialData)
 
@@ -58,7 +60,7 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpda
         <Modal
             isOpen={isOpen}
             onClose={handleClose}
-            title="Modifier la Wishlist"
+            title={t('title')}
             className={styles.updateWishlistModal}
         >
             <WishlistForm
