@@ -14,13 +14,17 @@ type Props = {
     eventDate: string
     ownerId: string
     ownerName: string
+    ownerProfileUrl: string | null
     currency: string
     userIsOwner: boolean
     isHistory: boolean
     userId: string
+    isLoggedIn: boolean
+    isInvited: boolean
     initialItems: TWishCard[]
     initialTotalContributed: number
     initialUserContributed: number
+    initialPotCreatorName: string | null
 }
 
 const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
@@ -34,17 +38,27 @@ export default function WishlistPageClient({
     eventDate,
     ownerId,
     ownerName,
+    ownerProfileUrl,
     currency,
     userIsOwner,
     isHistory,
     userId,
+    isLoggedIn,
+    isInvited,
     initialItems,
     initialTotalContributed,
     initialUserContributed,
+    initialPotCreatorName,
 }: Props) {
     const [items, setItems] = useState<TWishCard[]>(initialItems)
     const [totalContributed, setTotalContributed] = useState(initialTotalContributed)
     const [userContributed, setUserContributed] = useState(initialUserContributed)
+    const [potCreatorName, setPotCreatorName] = useState(initialPotCreatorName)
+
+    const handlePotCreated = (_creatorId: string, creatorName: string) => {
+        setPotCreatorName(creatorName)
+        toast('Pot started — friends can now chip in', 'success')
+    }
 
     const handleReserveWish = (wishId: string, reservedBy: string) => {
         setItems((prev) => prev.map((item) =>
@@ -196,10 +210,12 @@ export default function WishlistPageClient({
                 eventDate={eventDate}
                 ownerId={ownerId}
                 ownerName={ownerName}
+                ownerProfileUrl={ownerProfileUrl}
                 currency={currency}
                 items={items}
                 userIsOwner={userIsOwner}
                 isHistory={isHistory}
+                userId={userId}
                 onReserveWish={handleReserveWish}
                 onReserveError={handleReserveError}
                 onCancelReservation={handleCancelReservation}
@@ -217,6 +233,10 @@ export default function WishlistPageClient({
                 onContributeError={handleContributeError}
                 totalContributed={totalContributed}
                 userContributed={userContributed}
+                isLoggedIn={isLoggedIn}
+                isInvited={isInvited}
+                potCreatorName={potCreatorName}
+                onPotCreated={handlePotCreated}
                 useMock={false}
             />
         </main>

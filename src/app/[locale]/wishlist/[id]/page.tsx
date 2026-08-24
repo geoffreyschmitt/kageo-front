@@ -54,8 +54,14 @@ export default async function WishlistPage({
     if (!wishlist) notFound()
 
     const userIsOwner = session?.user?.id === wishlist.ownerId
+    const isLoggedIn = !!session?.user?.id
 
-    if (!wishlist.isPublic && !userIsOwner) redirect('/')
+    const isInvited =
+        !userIsOwner && isLoggedIn && session?.user?.email
+            ? Boolean(await kv.sismember(`wishlist:${id}:invitees`, session.user.email.toLowerCase()))
+            : false
+
+    if (!wishlist.isPublic && !userIsOwner && !isInvited) redirect('/')
 
     const wishIds = await kv.smembers<string[]>(`wishlist:${id}:wishes`)
     const rawWishes = wishIds?.length
@@ -81,14 +87,23 @@ export default async function WishlistPage({
 
     // Look up ownerName: use session name if owner, else look up via KV reverse index
     let ownerName = 'Unknown'
+    let ownerHasPublicProfile = false
     if (userIsOwner && session?.user?.name) {
         ownerName = session.user.name
     } else {
         const ownerEmail = await kv.get<string>(`user:id:${wishlist.ownerId}`)
         if (ownerEmail) {
-            const ownerUser = await kv.get<{ name: string }>(`user:${ownerEmail}`)
+            const ownerUser = await kv.get<{ name: string; isPublic?: boolean }>(`user:${ownerEmail}`)
             if (ownerUser?.name) ownerName = ownerUser.name
+            ownerHasPublicProfile = !!ownerUser?.isPublic
         }
+    }
+
+    // Pot is a surprise — only fetch/expose it to non-owners
+    let potCreatorName: string | null = null
+    if (!userIsOwner) {
+        const pot = await kv.get<{ creatorName: string }>(`wishlist:${id}:pot`)
+        potCreatorName = pot?.creatorName ?? null
     }
 
     return (
@@ -100,13 +115,17 @@ export default async function WishlistPage({
             eventDate={wishlist.eventDate}
             ownerId={wishlist.ownerId}
             ownerName={ownerName}
+            ownerProfileUrl={!userIsOwner && ownerHasPublicProfile ? `/u/${wishlist.ownerId}` : null}
             currency={wishlist.currency ?? '$'}
             userIsOwner={userIsOwner}
             isHistory={isHistory}
             userId={session?.user?.id ?? ''}
+            isLoggedIn={isLoggedIn}
+            isInvited={isInvited}
             initialItems={items}
             initialTotalContributed={wishlist.totalContributed ?? 0}
             initialUserContributed={0}
+            initialPotCreatorName={potCreatorName}
         />
     )
 }

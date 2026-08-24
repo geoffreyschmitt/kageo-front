@@ -7,16 +7,18 @@ import {TWishCard, WishCard} from '@/widgets/WishCard';
 import {AddWishModal} from '@/features/AddWish'
 import {ProposeWishModal} from '@/features/ProposeWish';
 import {ShareWishlistModal, mockShareWishlistByEmail} from '@/features/ShareWishlist'
+import {shareWishlist} from '@/shared/api/wishlist/shareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
 import {EditWishModal} from '@/features/EditWish'
 import {ContributeModal} from '@/features/ContributePot'
+import {CreatePotButton} from '@/features/CreatePot'
+import {CommentsSection} from '@/features/Comments'
 
 import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
 import {TWishlistFormData} from '@/entities/wishlist';
 
 import styles from './wishlist.module.css'
 import {eventBus} from '@/shared/eventBus/';
-import {mockUserPrivate} from '@/entities/user';
 import {generateShareUrl} from '@/shared/lib/generateShareUrl';
 
 
@@ -29,6 +31,7 @@ type TWishlistPageProps = {
   eventDate: string
   ownerId: string
   ownerName: string
+  ownerProfileUrl?: string | null
   onAddItem?: () => void
   onShareWishlist?: () => void
   onEditWishlist?: () => void
@@ -51,6 +54,11 @@ type TWishlistPageProps = {
   onContributeError?: (wishlistId: string, amount: number) => void
   totalContributed?: number
   userContributed?: number
+  userId?: string
+  isLoggedIn?: boolean
+  isInvited?: boolean
+  potCreatorName?: string | null
+  onPotCreated?: (creatorId: string, creatorName: string) => void
   useMock?: boolean
   userIsOwner: boolean
   isHistory?: boolean
@@ -65,6 +73,7 @@ export default function Wishlist({
   eventDate,
   ownerId,
   ownerName,
+  ownerProfileUrl = null,
   onAddItem,
   onReserveWish,
   onReserveError,
@@ -85,12 +94,15 @@ export default function Wishlist({
   onContributeError,
   totalContributed = 0,
   userContributed = 0,
+  userId = '',
+  isLoggedIn = false,
+  isInvited = false,
+  potCreatorName = null,
+  onPotCreated,
   useMock = false,
   userIsOwner = false,
   isHistory = false,
 }: TWishlistPageProps) {
-  const user = mockUserPrivate
-
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'date' | 'priority'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed')[]>(['all'])
@@ -217,7 +229,8 @@ export default function Wishlist({
   }
 
   const handleSendShareEmail: (email: string, url: string) => Promise<void> = async (email, url) => {
-    return mockShareWishlistByEmail(email, url)
+    if (useMock) return mockShareWishlistByEmail(email, url)
+    return shareWishlist(id, email)
   }
 
   const resetFilters = () => {
@@ -234,7 +247,16 @@ export default function Wishlist({
           <div className={styles.wishlist__titleSection}>
             <h1 className={styles.wishlist__title}>{name}</h1>
             {ownerName && (
-              <p className={styles.wishlist__owner}>Owned by {ownerName}</p>
+              <p className={styles.wishlist__owner}>
+                Owned by{' '}
+                {ownerProfileUrl ? (
+                  <a href={ownerProfileUrl} className={styles.wishlist__ownerLink} target="_blank" rel="noopener noreferrer">
+                    {ownerName}
+                  </a>
+                ) : (
+                  ownerName
+                )}
+              </p>
             )}
             {eventDate && (
               <p className={styles.wishlist__creationDate}>Event on {eventDate}</p>
@@ -323,6 +345,72 @@ export default function Wishlist({
         </div>
       </div>
 
+      {!userIsOwner && !isHistory && (
+        potCreatorName ? (
+          <div className={styles.wishlist__pot}>
+            <div className={styles.wishlist__potInner}>
+              <div className={styles.wishlist__potIcon} aria-hidden="true">
+                <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="18" cy="18" r="16" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1.2"/>
+                  <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="#3f6845" opacity="0.7"/>
+                  <path d="M18 27 Q18 21 18 16" stroke="#3f6845" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
+                  <path d="M18 18 Q15 15 12 14" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  <path d="M18 22 Q21 19 24 18" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div className={styles.wishlist__potText}>
+                <p className={styles.wishlist__potTitle}>Gift pot</p>
+                <p className={styles.wishlist__potSub}>
+                  {totalContributed > 0
+                    ? <><strong>{currency}{totalContributed.toFixed(2)}</strong> pledged by friends</>
+                    : 'Chip in a collective gift for ' + ownerName
+                  }
+                </p>
+                {userContributed > 0 && (
+                  <p className={styles.wishlist__potUserContrib}>
+                    You&apos;ve pledged <strong>{currency}{userContributed.toFixed(2)}</strong>
+                  </p>
+                )}
+              </div>
+            </div>
+            <button
+              className={`${styles.wishlist__button} ${styles['wishlist__button--pot']}`}
+              onClick={() => setIsContributeModalOpen(true)}
+            >
+              Contribute to the pot
+            </button>
+          </div>
+        ) : (
+          <div className={styles.wishlist__pot}>
+            <div className={styles.wishlist__potInner}>
+              <div className={styles.wishlist__potIcon} aria-hidden="true">
+                <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="18" cy="18" r="16" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1.2"/>
+                  <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="#3f6845" opacity="0.7"/>
+                  <path d="M18 27 Q18 21 18 16" stroke="#3f6845" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
+                  <path d="M18 18 Q15 15 12 14" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  <path d="M18 22 Q21 19 24 18" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div className={styles.wishlist__potText}>
+                <p className={styles.wishlist__potTitle}>Gift pot</p>
+                <p className={styles.wishlist__potSub}>
+                  No pot started yet for {ownerName}
+                </p>
+              </div>
+            </div>
+            <CreatePotButton
+              wishlistId={id}
+              ownerName={ownerName}
+              isLoggedIn={isLoggedIn}
+              isInvited={isInvited}
+              onPotCreated={(creatorId, creatorName) => onPotCreated?.(creatorId, creatorName)}
+              useMock={useMock}
+            />
+          </div>
+        )
+      )}
+
       {items.length === 0 ? (
         <div className={styles.wishlist__empty}>
           <div className={styles.wishlist__emptyIllustration} aria-hidden="true">
@@ -363,42 +451,6 @@ export default function Wishlist({
         </div>
       ) : (
         <div className={styles.wishlist__items}>
-          {!userIsOwner && !isHistory && (
-            <div className={styles.wishlist__pot}>
-              <div className={styles.wishlist__potInner}>
-                <div className={styles.wishlist__potIcon} aria-hidden="true">
-                  <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="18" cy="18" r="16" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1.2"/>
-                    <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="#3f6845" opacity="0.7"/>
-                    <path d="M18 27 Q18 21 18 16" stroke="#3f6845" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
-                    <path d="M18 18 Q15 15 12 14" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
-                    <path d="M18 22 Q21 19 24 18" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
-                  </svg>
-                </div>
-                <div className={styles.wishlist__potText}>
-                  <p className={styles.wishlist__potTitle}>Gift pot</p>
-                  <p className={styles.wishlist__potSub}>
-                    {totalContributed > 0
-                      ? <><strong>{currency}{totalContributed.toFixed(2)}</strong> pooled by friends</>
-                      : 'Chip in a collective gift for ' + ownerName
-                    }
-                  </p>
-                  {userContributed > 0 && (
-                    <p className={styles.wishlist__potUserContrib}>
-                      You&apos;ve gifted <strong>{currency}{userContributed.toFixed(2)}</strong>
-                    </p>
-                  )}
-                </div>
-              </div>
-              <button
-                className={`${styles.wishlist__button} ${styles['wishlist__button--pot']}`}
-                onClick={() => setIsContributeModalOpen(true)}
-              >
-                Contribute to the pot
-              </button>
-            </div>
-          )}
-
           <div className={styles.wishlist__controls}>
             <button
               className={styles.wishlist__controlsToggle}
@@ -552,7 +604,8 @@ export default function Wishlist({
                     reservedBy={item.reservedBy}
                     purchasedBy={item.purchasedBy}
                     showOwnerAction={!isHistory && !!userIsOwner}
-                    showGuestAction={!isHistory && Boolean(user.id && !userIsOwner)}
+                    isOwner={userIsOwner}
+                    showGuestAction={!isHistory && Boolean(isLoggedIn && !userIsOwner)}
                     onReserve={onReserveWish}
                     onReserveError={onReserveError}
                     onCancelReservation={onCancelReservation}
@@ -564,7 +617,7 @@ export default function Wishlist({
                     onDeleteWish={onDeleteWish}
                     onDeleteError={onDeleteError}
                     onEditWish={handleEditWish}
-                    userId={user.id}
+                    userId={userId}
                     useMock={useMock}
                   />
                 ))}
@@ -592,7 +645,8 @@ export default function Wishlist({
                 reservedBy={item.reservedBy}
                 purchasedBy={item.purchasedBy}
                 showOwnerAction={!isHistory && !!userIsOwner}
-                showGuestAction={!isHistory && Boolean(user.id && !userIsOwner)}
+                isOwner={userIsOwner}
+                showGuestAction={!isHistory && Boolean(isLoggedIn && !userIsOwner)}
                 onReserve={onReserveWish}
                 onReserveError={onReserveError}
                 onCancelReservation={onCancelReservation}
@@ -604,7 +658,7 @@ export default function Wishlist({
                 onDeleteWish={onDeleteWish}
                 onDeleteError={onDeleteError}
                 onEditWish={handleEditWish}
-                userId={user.id}
+                userId={userId}
                 useMock={useMock}
               />
             ))}
@@ -691,14 +745,15 @@ export default function Wishlist({
                       reservedBy={item.reservedBy}
                       purchasedBy={item.purchasedBy}
                       showOwnerAction={false}
-                      showGuestAction={Boolean(user.id && !userIsOwner)}
+                      isOwner={userIsOwner}
+                      showGuestAction={Boolean(isLoggedIn && !userIsOwner)}
                       onReserve={onReserveWish}
                       onReserveError={onReserveError}
                       onCancelReservation={onCancelReservation}
                       onCancelError={onCancelError}
                       onMarkPurchased={onMarkPurchasedWish}
                       onMarkPurchasedError={onMarkPurchasedError}
-                      userId={user.id}
+                      userId={userId}
                       useMock={useMock}
                     />
                   ))}
@@ -710,6 +765,17 @@ export default function Wishlist({
               )}
             </div>
           )}
+
+          {!userIsOwner && !isHistory && (
+            <div className={styles.wishlist__commentsSection}>
+              <CommentsSection
+                target={{ type: 'wishlist', wishlistId: id }}
+                enabled={!userIsOwner}
+                title="Comments"
+                emptyMessage={`No comments yet — start the conversation about ${ownerName}'s wishlist.`}
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -719,15 +785,15 @@ export default function Wishlist({
         </div>
       </div>
 
-      {!isHistory && !userIsOwner && (
+      {!isHistory && !userIsOwner && potCreatorName && (
         <ContributeModal
           isOpen={isContributeModalOpen}
           onClose={() => setIsContributeModalOpen(false)}
           wishlistId={id}
           eventName={name}
           ownerName={ownerName}
-          creatorName={ownerName}
-          isLoggedIn={!!user}
+          creatorName={potCreatorName}
+          isLoggedIn={isLoggedIn}
           totalContributed={totalContributed}
           userContributed={userContributed}
           currency={currency}
@@ -744,7 +810,7 @@ export default function Wishlist({
             onClose={() => setIsAddItemModalOpen(false)}
             onSubmit={handleAddWish}
             wishlistId={id}
-            useMock
+            useMock={useMock}
           />
 
           <UpdateWishlistModal
@@ -754,9 +820,7 @@ export default function Wishlist({
               description,
               isPublic,
               coverImage: '',
-              allowComments: true,
               allowSuggestions: true,
-              notifyOnPurchase: true,
             }}
           />
 

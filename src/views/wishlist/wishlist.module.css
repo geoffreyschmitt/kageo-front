@@ -117,6 +117,17 @@
     margin: 0 0 16px;
 }
 
+.wishlist__ownerLink {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 0.2s ease;
+}
+
+.wishlist__ownerLink:hover {
+    text-decoration-color: currentColor;
+}
+
 .wishlist__title {
     font-family: var(--g-font-serif);
     font-size: clamp(42px, 7vw, 68px);
@@ -998,6 +1009,13 @@
 
 .wishlist__suggestionsSection {
     margin-top: 52px;
+}
+
+/* ── Comments Section ─────────────────────── */
+
+.wishlist__commentsSection {
+    margin-top: 40px;
+    max-width: 640px;
 }
 
 /* Botanical divider */
