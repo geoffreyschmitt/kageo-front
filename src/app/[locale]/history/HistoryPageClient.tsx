@@ -59,6 +59,7 @@ export default function HistoryPageClient({ initialWishlists, userId, userName }
             content: (
                 <WishlistList
                     wishlistCardList={ownedWishlists}
+                    currentUserId={userId}
                     title={t('listTitleMine')}
                     emptyMessage={t('emptyMine')}
                     showCreateButton={false}
@@ -79,6 +80,7 @@ export default function HistoryPageClient({ initialWishlists, userId, userName }
                     </div>
                     <WishlistList
                         wishlistCardList={filteredInvitedWishlists}
+                        currentUserId={userId}
                         title={t('listTitleShared')}
                         emptyMessage={t('emptyShared')}
                         showCreateButton={false}

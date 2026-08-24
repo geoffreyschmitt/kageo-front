@@ -11,9 +11,7 @@ type TWishlistKV = {
     description: string
     isPublic: boolean
     coverImage: string | null
-    allowComments: boolean
     allowSuggestions: boolean
-    notifyOnPurchase: boolean
     eventDate: string
     createdAt: string
     updatedAt: string
@@ -32,9 +30,15 @@ export async function GET(
         return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
     }
 
-    // Only the owner can see private wishlists
+    // Only the owner and invited guests can see private wishlists
     if (!wishlist.isPublic && wishlist.ownerId !== session?.user?.id) {
-        return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+        const isInvited = session?.user?.email
+            ? Boolean(await kv.sismember(`wishlist:${id}:invitees`, session.user.email.toLowerCase()))
+            : false
+
+        if (!isInvited) {
+            return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+        }
     }
 
     const wishIds = await kv.smembers<string[]>(`wishlist:${id}:wishes`)
@@ -67,7 +71,7 @@ export async function PUT(
 
     try {
         const body = await request.json()
-        const { name, description, isPublic, coverImage, allowComments, allowSuggestions, notifyOnPurchase, eventDate } = body
+        const { name, description, isPublic, coverImage, allowSuggestions, eventDate } = body
 
         if (!name?.trim()) {
             return NextResponse.json({ message: 'Name is required' }, { status: 400 })
@@ -83,9 +87,7 @@ export async function PUT(
             description: description?.trim() ?? '',
             isPublic: Boolean(isPublic),
             coverImage: coverImage ?? null,
-            allowComments: Boolean(allowComments),
             allowSuggestions: Boolean(allowSuggestions),
-            notifyOnPurchase: Boolean(notifyOnPurchase),
             eventDate: new Date(eventDate).toISOString(),
             updatedAt: new Date().toISOString(),
         }

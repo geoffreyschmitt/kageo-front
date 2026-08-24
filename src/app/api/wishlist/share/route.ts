@@ -33,7 +33,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Record invitee — sadd is idempotent
-        await kv.sadd(`wishlist:${wishlistId}:invitees`, email.toLowerCase())
+        const invitedEmail = email.toLowerCase()
+        await kv.sadd(`wishlist:${wishlistId}:invitees`, invitedEmail)
+
+        // Reverse index so the invitee sees this wishlist under "Shared with Me"
+        // as soon as they're logged in with this email — keyed by email (not
+        // user id) since they may not have an account yet at invite time.
+        await kv.sadd(`email:${invitedEmail}:invitedWishlists`, wishlistId)
 
         // Email sending is mocked — replace with real provider when ready
         console.info(`[share] Wishlist ${wishlistId} invite sent to ${email}`)

@@ -138,6 +138,7 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
             content: (
                 <WishlistList
                     wishlistCardList={ownedWishlists}
+                    currentUserId={userId}
                     title={t('listTitleMine')}
                     emptyMessage={t('emptyMine')}
                     showCreateButton={true}
@@ -157,6 +158,7 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
                     </div>
                     <WishlistList
                         wishlistCardList={filteredInvitedWishlists}
+                        currentUserId={userId}
                         title={t('listTitleShared')}
                         emptyMessage={t('emptyShared')}
                         showCreateButton={false}
