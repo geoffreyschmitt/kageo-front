@@ -1,6 +1,7 @@
 'use client'
 
 import { Modal } from '@/shared/ui'
+import { eventBus } from '@/shared/eventBus'
 import { useContributePotModel } from '../model'
 import type { TContributeModal } from './ContributeModal.types'
 import styles from './ContributeModal.module.css'
@@ -32,7 +33,7 @@ export const ContributeModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={<span className={styles.contribute__modalTitle}>Gift to the pot</span>}
+            title={<span className={styles.contribute__modalTitle}>Pledge to the pot</span>}
             subtitle={eventName}
         >
             <div className={styles.contribute}>
@@ -55,16 +56,16 @@ export const ContributeModal = ({
                         </p>
                         {totalContributed > 0 ? (
                             <p className={styles.contribute__heroSub}>
-                                {currency}{totalContributed.toFixed(2)} already pooled by friends
+                                {currency}{totalContributed.toFixed(2)} already pledged by friends
                             </p>
                         ) : (
                             <p className={styles.contribute__heroSub}>
-                                Be the first to add to the pot
+                                Be the first to pledge to the pot
                             </p>
                         )}
                         {userContributed > 0 && (
                             <p className={styles.contribute__heroUserContrib}>
-                                You&apos;ve gifted {currency}{userContributed.toFixed(2)}
+                                You&apos;ve pledged {currency}{userContributed.toFixed(2)}
                             </p>
                         )}
                     </div>
@@ -75,9 +76,13 @@ export const ContributeModal = ({
                         <p className={styles.contribute__loginBannerText}>
                             Log in to contribute to this pot.
                         </p>
-                        <a href="/login" className={styles.contribute__loginBannerLink}>
+                        <button
+                            type="button"
+                            className={styles.contribute__loginBannerLink}
+                            onClick={() => eventBus.emit('auth:openLoginModal', {})}
+                        >
                             Log in
-                        </a>
+                        </button>
                     </div>
                 ) : (
                     <>
@@ -101,6 +106,10 @@ export const ContributeModal = ({
                                 />
                             </div>
                             {error && <p className={styles.contribute__error}>{error}</p>}
+                            <p className={styles.contribute__disclaimer}>
+                                This records a pledge — it isn&apos;t a payment. {creatorName} is collecting
+                                the money from everyone directly, so make sure you get it to them yourself.
+                            </p>
                         </div>
 
                         <div className={styles.contribute__actions}>
@@ -116,7 +125,7 @@ export const ContributeModal = ({
                                 onClick={handleSubmit}
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting ? 'Sending…' : 'Send gift'}
+                                {isSubmitting ? 'Adding…' : 'Add pledge'}
                             </button>
                         </div>
                     </>

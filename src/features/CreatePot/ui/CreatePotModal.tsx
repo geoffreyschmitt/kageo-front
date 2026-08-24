@@ -1,6 +1,7 @@
 'use client'
 
 import { Modal } from '@/shared/ui'
+import { eventBus } from '@/shared/eventBus'
 import type { TCreatePotModalState } from './CreatePotModal.types'
 import styles from './CreatePotModal.module.css'
 
@@ -35,9 +36,13 @@ export const CreatePotModal = ({
                         <button className={`${styles.createPot__button} ${styles['createPot__button--secondary']}`} onClick={onClose}>
                             Cancel
                         </button>
-                        <a href="/login" className={`${styles.createPot__button} ${styles['createPot__button--primary']}`}>
+                        <button
+                            type="button"
+                            className={`${styles.createPot__button} ${styles['createPot__button--primary']}`}
+                            onClick={() => eventBus.emit('auth:openLoginModal', {})}
+                        >
                             Log in
-                        </a>
+                        </button>
                     </div>
                 </div>
             </Modal>

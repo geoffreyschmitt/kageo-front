@@ -173,6 +173,14 @@
     margin: 0;
 }
 
+.contribute__disclaimer {
+    font-family: var(--cp-font-sans);
+    font-size: 12px;
+    color: var(--cp-text-3);
+    line-height: 1.5;
+    margin: 4px 0 0;
+}
+
 /* ── Actions ────────────────────────────────── */
 
 .contribute__actions {
@@ -260,6 +268,10 @@
     color: var(--cp-sage);
     text-decoration: none;
     white-space: nowrap;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 }
 
 .contribute__loginBannerLink:hover {
