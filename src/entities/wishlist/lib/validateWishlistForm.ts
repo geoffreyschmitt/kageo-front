@@ -24,9 +24,7 @@ export const validateWishlistForm = (
         errorList.name = t('errors.nameTooShort')
     }
 
-    if (!formData.description.trim()) {
-        errorList.description = t('errors.descriptionRequired')
-    } else if (formData.description.trim().length < 10) {
+    if (formData.description.trim() && formData.description.trim().length < 10) {
         errorList.description = t('errors.descriptionTooShort')
     }
 

@@ -353,7 +353,7 @@ export default function Wishlist({
           )}
         </div>
 
-        <p className={styles.wishlist__description}>{description}</p>
+        {description && <p className={styles.wishlist__description}>{description}</p>}
 
         <div className={styles.wishlist__stats}>
           {/* Completion — hero stat, visually dominant */}

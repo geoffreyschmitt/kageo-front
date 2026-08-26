@@ -252,7 +252,7 @@
   "wishlistForm": {
     "nameLabel": "Wishlist Name *",
     "namePlaceholder": "Enter the wishlist name",
-    "descriptionLabel": "Description *",
+    "descriptionLabel": "Description (optional)",
     "descriptionPlaceholder": "Describe your wishlist...",
     "eventDateLabel": "Event Date *",
     "privacyLabel": "Privacy",
@@ -275,7 +275,6 @@
     "errors": {
       "nameRequired": "Wishlist name is required",
       "nameTooShort": "Name must be at least 3 characters",
-      "descriptionRequired": "Description is required",
       "descriptionTooShort": "Description must be at least 10 characters",
       "invalidImageUrl": "Invalid image URL",
       "eventDateRequired": "Event date is required",
@@ -290,7 +289,7 @@
     "priorityLow": "Low",
     "priorityMedium": "Medium",
     "priorityHigh": "High",
-    "descriptionLabel": "Description *",
+    "descriptionLabel": "Description (optional)",
     "priceLabel": "Price *",
     "imageUrlLabel": "Image URL",
     "purchaseUrlLabel": "Purchase URL",
@@ -306,7 +305,6 @@
     "addItem": "Add Item",
     "errors": {
       "nameRequired": "Name is required",
-      "descriptionRequired": "Description is required",
       "priceMustBePositive": "Price must be greater than 0",
       "invalidUrl": "Invalid URL",
       "invalidImageUrl": "Invalid image URL"

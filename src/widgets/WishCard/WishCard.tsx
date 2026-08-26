@@ -149,11 +149,13 @@ export const WishCard = ({
                     </div>
                 )}
 
-                <p
-                    ref={descRef}
-                    className={`${styles['wish-card__description']} ${descExpanded ? styles['wish-card__description--expanded'] : ''}`}
-                >{description}</p>
-                {(descOverflows || descExpanded) && (
+                {description && (
+                    <p
+                        ref={descRef}
+                        className={`${styles['wish-card__description']} ${descExpanded ? styles['wish-card__description--expanded'] : ''}`}
+                    >{description}</p>
+                )}
+                {description && (descOverflows || descExpanded) && (
                     <button
                         className={styles['wish-card__desc-toggle']}
                         onClick={() => setDescExpanded(v => !v)}

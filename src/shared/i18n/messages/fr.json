@@ -252,7 +252,7 @@
   "wishlistForm": {
     "nameLabel": "Nom de la Wishlist *",
     "namePlaceholder": "Entrez le nom de la wishlist",
-    "descriptionLabel": "Description *",
+    "descriptionLabel": "Description (facultatif)",
     "descriptionPlaceholder": "Décrivez votre wishlist...",
     "eventDateLabel": "Date de l'événement *",
     "privacyLabel": "Confidentialité",
@@ -275,7 +275,6 @@
     "errors": {
       "nameRequired": "Le nom de la wishlist est requis",
       "nameTooShort": "Le nom doit contenir au moins 3 caractères",
-      "descriptionRequired": "La description est requise",
       "descriptionTooShort": "La description doit contenir au moins 10 caractères",
       "invalidImageUrl": "URL d'image invalide",
       "eventDateRequired": "La date de l'événement est requise",
@@ -290,7 +289,7 @@
     "priorityLow": "Faible",
     "priorityMedium": "Moyenne",
     "priorityHigh": "Haute",
-    "descriptionLabel": "Description *",
+    "descriptionLabel": "Description (facultatif)",
     "priceLabel": "Prix *",
     "imageUrlLabel": "URL de l'image",
     "purchaseUrlLabel": "URL d'achat",
@@ -306,7 +305,6 @@
     "addItem": "Ajouter",
     "errors": {
       "nameRequired": "Le nom est requis",
-      "descriptionRequired": "La description est requise",
       "priceMustBePositive": "Le prix doit être supérieur à 0",
       "invalidUrl": "URL invalide",
       "invalidImageUrl": "URL d'image invalide"

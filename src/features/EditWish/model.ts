@@ -60,7 +60,6 @@ export const useEditWishModel = ({
         const newErrors: TWishValidationErrors = {}
 
         if (!formData.name.trim()) newErrors.name = t('errors.nameRequired')
-        if (!formData.description.trim()) newErrors.description = t('errors.descriptionRequired')
         if (!(typeof formData.price === "number") || Number.isNaN(formData.price) || formData.price <= 0)
             newErrors.price = t('errors.priceMustBePositive')
         if (formData.purchaseUrl && !isValidUrl(formData.purchaseUrl)) newErrors.purchaseUrl = t('errors.invalidUrl')

@@ -40,7 +40,6 @@ export const useProposeWishForm = ({
     const validateForm = (): boolean => {
         const newErrors: Partial<Record<keyof TProposedWishFormData, string>> = {}
         if (!formData.name.trim()) newErrors.name = "Item name is required"
-        if (!formData.description.trim()) newErrors.description = "Description is required"
         if (formData.price < 0) newErrors.price = "Price cannot be negative"
         if (formData.purchaseUrl && !isValidUrl(formData.purchaseUrl))
             newErrors.purchaseUrl = "Invalid URL"

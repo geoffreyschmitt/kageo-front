@@ -86,7 +86,7 @@ export const WishlistCard = ({
                     <h3 className={styles.wishlistCard__title}>{name}</h3>
                 </div>
 
-                <p className={styles.wishlistCard__description}>{description}</p>
+                {description && <p className={styles.wishlistCard__description}>{description}</p>}
 
                 <div className={styles.wishlistCard__footer}>
                     <span className={styles.wishlistCard__date}>{formattedDate}</span>
