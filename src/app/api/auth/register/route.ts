@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
 import { mockSendConfirmationEmail } from '@/features/SendConfirmationEmail'
+import { sendConfirmationEmail } from '@/shared/api/auth/sendConfirmationEmail'
 
 export async function POST(request: NextRequest) {
     try {
@@ -54,11 +55,11 @@ export async function POST(request: NextRequest) {
         const { password: _password, ...userWithoutPassword } = user
 
         // Non-blocking email send after response
-        if (process.env.USE_MOCK_EMAIL !== 'false') {
-            mockSendConfirmationEmail(user.email, confirmationToken).catch((err) => {
-                console.warn('Failed to send confirmation email:', err)
-            })
-        }
+        const useMockEmail = process.env.USE_MOCK_EMAIL === 'true' || !process.env.RESEND_API_KEY
+        const sendEmail = useMockEmail ? mockSendConfirmationEmail : sendConfirmationEmail
+        sendEmail(user.email, confirmationToken).catch((err) => {
+            console.warn('Failed to send confirmation email:', err)
+        })
 
         return NextResponse.json(
             { message: 'User created successfully', user: userWithoutPassword },

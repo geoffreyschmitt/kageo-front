@@ -48,3 +48,6 @@ public/swe-worker-*.js
 # IDE / local tooling
 .idea/
 .ai/
+
+.vercel
+.env*
