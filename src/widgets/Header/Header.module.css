@@ -158,6 +158,12 @@
     font-size: 13px;
     color: var(--h-text-2);
     letter-spacing: 0.1px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.header__userName:hover {
+    color: var(--h-sage);
 }
 
 .header__logoutButton {

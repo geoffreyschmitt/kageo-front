@@ -156,9 +156,9 @@ export const Header = () => {
             <LanguageSwitcher />
             {session?.user ? (
               <div className={styles.header__userMenu}>
-                <span className={styles.header__userName}>
+                <Link href="/profile" className={styles.header__userName}>
                   {t('hello', {name: session.user.name || session.user.email || ''})}
-                </span>
+                </Link>
                 <button
                   onClick={handleSignOut}
                   className={styles.header__logoutButton}
