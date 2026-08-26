@@ -252,7 +252,7 @@
   "wishlistForm": {
     "nameLabel": "Wishlist Name *",
     "namePlaceholder": "Enter the wishlist name",
-    "descriptionLabel": "Description (optional)",
+    "descriptionLabel": "Description",
     "descriptionPlaceholder": "Describe your wishlist...",
     "eventDateLabel": "Event Date *",
     "privacyLabel": "Privacy",
@@ -289,7 +289,7 @@
     "priorityLow": "Low",
     "priorityMedium": "Medium",
     "priorityHigh": "High",
-    "descriptionLabel": "Description (optional)",
+    "descriptionLabel": "Description",
     "priceLabel": "Price *",
     "imageUrlLabel": "Image URL",
     "purchaseUrlLabel": "Purchase URL",
