@@ -169,6 +169,7 @@
     "potNotStarted": "No pot started yet for {ownerName}",
     "emptyTitle": "Nothing here yet",
     "emptyMessage": "Add your first wish and start building something beautiful.",
+    "emptyMessageVisitor": "Nothing here yet — why not suggest a wish?",
     "emptyButton": "Add your first wish",
     "filtersAndSort": "Filters & Sort",
     "sortByLabel": "Sort By",

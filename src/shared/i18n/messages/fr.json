@@ -169,6 +169,7 @@
     "potNotStarted": "Aucune cagnotte encore lancée pour {ownerName}",
     "emptyTitle": "Rien ici pour l'instant",
     "emptyMessage": "Ajoutez votre premier souhait et commencez à créer quelque chose de beau.",
+    "emptyMessageVisitor": "Rien ici pour l'instant — pourquoi ne pas proposer un souhait ?",
     "emptyButton": "Ajouter votre premier souhait",
     "filtersAndSort": "Filtres et tri",
     "sortByLabel": "Trier par",

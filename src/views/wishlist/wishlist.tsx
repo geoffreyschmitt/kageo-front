@@ -484,10 +484,20 @@ export default function Wishlist({
             </svg>
           </div>
           <h3 className={styles.wishlist__emptyTitle}>{t('emptyTitle')}</h3>
-          <p className={styles.wishlist__emptyMessage}>{t('emptyMessage')}</p>
+          <p className={styles.wishlist__emptyMessage}>
+            {userIsOwner ? t('emptyMessage') : t('emptyMessageVisitor')}
+          </p>
           {userIsOwner && (
             <button className={styles.wishlist__emptyButton} onClick={onAddItem}>
               {t('emptyButton')}
+            </button>
+          )}
+          {!userIsOwner && !isHistory && (
+            <button
+              className={styles.wishlist__emptyButton}
+              onClick={() => setIsProposeItemModalOpen(true)}
+            >
+              {t('suggestWish')}
             </button>
           )}
         </div>
