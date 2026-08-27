@@ -215,6 +215,12 @@ export default function Wishlist({
     return filtered
   }, [allProposedItems, sortBy, sortOrder, priceRange])
 
+  // Suggestions a guest explicitly chose to share with the owner.
+  const ownerVisibleSuggestions = useMemo(
+    () => allProposedItems.filter((item) => item.showToOwner),
+    [allProposedItems],
+  )
+
   const completionPercentage = items.length > 0 ? (purchasedItems.length / items.length) * 100 : 0
 
   const handleAddWish = (wish: TWishFormData & { id: string }) => {
@@ -831,6 +837,65 @@ export default function Wishlist({
               ) : (
                 <div className={styles.wishlist__suggestionsEmpty}>
                   <p>{t('suggestionsEmpty')}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── Suggestions shared with the owner (owner only, not in history) ── */}
+          {userIsOwner && !isHistory && (
+            <div className={styles.wishlist__suggestionsSection}>
+              <div className={styles.wishlist__suggestionsDivider} aria-hidden="true">
+                <div className={styles.wishlist__suggestionsDividerLine} />
+                <div className={styles.wishlist__suggestionsDividerIcon}>
+                  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 34 Q14 26 12 18 Q10 10 18 8 Q22 7 24 12 Q26 7 30 8 Q38 10 28 22 Q26 26 20 34Z" fill="currentColor" opacity="0.55"/>
+                    <path d="M20 34 Q20 28 20 20" stroke="currentColor" strokeWidth="1" opacity="0.4"/>
+                    <path d="M20 22 Q16 18 12 16" stroke="currentColor" strokeWidth="0.8" opacity="0.3"/>
+                    <path d="M20 26 Q24 22 28 20" stroke="currentColor" strokeWidth="0.8" opacity="0.3"/>
+                  </svg>
+                </div>
+                <div className={styles.wishlist__suggestionsDividerLine} />
+              </div>
+
+              <div className={styles.wishlist__suggestionsHeaderWrap}>
+                <div>
+                  <h2 className={styles.wishlist__suggestionsTitle}>{t('suggestionsTitle')}</h2>
+                  <p className={styles.wishlist__suggestionsMeta}>
+                    {ownerVisibleSuggestions.length === 0
+                      ? t('suggestionsOwnerEmpty')
+                      : t('suggestionsOwnerMeta', {count: ownerVisibleSuggestions.length})}
+                  </p>
+                </div>
+              </div>
+
+              {ownerVisibleSuggestions.length > 0 ? (
+                <div className={styles.wishlist__itemsGrid}>
+                  {ownerVisibleSuggestions.map((item) => (
+                    <WishCard
+                      key={item.id}
+                      id={item.id}
+                      name={item.name}
+                      description={item.description}
+                      price={item.price}
+                      currency={item.currency}
+                      imageUrl={item.imageUrl}
+                      priority={item.priority}
+                      status={item.status}
+                      purchaseUrl={item.purchaseUrl}
+                      notes={item.notes}
+                      addedDate={item.addedDate}
+                      showOwnerAction={false}
+                      showGuestAction={false}
+                      isOwner
+                      userId={userId}
+                      useMock={useMock}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.wishlist__suggestionsEmpty}>
+                  <p>{t('suggestionsOwnerEmpty')}</p>
                 </div>
               )}
             </div>

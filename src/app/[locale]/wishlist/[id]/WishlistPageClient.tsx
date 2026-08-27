@@ -195,6 +195,7 @@ export default function WishlistPageClient({
             priority: 'medium',
             status: 'proposed',
             isProposed: true,
+            showToOwner: wish.showToOwner ?? false,
             purchaseUrl: wish.purchaseUrl,
             notes: wish.notes,
             addedDate: 'just now',

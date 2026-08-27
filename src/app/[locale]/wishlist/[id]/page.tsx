@@ -36,6 +36,7 @@ type KVWish = {
     reservedBy?: string
     purchasedBy?: string
     proposedBy?: string
+    showToOwner?: boolean
 }
 
 export default async function WishlistPage({
@@ -84,6 +85,7 @@ export default async function WishlistPage({
         reservedBy: w.reservedBy,
         purchasedBy: w.purchasedBy,
         isProposed: w.status === 'proposed',
+        showToOwner: w.showToOwner ?? false,
     }))
 
     // Look up ownerName: use session name if owner, else look up via KV reverse index

@@ -16,6 +16,8 @@ export type TWishCard = {
   reservedBy?: string
   purchasedBy?: string
   isProposed?: boolean
+  // Set on a proposed wish when the guest chose to share it with the owner.
+  showToOwner?: boolean
   showOwnerAction?: boolean
   showGuestAction?: boolean
   // Explicit ownership flag for gating comments — unlike showOwnerAction/showGuestAction,
