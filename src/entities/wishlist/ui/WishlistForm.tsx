@@ -120,25 +120,6 @@ export const WishlistForm = ({
                     />
                     {errors.coverImage && <span className={styles.editWishlistForm__error}>{errors.coverImage}</span>}
                 </div>
-
-                {/* Settings Section */}
-                <div className={`${styles.editWishlistForm__field} ${styles["editWishlistForm__field--full"]}`}>
-                    <label className={styles.editWishlistForm__label}>{t('settingsLabel')}</label>
-                    <div className={styles.editWishlistForm__settingsGroup}>
-                        <label className={styles.editWishlistForm__checkboxLabel}>
-                            <input
-                                type="checkbox"
-                                checked={formData.allowSuggestions}
-                                onChange={(e) => handleInputChange("allowSuggestions", e.target.checked)}
-                                className={styles.editWishlistForm__checkbox}
-                            />
-                            <span className={styles.editWishlistForm__checkboxText}>
-                                <strong>{t('allowSuggestions')}</strong>
-                                <small>{t('allowSuggestionsDesc')}</small>
-                            </span>
-                        </label>
-                    </div>
-                </div>
             </div>
 
             {/* Preview */}
@@ -175,12 +156,6 @@ export const WishlistForm = ({
                         <p className={styles.editWishlistForm__previewDescription}>
                             {formData.description || t('previewDescription')}
                         </p>
-                        <div className={styles.editWishlistForm__previewSettings}>
-                            <span className={styles.editWishlistForm__previewSetting}>{t('commentsAlwaysOn')}</span>
-                            {formData.allowSuggestions && (
-                                <span className={styles.editWishlistForm__previewSetting}>{t('suggestionsBadge')}</span>
-                            )}
-                        </div>
                     </div>
                 </div>
             </div>

@@ -50,11 +50,6 @@ export async function POST(request: NextRequest) {
         const isOwner = wishlist.ownerId === session.user.id
         const isProposed = !isOwner
 
-        // Guests can only propose wishes when allowSuggestions is enabled
-        if (isProposed && !wishlist.allowSuggestions) {
-            return NextResponse.json({ message: 'Suggestions are not allowed for this wishlist' }, { status: 403 })
-        }
-
         const id = uuidv4()
         const now = new Date().toISOString()
 
