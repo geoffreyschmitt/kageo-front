@@ -38,12 +38,12 @@ export const AddWishModal = ({
         useMock,
     });
 
-    const handleSelectChange =
-        (field: keyof TWishFormData) =>
-            (e: React.ChangeEvent<HTMLSelectElement>) => {
-                const value = e.target.value;
-                handleInputChange(field, value);
-            };
+    const handleSelectChange = (
+        field: keyof TWishFormData,
+        value: TWishFormData[keyof TWishFormData],
+    ) => {
+        handleInputChange(field, value);
+    };
 
     return (
         <Modal

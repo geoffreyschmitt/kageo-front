@@ -18,12 +18,12 @@ export const ProposeWishModal = ({isOpen, onClose, onSubmit, wishlistId, useMock
     const {formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit} =
         useProposeWishForm({onSubmit, onClose, wishlistId, useMock})
 
-    const handleSelectChange =
-        (field: keyof TProposedWishFormData) =>
-            (e: React.ChangeEvent<HTMLSelectElement>) => {
-                const value = e.target.value;
-                handleInputChange(field, value);
-            };
+    const handleSelectChange = (
+        field: keyof TProposedWishFormData,
+        value: TProposedWishFormData[keyof TProposedWishFormData],
+    ) => {
+        handleInputChange(field, value);
+    };
 
     return (
         <Modal

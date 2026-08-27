@@ -320,7 +320,9 @@
     "title": "Proposer un souhait"
   },
   "editWishModal": {
-    "title": "Modifier un souhait"
+    "title": "Modifier un souhait",
+    "submit": "Modifier",
+    "submitting": "Modification…"
   },
   "updateWishlistModal": {
     "title": "Modifier la Wishlist"
