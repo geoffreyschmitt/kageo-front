@@ -21,21 +21,26 @@ export const ContributeModal = ({
     onContribute,
     onError,
     useMock = false,
+    mode = 'add',
+    initialAmount = 0,
 }: TContributeModal) => {
     const t = useTranslations('contributeModal')
+    const isEdit = mode === 'edit'
     const { amount, setAmount, isSubmitting, error, handleSubmit } = useContributePotModel({
         wishlistId,
         onContribute,
         onError,
         onClose,
         useMock,
+        mode,
+        initialAmount,
     })
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={<span className={styles.contribute__modalTitle}>{t('title')}</span>}
+            title={<span className={styles.contribute__modalTitle}>{isEdit ? t('editTitle') : t('title')}</span>}
             subtitle={eventName}
         >
             <div className={styles.contribute}>
@@ -56,7 +61,7 @@ export const ContributeModal = ({
                         <p className={styles.contribute__heroOrganizer}>
                             {t('organisedBy', { creatorName })}
                         </p>
-                        {totalContributed > 0 ? (
+                        {totalContributed > 0 || isEdit ? (
                             <p className={styles.contribute__heroSub}>
                                 {t('alreadyPledged', { currency, amount: totalContributed.toFixed(2) })}
                             </p>
@@ -129,7 +134,9 @@ export const ContributeModal = ({
                                 onClick={handleSubmit}
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting ? t('adding') : t('addPledge')}
+                                {isEdit
+                                    ? (isSubmitting ? t('saving') : t('savePledge'))
+                                    : (isSubmitting ? t('adding') : t('addPledge'))}
                             </button>
                         </div>
                     </>

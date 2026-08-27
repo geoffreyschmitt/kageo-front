@@ -370,6 +370,7 @@
   },
   "contributeModal": {
     "title": "Pledge to the pot",
+    "editTitle": "Edit my pledge",
     "collectiveGift": "A collective gift for {ownerName}",
     "organisedBy": "Organised by {creatorName}",
     "alreadyPledged": "{currency}{amount} already pledged by friends",
@@ -382,6 +383,8 @@
     "cancel": "Cancel",
     "adding": "Adding…",
     "addPledge": "Add pledge",
+    "saving": "Saving…",
+    "savePledge": "Save",
     "invalidAmount": "Please enter a valid amount greater than 0"
   },
   "createPotModal": {

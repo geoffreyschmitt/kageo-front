@@ -370,6 +370,7 @@
   },
   "contributeModal": {
     "title": "Promettre à la cagnotte",
+    "editTitle": "Modifier ma promesse",
     "collectiveGift": "Un cadeau collectif pour {ownerName}",
     "organisedBy": "Organisé par {creatorName}",
     "alreadyPledged": "{currency}{amount} déjà promis par des amis",
@@ -382,6 +383,8 @@
     "cancel": "Annuler",
     "adding": "Ajout…",
     "addPledge": "Ajouter ma promesse",
+    "saving": "Enregistrement…",
+    "savePledge": "Enregistrer",
     "invalidAmount": "Veuillez saisir un montant valide supérieur à 0"
   },
   "createPotModal": {

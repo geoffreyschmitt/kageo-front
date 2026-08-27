@@ -3,8 +3,8 @@
 import { useState, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { contributePot } from '@/shared/api/wishlist/contributePot'
-import { mockContributePot } from './lib/mockContributePot'
+import { contributePot, setContribution } from '@/shared/api/wishlist/contributePot'
+import { mockContributePot, mockSetContribution } from './lib/mockContributePot'
 
 type TUseContributePotModelParams = {
     wishlistId: string
@@ -12,6 +12,8 @@ type TUseContributePotModelParams = {
     onError?: (wishlistId: string, amount: number) => void
     onClose: () => void
     useMock?: boolean
+    mode?: 'add' | 'edit'
+    initialAmount?: number
 }
 
 export const useContributePotModel = ({
@@ -20,9 +22,11 @@ export const useContributePotModel = ({
     onError,
     onClose,
     useMock = false,
+    mode = 'add',
+    initialAmount = 0,
 }: TUseContributePotModelParams) => {
     const t = useTranslations('contributeModal')
-    const [amount, setAmount] = useState('')
+    const [amount, setAmount] = useState(mode === 'edit' && initialAmount > 0 ? String(initialAmount) : '')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -35,21 +39,31 @@ export const useContributePotModel = ({
         setError(null)
         setIsSubmitting(true)
 
+        // `onContribute`/`onError` operate on a delta so the page-level totals
+        // stay correct whether we're adding or replacing a pledge.
+        const isEdit = mode === 'edit'
+        const delta = isEdit ? parsed - initialAmount : parsed
+
         // Optimistic update — call before API so UI reflects immediately
-        if (onContribute) onContribute(wishlistId, parsed)
+        if (onContribute) onContribute(wishlistId, delta)
         onClose()
 
         try {
-            const runner = useMock ? mockContributePot : contributePot
-            await runner(wishlistId, parsed)
-            setAmount('')
+            if (isEdit) {
+                const runner = useMock ? mockSetContribution : setContribution
+                await runner(wishlistId, parsed)
+            } else {
+                const runner = useMock ? mockContributePot : contributePot
+                await runner(wishlistId, parsed)
+                setAmount('')
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to contribute')
-            if (onError) onError(wishlistId, parsed)
+            if (onError) onError(wishlistId, delta)
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishlistId, amount, onContribute, onError, onClose, useMock, t])
+    }, [wishlistId, amount, onContribute, onError, onClose, useMock, mode, initialAmount, t])
 
     return { amount, setAmount, isSubmitting, error, handleSubmit }
 }

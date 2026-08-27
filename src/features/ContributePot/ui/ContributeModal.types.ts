@@ -12,4 +12,8 @@ export type TContributeModal = {
     onContribute?: (wishlistId: string, amount: number) => void
     onError?: (wishlistId: string, amount: number) => void
     useMock?: boolean
+    /** 'add' records a new pledge; 'edit' replaces the caller's current pledge. */
+    mode?: 'add' | 'edit'
+    /** The caller's current pledge, pre-filled in 'edit' mode. */
+    initialAmount?: number
 }
