@@ -11,6 +11,8 @@ type TUseContributePotModelParams = {
     onContribute?: (wishlistId: string, amount: number) => void
     onError?: (wishlistId: string, amount: number) => void
     onRemove?: (wishlistId: string, removedAmount: number) => void
+    /** fired once the server write has landed — safe point to re-read the pot */
+    onSaved?: () => void
     onClose: () => void
     useMock?: boolean
     mode?: 'add' | 'edit'
@@ -22,6 +24,7 @@ export const useContributePotModel = ({
     onContribute,
     onError,
     onRemove,
+    onSaved,
     onClose,
     useMock = false,
     mode = 'add',
@@ -61,13 +64,14 @@ export const useContributePotModel = ({
                 await runner(wishlistId, parsed)
                 setAmount('')
             }
+            onSaved?.()
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to contribute')
             if (onError) onError(wishlistId, delta)
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishlistId, amount, onContribute, onError, onClose, useMock, isEdit, initialAmount, t])
+    }, [wishlistId, amount, onContribute, onError, onSaved, onClose, useMock, isEdit, initialAmount, t])
 
     // Cancel the caller's pledge entirely (edit mode only).
     const handleCancel = useCallback(async () => {
@@ -81,13 +85,14 @@ export const useContributePotModel = ({
         try {
             const runner = useMock ? mockSetContribution : setContribution
             await runner(wishlistId, 0)
+            onSaved?.()
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to cancel')
             if (onError) onError(wishlistId, -initialAmount)
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishlistId, onContribute, onError, onRemove, onClose, useMock, initialAmount])
+    }, [wishlistId, onContribute, onError, onRemove, onSaved, onClose, useMock, initialAmount])
 
     return { amount, setAmount, isSubmitting, error, handleSubmit, handleCancel }
 }

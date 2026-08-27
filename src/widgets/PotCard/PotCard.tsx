@@ -62,16 +62,6 @@ export const PotCard = ({
 
     const fmt = (n: number) => `${currency}${n.toFixed(2)}`
 
-    const handleContribute = (wid: string, delta: number) => {
-        onContribute?.(wid, delta)
-        model.reconcile()
-    }
-
-    const handleRemoved = (wid: string, removedAmount: number) => {
-        onContributeRemoved?.(wid, removedAmount)
-        model.reconcile()
-    }
-
     // ── No pot yet ────────────────────────────────────────────
     if (!pot) {
         return (
@@ -91,7 +81,7 @@ export const PotCard = ({
                         isInvited={isInvited}
                         onPotCreated={(creatorId, creatorName) => {
                             onPotCreated?.(creatorId, creatorName)
-                            setTimeout(model.reconcile, 400)
+                            model.reconcile()
                         }}
                         useMock={useMock}
                     />
@@ -183,9 +173,10 @@ export const PotCard = ({
             isLoggedIn={isLoggedIn}
             mode={model.modal}
             initialAmount={model.modal === 'edit' ? myPledge : 0}
-            onContribute={handleContribute}
+            onContribute={onContribute}
             onError={onContributeError}
-            onRemove={handleRemoved}
+            onRemove={onContributeRemoved}
+            onSaved={model.reconcile}
             useMock={useMock}
         />
     )
