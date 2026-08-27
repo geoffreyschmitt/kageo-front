@@ -50,6 +50,7 @@ export const PotCard = ({
     pot,
     onContribute,
     onContributeError,
+    onContributeRemoved,
     onPotCreated,
     onPotRefreshed,
     onRequireLogin,
@@ -63,6 +64,11 @@ export const PotCard = ({
 
     const handleContribute = (wid: string, delta: number) => {
         onContribute?.(wid, delta)
+        model.reconcile()
+    }
+
+    const handleRemoved = (wid: string, removedAmount: number) => {
+        onContributeRemoved?.(wid, removedAmount)
         model.reconcile()
     }
 
@@ -171,6 +177,7 @@ export const PotCard = ({
             initialAmount={model.modal === 'edit' ? myPledge : 0}
             onContribute={handleContribute}
             onError={onContributeError}
+            onRemove={handleRemoved}
             useMock={useMock}
         />
     )

@@ -16,6 +16,7 @@ export type TPotCardProps = {
     pot: TGetPotResponse | null
     onContribute?: (wishlistId: string, delta: number) => void
     onContributeError?: (wishlistId: string, delta: number) => void
+    onContributeRemoved?: (wishlistId: string, removedAmount: number) => void
     onPotCreated?: (creatorId: string, creatorName: string) => void
     /** replace the pot view with a freshly fetched one */
     onPotRefreshed?: (view: TGetPotResponse | null) => void

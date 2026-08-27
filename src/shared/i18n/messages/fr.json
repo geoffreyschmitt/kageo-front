@@ -226,6 +226,7 @@
     "deleteError": "Impossible de supprimer le souhait — veuillez réessayer",
     "contributionAdded": "Merci ! Votre don a été ajouté à la cagnotte",
     "contributionError": "Impossible d'ajouter votre contribution — veuillez réessayer",
+    "pledgeRemoved": "Votre promesse a été retirée de la cagnotte",
     "wishlistUpdated": "Wishlist mise à jour",
     "wishlistUpdateError": "Impossible de mettre à jour la wishlist — veuillez réessayer",
     "wishlistDeleted": "Wishlist supprimée",
@@ -386,6 +387,11 @@
     "saving": "Enregistrement…",
     "savePledge": "Enregistrer",
     "removePledge": "Retirer ma promesse",
+    "removeConfirmTitle": "Retirer votre promesse ?",
+    "removeConfirmBody": "Votre promesse de {currency}{amount} sera retirée de la cagnotte et vous ne serez plus compté·e parmi les participants.",
+    "removeKeep": "Garder ma promesse",
+    "removeConfirm": "Retirer",
+    "removing": "Retrait…",
     "invalidAmount": "Veuillez saisir un montant valide supérieur à 0"
   },
   "createPotModal": {

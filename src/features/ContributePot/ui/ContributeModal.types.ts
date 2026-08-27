@@ -11,6 +11,8 @@ export type TContributeModal = {
     isLoggedIn: boolean
     onContribute?: (wishlistId: string, amount: number) => void
     onError?: (wishlistId: string, amount: number) => void
+    /** called after the caller's pledge is removed (edit mode) with the removed amount */
+    onRemove?: (wishlistId: string, removedAmount: number) => void
     useMock?: boolean
     /** 'add' records a new pledge; 'edit' replaces the caller's current pledge. */
     mode?: 'add' | 'edit'

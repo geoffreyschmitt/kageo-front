@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Modal } from '@/shared/ui'
 import { eventBus } from '@/shared/eventBus'
@@ -20,16 +21,19 @@ export const ContributeModal = ({
     isLoggedIn,
     onContribute,
     onError,
+    onRemove,
     useMock = false,
     mode = 'add',
     initialAmount = 0,
 }: TContributeModal) => {
     const t = useTranslations('contributeModal')
     const isEdit = mode === 'edit'
+    const [confirmingRemove, setConfirmingRemove] = useState(false)
     const { amount, setAmount, isSubmitting, error, handleSubmit, handleCancel } = useContributePotModel({
         wishlistId,
         onContribute,
         onError,
+        onRemove,
         onClose,
         useMock,
         mode,
@@ -94,6 +98,31 @@ export const ContributeModal = ({
                             {t('logIn')}
                         </button>
                     </div>
+                ) : confirmingRemove ? (
+                    <div className={styles.contribute__confirm}>
+                        <p className={styles.contribute__confirmTitle}>{t('removeConfirmTitle')}</p>
+                        <p className={styles.contribute__confirmBody}>
+                            {t('removeConfirmBody', { currency, amount: initialAmount.toFixed(2) })}
+                        </p>
+                        <div className={styles.contribute__actions}>
+                            <button
+                                type="button"
+                                className={`${styles.contribute__button} ${styles['contribute__button--secondary']}`}
+                                onClick={() => setConfirmingRemove(false)}
+                                disabled={isSubmitting}
+                            >
+                                {t('removeKeep')}
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.contribute__button} ${styles['contribute__button--danger']}`}
+                                onClick={handleCancel}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? t('removing') : t('removeConfirm')}
+                            </button>
+                        </div>
+                    </div>
                 ) : (
                     <>
                         <div className={styles.contribute__field}>
@@ -126,7 +155,7 @@ export const ContributeModal = ({
                                 <button
                                     type="button"
                                     className={styles.contribute__remove}
-                                    onClick={handleCancel}
+                                    onClick={() => setConfirmingRemove(true)}
                                     disabled={isSubmitting}
                                 >
                                     {t('removePledge')}

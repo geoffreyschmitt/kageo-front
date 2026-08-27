@@ -10,6 +10,7 @@ type TUseContributePotModelParams = {
     wishlistId: string
     onContribute?: (wishlistId: string, amount: number) => void
     onError?: (wishlistId: string, amount: number) => void
+    onRemove?: (wishlistId: string, removedAmount: number) => void
     onClose: () => void
     useMock?: boolean
     mode?: 'add' | 'edit'
@@ -20,6 +21,7 @@ export const useContributePotModel = ({
     wishlistId,
     onContribute,
     onError,
+    onRemove,
     onClose,
     useMock = false,
     mode = 'add',
@@ -72,7 +74,8 @@ export const useContributePotModel = ({
         setError(null)
         setIsSubmitting(true)
 
-        if (onContribute) onContribute(wishlistId, -initialAmount)
+        if (onRemove) onRemove(wishlistId, initialAmount)
+        else if (onContribute) onContribute(wishlistId, -initialAmount)
         onClose()
 
         try {
@@ -84,7 +87,7 @@ export const useContributePotModel = ({
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishlistId, onContribute, onError, onClose, useMock, initialAmount])
+    }, [wishlistId, onContribute, onError, onRemove, onClose, useMock, initialAmount])
 
     return { amount, setAmount, isSubmitting, error, handleSubmit, handleCancel }
 }

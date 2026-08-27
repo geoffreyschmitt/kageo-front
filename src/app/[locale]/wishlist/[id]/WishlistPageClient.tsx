@@ -260,6 +260,11 @@ export default function WishlistPageClient({
         toast(t('contributionError'), 'error')
     }
 
+    const handlePledgeRemoved = (_wishlistId: string, removedAmount: number) => {
+        patchPot(-removedAmount)
+        toast(t('pledgeRemoved'), 'info')
+    }
+
     return (
         <main>
             <Wishlist
@@ -297,6 +302,7 @@ export default function WishlistPageClient({
                 onDeleteWishlistError={handleDeleteWishlistError}
                 onContribute={handleContribute}
                 onContributeError={handleContributeError}
+                onContributeRemoved={handlePledgeRemoved}
                 pot={pot}
                 onPotRefreshed={handlePotRefreshed}
                 isLoggedIn={isLoggedIn}

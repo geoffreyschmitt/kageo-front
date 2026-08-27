@@ -226,6 +226,7 @@
     "deleteError": "Could not delete wish — please try again",
     "contributionAdded": "Thank you! Your gift has been added to the pot",
     "contributionError": "Could not add your contribution — please try again",
+    "pledgeRemoved": "Your pledge has been removed from the pot",
     "wishlistUpdated": "Wishlist updated",
     "wishlistUpdateError": "Could not update wishlist — please try again",
     "wishlistDeleted": "Wishlist deleted",
@@ -386,6 +387,11 @@
     "saving": "Saving…",
     "savePledge": "Save",
     "removePledge": "Remove my pledge",
+    "removeConfirmTitle": "Remove your pledge?",
+    "removeConfirmBody": "Your pledge of {currency}{amount} will be removed from the pot and you'll no longer be counted as a participant.",
+    "removeKeep": "Keep my pledge",
+    "removeConfirm": "Remove",
+    "removing": "Removing…",
     "invalidAmount": "Please enter a valid amount greater than 0"
   },
   "createPotModal": {

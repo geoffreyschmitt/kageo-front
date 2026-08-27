@@ -57,6 +57,7 @@ type TWishlistPageProps = {
   currency?: string
   onContribute?: (wishlistId: string, amount: number) => void
   onContributeError?: (wishlistId: string, amount: number) => void
+  onContributeRemoved?: (wishlistId: string, removedAmount: number) => void
   pot?: TGetPotResponse | null
   onPotRefreshed?: (view: TGetPotResponse | null) => void
   userId?: string
@@ -101,6 +102,7 @@ export default function Wishlist({
   onProposeWish,
   onContribute,
   onContributeError,
+  onContributeRemoved,
   pot = null,
   onPotRefreshed,
   userId = '',
@@ -415,6 +417,7 @@ export default function Wishlist({
           pot={pot}
           onContribute={onContribute}
           onContributeError={onContributeError}
+          onContributeRemoved={onContributeRemoved}
           onPotCreated={onPotCreated}
           onPotRefreshed={onPotRefreshed}
           onRequireLogin={() => setLoginPrompt('contribute')}

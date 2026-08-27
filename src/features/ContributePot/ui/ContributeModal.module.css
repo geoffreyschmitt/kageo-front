@@ -253,6 +253,47 @@
     border-color: var(--border-strong);
 }
 
+.contribute__button--danger {
+    background: var(--cp-error);
+    color: #fff;
+}
+
+.contribute__button--danger:hover:not(:disabled) {
+    filter: brightness(0.92);
+}
+
+/* ── Remove-pledge confirmation ─────────────── */
+
+.contribute__confirm {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--cp-error-bg);
+    border: 1px solid var(--error-border);
+    border-radius: 12px;
+    padding: 16px 18px;
+}
+
+.contribute__confirmTitle {
+    font-family: var(--cp-font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cp-text);
+    margin: 0;
+}
+
+.contribute__confirmBody {
+    font-family: var(--cp-font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--cp-text-2);
+    margin: 0 0 4px;
+}
+
+.contribute__confirm .contribute__actions {
+    padding-top: 0;
+}
+
 /* ── Organizer line ─────────────────────────── */
 
 .contribute__heroOrganizer {
