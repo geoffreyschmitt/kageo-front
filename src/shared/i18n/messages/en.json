@@ -6,7 +6,11 @@
   },
   "nav": {
     "wishlists": "Wishlists",
-    "history": "History"
+    "history": "History",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "viewProfile": "View profile"
   },
   "auth": {
     "login": "Login",
