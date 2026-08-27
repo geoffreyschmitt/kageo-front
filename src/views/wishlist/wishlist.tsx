@@ -14,7 +14,7 @@ import {DeleteWishlistButton} from '@/features/DeleteWishlist'
 import {EditWishModal} from '@/features/EditWish'
 import {ContributeModal} from '@/features/ContributePot'
 import {CreatePotButton} from '@/features/CreatePot'
-import {CommentsSection} from '@/features/Comments'
+import {CommentsSection, CommentsDrawer} from '@/features/Comments'
 import {LoginPromptModal} from '@/shared/ui'
 
 import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
@@ -675,6 +675,7 @@ export default function Wishlist({
                     purchaseUrl={item.purchaseUrl}
                     notes={item.notes}
                     addedDate={item.addedDate}
+                    commentCount={item.commentCount}
                     reservedBy={item.reservedBy}
                     purchasedBy={item.purchasedBy}
                     showOwnerAction={!isHistory && !!userIsOwner}
@@ -716,6 +717,7 @@ export default function Wishlist({
                 purchaseUrl={item.purchaseUrl}
                 notes={item.notes}
                 addedDate={item.addedDate}
+                commentCount={item.commentCount}
                 reservedBy={item.reservedBy}
                 purchasedBy={item.purchasedBy}
                 showOwnerAction={!isHistory && !!userIsOwner}
@@ -818,6 +820,7 @@ export default function Wishlist({
                       purchaseUrl={item.purchaseUrl}
                       notes={item.notes}
                       addedDate={item.addedDate}
+                      commentCount={item.commentCount}
                       reservedBy={item.reservedBy}
                       purchasedBy={item.purchasedBy}
                       showOwnerAction={false}
@@ -913,6 +916,8 @@ export default function Wishlist({
           )}
         </div>
       )}
+
+      {!userIsOwner && <CommentsDrawer isLoggedIn={isLoggedIn} />}
 
       <div className={styles.wishlist__controlsSection}>
         <div className={styles.wishlist__resultsCount}>

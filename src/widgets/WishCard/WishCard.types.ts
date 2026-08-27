@@ -13,6 +13,9 @@ export type TWishCard = {
   purchaseUrl?: string
   notes?: string
   addedDate: string
+  // Number of comments on this wish. Only populated for non-owner viewers
+  // (comments are never exposed to the wishlist owner).
+  commentCount?: number
   reservedBy?: string
   purchasedBy?: string
   isProposed?: boolean

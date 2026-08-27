@@ -468,8 +468,9 @@
     "postComment": "Post comment",
     "loginToView": "Log in to see and post comments.",
     "loginToPost": "Log in to post a comment on this wishlist.",
-    "toggleShow": "Comments",
-    "toggleHide": "Hide comments",
+    "count": "{count, plural, one {# comment} other {# comments}}",
+    "addCta": "Comment",
+    "close": "Close comments",
     "wishlistEmpty": "No comments yet — start the conversation about {ownerName}'s wishlist."
   },
   "publicProfile": {

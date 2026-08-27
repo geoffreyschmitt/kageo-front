@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import Wishlist from '@/views/wishlist/wishlist'
@@ -66,6 +66,21 @@ export default function WishlistPageClient({
     const [userContributed, setUserContributed] = useState(initialUserContributed)
     const [potCreatorName, setPotCreatorName] = useState(initialPotCreatorName)
     const [wishlistMeta, setWishlistMeta] = useState({ name, description, isPublic, eventDate, coverImage, allowSuggestions })
+
+    // Keep card comment counters in sync when a comment is posted from the drawer.
+    useEffect(
+        () =>
+            eventBus.on('wish:commentCountChanged', ({ wishId, delta }) => {
+                setItems((prev) =>
+                    prev.map((item) =>
+                        item.id === wishId
+                            ? { ...item, commentCount: Math.max(0, (item.commentCount ?? 0) + delta) }
+                            : item,
+                    ),
+                )
+            }),
+        [],
+    )
 
     const handlePotCreated = (_creatorId: string, creatorName: string) => {
         setPotCreatorName(creatorName)

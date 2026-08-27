@@ -11,9 +11,11 @@ type TUseCommentsModelParams = {
     // rather than relying on the API's 403, so the UI never even attempts the request.
     enabled: boolean
     autoLoad?: boolean
+    // Fired once after a comment is successfully posted (used to keep card counters in sync).
+    onPosted?: () => void
 }
 
-export const useCommentsModel = ({ target, enabled, autoLoad = true }: TUseCommentsModelParams) => {
+export const useCommentsModel = ({ target, enabled, autoLoad = true, onPosted }: TUseCommentsModelParams) => {
     const [comments, setComments] = useState<TComment[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [loadError, setLoadError] = useState<string | null>(null)
@@ -58,6 +60,7 @@ export const useCommentsModel = ({ target, enabled, autoLoad = true }: TUseComme
             const comment = await postComment(target, text.trim())
             setComments((prev) => [...prev, comment])
             setText('')
+            onPosted?.()
         } catch (err) {
             setSubmitError(err instanceof Error ? err.message : 'Could not post comment')
         } finally {

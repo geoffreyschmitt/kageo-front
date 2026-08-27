@@ -502,25 +502,39 @@
 
 /* ── Comments ─────────────────────────────── */
 
-.wish-card__commentsToggle {
-    align-self: flex-start;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--wc-text-3);
-    background: none;
-    border: none;
-    padding: 2px 0;
+.wish-card__commentsButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 9px;
+    width: 100%;
     margin-top: 4px;
-    cursor: pointer;
-}
-
-.wish-card__commentsToggle:hover {
+    padding: 10px 13px;
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    background: var(--surface-input);
+    font-family: var(--wc-font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
     color: var(--wc-text-2);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-.wish-card__comments {
-    margin-top: 6px;
+.wish-card__commentsButton:hover {
+    border-color: var(--wc-border-hover);
+    color: var(--wc-text);
+}
+
+.wish-card__commentsButtonLabel {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.wish-card__commentsButton svg {
+    flex-shrink: 0;
+    color: var(--wc-text-3);
 }
 
 /* ── Actions ──────────────────────────────── */
