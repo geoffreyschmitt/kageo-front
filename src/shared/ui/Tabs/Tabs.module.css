@@ -2,15 +2,15 @@
    TABS — Garden Party
    ============================================ */
 
-:root {
-    --tab-font-sans: var(--font-dm-sans, system-ui, sans-serif);
-    --tab-sage:      #3f6845;   /* 6.4:1 on white */
-    --tab-text:      #1e1a16;
-    --tab-text-2:    #4e443c;   /* 9.2:1 on white */
-    --tab-text-3:    #6b6258;   /* 5.4:1 on white */
-    --tab-border:    #d6cec4;
-    --tab-surface:   #ffffff;
-    --tab-sage-bg:   #eaf2eb;
+.tabs {
+    --tab-font-sans: var(--font-sans);
+    --tab-sage:      var(--accent);
+    --tab-text:      var(--text-primary);
+    --tab-text-2:    var(--text-secondary);
+    --tab-text-3:    var(--text-tertiary);
+    --tab-border:    var(--border-default);
+    --tab-surface:   var(--surface-raised);
+    --tab-sage-bg:   var(--accent-tint-bg);
 }
 
 .tabs {
@@ -21,7 +21,7 @@
     display: flex;
     gap: 6px;
     margin-bottom: 32px;
-    background: #fff;
+    background: var(--tab-surface);
     border: 1px solid var(--tab-border);
     border-radius: 100px;
     padding: 5px;
@@ -58,13 +58,13 @@
 
 .tabs__button--active {
     background: var(--tab-sage);
-    color: #fff;
+    color: var(--accent-contrast);
     font-weight: 600;
 }
 
 .tabs__button--active:hover {
-    background: #2e5033;
-    color: #fff;
+    background: var(--accent-hover);
+    color: var(--accent-contrast);
 }
 
 .tabs__content {

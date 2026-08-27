@@ -2,16 +2,16 @@
    PANEL — Garden Party
    ============================================ */
 
-:root {
-    --box-surface:      #ffffff;
-    --box-border-soft:  #e5dfd5;
-    --box-text:         #1e1a16;
-    --box-text-3:       #6b6258;
-    --box-font-serif:   var(--font-cormorant, Georgia, serif);
-    --box-font-sans:    var(--font-dm-sans, system-ui, sans-serif);
-    --box-shadow:       0 2px 12px rgba(60, 45, 25, 0.08);
-    --box-error:        #8a2318;
-    --box-error-border: rgba(138, 35, 24, 0.15);
+.panel {
+    --box-surface:      var(--surface-raised);
+    --box-border-soft:  var(--border-soft);
+    --box-text:         var(--text-primary);
+    --box-text-3:       var(--text-tertiary);
+    --box-font-serif:   var(--font-serif);
+    --box-font-sans:    var(--font-sans);
+    --box-shadow:       var(--shadow-card);
+    --box-error:        var(--error-fg);
+    --box-error-border: var(--error-border);
     --box-padding-x:    28px;
     --box-padding-y:    24px;
     --box-gap:          24px;
@@ -86,7 +86,7 @@
 /* ── Mobile ───────────────────────────────── */
 
 @media (max-width: 768px) {
-    :root {
+    .panel {
         --box-padding-x: 20px;
         --box-padding-y: 20px;
         --box-gap: 20px;

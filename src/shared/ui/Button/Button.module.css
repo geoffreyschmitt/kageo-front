@@ -2,17 +2,17 @@
    BUTTON — Garden Party
    ============================================ */
 
-:root {
-    --btn-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --btn-sage:       #3f6845;
-    --btn-sage-hover: #2e5033;
-    --btn-sage-light: #eaf2eb;
-    --btn-text:       #1e1a16;
-    --btn-text-2:     #4e443c;
-    --btn-text-3:     #6b6258;
-    --btn-border:     #d6cec4;
-    --btn-surface:    #ffffff;
-    --btn-surface-2:  #f7f4ef;
+.button {
+    --btn-font-sans:  var(--font-sans);
+    --btn-sage:       var(--accent);
+    --btn-sage-hover: var(--accent-hover);
+    --btn-sage-light: var(--accent-tint-bg);
+    --btn-text:       var(--text-primary);
+    --btn-text-2:     var(--text-secondary);
+    --btn-text-3:     var(--text-tertiary);
+    --btn-border:     var(--border-default);
+    --btn-surface:    var(--surface-raised);
+    --btn-surface-2:  var(--surface-sunken);
 }
 
 .button {
@@ -43,7 +43,7 @@
 
 .button--primary {
     background: var(--btn-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
     border: none;
 }
 
@@ -69,12 +69,12 @@
 .button--secondary:hover:not(:disabled) {
     background: var(--btn-surface-2);
     color: var(--btn-text);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
     transform: translateY(-1px);
 }
 
 .button--secondary:active:not(:disabled) {
-    background: #ede8e0;
+    background: var(--surface-sunken-2);
     transform: translateY(0);
 }
 
@@ -88,7 +88,7 @@
 
 .button--outline:hover:not(:disabled) {
     background: var(--btn-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
     transform: translateY(-1px);
     box-shadow: 0 4px 14px rgba(63, 104, 69, 0.3);
 }
@@ -113,6 +113,6 @@
 }
 
 .button--ghost:active:not(:disabled) {
-    background: #d4e9d6;
+    background: var(--accent-tint-bg);
     transform: translateY(0);
 }
