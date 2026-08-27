@@ -1,20 +1,20 @@
-:root {
-    --pd-sage:       #3f6845;
-    --pd-sage-light: #eaf2eb;
-    --pd-text:       #1e1a16;
-    --pd-text-2:     #4e443c;
-    --pd-text-3:     #6b6258;
-    --pd-border:     #d6cec4;
-    --pd-surface-2:  #f7f4ef;
-    --pd-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --pd-font-serif: var(--font-cormorant, Georgia, serif);
+.potDashboard {
+    --pd-sage:       var(--accent);
+    --pd-sage-light: var(--accent-tint-bg);
+    --pd-text:       var(--text-primary);
+    --pd-text-2:     var(--text-secondary);
+    --pd-text-3:     var(--text-tertiary);
+    --pd-border:     var(--border-default);
+    --pd-surface-2:  var(--surface-sunken);
+    --pd-font-sans:  var(--font-sans);
+    --pd-font-serif: var(--font-serif);
 }
 
 .potDashboard {
     border: 1px solid var(--pd-border);
     border-radius: 12px;
     overflow: hidden;
-    background: #fff;
+    background: var(--surface-raised);
 }
 
 .potDashboard__header {

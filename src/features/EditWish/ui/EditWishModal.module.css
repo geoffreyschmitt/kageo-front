@@ -11,22 +11,22 @@
    #1a5491 on #edf3fb    7.4:1 ✓ (priority low)
    ============================================ */
 
-:root {
-    --ew-font-serif: var(--font-cormorant, Georgia, serif);
-    --ew-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --ew-font-mono:  var(--font-mono, monospace);
-    --ew-sage:       #3f6845;
-    --ew-sage-light: #eaf2eb;
-    --ew-sage-hover: #2e5033;
-    --ew-text:       #1e1a16;
-    --ew-text-2:     #4e443c;
-    --ew-text-3:     #6b6258;
-    --ew-border:     #d6cec4;
-    --ew-input-bg:   #faf8f4;
-    --ew-surface:    #ffffff;
-    --ew-surface-2:  #f7f4ef;
-    --ew-error:      #c0392b;
-    --ew-error-bg:   #fdecea;
+.editWishModal {
+    --ew-font-serif: var(--font-serif);
+    --ew-font-sans:  var(--font-sans);
+    --ew-font-mono:  var(--font-mono);
+    --ew-sage:       var(--accent);
+    --ew-sage-light: var(--accent-tint-bg);
+    --ew-sage-hover: var(--accent-hover);
+    --ew-text:       var(--text-primary);
+    --ew-text-2:     var(--text-secondary);
+    --ew-text-3:     var(--text-tertiary);
+    --ew-border:     var(--border-default);
+    --ew-input-bg:   var(--surface-input);
+    --ew-surface:    var(--surface-raised);
+    --ew-surface-2:  var(--surface-sunken);
+    --ew-error:      var(--error-fg);
+    --ew-error-bg:   var(--error-bg);
 }
 
 /* ── Modal shell ──────────────────────────── */
@@ -64,9 +64,9 @@
 .editWishModal__container {
     position: relative;
     background: var(--ew-surface);
-    border: 1px solid #ece7de;
+    border: 1px solid var(--border-soft);
     border-radius: 20px;
-    box-shadow: 0 24px 64px rgba(30, 22, 10, 0.18), 0 4px 16px rgba(30, 22, 10, 0.08);
+    box-shadow: var(--shadow-modal);
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
@@ -89,7 +89,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 24px 28px 18px;
-    border-bottom: 1px solid #ece7de;
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .editWishModal__title {
@@ -122,7 +122,7 @@
 .editWishModal__closeButton:hover {
     background: var(--ew-border);
     color: var(--ew-text);
-    border-color: #c5bdb3;
+    border-color: var(--border-strong);
 }
 
 /* ── Form ─────────────────────────────────── */
@@ -179,7 +179,7 @@
 .editWishModal__textarea:focus {
     outline: none;
     border-color: var(--ew-sage);
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
     background: var(--ew-surface);
 }
 
@@ -192,7 +192,7 @@
 .editWishModal__input--error:focus,
 .editWishModal__textarea--error:focus {
     border-color: var(--ew-error);
-    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    box-shadow: 0 0 0 3px var(--error-border);
 }
 
 .editWishModal__textarea {
@@ -246,7 +246,7 @@
     border-radius: 12px;
     padding: 14px;
     border: 1px solid var(--ew-border);
-    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.06);
+    box-shadow: var(--shadow-card);
 }
 
 .editWishModal__previewImage {
@@ -321,18 +321,18 @@
 }
 
 .editWishModal__previewPriority--high {
-    background: #fdecea;
-    color: #8a2318;             /* 7.2:1 on #fdecea ✓ */
+    background: var(--status-high-bg);
+    color: var(--status-high-fg);
 }
 
 .editWishModal__previewPriority--medium {
-    background: #fdf0e6;
-    color: #6e3c0c;             /* 7.8:1 on #fdf0e6 ✓ */
+    background: var(--status-proposed-bg);
+    color: var(--status-proposed-fg);
 }
 
 .editWishModal__previewPriority--low {
-    background: #edf3fb;
-    color: #1a5491;             /* 7.4:1 on #edf3fb ✓ */
+    background: var(--status-wanted-bg);
+    color: var(--status-wanted-fg);
 }
 
 /* ── Actions ──────────────────────────────── */
@@ -365,7 +365,7 @@
 
 .editWishModal__button--primary {
     background: var(--ew-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
 }
 
 .editWishModal__button--primary:hover:not(:disabled) {
@@ -383,7 +383,7 @@
 .editWishModal__button--secondary:hover:not(:disabled) {
     background: var(--ew-surface-2);
     color: var(--ew-text);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
 }
 
 /* ── Mobile ───────────────────────────────── */

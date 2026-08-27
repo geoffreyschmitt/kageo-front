@@ -8,7 +8,7 @@
 }
 
 .option {
-    color: var(--color-text-muted, #888);
+    color: var(--text-tertiary);
     text-decoration: none;
     padding: 2px 4px;
     border-radius: 3px;
@@ -16,15 +16,15 @@
 }
 
 .option:hover {
-    color: var(--color-text, #222);
+    color: var(--text-primary);
 }
 
 .option--active {
-    color: var(--color-text, #222);
+    color: var(--text-primary);
     font-weight: 600;
 }
 
 .divider {
-    color: var(--color-border, #ccc);
+    color: var(--border-default);
     user-select: none;
 }

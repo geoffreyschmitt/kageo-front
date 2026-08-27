@@ -2,26 +2,26 @@
    CONTRIBUTE POT MODAL — Garden Party
    ============================================ */
 
-:root {
-    --cp-font-serif: var(--font-cormorant, Georgia, serif);
-    --cp-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --cp-sage:       #3f6845;
-    --cp-sage-light: #eaf2eb;
-    --cp-sage-hover: #2e5033;
-    --cp-text:       #1e1a16;
-    --cp-text-2:     #4e443c;
-    --cp-text-3:     #6b6258;
-    --cp-border:     #d6cec4;
-    --cp-input-bg:   #faf8f4;
-    --cp-surface:    #ffffff;
-    --cp-surface-2:  #f7f4ef;
-    --cp-error:      #c0392b;
-    --cp-error-bg:   #fdecea;
+.contribute {
+    --cp-font-serif: var(--font-serif);
+    --cp-font-sans:  var(--font-sans);
+    --cp-sage:       var(--accent);
+    --cp-sage-light: var(--accent-tint-bg);
+    --cp-sage-hover: var(--accent-hover);
+    --cp-text:       var(--text-primary);
+    --cp-text-2:     var(--text-secondary);
+    --cp-text-3:     var(--text-tertiary);
+    --cp-border:     var(--border-default);
+    --cp-input-bg:   var(--surface-input);
+    --cp-surface:    var(--surface-raised);
+    --cp-surface-2:  var(--surface-sunken);
+    --cp-error:      var(--error-fg);
+    --cp-error-bg:   var(--error-bg);
 }
 
 /* Override modal title to use serif font */
 .contribute__modalTitle {
-    font-family: var(--cp-font-serif);
+    font-family: var(--font-serif);
     font-weight: 400;
     letter-spacing: 0.01em;
 }
@@ -42,7 +42,7 @@
     align-items: center;
     gap: 16px;
     background: var(--cp-sage-light);
-    border: 1px solid #b8dbb9;
+    border: 1px solid var(--accent-tint-border);
     border-radius: 12px;
     padding: 16px 20px;
 }
@@ -124,7 +124,7 @@
 
 .contribute__amountWrap:focus-within {
     border-color: var(--cp-sage);
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
     background: var(--cp-surface);
 }
 
@@ -210,7 +210,7 @@
 
 .contribute__button--primary {
     background: var(--cp-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
 }
 
 .contribute__button--primary:hover:not(:disabled) {
@@ -228,7 +228,7 @@
 .contribute__button--secondary:hover:not(:disabled) {
     background: var(--cp-surface-2);
     color: var(--cp-text);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
 }
 
 /* ── Organizer line ─────────────────────────── */

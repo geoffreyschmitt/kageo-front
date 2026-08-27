@@ -1,13 +1,14 @@
-:root {
-    --cp2-sage:       #3f6845;
-    --cp2-sage-light: #eaf2eb;
-    --cp2-sage-hover: #2e5033;
-    --cp2-text:       #1e1a16;
-    --cp2-text-2:     #4e443c;
-    --cp2-border:     #d6cec4;
-    --cp2-error:      #c0392b;
-    --cp2-surface-2:  #f7f4ef;
-    --cp2-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
+.createPot,
+.createPot__triggerButton {
+    --cp2-sage:       var(--accent);
+    --cp2-sage-light: var(--accent-tint-bg);
+    --cp2-sage-hover: var(--accent-hover);
+    --cp2-text:       var(--text-primary);
+    --cp2-text-2:     var(--text-secondary);
+    --cp2-border:     var(--border-default);
+    --cp2-error:      var(--error-fg);
+    --cp2-surface-2:  var(--surface-sunken);
+    --cp2-font-sans:  var(--font-sans);
 }
 
 .createPot {
@@ -63,7 +64,7 @@
 
 .createPot__button--primary {
     background: var(--cp2-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
 }
 
 .createPot__button--primary:hover:not(:disabled) {

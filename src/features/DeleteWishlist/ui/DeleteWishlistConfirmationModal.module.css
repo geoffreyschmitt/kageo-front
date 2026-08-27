@@ -1,11 +1,11 @@
-:root {
-    --dwc-font-sans: var(--font-dm-sans, system-ui, sans-serif);
-    --dwc-text-2: #4e443c;
-    --dwc-text-3: #6b6258;
-    --dwc-border: #d6cec4;
-    --dwc-surface-2: #f7f4ef;
-    --dwc-danger: #c0392b;
-    --dwc-danger-hover: #a93226;
+.confirmation-modal__content {
+    --dwc-font-sans: var(--font-sans);
+    --dwc-text-2: var(--text-secondary);
+    --dwc-text-3: var(--text-tertiary);
+    --dwc-border: var(--border-default);
+    --dwc-surface-2: var(--surface-sunken);
+    --dwc-danger: var(--error-fg);
+    --dwc-danger-hover: var(--status-high-fg);
 }
 
 .confirmation-modal__content {
@@ -48,12 +48,12 @@
 .confirmation-modal__button--cancel:hover {
     background: var(--dwc-surface-2);
     color: var(--dwc-text-2);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
 }
 
 .confirmation-modal__button--confirm {
     background: var(--dwc-danger);
-    color: #ffffff;
+    color: var(--accent-contrast);
 }
 
 .confirmation-modal__button--confirm:hover {

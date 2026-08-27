@@ -2,17 +2,17 @@
    OWNER FILTER — Garden Party
    ============================================ */
 
-:root {
-    --of-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --of-sage:       #3f6845;   /* 6.4:1 on white ✓ */
-    --of-sage-bg:    #eaf2eb;
-    --of-text:       #1e1a16;
-    --of-text-2:     #4e443c;
-    --of-text-3:     #6b6258;
-    --of-border:     #d6cec4;
-    --of-surface:    #ffffff;
-    --of-surface-2:  #f7f4ef;
-    --of-shadow:     0 4px 20px rgba(60, 45, 25, 0.1);
+.ownerFilterSelect {
+    --of-font-sans:  var(--font-sans);
+    --of-sage:       var(--accent);
+    --of-sage-bg:    var(--accent-tint-bg);
+    --of-text:       var(--text-primary);
+    --of-text-2:     var(--text-secondary);
+    --of-text-3:     var(--text-tertiary);
+    --of-border:     var(--border-default);
+    --of-surface:    var(--surface-raised);
+    --of-surface-2:  var(--surface-sunken);
+    --of-shadow:     var(--shadow-hover);
 }
 
 .ownerFilterSelect {
@@ -59,7 +59,7 @@
 .ownerFilterSelect__input:focus {
     outline: none;
     border-color: var(--of-sage);
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
 }
 
 .ownerFilterSelect__clearButton {
