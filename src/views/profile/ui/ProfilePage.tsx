@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 
 import { useManageAccountModel } from '@/features/ManageAccount'
-import { Modal } from '@/shared/ui'
+import { Modal, Panel } from '@/shared/ui'
 
 import s from './profile.module.css'
 
@@ -133,215 +133,187 @@ export default function ProfilePage() {
             <div className={s.body}>
 
                 {/* Account Info */}
-                <div className={s.section}>
-                    <div className={s.section__header}>
-                        <div>
-                            <h2 className={s.section__title}>{t('accountInfoTitle')}</h2>
-                            <p className={s.section__subtitle}>{t('accountInfoSubtitle')}</p>
+                <Panel
+                    title={t('accountInfoTitle')}
+                    subtitle={t('accountInfoSubtitle')}
+                    actions={nameSaved && <span className={s.savedDot}>{t('saved')}</span>}
+                >
+                    <div className={s.form}>
+                        <div className={s.form__row}>
+                            <div className={s.field}>
+                                <label className={s.field__label} htmlFor="profile-name">
+                                    {t('displayName')}
+                                </label>
+                                <input
+                                    id="profile-name"
+                                    className={s.field__input}
+                                    type="text"
+                                    value={nameValue}
+                                    onChange={(e) => setNameValue(e.target.value)}
+                                    placeholder={t('namePlaceholder')}
+                                />
+                            </div>
+                            <div className={s.field}>
+                                <label className={s.field__label} htmlFor="profile-email">
+                                    {t('emailAddress')}
+                                </label>
+                                <input
+                                    id="profile-email"
+                                    className={s.field__input}
+                                    type="email"
+                                    value={profile.email}
+                                    disabled
+                                    aria-describedby="email-hint"
+                                />
+                                <p id="email-hint" className={s.field__hint}>
+                                    {t('emailHint')}
+                                </p>
+                            </div>
                         </div>
-                        {nameSaved && <span className={s.savedDot}>{t('saved')}</span>}
+                        {nameError && <p className={s.field__error}>{nameError}</p>}
+                        <div className={s.form__footer}>
+                            <button
+                                className={`${s.btn} ${s['btn--primary']}`}
+                                onClick={handleSaveName}
+                                disabled={isSavingName}
+                            >
+                                {isSavingName ? t('saving') : t('saveChanges')}
+                            </button>
+                        </div>
                     </div>
-                    <div className={s.section__body}>
+                </Panel>
+
+                {/* Security */}
+                <Panel
+                    title={t('securityTitle')}
+                    subtitle={profile.hasPassword ? t('securitySubtitle') : t('securitySubtitleGoogle')}
+                    actions={passwordSaved && <span className={s.savedDot}>{t('updated')}</span>}
+                >
+                    {profile.hasPassword && (
                         <div className={s.form}>
+                            <div className={s.field}>
+                                <label className={s.field__label} htmlFor="current-password">
+                                    {t('currentPassword')}
+                                </label>
+                                <input
+                                    id="current-password"
+                                    className={s.field__input}
+                                    type="password"
+                                    value={currentPassword}
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    autoComplete="current-password"
+                                />
+                            </div>
                             <div className={s.form__row}>
                                 <div className={s.field}>
-                                    <label className={s.field__label} htmlFor="profile-name">
-                                        {t('displayName')}
+                                    <label className={s.field__label} htmlFor="new-password">
+                                        {t('newPassword')}
                                     </label>
                                     <input
-                                        id="profile-name"
+                                        id="new-password"
                                         className={s.field__input}
-                                        type="text"
-                                        value={nameValue}
-                                        onChange={(e) => setNameValue(e.target.value)}
-                                        placeholder={t('namePlaceholder')}
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="••••••••"
+                                        autoComplete="new-password"
                                     />
                                 </div>
                                 <div className={s.field}>
-                                    <label className={s.field__label} htmlFor="profile-email">
-                                        {t('emailAddress')}
+                                    <label className={s.field__label} htmlFor="confirm-password">
+                                        {t('confirmPassword')}
                                     </label>
                                     <input
-                                        id="profile-email"
+                                        id="confirm-password"
                                         className={s.field__input}
-                                        type="email"
-                                        value={profile.email}
-                                        disabled
-                                        aria-describedby="email-hint"
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder="••••••••"
+                                        autoComplete="new-password"
                                     />
-                                    <p id="email-hint" className={s.field__hint}>
-                                        {t('emailHint')}
-                                    </p>
                                 </div>
                             </div>
-                            {nameError && <p className={s.field__error}>{nameError}</p>}
+                            {passwordError && <p className={s.field__error}>{passwordError}</p>}
                             <div className={s.form__footer}>
                                 <button
                                     className={`${s.btn} ${s['btn--primary']}`}
-                                    onClick={handleSaveName}
-                                    disabled={isSavingName}
+                                    onClick={handleSavePassword}
+                                    disabled={isSavingPassword || !currentPassword || !newPassword || !confirmPassword}
                                 >
-                                    {isSavingName ? t('saving') : t('saveChanges')}
+                                    {isSavingPassword ? t('updatingPassword') : t('updatePassword')}
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Security */}
-                <div className={s.section}>
-                    <div className={s.section__header}>
-                        <div>
-                            <h2 className={s.section__title}>{t('securityTitle')}</h2>
-                            <p className={s.section__subtitle}>
-                                {profile.hasPassword ? t('securitySubtitle') : t('securitySubtitleGoogle')}
-                            </p>
-                        </div>
-                        {passwordSaved && <span className={s.savedDot}>{t('updated')}</span>}
-                    </div>
-                    {profile.hasPassword && (
-                        <div className={s.section__body}>
-                            <div className={s.form}>
-                                <div className={s.field}>
-                                    <label className={s.field__label} htmlFor="current-password">
-                                        {t('currentPassword')}
-                                    </label>
-                                    <input
-                                        id="current-password"
-                                        className={s.field__input}
-                                        type="password"
-                                        value={currentPassword}
-                                        onChange={(e) => setCurrentPassword(e.target.value)}
-                                        placeholder="••••••••"
-                                        autoComplete="current-password"
-                                    />
-                                </div>
-                                <div className={s.form__row}>
-                                    <div className={s.field}>
-                                        <label className={s.field__label} htmlFor="new-password">
-                                            {t('newPassword')}
-                                        </label>
-                                        <input
-                                            id="new-password"
-                                            className={s.field__input}
-                                            type="password"
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                            placeholder="••••••••"
-                                            autoComplete="new-password"
-                                        />
-                                    </div>
-                                    <div className={s.field}>
-                                        <label className={s.field__label} htmlFor="confirm-password">
-                                            {t('confirmPassword')}
-                                        </label>
-                                        <input
-                                            id="confirm-password"
-                                            className={s.field__input}
-                                            type="password"
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            placeholder="••••••••"
-                                            autoComplete="new-password"
-                                        />
-                                    </div>
-                                </div>
-                                {passwordError && <p className={s.field__error}>{passwordError}</p>}
-                                <div className={s.form__footer}>
-                                    <button
-                                        className={`${s.btn} ${s['btn--primary']}`}
-                                        onClick={handleSavePassword}
-                                        disabled={isSavingPassword || !currentPassword || !newPassword || !confirmPassword}
-                                    >
-                                        {isSavingPassword ? t('updatingPassword') : t('updatePassword')}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
                     )}
-                </div>
+                </Panel>
 
                 {/* Preferences */}
-                <div className={s.section}>
-                    <div className={s.section__header}>
-                        <div>
-                            <h2 className={s.section__title}>{t('preferencesTitle')}</h2>
-                            <p className={s.section__subtitle}>{t('preferencesSubtitle')}</p>
+                <Panel title={t('preferencesTitle')} subtitle={t('preferencesSubtitle')}>
+                    <div className={s.preference}>
+                        <div className={s.preference__text}>
+                            <p className={s.preference__title}>{t('publicProfile')}</p>
+                            <p className={s.preference__desc}>
+                                {t('publicProfileDesc')}
+                            </p>
+                            {profile.isPublic && (
+                                <a
+                                    href={`/u/${profile.id}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={s.preference__link}
+                                >
+                                    {t('viewPublicProfile')}
+                                </a>
+                            )}
                         </div>
+                        <label className={s.toggle} aria-label={t('togglePublicProfile')}>
+                            <input
+                                type="checkbox"
+                                className={s.toggle__input}
+                                checked={profile.isPublic}
+                                disabled={isTogglingPublic}
+                                onChange={(e) => handleTogglePublicProfile(e.target.checked)}
+                            />
+                            <span className={s.toggle__track} />
+                            <span className={s.toggle__thumb} />
+                        </label>
                     </div>
-                    <div className={s.section__body}>
-                        <div className={s.preference}>
-                            <div className={s.preference__text}>
-                                <p className={s.preference__title}>{t('publicProfile')}</p>
-                                <p className={s.preference__desc}>
-                                    {t('publicProfileDesc')}
-                                </p>
-                                {profile.isPublic && (
-                                    <a
-                                        href={`/u/${profile.id}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={s.preference__link}
-                                    >
-                                        {t('viewPublicProfile')}
-                                    </a>
-                                )}
-                            </div>
-                            <label className={s.toggle} aria-label={t('togglePublicProfile')}>
-                                <input
-                                    type="checkbox"
-                                    className={s.toggle__input}
-                                    checked={profile.isPublic}
-                                    disabled={isTogglingPublic}
-                                    onChange={(e) => handleTogglePublicProfile(e.target.checked)}
-                                />
-                                <span className={s.toggle__track} />
-                                <span className={s.toggle__thumb} />
-                            </label>
-                        </div>
-                    </div>
-                </div>
+                </Panel>
 
                 {/* Danger zone */}
-                <div className={`${s.section} ${s['section--danger']}`}>
-                    <div className={s.section__header}>
-                        <div>
-                            <h2 className={s.section__title}>{t('dangerZoneTitle')}</h2>
-                            <p className={s.section__subtitle}>{t('dangerZoneSubtitle')}</p>
+                <Panel title={t('dangerZoneTitle')} subtitle={t('dangerZoneSubtitle')} variant="danger">
+                    <div className={s.dangerAction}>
+                        <div className={s.dangerAction__text}>
+                            <p className={s.dangerAction__title}>{t('exportTitle')}</p>
+                            <p className={s.dangerAction__desc}>
+                                {t('exportDesc')}
+                            </p>
                         </div>
+                        <button
+                            className={`${s.btn} ${s['btn--ghost']}`}
+                            onClick={handleExportData}
+                            disabled={isExporting}
+                        >
+                            {isExporting ? t('exporting') : t('export')}
+                        </button>
                     </div>
-                    <div className={s.section__body}>
-                        <div className={s.dangerAction}>
-                            <div className={s.dangerAction__text}>
-                                <p className={s.dangerAction__title}>{t('exportTitle')}</p>
-                                <p className={s.dangerAction__desc}>
-                                    {t('exportDesc')}
-                                </p>
-                            </div>
-                            <button
-                                className={`${s.btn} ${s['btn--ghost']}`}
-                                onClick={handleExportData}
-                                disabled={isExporting}
-                            >
-                                {isExporting ? t('exporting') : t('export')}
-                            </button>
+                    <div className={s.dangerAction}>
+                        <div className={s.dangerAction__text}>
+                            <p className={s.dangerAction__title}>{t('deleteAccountTitle')}</p>
+                            <p className={s.dangerAction__desc}>
+                                {t('deleteAccountDesc')}
+                            </p>
                         </div>
-                        <div className={s.dangerAction}>
-                            <div className={s.dangerAction__text}>
-                                <p className={s.dangerAction__title}>{t('deleteAccountTitle')}</p>
-                                <p className={s.dangerAction__desc}>
-                                    {t('deleteAccountDesc')}
-                                </p>
-                            </div>
-                            <button
-                                className={`${s.btn} ${s['btn--danger']}`}
-                                onClick={() => setIsDeleteModalOpen(true)}
-                            >
-                                {t('deleteAccount')}
-                            </button>
-                        </div>
+                        <button
+                            className={`${s.btn} ${s['btn--danger']}`}
+                            onClick={() => setIsDeleteModalOpen(true)}
+                        >
+                            {t('deleteAccount')}
+                        </button>
                     </div>
-                </div>
+                </Panel>
 
             </div>
 

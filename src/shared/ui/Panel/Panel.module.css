@@ -1,0 +1,94 @@
+/* ============================================
+   PANEL — Garden Party
+   ============================================ */
+
+:root {
+    --box-surface:      #ffffff;
+    --box-border-soft:  #e5dfd5;
+    --box-text:         #1e1a16;
+    --box-text-3:       #6b6258;
+    --box-font-serif:   var(--font-cormorant, Georgia, serif);
+    --box-font-sans:    var(--font-dm-sans, system-ui, sans-serif);
+    --box-shadow:       0 2px 12px rgba(60, 45, 25, 0.08);
+    --box-error:        #8a2318;
+    --box-error-border: rgba(138, 35, 24, 0.15);
+    --box-padding-x:    28px;
+    --box-padding-y:    24px;
+    --box-gap:          24px;
+}
+
+.panel {
+    background: var(--box-surface);
+    border: 1px solid var(--box-border-soft);
+    border-radius: 16px;
+    box-shadow: var(--box-shadow);
+    padding: var(--box-padding-y) var(--box-padding-x);
+    display: flex;
+    flex-direction: column;
+    gap: var(--box-gap);
+    animation: panelIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes panelIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel--danger {
+    border-color: var(--box-error-border);
+}
+
+.panel--danger .panel__title {
+    color: var(--box-error);
+}
+
+/* ── Header ───────────────────────────────── */
+
+.panel__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.panel__headerText {
+    min-width: 0;
+}
+
+.panel__title {
+    font-family: var(--box-font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--box-text);
+    margin: 0 0 4px;
+    line-height: 1.2;
+}
+
+.panel__subtitle {
+    font-family: var(--box-font-sans);
+    font-size: 13px;
+    color: var(--box-text-3);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.panel__actions {
+    flex-shrink: 0;
+}
+
+/* ── Body ─────────────────────────────────── */
+
+.panel__body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Mobile ───────────────────────────────── */
+
+@media (max-width: 768px) {
+    :root {
+        --box-padding-x: 20px;
+        --box-padding-y: 20px;
+        --box-gap: 20px;
+    }
+}

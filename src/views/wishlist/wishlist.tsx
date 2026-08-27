@@ -1,7 +1,7 @@
 'use client'
 
 import {useMemo, useState} from 'react'
-import {useTranslations} from 'next-intl'
+import {useLocale, useTranslations} from 'next-intl'
 
 import {TWishCard, WishCard} from '@/widgets/WishCard';
 
@@ -22,6 +22,7 @@ import {TWishlistFormData} from '@/entities/wishlist';
 import styles from './wishlist.module.css'
 import {eventBus} from '@/shared/eventBus/';
 import {generateShareUrl} from '@/shared/lib/generateShareUrl';
+import {formatDate} from '@/shared/lib/formatDate';
 
 
 type TWishlistPageProps = {
@@ -34,7 +35,6 @@ type TWishlistPageProps = {
   ownerId: string
   ownerName: string
   ownerProfileUrl?: string | null
-  onAddItem?: () => void
   onShareWishlist?: () => void
   onEditWishlist?: () => void
   onReserveWish?: (wishId: string, reservedBy: string) => void
@@ -80,7 +80,6 @@ export default function Wishlist({
   ownerId,
   ownerName,
   ownerProfileUrl = null,
-  onAddItem,
   onReserveWish,
   onReserveError,
   onCancelReservation,
@@ -127,6 +126,7 @@ export default function Wishlist({
 
   const t = useTranslations('wishlist')
   const tComments = useTranslations('comments')
+  const locale = useLocale()
 
   // Owned wishlists can always be edited while active; once in history,
   // editing/deleting is only safe if no one has interacted with it yet
@@ -286,7 +286,7 @@ export default function Wishlist({
               </p>
             )}
             {eventDate && (
-              <p className={styles.wishlist__creationDate}>{t('eventOn', {date: eventDate})}</p>
+              <p className={styles.wishlist__creationDate}>{t('eventOn', {date: formatDate(eventDate, locale)})}</p>
             )}
             <div className={styles.wishlist__badges}>
               <span
@@ -488,7 +488,7 @@ export default function Wishlist({
             {userIsOwner ? t('emptyMessage') : t('emptyMessageVisitor')}
           </p>
           {userIsOwner && (
-            <button className={styles.wishlist__emptyButton} onClick={onAddItem}>
+            <button className={styles.wishlist__emptyButton} onClick={() => setIsAddItemModalOpen(true)}>
               {t('emptyButton')}
             </button>
           )}
