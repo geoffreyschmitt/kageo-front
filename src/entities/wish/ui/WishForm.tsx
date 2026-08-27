@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl"
 
 import {TProposedWishForm, TProposedWishFormData, TWishForm} from "@/entities/wish/ui/WishForm.types";
+import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 import styles from "./WishForm.module.css"
 
@@ -203,7 +204,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     <h3 className={styles.wishForm__previewTitle}>{t('preview')}</h3>
                     <div className={styles.wishForm__previewCard}>
                         <div className={styles.wishForm__previewImage}>
-                            {formData.imageUrl ? (
+                            {isValidUrl(formData.imageUrl) ? (
                                 <Image
                                     src={formData.imageUrl}
                                     alt={t('previewImageAlt')}
