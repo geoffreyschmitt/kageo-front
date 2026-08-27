@@ -240,7 +240,14 @@
     "reservedBy": "Reserved by {name}",
     "purchasedBy": "Purchased by {name}",
     "buyNow": "Buy Now",
-    "edit": "Edit"
+    "edit": "Edit",
+    "priorityLow": "Low",
+    "priorityMedium": "Medium",
+    "priorityHigh": "High",
+    "statusWanted": "Wanted",
+    "statusReserved": "Reserved",
+    "statusPurchased": "Purchased",
+    "statusProposed": "Proposed"
   },
   "wishlistCard": {
     "public": "Public",

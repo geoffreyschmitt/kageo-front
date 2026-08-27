@@ -269,7 +269,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                             styles[`wishForm__previewPriority--${formData.priority}`]
                         }`}
                     >
-                      {formData.priority}
+                      {t(`priority${formData.priority.charAt(0).toUpperCase()}${formData.priority.slice(1)}`)}
                     </span>
                                 )}
                             </div>

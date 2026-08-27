@@ -89,6 +89,10 @@ export const WishCard = ({
 
     const visibleStatus = showOwnerAction && (status === 'reserved' || status === 'purchased') ? 'wanted' : status
 
+    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+    const priorityLabel = t(`priority${cap(priority)}`)
+    const statusLabel = t(`status${cap(visibleStatus)}`)
+
     return (
         <div className={`${styles['wish-card']} ${visibleStatus === 'purchased' ? styles['wish-card--purchased'] : ''} ${visibleStatus === 'reserved' ? styles['wish-card--reserved'] : ''} ${priority === 'high' && visibleStatus !== 'purchased' ? styles['wish-card--high-priority'] : ''}`}
              data-id={id}>
@@ -119,14 +123,14 @@ export const WishCard = ({
                         </svg>
                     </div>
                 )}
-                {!showOwnerAction && <div className={`${styles['wish-card__status']} ${getStatusClass(visibleStatus)}`}>{visibleStatus}</div>}
+                {!showOwnerAction && <div className={`${styles['wish-card__status']} ${getStatusClass(visibleStatus)}`}>{statusLabel}</div>}
                 <div className={`${styles['wish-card__priority']} ${getPriorityClass(priority)}`}>
                     {priority === 'high' && (
                         <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                             <path d="M8 0l2.35 4.76 5.25.77-3.8 3.7.9 5.24L8 12.18l-4.7 2.29.9-5.24-3.8-3.7 5.25-.77z"/>
                         </svg>
                     )}
-                    {priority}
+                    {priorityLabel}
                 </div>
             </div>
 
