@@ -393,11 +393,11 @@ export default function Wishlist({
             <div className={styles.wishlist__potInner}>
               <div className={styles.wishlist__potIcon} aria-hidden="true">
                 <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="18" cy="18" r="16" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1.2"/>
-                  <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="#3f6845" opacity="0.7"/>
-                  <path d="M18 27 Q18 21 18 16" stroke="#3f6845" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
-                  <path d="M18 18 Q15 15 12 14" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
-                  <path d="M18 22 Q21 19 24 18" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  <circle cx="18" cy="18" r="16" fill="currentColor" fillOpacity="0.14" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1.2"/>
+                  <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="currentColor" opacity="0.7"/>
+                  <path d="M18 27 Q18 21 18 16" stroke="currentColor" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
+                  <path d="M18 18 Q15 15 12 14" stroke="currentColor" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  <path d="M18 22 Q21 19 24 18" stroke="currentColor" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
                 </svg>
               </div>
               <div className={styles.wishlist__potText}>
@@ -427,11 +427,11 @@ export default function Wishlist({
             <div className={styles.wishlist__potInner}>
               <div className={styles.wishlist__potIcon} aria-hidden="true">
                 <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="18" cy="18" r="16" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1.2"/>
-                  <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="#3f6845" opacity="0.7"/>
-                  <path d="M18 27 Q18 21 18 16" stroke="#3f6845" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
-                  <path d="M18 18 Q15 15 12 14" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
-                  <path d="M18 22 Q21 19 24 18" stroke="#3f6845" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  <circle cx="18" cy="18" r="16" fill="currentColor" fillOpacity="0.14" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1.2"/>
+                  <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="currentColor" opacity="0.7"/>
+                  <path d="M18 27 Q18 21 18 16" stroke="currentColor" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
+                  <path d="M18 18 Q15 15 12 14" stroke="currentColor" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
+                  <path d="M18 22 Q21 19 24 18" stroke="currentColor" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
                 </svg>
               </div>
               <div className={styles.wishlist__potText}>
@@ -458,29 +458,29 @@ export default function Wishlist({
           <div className={styles.wishlist__emptyIllustration} aria-hidden="true">
             <svg viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
               {/* Gift box body */}
-              <rect x="28" y="76" width="104" height="52" rx="5" fill="#f2ede5" stroke="#d6cec4" strokeWidth="1.5"/>
+              <rect x="28" y="76" width="104" height="52" rx="5" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeOpacity="0.3" strokeWidth="1.5"/>
               {/* Gift box lid */}
-              <rect x="22" y="60" width="116" height="22" rx="5" fill="#ebe5da" stroke="#d6cec4" strokeWidth="1.5"/>
+              <rect x="22" y="60" width="116" height="22" rx="5" fill="currentColor" fillOpacity="0.14" stroke="currentColor" strokeOpacity="0.3" strokeWidth="1.5"/>
               {/* Vertical ribbon */}
-              <rect x="70" y="60" width="20" height="68" rx="2" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1"/>
+              <rect x="70" y="60" width="20" height="68" rx="2" fill="currentColor" fillOpacity="0.12" stroke="currentColor" strokeOpacity="0.35" strokeWidth="1"/>
               {/* Bow — left loop */}
-              <path d="M80 60 C62 38 36 42 40 58 C44 72 72 65 80 60Z" fill="#eaf2eb" stroke="#3f6845" strokeWidth="1.2" opacity="0.85"/>
+              <path d="M80 60 C62 38 36 42 40 58 C44 72 72 65 80 60Z" fill="currentColor" fillOpacity="0.16" stroke="currentColor" strokeWidth="1.2" opacity="0.7"/>
               {/* Bow — right loop */}
-              <path d="M80 60 C98 38 124 42 120 58 C116 72 88 65 80 60Z" fill="#eaf2eb" stroke="#3f6845" strokeWidth="1.2" opacity="0.85"/>
+              <path d="M80 60 C98 38 124 42 120 58 C116 72 88 65 80 60Z" fill="currentColor" fillOpacity="0.16" stroke="currentColor" strokeWidth="1.2" opacity="0.7"/>
               {/* Bow center */}
-              <ellipse cx="80" cy="60" rx="7" ry="5" fill="#3f6845" opacity="0.35"/>
+              <ellipse cx="80" cy="60" rx="7" ry="5" fill="currentColor" opacity="0.35"/>
               {/* Left botanical sprig */}
-              <path d="M28 90 Q14 80 18 68 Q24 75 28 90Z" fill="#3f6845" opacity="0.25"/>
-              <path d="M28 104 Q10 96 14 82 Q22 88 28 104Z" fill="#3f6845" opacity="0.18"/>
-              <line x1="28" y1="68" x2="28" y2="112" stroke="#3f6845" strokeWidth="1" opacity="0.2"/>
+              <path d="M28 90 Q14 80 18 68 Q24 75 28 90Z" fill="currentColor" opacity="0.25"/>
+              <path d="M28 104 Q10 96 14 82 Q22 88 28 104Z" fill="currentColor" opacity="0.18"/>
+              <line x1="28" y1="68" x2="28" y2="112" stroke="currentColor" strokeWidth="1" opacity="0.2"/>
               {/* Right botanical sprig */}
-              <path d="M132 90 Q146 80 142 68 Q136 75 132 90Z" fill="#3f6845" opacity="0.25"/>
-              <path d="M132 104 Q150 96 146 82 Q138 88 132 104Z" fill="#3f6845" opacity="0.18"/>
-              <line x1="132" y1="68" x2="132" y2="112" stroke="#3f6845" strokeWidth="1" opacity="0.2"/>
+              <path d="M132 90 Q146 80 142 68 Q136 75 132 90Z" fill="currentColor" opacity="0.25"/>
+              <path d="M132 104 Q150 96 146 82 Q138 88 132 104Z" fill="currentColor" opacity="0.18"/>
+              <line x1="132" y1="68" x2="132" y2="112" stroke="currentColor" strokeWidth="1" opacity="0.2"/>
               {/* Small decorative dots */}
-              <circle cx="80" cy="22" r="3" fill="#6e3c0c" opacity="0.2"/>
-              <circle cx="66" cy="28" r="2" fill="#3f6845" opacity="0.2"/>
-              <circle cx="94" cy="28" r="2" fill="#3f6845" opacity="0.2"/>
+              <circle cx="80" cy="22" r="3" fill="currentColor" opacity="0.25"/>
+              <circle cx="66" cy="28" r="2" fill="currentColor" opacity="0.2"/>
+              <circle cx="94" cy="28" r="2" fill="currentColor" opacity="0.2"/>
             </svg>
           </div>
           <h3 className={styles.wishlist__emptyTitle}>{t('emptyTitle')}</h3>

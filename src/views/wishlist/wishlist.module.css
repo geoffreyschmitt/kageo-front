@@ -12,39 +12,39 @@
 /* --g-propos   #6e3c0c on #fdf0e6   7.8:1  ✓ AA normal text                       */
 /* --g-high     #8a2318 on #fdecea   7.2:1  ✓ AA normal text                       */
 
-:root {
-    --g-bg:           #f7f4ef;
-    --g-surface:      #ffffff;
-    --g-surface-2:    #f2ede5;
-    --g-surface-3:    #ebe5da;
-    --g-border:       #d6cec4;
-    --g-border-soft:  #e5dfd5;
-    --g-sage:         #3f6845;   /* darkened — 6.4:1 on white */
-    --g-sage-hover:   #2e5033;
-    --g-sage-light:   #eaf2eb;
-    --g-amber:        #6e3c0c;
-    --g-amber-light:  #fdf0e6;
-    --g-text:         #1e1a16;
-    --g-text-2:       #4e443c;   /* darkened — 9.2:1 on white */
-    --g-text-3:       #6b6258;   /* darkened — 5.2:1 on cream */
-    --g-wanted:       #1a5491;   /* darkened — 7.4:1 on wanted-bg */
-    --g-wanted-bg:    #edf3fb;
-    --g-purch:        #3f6845;   /* darkened — 5.7:1 on purch-bg */
-    --g-purch-bg:     #eaf2eb;
-    --g-reserv:       #4e3278;   /* darkened — 7.8:1 on reserv-bg */
-    --g-reserv-bg:    #f0ebf8;
-    --g-propos:       #6e3c0c;   /* darkened — 7.8:1 on propos-bg */
-    --g-propos-bg:    #fdf0e6;
-    --g-high:         #8a2318;   /* darkened — 7.2:1 on high-bg */
-    --g-high-bg:      #fdecea;
-    --g-medium:       #6e3c0c;
-    --g-low:          #3f6845;
-    --g-shadow:       0 2px 12px rgba(60, 45, 25, 0.08);
-    --g-shadow-hover: 0 8px 28px rgba(60, 45, 25, 0.13);
-    --g-shadow-lg:    0 4px 24px rgba(60, 45, 25, 0.1);
-    --g-font-serif:   var(--font-cormorant, Georgia, serif);
-    --g-font-sans:    var(--font-dm-sans, system-ui, sans-serif);
-    --g-font-mono:    var(--font-mono, monospace);
+.wishlist {
+    --g-bg:           var(--surface-page);
+    --g-surface:      var(--surface-raised);
+    --g-surface-2:    var(--surface-sunken);
+    --g-surface-3:    var(--surface-sunken-2);
+    --g-border:       var(--border-default);
+    --g-border-soft:  var(--border-soft);
+    --g-sage:         var(--accent);
+    --g-sage-hover:   var(--accent-hover);
+    --g-sage-light:   var(--accent-tint-bg);
+    --g-amber:        var(--amber);
+    --g-amber-light:  var(--amber-tint-bg);
+    --g-text:         var(--text-primary);
+    --g-text-2:       var(--text-secondary);
+    --g-text-3:       var(--text-tertiary);
+    --g-wanted:       var(--status-wanted-fg);
+    --g-wanted-bg:    var(--status-wanted-bg);
+    --g-purch:        var(--status-purchased-fg);
+    --g-purch-bg:     var(--status-purchased-bg);
+    --g-reserv:       var(--status-reserved-fg);
+    --g-reserv-bg:    var(--status-reserved-bg);
+    --g-propos:       var(--status-proposed-fg);
+    --g-propos-bg:    var(--status-proposed-bg);
+    --g-high:         var(--status-high-fg);
+    --g-high-bg:      var(--status-high-bg);
+    --g-medium:       var(--amber);
+    --g-low:          var(--accent);
+    --g-shadow:       var(--shadow-card);
+    --g-shadow-hover: var(--shadow-hover);
+    --g-shadow-lg:    var(--shadow-hover);
+    --g-font-serif:   var(--font-serif);
+    --g-font-sans:    var(--font-sans);
+    --g-font-mono:    var(--font-mono);
 }
 
 /* ── Page wrapper ─────────────────────────── */
@@ -77,6 +77,20 @@
         radial-gradient(ellipse 80% 60% at 50% -10%, rgba(92, 138, 98, 0.06) 0%, transparent 70%),
         radial-gradient(ellipse 50% 40% at 85% 110%, rgba(217, 122, 58, 0.05) 0%, transparent 60%);
     pointer-events: none;
+}
+
+:root[data-theme="dark"] .wishlist__header::before {
+    background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(143, 197, 151, 0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 85% 110%, rgba(224, 168, 110, 0.04) 0%, transparent 60%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlist__header::before {
+        background-image:
+            radial-gradient(ellipse 80% 60% at 50% -10%, rgba(143, 197, 151, 0.05) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 40% at 85% 110%, rgba(224, 168, 110, 0.04) 0%, transparent 60%);
+    }
 }
 
 .wishlist__headerContent {
@@ -168,7 +182,7 @@
 
 .wishlist__badge--public {
     background: var(--g-purch-bg);
-    border-color: rgba(92, 138, 98, 0.3);
+    border-color: var(--accent-tint-border);
     color: var(--g-sage);
 }
 
@@ -196,7 +210,7 @@
 .wishlist__button--primary {
     background: var(--g-sage);
     border-color: var(--g-sage);
-    color: #fff;
+    color: var(--accent-contrast);
 }
 
 .wishlist__button--primary:hover {
@@ -218,14 +232,14 @@
 }
 
 .wishlist__button--danger {
-    background: #ffffff;
-    border-color: rgba(196, 77, 58, 0.3);
-    color: #8a2318;
+    background: var(--g-surface);
+    border-color: var(--error-border);
+    color: var(--error-fg);
 }
 
 .wishlist__button--danger:hover:not(:disabled) {
-    background: #fdecea;
-    border-color: rgba(196, 77, 58, 0.5);
+    background: var(--error-bg);
+    border-color: var(--error-border);
 }
 
 .wishlist__button--danger:disabled {
@@ -378,6 +392,15 @@
     border-radius: 100px;
     transform-origin: left center;
     animation: progressReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+:root[data-theme="dark"] .wishlist__progressFill {
+    background: linear-gradient(90deg, var(--accent) 0%, #6aab72 50%, #4d7d54 100%);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlist__progressFill {
+        background: linear-gradient(90deg, var(--accent) 0%, #6aab72 50%, #4d7d54 100%);
+    }
 }
 
 @keyframes progressReveal {
@@ -683,6 +706,7 @@
     display: block;
     position: relative;
     z-index: 1;
+    color: var(--g-text-3);
 }
 
 .wishlist__emptyIllustration svg {
@@ -719,7 +743,7 @@
     border-radius: 100px;
     border: 1.5px solid var(--g-sage);
     background: var(--g-sage);
-    color: #fff;
+    color: var(--accent-contrast);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -810,7 +834,7 @@
 
 .wishlist__resetFiltersButton:hover {
     background: var(--g-sage);
-    color: #fff;
+    color: var(--accent-contrast);
 }
 
 /* ── Mobile ───────────────────────────────── */
@@ -976,9 +1000,18 @@
 .wishlist__button--amber:hover {
     background: var(--g-amber);
     border-color: var(--g-amber);
-    color: #fff;
+    color: var(--accent-contrast);
     box-shadow: 0 4px 16px rgba(110, 60, 12, 0.25);
     transform: translateY(-1px);
+}
+
+:root[data-theme="dark"] .wishlist__button--amber {
+    border-color: rgba(224, 168, 110, 0.3);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlist__button--amber {
+        border-color: rgba(224, 168, 110, 0.3);
+    }
 }
 
 /* ── Most Wanted Section ──────────────────── */
@@ -999,7 +1032,7 @@
     font-size: clamp(26px, 3.5vw, 34px);
     font-weight: 400;
     font-style: italic;
-    color: #8a2318;
+    color: var(--status-high-fg);
     margin: 0 0 5px;
     letter-spacing: -0.2px;
     display: flex;
@@ -1023,8 +1056,8 @@
 }
 
 .wishlist__mostWantedPanel {
-    background: rgba(253, 236, 234, 0.35);
-    border: 1px solid rgba(138, 35, 24, 0.12);
+    background: var(--status-high-bg);
+    border: 1px solid var(--error-border);
     border-radius: 20px;
     padding: 24px;
 }
@@ -1155,6 +1188,34 @@
     margin: 0;
 }
 
+/* Dark: keep amber decorative edges visible */
+:root[data-theme="dark"] .wishlist__suggestionsDividerLine {
+    background: linear-gradient(90deg, transparent 0%, rgba(224, 168, 110, 0.28) 40%, rgba(224, 168, 110, 0.28) 60%, transparent 100%);
+}
+:root[data-theme="dark"] .wishlist__suggestionsCTA {
+    border-color: rgba(224, 168, 110, 0.2);
+}
+:root[data-theme="dark"] .wishlist__suggestionsCTA:hover {
+    border-color: rgba(224, 168, 110, 0.32);
+}
+:root[data-theme="dark"] .wishlist__suggestionsEmpty {
+    border-color: rgba(224, 168, 110, 0.28);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlist__suggestionsDividerLine {
+        background: linear-gradient(90deg, transparent 0%, rgba(224, 168, 110, 0.28) 40%, rgba(224, 168, 110, 0.28) 60%, transparent 100%);
+    }
+    :root:not([data-theme="light"]) .wishlist__suggestionsCTA {
+        border-color: rgba(224, 168, 110, 0.2);
+    }
+    :root:not([data-theme="light"]) .wishlist__suggestionsCTA:hover {
+        border-color: rgba(224, 168, 110, 0.32);
+    }
+    :root:not([data-theme="light"]) .wishlist__suggestionsEmpty {
+        border-color: rgba(224, 168, 110, 0.28);
+    }
+}
+
 /* Mobile adjustments */
 
 @media (max-width: 480px) {
@@ -1186,7 +1247,7 @@
     margin-left: auto;
     margin-right: auto;
     background: var(--g-sage-light);
-    border: 1px solid rgba(63, 104, 69, 0.2);
+    border: 1px solid var(--accent-tint-border);
     border-radius: 16px;
     padding: 18px 24px;
     margin-top: 28px;
@@ -1196,6 +1257,15 @@
 
 .wishlist__pot:hover {
     border-color: rgba(63, 104, 69, 0.38);
+}
+
+:root[data-theme="dark"] .wishlist__pot:hover {
+    border-color: rgba(143, 197, 151, 0.42);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlist__pot:hover {
+        border-color: rgba(143, 197, 151, 0.42);
+    }
 }
 
 .wishlist__potInner {
@@ -1260,7 +1330,7 @@
 .wishlist__button--pot {
     background: var(--g-sage);
     border-color: var(--g-sage);
-    color: #fff;
+    color: var(--accent-contrast);
     white-space: nowrap;
     flex-shrink: 0;
 }

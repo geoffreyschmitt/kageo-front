@@ -2,20 +2,31 @@
    HEADER + AUTH MODAL — Garden Party
    ============================================ */
 
-:root {
-    --h-bg:          #ffffff;
-    --h-border:      #e8e2d8;
-    --h-text:        #1e1a16;
-    --h-text-2:      #4e443c;   /* was #7a7066 — darkened to 9.2:1 on white */
-    --h-text-3:      #6b6258;   /* was #b5aea5 — darkened to 5.4:1 on white */
-    --h-sage:        #3f6845;   /* was #5c8a62 — darkened to 6.4:1 on white */
-    --h-sage-hover:  #2e5033;
-    --h-sage-light:  #eaf2eb;
-    --h-surface-2:   #f7f4ef;
-    --h-shadow:      0 1px 0 #e8e2d8, 0 2px 12px rgba(60, 45, 25, 0.05);
-    --h-font-serif:  var(--font-cormorant, Georgia, serif);
-    --h-font-sans:   var(--font-dm-sans, system-ui, sans-serif);
-    --h-font-mono:   var(--font-mono, monospace);
+.header {
+    --h-bg:          var(--surface-raised);
+    --h-border:      var(--border-soft);
+    --h-text:        var(--text-primary);
+    --h-text-2:      var(--text-secondary);
+    --h-text-3:      var(--text-tertiary);
+    --h-sage:        var(--accent);
+    --h-sage-hover:  var(--accent-hover);
+    --h-sage-light:  var(--accent-tint-bg);
+    --h-surface-2:   var(--surface-page);
+    --h-shadow:      var(--shadow-card);
+    --h-font-serif:  var(--font-serif);
+    --h-font-sans:   var(--font-sans);
+    --h-font-mono:   var(--font-mono);
+}
+
+.modal__overlay, .modal__content {
+    --h-text: var(--text-primary);
+    --h-text-2: var(--text-secondary);
+    --h-text-3: var(--text-tertiary);
+    --h-sage: var(--accent);
+    --h-sage-hover: var(--accent-hover);
+    --h-surface-2: var(--surface-page);
+    --h-font-serif: var(--font-serif);
+    --h-font-sans: var(--font-sans);
 }
 
 /* ── Header bar ───────────────────────────── */
@@ -124,7 +135,7 @@
     font-size: 13px;
     font-weight: 500;
     background: var(--h-sage);
-    color: #fff;
+    color: var(--accent-contrast);
     border: none;
     padding: 8px 20px;
     border-radius: 100px;
@@ -182,7 +193,7 @@
 .header__logoutButton:hover {
     background: var(--h-surface-2);
     color: var(--h-text-2);
-    border-color: #d0c9be;
+    border-color: var(--border-strong);
 }
 
 /* ── Auth Modal Overlay ───────────────────── */
@@ -208,18 +219,18 @@
 /* ── Modal Card ───────────────────────────── */
 
 .modal__content {
-    background: #fff;
+    background: var(--surface-raised);
     border-radius: 20px;
     padding: 36px 32px 28px;
     width: 100%;
     max-width: 400px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 24px 64px rgba(60, 45, 25, 0.18), 0 4px 16px rgba(60, 45, 25, 0.08);
+    box-shadow: var(--shadow-modal);
     position: relative;
     margin: 20px;
     animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
-    border: 1px solid #ece7de;
+    border: 1px solid var(--border-soft);
 }
 
 @keyframes modalIn {
@@ -295,12 +306,12 @@
 .form__input {
     width: 100%;
     padding: 11px 14px;
-    border: 1.5px solid #e5ddd0;
+    border: 1.5px solid var(--border-default);
     border-radius: 10px;
     font-family: var(--h-font-sans);
     font-size: 14px;
     color: var(--h-text);
-    background: #faf8f4;
+    background: var(--surface-input);
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
 }
@@ -312,16 +323,16 @@
 .form__input:focus {
     outline: none;
     border-color: var(--h-sage);
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(92, 138, 98, 0.12);
+    background: var(--surface-raised);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
 }
 
 .error__message {
     font-family: var(--h-font-sans);
     font-size: 13px;
-    color: #c44d3a;
-    background: #fdecea;
-    border: 1px solid rgba(196, 77, 58, 0.25);
+    color: var(--error-fg);
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
     border-radius: 8px;
     padding: 10px 14px;
 }
@@ -329,7 +340,7 @@
 .form__submit {
     width: 100%;
     background: var(--h-sage);
-    color: #fff;
+    color: var(--accent-contrast);
     border: none;
     padding: 12px;
     border-radius: 100px;
@@ -348,7 +359,7 @@
 }
 
 .form__submit:disabled {
-    background: #c8d6ca;
+    background: var(--border-default);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -368,7 +379,7 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: #ece7de;
+    background: var(--border-soft);
 }
 
 .auth__divider span {
@@ -387,8 +398,8 @@
     justify-content: center;
     gap: 10px;
     padding: 11px;
-    background: #fff;
-    border: 1.5px solid #e5ddd0;
+    background: var(--surface-raised);
+    border: 1.5px solid var(--border-default);
     border-radius: 100px;
     font-family: var(--h-font-sans);
     font-size: 14px;
@@ -401,7 +412,7 @@
 
 .google__button:hover {
     background: var(--h-surface-2);
-    border-color: #c8bfb2;
+    border-color: var(--border-strong);
     box-shadow: 0 2px 8px rgba(60, 45, 25, 0.08);
 }
 
