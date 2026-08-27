@@ -141,17 +141,19 @@ export const Header = () => {
               Kageo
             </Link>
           </div>
-          <nav className={styles.header__nav}>
-            <ul className={styles.header__navList}>
-              {navItems.map((item) => (
-                <li key={item.href} className={styles.header__navItem}>
-                  <Link href={item.href} className={styles.header__navLink}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {session?.user && (
+            <nav className={styles.header__nav}>
+              <ul className={styles.header__navList}>
+                {navItems.map((item) => (
+                  <li key={item.href} className={styles.header__navItem}>
+                    <Link href={item.href} className={styles.header__navLink}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
           <div className={styles.header__actions}>
             <LanguageSwitcher />
             {isLoading ? (
@@ -213,15 +215,19 @@ export const Header = () => {
           </button>
         </div>
 
-        <nav className={styles.drawer__nav}>
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className={styles.drawer__navLink}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        {session?.user && (
+          <>
+            <nav className={styles.drawer__nav}>
+              {navItems.map((item) => (
+                <Link key={item.href} href={item.href} className={styles.drawer__navLink}>
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
 
-        <div className={styles.drawer__divider} />
+            <div className={styles.drawer__divider} />
+          </>
+        )}
 
         <div className={styles.drawer__row}>
           <span className={styles.drawer__rowLabel}>{tNav('language')}</span>
