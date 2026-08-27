@@ -1,0 +1,415 @@
+/* ============================================================
+   POT CARD — single surface for the gift pot on the wishlist
+   page. Sits under the header, above the sticky filters.
+   Adapts to role: not-started / guest / organizer (+ dense).
+   ============================================================ */
+
+.potCard {
+    --pc-sage:        var(--accent);
+    --pc-sage-hover:  var(--accent-hover);
+    --pc-sage-tint:   var(--accent-tint-bg);
+    --pc-sage-border: var(--accent-tint-border);
+    --pc-contrast:    var(--accent-contrast);
+    --pc-surface:     var(--surface-raised);
+    --pc-sunken:      var(--surface-sunken);
+    --pc-border:      var(--border-default);
+    --pc-border-soft: var(--border-soft);
+    --pc-text:        var(--text-primary);
+    --pc-text-2:      var(--text-secondary);
+    --pc-text-3:      var(--text-tertiary);
+    --pc-shadow:      var(--shadow-card);
+    --pc-font-serif:  var(--font-serif);
+    --pc-font-sans:   var(--font-sans);
+
+    max-width: 760px;
+    margin: 28px auto;
+    background: var(--pc-surface);
+    border: 1px solid var(--pc-border);
+    border-radius: 16px;
+    box-shadow: var(--pc-shadow);
+    overflow: hidden;
+    font-family: var(--pc-font-sans);
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+
+.potCard__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 22px;
+    background: var(--pc-sage-tint);
+    border-bottom: 1px solid var(--pc-sage-border);
+}
+
+.potCard__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.potCard__brandIcon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    color: var(--pc-sage);
+}
+
+.potCard__brandIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.potCard__kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--pc-sage);
+    margin: 0 0 2px;
+}
+
+.potCard__title {
+    font-family: var(--pc-font-serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--pc-text);
+    margin: 0;
+    line-height: 1.15;
+}
+
+.potCard__chip {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--pc-sage);
+    background: var(--pc-surface);
+    border: 1px solid var(--pc-sage-border);
+    border-radius: 100px;
+    padding: 5px 11px;
+    white-space: nowrap;
+}
+
+/* ── Not-started / login banner (compact single row) ──────── */
+
+.potCard__banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 22px;
+}
+
+.potCard__bannerText {
+    min-width: 0;
+}
+
+.potCard__bannerTitle {
+    font-family: var(--pc-font-serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--pc-sage);
+    margin: 0 0 2px;
+}
+
+.potCard__bannerSub {
+    font-size: 12px;
+    color: var(--pc-text-3);
+    margin: 0;
+}
+
+.potCard__bannerSub strong {
+    font-weight: 600;
+    color: var(--pc-sage);
+}
+
+/* ── Totals row ───────────────────────────────────────────── */
+
+.potCard__totals {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--pc-border-soft);
+}
+
+.potCard__amount {
+    font-family: var(--pc-font-serif);
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    color: var(--pc-text);
+    line-height: 1;
+}
+
+.potCard__amountLabel {
+    font-size: 12px;
+    color: var(--pc-text-3);
+    margin-left: 10px;
+}
+
+.potCard__meta {
+    font-size: 12px;
+    color: var(--pc-text-3);
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* ── Toolbar (dense organizer list) ───────────────────────── */
+
+.potCard__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--pc-border-soft);
+}
+
+.potCard__search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--pc-border);
+    border-radius: 8px;
+    background: var(--pc-surface);
+    padding: 7px 11px;
+}
+
+.potCard__search svg {
+    width: 15px;
+    height: 15px;
+    color: var(--pc-text-3);
+    flex-shrink: 0;
+}
+
+.potCard__searchInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--pc-font-sans);
+    font-size: 13px;
+    color: var(--pc-text);
+    min-width: 0;
+}
+
+.potCard__sort {
+    font-family: var(--pc-font-sans);
+    font-size: 13px;
+    color: var(--pc-text);
+    border: 1px solid var(--pc-border);
+    border-radius: 8px;
+    background: var(--pc-surface);
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+/* ── Contributor list ─────────────────────────────────────── */
+
+.potCard__pinned {
+    padding: 6px 12px;
+    background: var(--pc-sage-tint);
+    border-bottom: 1px solid var(--pc-border-soft);
+}
+
+.potCard__listWrap {
+    padding: 6px 12px;
+}
+
+.potCard__listWrap--scroll {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.potCard__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.potCard__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 8px;
+}
+
+.potCard__row + .potCard__row {
+    border-top: 1px solid var(--pc-border-soft);
+}
+
+.potCard__row--anon .potCard__name,
+.potCard__row--anon .potCard__rowAmount {
+    color: var(--pc-text-3);
+}
+
+.potCard__avatar {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--pc-sage-tint);
+    border: 1px solid var(--pc-sage-border);
+    color: var(--pc-sage);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.3px;
+}
+
+.potCard__avatar--anon {
+    background: var(--pc-sunken);
+    border-color: var(--pc-border-soft);
+    color: var(--pc-text-3);
+}
+
+.potCard__person {
+    flex: 1;
+    min-width: 0;
+}
+
+.potCard__name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pc-text);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.potCard__when {
+    font-size: 11px;
+    color: var(--pc-text-3);
+    margin: 2px 0 0;
+}
+
+.potCard__tag {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--pc-text-3);
+    border: 1px solid var(--pc-border);
+    border-radius: 100px;
+    padding: 1px 7px;
+    vertical-align: 1px;
+}
+
+.potCard__rowAmount {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pc-text);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.potCard__rowLink {
+    flex-shrink: 0;
+    font-family: var(--pc-font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--pc-sage);
+    background: none;
+    border: none;
+    padding: 0 0 0 10px;
+    cursor: pointer;
+}
+
+.potCard__rowLink:hover {
+    text-decoration: underline;
+}
+
+.potCard__empty {
+    font-size: 12px;
+    color: var(--pc-text-3);
+    text-align: center;
+    padding: 18px 8px;
+    margin: 0;
+}
+
+/* ── Note ─────────────────────────────────────────────────── */
+
+.potCard__note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 10px 14px 16px;
+    padding: 12px 14px;
+    background: var(--pc-sunken);
+    border: 1px solid var(--pc-border-soft);
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--pc-text-2);
+}
+
+.potCard__note svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: var(--pc-sage);
+    margin-top: 1px;
+}
+
+.potCard__note strong {
+    color: var(--pc-text);
+    font-weight: 600;
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+
+.potCard__button {
+    flex-shrink: 0;
+    font-family: var(--pc-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    padding: 10px 22px;
+    border-radius: 100px;
+    border: 1.5px solid var(--pc-sage);
+    background: var(--pc-sage);
+    color: var(--pc-contrast);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.potCard__button:hover {
+    background: var(--pc-sage-hover);
+    border-color: var(--pc-sage-hover);
+    transform: translateY(-1px);
+}
+
+.potCard__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 4px 18px 18px;
+}
+
+@media (max-width: 540px) {
+    .potCard__banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .potCard__button {
+        align-self: stretch;
+        text-align: center;
+    }
+
+    .potCard__head {
+        flex-wrap: wrap;
+    }
+}
