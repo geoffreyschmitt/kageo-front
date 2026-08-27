@@ -300,6 +300,18 @@
     pointer-events: none;
 }
 
+.wishForm__previewImageError {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    z-index: 1;
+    text-align: center;
+    font-size: 10px;
+    line-height: 1.2;
+    color: var(--wf2-error, #b3261e);
+}
+
 .wishForm__previewContent {
     flex: 1;
     display: flex;

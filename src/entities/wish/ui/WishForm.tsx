@@ -25,6 +25,39 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
 }: T) => {
     const t = useTranslations('wishForm')
 
+    const [imgError, setImgError] = React.useState(false)
+    React.useEffect(() => setImgError(false), [formData.imageUrl])
+
+    const previewPlaceholder = (
+        <div
+            className={styles.wishForm__previewPlaceholder}
+            role="img"
+            aria-label={imgError ? t('imageLoadError') : t('noImage')}
+        >
+            <span className={styles.wishForm__previewPlaceholderInitial}>
+                {(formData.name || t('previewName')).charAt(0).toUpperCase()}
+            </span>
+            <svg
+                className={styles.wishForm__previewPlaceholderDecor}
+                viewBox="0 0 200 200"
+                fill="none"
+                aria-hidden="true"
+            >
+                <path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/>
+                <path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/>
+                <path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/>
+                <circle cx="100" cy="55" r="5" fill="#6e3c0c" opacity="0.1"/>
+                <circle cx="72" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
+                <circle cx="128" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
+            </svg>
+            {imgError && (
+                <small className={styles.wishForm__previewImageError}>
+                    {t('imageLoadError')}
+                </small>
+            )}
+        </div>
+    )
+
     return (
         <form
             className={styles.wishForm}
@@ -204,36 +237,16 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     <h3 className={styles.wishForm__previewTitle}>{t('preview')}</h3>
                     <div className={styles.wishForm__previewCard}>
                         <div className={styles.wishForm__previewImage}>
-                            {isValidUrl(formData.imageUrl) ? (
+                            {isValidUrl(formData.imageUrl) && !imgError ? (
                                 <Image
                                     src={formData.imageUrl}
                                     alt={t('previewImageAlt')}
                                     width={600}
                                     height={400}
+                                    onError={() => setImgError(true)}
                                 />
                             ) : (
-                                <div
-                                    className={styles.wishForm__previewPlaceholder}
-                                    role="img"
-                                    aria-label={t('noImage')}
-                                >
-                                    <span className={styles.wishForm__previewPlaceholderInitial}>
-                                        {(formData.name || t('previewName')).charAt(0).toUpperCase()}
-                                    </span>
-                                    <svg
-                                        className={styles.wishForm__previewPlaceholderDecor}
-                                        viewBox="0 0 200 200"
-                                        fill="none"
-                                        aria-hidden="true"
-                                    >
-                                        <path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/>
-                                        <path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/>
-                                        <path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/>
-                                        <circle cx="100" cy="55" r="5" fill="#6e3c0c" opacity="0.1"/>
-                                        <circle cx="72" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
-                                        <circle cx="128" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
-                                    </svg>
-                                </div>
+                                previewPlaceholder
                             )}
                         </div>
                         <div className={styles.wishForm__previewContent}>
