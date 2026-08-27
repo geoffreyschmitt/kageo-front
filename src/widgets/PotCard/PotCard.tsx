@@ -143,10 +143,18 @@ export const PotCard = ({
                     <span className={styles.potCard__tag}>{organizerTag ? t('youOrganizer') : t('you')}</span>
                 </p>
             </div>
-            <span className={styles.potCard__rowAmount}>{fmt(myPledge)}</span>
-            <button className={styles.potCard__rowLink} type="button" onClick={model.openEdit}>
-                {t('modify')}
-            </button>
+            {myPledge > 0 ? (
+                <>
+                    <span className={styles.potCard__rowAmount}>{fmt(myPledge)}</span>
+                    <button className={styles.potCard__rowLink} type="button" onClick={model.openEdit}>
+                        {t('modify')}
+                    </button>
+                </>
+            ) : (
+                <button className={styles.potCard__button} type="button" onClick={model.openAdd}>
+                    {t('contribute')}
+                </button>
+            )}
         </li>
     )
 
@@ -182,10 +190,37 @@ export const PotCard = ({
         />
     )
 
-    // ── Guest view ───────────────────────────────────────────
+    // ── Guest who hasn't pledged → compact banner ────────────
+    if (!isCreator && myPledge <= 0) {
+        return (
+            <div className={styles.potCard}>
+                <div className={styles.potCard__banner}>
+                    <div className={styles.potCard__brand}>
+                        <span className={styles.potCard__brandIcon}><GiftIcon /></span>
+                        <div className={styles.potCard__bannerText}>
+                            <p className={styles.potCard__bannerTitle}>{t('kicker')}</p>
+                            <p className={styles.potCard__bannerSub}>
+                                {pot.totalContributed > 0 ? (
+                                    <><strong>{fmt(pot.totalContributed)}</strong> {t('pledgedByFriends')} &middot; {t('organisedBy', { creatorName: pot.creatorName })}</>
+                                ) : (
+                                    t('organisedBy', { creatorName: pot.creatorName })
+                                )}
+                            </p>
+                        </div>
+                    </div>
+                    <button className={styles.potCard__button} type="button" onClick={model.openAdd}>
+                        {t('contribute')}
+                    </button>
+                </div>
+                {modalEl}
+            </div>
+        )
+    }
+
+    // ── Guest who has pledged ───────────────────────────────
     if (!isCreator) {
         const othersAmount = Math.max(0, pot.totalContributed - myPledge)
-        const othersCount = Math.max(0, participantCount - (myPledge > 0 ? 1 : 0))
+        const othersCount = Math.max(0, participantCount - 1)
         return (
             <div className={styles.potCard}>
                 <div className={styles.potCard__head}>
@@ -202,19 +237,7 @@ export const PotCard = ({
 
                 <div className={styles.potCard__listWrap}>
                     <ul className={styles.potCard__list}>
-                        {myPledge > 0 ? (
-                            meRow(false)
-                        ) : (
-                            <li className={styles.potCard__row}>
-                                <span className={styles.potCard__avatar}>{initials(t('you'))}</span>
-                                <div className={styles.potCard__person}>
-                                    <p className={styles.potCard__name}>{t('yourPledge')}</p>
-                                </div>
-                                <button className={styles.potCard__button} type="button" onClick={model.openAdd}>
-                                    {t('contribute')}
-                                </button>
-                            </li>
-                        )}
+                        {meRow(false)}
                         {othersCount > 0 && (
                             <li className={`${styles.potCard__row} ${styles['potCard__row--anon']}`}>
                                 <span className={`${styles.potCard__avatar} ${styles['potCard__avatar--anon']}`}>
