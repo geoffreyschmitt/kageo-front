@@ -28,9 +28,11 @@ type Props = {
     isLoggedIn: boolean
     isInvited: boolean
     initialItems: TWishCard[]
-    initialTotalContributed: number
-    initialUserContributed: number
-    initialPotCreatorName: string | null
+    initialPot: {
+        creatorName: string | null
+        totalContributed: number
+        userContributed: number
+    }
 }
 
 const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
@@ -55,20 +57,16 @@ export default function WishlistPageClient({
     isLoggedIn,
     isInvited,
     initialItems,
-    initialTotalContributed,
-    initialUserContributed,
-    initialPotCreatorName,
+    initialPot,
 }: Props) {
     const t = useTranslations('wishlistToast')
     const router = useRouter()
     const [items, setItems] = useState<TWishCard[]>(initialItems)
-    const [totalContributed, setTotalContributed] = useState(initialTotalContributed)
-    const [userContributed, setUserContributed] = useState(initialUserContributed)
-    const [potCreatorName, setPotCreatorName] = useState(initialPotCreatorName)
+    const [pot, setPot] = useState(initialPot)
     const [wishlistMeta, setWishlistMeta] = useState({ name, description, isPublic, eventDate, coverImage, allowSuggestions })
 
     const handlePotCreated = (_creatorId: string, creatorName: string) => {
-        setPotCreatorName(creatorName)
+        setPot((prev) => ({ ...prev, creatorName }))
         toast(t('potStarted'), 'success')
     }
 
@@ -205,9 +203,12 @@ export default function WishlistPageClient({
         setItems((prev) => [...prev, newWishCard])
     }
 
-    const handleContribute = (_wishlistId: string, amount: number) => {
-        setTotalContributed((prev) => prev + amount)
-        setUserContributed((prev) => prev + amount)
+    const handleContribute = (_wishlistId: string, delta: number) => {
+        setPot((prev) => ({
+            ...prev,
+            totalContributed: prev.totalContributed + delta,
+            userContributed: prev.userContributed + delta,
+        }))
         toast(t('contributionAdded'), 'success')
     }
 
@@ -232,9 +233,12 @@ export default function WishlistPageClient({
         toast(t('wishlistDeleteError'), 'error')
     }
 
-    const handleContributeError = (_wishlistId: string, amount: number) => {
-        setTotalContributed((prev) => prev - amount)
-        setUserContributed((prev) => prev - amount)
+    const handleContributeError = (_wishlistId: string, delta: number) => {
+        setPot((prev) => ({
+            ...prev,
+            totalContributed: prev.totalContributed - delta,
+            userContributed: prev.userContributed - delta,
+        }))
         toast(t('contributionError'), 'error')
     }
 
@@ -275,11 +279,9 @@ export default function WishlistPageClient({
                 onDeleteWishlistError={handleDeleteWishlistError}
                 onContribute={handleContribute}
                 onContributeError={handleContributeError}
-                totalContributed={totalContributed}
-                userContributed={userContributed}
+                pot={pot}
                 isLoggedIn={isLoggedIn}
                 isInvited={isInvited}
-                potCreatorName={potCreatorName}
                 onPotCreated={handlePotCreated}
                 useMock={false}
             />

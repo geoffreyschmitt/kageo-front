@@ -4,6 +4,7 @@ import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { TWishCard } from '@/widgets/WishCard/WishCard.types'
+import { readPotForViewer } from '@/app/api/wishlist/pot/readPot'
 import WishlistPageClient from './WishlistPageClient'
 
 type KVWishlist = {
@@ -102,15 +103,18 @@ export default async function WishlistPage({
         }
     }
 
-    // Pot is a surprise — only fetch/expose it to non-owners
-    let potCreatorName: string | null = null
-    let potExists = false
-    if (!userIsOwner) {
-        const pot = await kv.get<{ creatorName: string }>(`wishlist:${id}:pot`)
-        potCreatorName = pot?.creatorName ?? null
-        potExists = !!pot
-    } else {
-        potExists = Boolean(await kv.get(`wishlist:${id}:pot`))
+    // Pot is a surprise — only fetch/expose it to non-owners. readPotForViewer
+    // returns null for the owner and when no pot exists.
+    const potView = userIsOwner
+        ? null
+        : await readPotForViewer({ wishlistId: id, userId: session?.user?.id ?? null })
+    const potExists = userIsOwner
+        ? Boolean(await kv.get(`wishlist:${id}:pot`))
+        : potView !== null
+    const initialPot = {
+        creatorName: potView?.creatorName ?? null,
+        totalContributed: potView?.totalContributed ?? 0,
+        userContributed: potView?.myContribution ?? 0,
     }
 
     // A wishlist can only be edited/deleted once it's in history if nothing
@@ -140,9 +144,7 @@ export default async function WishlistPage({
             isLoggedIn={isLoggedIn}
             isInvited={isInvited}
             initialItems={items}
-            initialTotalContributed={wishlist.totalContributed ?? 0}
-            initialUserContributed={0}
-            initialPotCreatorName={potCreatorName}
+            initialPot={initialPot}
         />
     )
 }

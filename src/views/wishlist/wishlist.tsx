@@ -12,8 +12,7 @@ import {shareWishlist} from '@/shared/api/wishlist/shareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
 import {DeleteWishlistButton} from '@/features/DeleteWishlist'
 import {EditWishModal} from '@/features/EditWish'
-import {ContributeModal} from '@/features/ContributePot'
-import {CreatePotButton} from '@/features/CreatePot'
+import {PotCard} from '@/widgets/PotCard'
 import {CommentsSection} from '@/features/Comments'
 import {LoginPromptModal} from '@/shared/ui'
 
@@ -57,12 +56,14 @@ type TWishlistPageProps = {
   currency?: string
   onContribute?: (wishlistId: string, amount: number) => void
   onContributeError?: (wishlistId: string, amount: number) => void
-  totalContributed?: number
-  userContributed?: number
+  pot?: {
+    creatorName: string | null
+    totalContributed: number
+    userContributed: number
+  } | null
   userId?: string
   isLoggedIn?: boolean
   isInvited?: boolean
-  potCreatorName?: string | null
   onPotCreated?: (creatorId: string, creatorName: string) => void
   useMock?: boolean
   userIsOwner: boolean
@@ -102,12 +103,10 @@ export default function Wishlist({
   onProposeWish,
   onContribute,
   onContributeError,
-  totalContributed = 0,
-  userContributed = 0,
+  pot = null,
   userId = '',
   isLoggedIn = false,
   isInvited = false,
-  potCreatorName = null,
   onPotCreated,
   useMock = false,
   userIsOwner = false,
@@ -127,7 +126,6 @@ export default function Wishlist({
   const [isProposeItemModalOpen, setIsProposeItemModalOpen] = useState(false)
   const [isEditWishModalOpen, setIsEditWishModalOpen] = useState(false)
   const [editingWish, setEditingWish] = useState<TWishCard | null>(null)
-  const [isContributeModalOpen, setIsContributeModalOpen] = useState(false)
   const [loginPrompt, setLoginPrompt] = useState<'suggest' | 'contribute' | null>(null)
 
   const t = useTranslations('wishlist')
@@ -408,71 +406,22 @@ export default function Wishlist({
       </div>
 
       {!userIsOwner && !isHistory && (
-        potCreatorName ? (
-          <div className={styles.wishlist__pot}>
-            <div className={styles.wishlist__potInner}>
-              <div className={styles.wishlist__potIcon} aria-hidden="true">
-                <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="18" cy="18" r="16" fill="currentColor" fillOpacity="0.14" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1.2"/>
-                  <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="currentColor" opacity="0.7"/>
-                  <path d="M18 27 Q18 21 18 16" stroke="currentColor" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
-                  <path d="M18 18 Q15 15 12 14" stroke="currentColor" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
-                  <path d="M18 22 Q21 19 24 18" stroke="currentColor" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
-                </svg>
-              </div>
-              <div className={styles.wishlist__potText}>
-                <p className={styles.wishlist__potTitle}>{t('potTitle')}</p>
-                <p className={styles.wishlist__potSub}>
-                  {!isLoggedIn
-                    ? t('potLoginToSee')
-                    : totalContributed > 0
-                      ? <><strong>{currency}{totalContributed.toFixed(2)}</strong> {t('potPledgedSuffix')}</>
-                      : t('potChipIn', {ownerName})
-                  }
-                </p>
-                {isLoggedIn && userContributed > 0 && (
-                  <p className={styles.wishlist__potUserContrib}>
-                    {t('potUserPledgedPrefix')} <strong>{currency}{userContributed.toFixed(2)}</strong>
-                  </p>
-                )}
-              </div>
-            </div>
-            <button
-              className={`${styles.wishlist__button} ${styles['wishlist__button--pot']}`}
-              onClick={requireAuth('contribute', () => setIsContributeModalOpen(true))}
-            >
-              {t('contributeToThePot')}
-            </button>
-          </div>
-        ) : (
-          <div className={styles.wishlist__pot}>
-            <div className={styles.wishlist__potInner}>
-              <div className={styles.wishlist__potIcon} aria-hidden="true">
-                <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="18" cy="18" r="16" fill="currentColor" fillOpacity="0.14" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1.2"/>
-                  <path d="M18 27 Q13 22 11 17 Q9 12 14 10 Q17 9 19 13 Q21 9 24 10 Q29 12 22 21 Q21 23 18 27Z" fill="currentColor" opacity="0.7"/>
-                  <path d="M18 27 Q18 21 18 16" stroke="currentColor" strokeWidth="1" opacity="0.45" strokeLinecap="round"/>
-                  <path d="M18 18 Q15 15 12 14" stroke="currentColor" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
-                  <path d="M18 22 Q21 19 24 18" stroke="currentColor" strokeWidth="0.9" opacity="0.35" strokeLinecap="round"/>
-                </svg>
-              </div>
-              <div className={styles.wishlist__potText}>
-                <p className={styles.wishlist__potTitle}>{t('potTitle')}</p>
-                <p className={styles.wishlist__potSub}>
-                  {t('potNotStarted', {ownerName})}
-                </p>
-              </div>
-            </div>
-            <CreatePotButton
-              wishlistId={id}
-              ownerName={ownerName}
-              isLoggedIn={isLoggedIn}
-              isInvited={isInvited}
-              onPotCreated={(creatorId, creatorName) => onPotCreated?.(creatorId, creatorName)}
-              useMock={useMock}
-            />
-          </div>
-        )
+        <PotCard
+          wishlistId={id}
+          eventName={name}
+          ownerName={ownerName}
+          currency={currency}
+          isLoggedIn={isLoggedIn}
+          isInvited={isInvited}
+          potCreatorName={pot?.creatorName ?? null}
+          totalContributed={pot?.totalContributed ?? 0}
+          userContributed={pot?.userContributed ?? 0}
+          onContribute={onContribute}
+          onContributeError={onContributeError}
+          onPotCreated={onPotCreated}
+          onRequireLogin={() => setLoginPrompt('contribute')}
+          useMock={useMock}
+        />
       )}
 
       {items.length === 0 ? (
@@ -919,24 +868,6 @@ export default function Wishlist({
           {t('resultsCount', {shown: filteredAndSortedItems.length, total: items.filter(i => i.status !== 'proposed').length})}
         </div>
       </div>
-
-      {!isHistory && !userIsOwner && potCreatorName && (
-        <ContributeModal
-          isOpen={isContributeModalOpen}
-          onClose={() => setIsContributeModalOpen(false)}
-          wishlistId={id}
-          eventName={name}
-          ownerName={ownerName}
-          creatorName={potCreatorName}
-          isLoggedIn={isLoggedIn}
-          totalContributed={totalContributed}
-          userContributed={userContributed}
-          currency={currency}
-          onContribute={onContribute}
-          onError={onContributeError}
-          useMock={useMock}
-        />
-      )}
 
       {canEditWishlist && (
         <UpdateWishlistModal
