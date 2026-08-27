@@ -106,20 +106,6 @@ export const Header = () => {
               Kageo
             </Link>
           </div>
-          <nav className={styles.header__nav}>
-            <ul className={styles.header__navList}>
-              <li className={styles.header__navItem}>
-                <Link href="/wishlists" className={styles.header__navLink}>
-                  {tNav('wishlists')}
-                </Link>
-              </li>
-              <li className={styles.header__navItem}>
-                <Link href="/history" className={styles.header__navLink}>
-                  {tNav('history')}
-                </Link>
-              </li>
-            </ul>
-          </nav>
           <div className={styles.header__actions}>
             <LanguageSwitcher />
             <div className={styles.header__loading}>{t('loading')}</div>
@@ -138,20 +124,22 @@ export const Header = () => {
               Kageo
             </Link>
           </div>
-          <nav className={styles.header__nav}>
-            <ul className={styles.header__navList}>
-              <li className={styles.header__navItem}>
-                <Link href="/wishlists" className={styles.header__navLink}>
-                  {tNav('wishlists')}
-                </Link>
-              </li>
-              <li className={styles.header__navItem}>
-                <Link href="/history" className={styles.header__navLink}>
-                  {tNav('history')}
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          {session?.user && (
+            <nav className={styles.header__nav}>
+              <ul className={styles.header__navList}>
+                <li className={styles.header__navItem}>
+                  <Link href="/wishlists" className={styles.header__navLink}>
+                    {tNav('wishlists')}
+                  </Link>
+                </li>
+                <li className={styles.header__navItem}>
+                  <Link href="/history" className={styles.header__navLink}>
+                    {tNav('history')}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          )}
           <div className={styles.header__actions}>
             <LanguageSwitcher />
             {session?.user ? (

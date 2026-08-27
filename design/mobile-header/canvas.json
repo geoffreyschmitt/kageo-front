@@ -1,0 +1,11 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Closed — guest" },
+    { "file": "DrawerGuest.dc.html", "x": 490, "y": 0, "w": 390, "h": 844, "title": "Menu open — guest" },
+    { "file": "DrawerMember.dc.html", "x": 980, "y": 0, "w": 390, "h": 844, "title": "Menu open — signed in" }
+  ],
+  "annotations": [
+    { "id": "approach", "x": 0, "y": -150, "w": 620, "text": "Mobile header redesign — hamburger + drawer.\nThe 60px bar carries only the logo and a 44px menu button. Nav (Wishlists / History), language, and account all move into a right-side slide-in drawer, so nothing is cramped and every target is thumb-sized. Matches the app: Fraunces logo, DM Sans, sage accent, 100px pill buttons, modal overlay + shadow tokens." }
+  ],
+  "launch": { "view": "canvas" }
+}
