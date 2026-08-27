@@ -91,7 +91,9 @@ export default function WishlistPageClient({
 
     const handleCancelReservation = (wishId: string) => {
         setItems((prev) => prev.map((item) =>
-            item.id === wishId ? { ...item, status: 'wanted', reservedBy: undefined } : item
+            item.id === wishId
+                ? { ...item, status: item.isProposed ? 'proposed' : 'wanted', reservedBy: undefined }
+                : item
         ))
         toast(t('reservationCancelled'), 'info')
     }

@@ -4,7 +4,7 @@ import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
 
-type TWishKV = { id: string; status: string; reservedBy?: string; wishlistId: string }
+type TWishKV = { id: string; status: string; reservedBy?: string; wishlistId: string; proposedBy?: string }
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
@@ -33,10 +33,11 @@ export async function POST(request: NextRequest) {
         }
 
         const { reservedBy: _r, ...rest } = wish
-        const updated = { ...rest, status: 'wanted', updatedAt: new Date().toISOString() }
+        const restoredStatus = wish.proposedBy ? 'proposed' : 'wanted'
+        const updated = { ...rest, status: restoredStatus, updatedAt: new Date().toISOString() }
         await kv.set(`wish:${wishId}`, updated)
 
-        return NextResponse.json({ id: wishId, status: 'wanted', reservedBy: undefined })
+        return NextResponse.json({ id: wishId, status: restoredStatus, reservedBy: undefined })
     } catch (error) {
         console.error('Cancel reservation error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })

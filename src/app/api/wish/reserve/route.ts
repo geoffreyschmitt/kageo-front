@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        if (wish.status !== 'wanted') {
+        if (wish.status !== 'wanted' && wish.status !== 'proposed') {
             return NextResponse.json({ message: 'Wish is not available for reservation' }, { status: 409 })
         }
 
