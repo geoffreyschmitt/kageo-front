@@ -147,6 +147,7 @@ export const WishlistForm = ({
                                 src={formData.coverImage as string} alt={t('preview')}
                                 width={600}
                                 height={400}
+                                unoptimized
                             />
                         </div>
                     )}

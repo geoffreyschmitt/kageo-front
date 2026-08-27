@@ -100,6 +100,7 @@ export const WishCard = ({
                         width={200}
                         height={200}
                         className={styles['wish-card__image']}
+                        unoptimized
                         placeholder="blur"
                         blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YyZWRlNSIvPjwvc3ZnPg=="
                         onError={() => setImgError(true)}
