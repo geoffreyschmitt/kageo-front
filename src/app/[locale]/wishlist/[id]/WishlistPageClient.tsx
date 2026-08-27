@@ -15,6 +15,8 @@ type Props = {
     description: string
     isPublic: boolean
     eventDate: string
+    coverImage: string
+    allowSuggestions: boolean
     ownerId: string
     ownerName: string
     ownerProfileUrl: string | null
@@ -40,6 +42,8 @@ export default function WishlistPageClient({
     description,
     isPublic,
     eventDate,
+    coverImage,
+    allowSuggestions,
     ownerId,
     ownerName,
     ownerProfileUrl,
@@ -61,7 +65,7 @@ export default function WishlistPageClient({
     const [totalContributed, setTotalContributed] = useState(initialTotalContributed)
     const [userContributed, setUserContributed] = useState(initialUserContributed)
     const [potCreatorName, setPotCreatorName] = useState(initialPotCreatorName)
-    const [wishlistMeta, setWishlistMeta] = useState({ name, description, isPublic, eventDate })
+    const [wishlistMeta, setWishlistMeta] = useState({ name, description, isPublic, eventDate, coverImage, allowSuggestions })
 
     const handlePotCreated = (_creatorId: string, creatorName: string) => {
         setPotCreatorName(creatorName)
@@ -208,6 +212,8 @@ export default function WishlistPageClient({
             description: updated.description,
             isPublic: updated.isPublic,
             eventDate: updated.eventDate,
+            coverImage: updated.coverImage ?? '',
+            allowSuggestions: updated.allowSuggestions ?? true,
         })
         toast(t('wishlistUpdated'), 'success')
     }
@@ -235,6 +241,8 @@ export default function WishlistPageClient({
                 description={wishlistMeta.description}
                 isPublic={wishlistMeta.isPublic}
                 eventDate={wishlistMeta.eventDate}
+                coverImage={wishlistMeta.coverImage}
+                allowSuggestions={wishlistMeta.allowSuggestions}
                 ownerId={ownerId}
                 ownerName={ownerName}
                 ownerProfileUrl={ownerProfileUrl}

@@ -32,6 +32,8 @@ type TWishlistPageProps = {
   items: TWishCard[]
   isPublic: boolean
   eventDate: string
+  coverImage?: string
+  allowSuggestions?: boolean
   ownerId: string
   ownerName: string
   ownerProfileUrl?: string | null
@@ -77,6 +79,8 @@ export default function Wishlist({
   items = [],
   isPublic,
   eventDate,
+  coverImage = '',
+  allowSuggestions = true,
   ownerId,
   ownerName,
   ownerProfileUrl = null,
@@ -309,7 +313,7 @@ export default function Wishlist({
                     description,
                     eventDate: eventDate ? new Date(eventDate) : undefined,
                     isPublic,
-                    coverImage: '',
+                    coverImage,
                   })
                 }}
               >
@@ -862,8 +866,8 @@ export default function Wishlist({
             description,
             eventDate: eventDate ? new Date(eventDate).toISOString().slice(0, 10) : '',
             isPublic,
-            coverImage: '',
-            allowSuggestions: true,
+            coverImage,
+            allowSuggestions,
           }}
         />
       )}

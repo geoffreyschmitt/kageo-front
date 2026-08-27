@@ -13,6 +13,7 @@ type KVWishlist = {
     description: string
     isPublic: boolean
     coverImage?: string
+    allowSuggestions?: boolean
     eventDate: string
     createdAt: string
     currency?: string
@@ -124,6 +125,8 @@ export default async function WishlistPage({
             description={wishlist.description}
             isPublic={wishlist.isPublic}
             eventDate={wishlist.eventDate}
+            coverImage={wishlist.coverImage ?? ''}
+            allowSuggestions={wishlist.allowSuggestions ?? true}
             ownerId={wishlist.ownerId}
             ownerName={ownerName}
             ownerProfileUrl={!userIsOwner && ownerHasPublicProfile ? `/u/${wishlist.ownerId}` : null}
