@@ -167,6 +167,9 @@
     "potUserPledgedPrefix": "Vous avez promis",
     "contributeToThePot": "Contribuer à la cagnotte",
     "potNotStarted": "Aucune cagnotte encore lancée pour {ownerName}",
+    "potLoginToSee": "Une cagnotte de groupe est en cours d'organisation — connectez-vous pour voir les détails et contribuer.",
+    "loginToSuggest": "Connectez-vous pour proposer un souhait à la wishlist « {name} » de {ownerName}.",
+    "loginToContribute": "Connectez-vous pour contribuer à la cagnotte de {ownerName}.",
     "emptyTitle": "Rien ici pour l'instant",
     "emptyMessage": "Ajoutez votre premier souhait et commencez à créer quelque chose de beau.",
     "emptyMessageVisitor": "Rien ici pour l'instant — pourquoi ne pas proposer un souhait ?",
@@ -456,6 +459,8 @@
     "placeholder": "Ajouter un commentaire…",
     "posting": "Envoi…",
     "postComment": "Publier",
+    "loginToView": "Connectez-vous pour voir et publier des commentaires.",
+    "loginToPost": "Connectez-vous pour publier un commentaire sur cette wishlist.",
     "toggleShow": "Commentaires",
     "toggleHide": "Masquer les commentaires",
     "wishlistEmpty": "Aucun commentaire pour le moment — lancez la conversation sur la wishlist de {ownerName}."
@@ -463,5 +468,10 @@
   "publicProfile": {
     "publicWishlistsTitle": "Wishlists publiques",
     "emptyMessage": "{name} n'a pas encore partagé de wishlist publique."
+  },
+  "loginPrompt": {
+    "title": "Connexion requise",
+    "cancel": "Annuler",
+    "logIn": "Se connecter"
   }
 }

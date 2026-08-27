@@ -1,0 +1,51 @@
+.loginPrompt {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.loginPrompt__message {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.loginPrompt__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.loginPrompt__button {
+    padding: 11px 28px;
+    border-radius: 100px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.loginPrompt__button--primary {
+    background: var(--accent);
+    color: var(--accent-contrast);
+}
+
+.loginPrompt__button--primary:hover {
+    background: var(--accent-hover);
+}
+
+.loginPrompt__button--secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border-default);
+}
+
+.loginPrompt__button--secondary:hover {
+    background: var(--surface-sunken);
+}

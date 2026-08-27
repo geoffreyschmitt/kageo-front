@@ -41,7 +41,10 @@ export const CreatePotModal = ({
                         <button
                             type="button"
                             className={`${styles.createPot__button} ${styles['createPot__button--primary']}`}
-                            onClick={() => eventBus.emit('auth:openLoginModal', {})}
+                            onClick={() => {
+                                onClose()
+                                eventBus.emit('auth:openLoginModal', {})
+                            }}
                         >
                             {t('logIn')}
                         </button>

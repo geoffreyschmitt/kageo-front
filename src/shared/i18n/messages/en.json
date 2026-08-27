@@ -167,6 +167,9 @@
     "potUserPledgedPrefix": "You've pledged",
     "contributeToThePot": "Contribute to the pot",
     "potNotStarted": "No pot started yet for {ownerName}",
+    "potLoginToSee": "A group pot is being organised — log in to see the details and contribute.",
+    "loginToSuggest": "Log in to suggest a wish for the “{name}” wishlist by {ownerName}.",
+    "loginToContribute": "Log in to contribute to the pot for {ownerName}.",
     "emptyTitle": "Nothing here yet",
     "emptyMessage": "Add your first wish and start building something beautiful.",
     "emptyMessageVisitor": "Nothing here yet — why not suggest a wish?",
@@ -456,6 +459,8 @@
     "placeholder": "Add a comment…",
     "posting": "Posting…",
     "postComment": "Post comment",
+    "loginToView": "Log in to see and post comments.",
+    "loginToPost": "Log in to post a comment on this wishlist.",
     "toggleShow": "Comments",
     "toggleHide": "Hide comments",
     "wishlistEmpty": "No comments yet — start the conversation about {ownerName}'s wishlist."
@@ -463,5 +468,10 @@
   "publicProfile": {
     "publicWishlistsTitle": "Public Wishlists",
     "emptyMessage": "{name} hasn't shared any public wishlists yet."
+  },
+  "loginPrompt": {
+    "title": "Log in required",
+    "cancel": "Cancel",
+    "logIn": "Log in"
   }
 }
