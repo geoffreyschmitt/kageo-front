@@ -1,0 +1,180 @@
+/* ============================================================
+   THEME TOKENS — light + dark. Single source of truth.
+   'system' preference sets NO [data-theme]; the media query
+   below resolves it. Explicit choices set [data-theme].
+   ============================================================ */
+
+:root {
+    /* Surfaces */
+    --surface-page:        #f7f4ef;
+    --surface-raised:      #ffffff;
+    --surface-sunken:      #f2ede5;
+    --surface-sunken-2:    #ebe5da;
+    --surface-input:       #faf8f4;
+
+    /* Borders */
+    --border-default:      #d6cec4;
+    --border-soft:         #e5dfd5;
+    --border-strong:       #a8a099;
+
+    /* Text */
+    --text-primary:        #1e1a16;
+    --text-secondary:      #4e443c;
+    --text-tertiary:       #6b6258;
+
+    /* Accent (sage) */
+    --accent:              #3f6845;
+    --accent-hover:        #2e5033;
+    --accent-contrast:     #ffffff;
+    --accent-tint-bg:      #eaf2eb;
+    --accent-tint-border:  rgba(63, 104, 69, 0.20);
+
+    /* Amber */
+    --amber:               #6e3c0c;
+    --amber-tint-bg:       #fdf0e6;
+
+    /* Status */
+    --status-wanted-fg:    #1a5491;
+    --status-wanted-bg:    #edf3fb;
+    --status-purchased-fg: #3f6845;
+    --status-purchased-bg: #eaf2eb;
+    --status-reserved-fg:  #4e3278;
+    --status-reserved-bg:  #f0ebf8;
+    --status-proposed-fg:  #6e3c0c;
+    --status-proposed-bg:  #fdf0e6;
+    --status-high-fg:      #8a2318;
+    --status-high-bg:      #fdecea;
+
+    /* Error */
+    --error-fg:            #8a2318;
+    --error-bg:            #fdecea;
+    --error-border:        rgba(138, 35, 24, 0.20);
+
+    /* Notes (WishCard) */
+    --note-accent:         #d4a843;
+    --note-bg:             #fffcf5;
+    --note-border:         #ede4cc;
+    --note-label:          #6b5210;
+
+    /* Shadows */
+    --shadow-card:         0 2px 12px rgba(60, 45, 25, 0.08);
+    --shadow-hover:        0 8px 28px rgba(60, 45, 25, 0.13);
+    --shadow-modal:        0 24px 64px rgba(60, 45, 25, 0.18);
+
+    /* Fonts (bound to the next/font CSS vars set on <html>) */
+    --font-serif:          var(--font-cormorant, Georgia, serif);
+    --font-sans:           var(--font-dm-sans, system-ui, sans-serif);
+    --font-mono:           var(--font-mono, ui-monospace, monospace);
+
+    color-scheme: light;
+}
+
+/* DARK — one block, referenced twice so both the media default
+   and the explicit attribute resolve identically. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --surface-page:        #17130e;
+        --surface-raised:      #211b14;
+        --surface-sunken:      #2a231a;
+        --surface-sunken-2:    #322a1f;
+        --surface-input:       #1a1611;
+
+        --border-default:      #3d352a;
+        --border-soft:         #302a20;
+        --border-strong:       #4a4235;
+
+        --text-primary:        #f3eee4;
+        --text-secondary:      #cabfb0;
+        --text-tertiary:       #9a9083;
+
+        --accent:              #8fc597;
+        --accent-hover:        #a6d6ad;
+        --accent-contrast:     #16130e;
+        --accent-tint-bg:      #1f2a21;
+        --accent-tint-border:  rgba(143, 197, 151, 0.28);
+
+        --amber:               #e0a86e;
+        --amber-tint-bg:       #2c2116;
+
+        --status-wanted-fg:    #84b1e8;
+        --status-wanted-bg:    #1a2434;
+        --status-purchased-fg: #8fc597;
+        --status-purchased-bg: #1c2a21;
+        --status-reserved-fg:  #b9a0e6;
+        --status-reserved-bg:  #251d34;
+        --status-proposed-fg:  #e0a86e;
+        --status-proposed-bg:  #2c2116;
+        --status-high-fg:      #e79184;
+        --status-high-bg:      #2f1b17;
+
+        --error-fg:            #e79184;
+        --error-bg:            #2f1b17;
+        --error-border:        rgba(231, 145, 132, 0.25);
+
+        --note-accent:         #d4a843;
+        --note-bg:             #1f1a12;
+        --note-border:         #3a3222;
+        --note-label:          #e0a86e;
+
+        --shadow-card:         0 2px 14px rgba(0, 0, 0, 0.45);
+        --shadow-hover:        0 12px 40px rgba(0, 0, 0, 0.55);
+        --shadow-modal:        0 24px 64px rgba(0, 0, 0, 0.65);
+
+        color-scheme: dark;
+    }
+}
+
+:root[data-theme="dark"] {
+    --surface-page:        #17130e;
+    --surface-raised:      #211b14;
+    --surface-sunken:      #2a231a;
+    --surface-sunken-2:    #322a1f;
+    --surface-input:       #1a1611;
+
+    --border-default:      #3d352a;
+    --border-soft:         #302a20;
+    --border-strong:       #4a4235;
+
+    --text-primary:        #f3eee4;
+    --text-secondary:      #cabfb0;
+    --text-tertiary:       #9a9083;
+
+    --accent:              #8fc597;
+    --accent-hover:        #a6d6ad;
+    --accent-contrast:     #16130e;
+    --accent-tint-bg:      #1f2a21;
+    --accent-tint-border:  rgba(143, 197, 151, 0.28);
+
+    --amber:               #e0a86e;
+    --amber-tint-bg:       #2c2116;
+
+    --status-wanted-fg:    #84b1e8;
+    --status-wanted-bg:    #1a2434;
+    --status-purchased-fg: #8fc597;
+    --status-purchased-bg: #1c2a21;
+    --status-reserved-fg:  #b9a0e6;
+    --status-reserved-bg:  #251d34;
+    --status-proposed-fg:  #e0a86e;
+    --status-proposed-bg:  #2c2116;
+    --status-high-fg:      #e79184;
+    --status-high-bg:      #2f1b17;
+
+    --error-fg:            #e79184;
+    --error-bg:            #2f1b17;
+    --error-border:        rgba(231, 145, 132, 0.25);
+
+    --note-accent:         #d4a843;
+    --note-bg:             #1f1a12;
+    --note-border:         #3a3222;
+    --note-label:          #e0a86e;
+
+    --shadow-card:         0 2px 14px rgba(0, 0, 0, 0.45);
+    --shadow-hover:        0 12px 40px rgba(0, 0, 0, 0.55);
+    --shadow-modal:        0 24px 64px rgba(0, 0, 0, 0.65);
+
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+}

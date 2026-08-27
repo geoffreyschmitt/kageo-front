@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 
+import '@/shared/styles/theme.css'
 import '@/shared/styles/reset.css'
 import '@/shared/styles/variables.css'
 import '@/shared/styles/globals.css'
