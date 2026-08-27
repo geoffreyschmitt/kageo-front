@@ -1,4 +1,7 @@
-import type { TWishlistContributeResponse } from '@/shared/api/wishlist/contributePot'
+import type {
+    TWishlistContributeResponse,
+    TWishlistSetContributionResponse,
+} from '@/shared/api/wishlist/contributePot'
 
 export const mockContributePot = async (
     wishlistId: string,
@@ -14,4 +17,12 @@ export const mockContributePot = async (
         },
         totalContributed: amount,
     }
+}
+
+export const mockSetContribution = async (
+    wishlistId: string,
+    amount: number,
+): Promise<TWishlistSetContributionResponse> => {
+    await new Promise(resolve => setTimeout(resolve, 450))
+    return { wishlistId, totalContributed: amount, myContribution: amount }
 }

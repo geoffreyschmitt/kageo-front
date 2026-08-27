@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { readPotForViewer } from './readPot'
 
 type TWishlistKV = {
     id: string
@@ -16,24 +17,11 @@ type TPotKV = {
     createdAt: string
 }
 
-type TContribution = {
-    userId: string
-    amount: number
-    contributedAt: string
-}
-
-type TUserKV = {
-    id: string
-    email: string
-    name: string
-}
-
 // GET /api/wishlist/pot?wishlistId={id}
-// Returns different payloads depending on who is calling:
-//   - owner           → 404 (pot is a surprise)
-//   - no session      → { creatorName, totalContributed }
-//   - contributor     → { creatorName, totalContributed, myContribution }
-//   - pot creator     → { creatorName, totalContributed, myContribution, contributors }
+// Returns a role-shaped payload (see readPot.ts):
+//   - owner / no pot  → 404
+//   - anyone else      → { creatorName, isCreator, totalContributed, myContribution, participantCount }
+//   - pot creator      → + { creatorId, contributors: [{ name, amount, lastContributedAt }] }
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const wishlistId = searchParams.get('wishlistId')
@@ -42,66 +30,14 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ message: 'wishlistId is required' }, { status: 400 })
     }
 
-    const [wishlist, pot] = await Promise.all([
-        kv.get<TWishlistKV>(`wishlist:${wishlistId}`),
-        kv.get<TPotKV>(`wishlist:${wishlistId}:pot`),
-    ])
-
-    if (!wishlist || !pot) {
-        return NextResponse.json({ message: 'Not found' }, { status: 404 })
-    }
-
     const session = await getServerSession(authOptions)
+    const pot = await readPotForViewer({ wishlistId, userId: session?.user?.id ?? null })
 
-    // Hide pot from owner
-    if (session?.user?.id && wishlist.ownerId === session.user.id) {
+    if (!pot) {
         return NextResponse.json({ message: 'Not found' }, { status: 404 })
     }
 
-    const totalContributed = wishlist.totalContributed ?? 0
-
-    // Non-logged-in: public view only
-    if (!session?.user?.id) {
-        return NextResponse.json({ creatorName: pot.creatorName, totalContributed })
-    }
-
-    // Fetch all contributions to compute per-user total
-    const rawContributions = await kv.lrange<string>(`wishlist:${wishlistId}:contributions`, 0, -1)
-    const contributions: TContribution[] = rawContributions.map(c =>
-        typeof c === 'string' ? JSON.parse(c) : c
-    )
-
-    const myContribution = contributions
-        .filter(c => c.userId === session.user.id)
-        .reduce((sum, c) => sum + c.amount, 0)
-
-    // Pot creator gets the full contributor list
-    if (pot.creatorId === session.user.id) {
-        // Group contributions by userId, fetch names
-        const totalsById = new Map<string, number>()
-        for (const c of contributions) {
-            totalsById.set(c.userId, (totalsById.get(c.userId) ?? 0) + c.amount)
-        }
-
-        const contributors = await Promise.all(
-            Array.from(totalsById.entries()).map(async ([userId, amount]) => {
-                const email = await kv.get<string>(`user:id:${userId}`)
-                if (!email) return { name: 'Anonymous', amount }
-                const user = await kv.get<TUserKV>(`user:${email}`)
-                return { name: user?.name ?? 'Anonymous', amount }
-            })
-        )
-
-        return NextResponse.json({
-            creatorId: pot.creatorId,
-            creatorName: pot.creatorName,
-            totalContributed,
-            myContribution,
-            contributors,
-        })
-    }
-
-    return NextResponse.json({ creatorName: pot.creatorName, totalContributed, myContribution })
+    return NextResponse.json(pot)
 }
 
 // POST /api/wishlist/pot — create the pot

@@ -1,10 +1,12 @@
-export type TPotContributor = { name: string; amount: number }
+export type TPotContributor = { name: string; amount: number; lastContributedAt?: string }
 
 export type TGetPotResponse = {
     creatorId?: string
     creatorName: string
+    isCreator?: boolean
     totalContributed: number
     myContribution?: number
+    participantCount?: number
     contributors?: TPotContributor[]
 }
 
