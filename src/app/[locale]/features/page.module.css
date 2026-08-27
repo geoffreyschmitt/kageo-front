@@ -2,22 +2,22 @@
    FEATURES PAGE — Garden Party
    ============================================ */
 
-:root {
-    --fp-font-serif: var(--font-cormorant, Georgia, serif);
-    --fp-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --fp-bg:         #f7f4ef;
-    --fp-surface:    #ffffff;
-    --fp-surface-2:  #f2ede5;
-    --fp-border:     #d6cec4;
-    --fp-border-s:   #e8e2d8;
-    --fp-sage:       #3f6845;
-    --fp-sage-hover: #2e5033;
-    --fp-sage-light: #eaf2eb;
-    --fp-text:       #1e1a16;
-    --fp-text-2:     #4e443c;
-    --fp-text-3:     #6b6258;
-    --fp-shadow:     0 2px 16px rgba(60, 45, 25, 0.08);
-    --fp-shadow-lg:  0 8px 40px rgba(60, 45, 25, 0.12);
+.featuresPageLayout {
+    --fp-font-serif: var(--font-serif);
+    --fp-font-sans:  var(--font-sans);
+    --fp-bg:         var(--surface-page);
+    --fp-surface:    var(--surface-raised);
+    --fp-surface-2:  var(--surface-sunken);
+    --fp-border:     var(--border-default);
+    --fp-border-s:   var(--border-soft);
+    --fp-sage:       var(--accent);
+    --fp-sage-hover: var(--accent-hover);
+    --fp-sage-light: var(--accent-tint-bg);
+    --fp-text:       var(--text-primary);
+    --fp-text-2:     var(--text-secondary);
+    --fp-text-3:     var(--text-tertiary);
+    --fp-shadow:     var(--shadow-card);
+    --fp-shadow-lg:  var(--shadow-hover);
 }
 
 /* ── Page wrapper ─────────────────────────── */
@@ -84,7 +84,7 @@
     border-radius: 100px;
     border: none;
     background: var(--fp-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -158,8 +158,8 @@
 }
 
 .featureCard:hover {
-    border-color: #c5bdb3;
-    box-shadow: 0 8px 28px rgba(60, 45, 25, 0.1);
+    border-color: var(--border-strong);
+    box-shadow: var(--fp-shadow-lg);
     transform: translateY(-3px);
 }
 
@@ -243,7 +243,7 @@
     border-radius: 100px;
     border: none;
     background: var(--fp-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -286,5 +286,33 @@
 
     .featureCard {
         padding: 24px 18px 20px;
+    }
+}
+
+/* ── Dark overrides for decorative sage/amber tints (no semantic token) ── */
+
+:root[data-theme="dark"] .featuresHero::before {
+    background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(143, 197, 151, 0.09) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 110%, rgba(224, 168, 110, 0.08) 0%, transparent 60%);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .featuresHero::before {
+        background:
+            radial-gradient(ellipse 80% 60% at 50% -10%, rgba(143, 197, 151, 0.09) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 40% at 80% 110%, rgba(224, 168, 110, 0.08) 0%, transparent 60%);
+    }
+}
+
+:root[data-theme="dark"] .featuresCta::before {
+    background:
+        radial-gradient(ellipse 60% 70% at 20% 50%, rgba(143, 197, 151, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 50%, rgba(143, 197, 151, 0.05) 0%, transparent 60%);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .featuresCta::before {
+        background:
+            radial-gradient(ellipse 60% 70% at 20% 50%, rgba(143, 197, 151, 0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 60% at 80% 50%, rgba(143, 197, 151, 0.05) 0%, transparent 60%);
     }
 }

@@ -10,21 +10,21 @@
    #4a3a6a on #f0ebf8    8.2:1 ✓ (private badge)
    ============================================ */
 
-:root {
-    --wf-font-serif: var(--font-cormorant, Georgia, serif);
-    --wf-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --wf-sage:       #3f6845;
-    --wf-sage-light: #eaf2eb;
-    --wf-sage-hover: #2e5033;
-    --wf-text:       #1e1a16;
-    --wf-text-2:     #4e443c;
-    --wf-text-3:     #6b6258;
-    --wf-border:     #d6cec4;
-    --wf-input-bg:   #faf8f4;
-    --wf-surface:    #ffffff;
-    --wf-surface-2:  #f7f4ef;
-    --wf-error:      #c0392b;   /* 5.1:1 on white ✓ */
-    --wf-error-bg:   #fdecea;
+.editWishlistForm {
+    --wf-font-serif: var(--font-serif);
+    --wf-font-sans:  var(--font-sans);
+    --wf-sage:       var(--accent);
+    --wf-sage-light: var(--accent-tint-bg);
+    --wf-sage-hover: var(--accent-hover);
+    --wf-text:       var(--text-primary);
+    --wf-text-2:     var(--text-secondary);
+    --wf-text-3:     var(--text-tertiary);
+    --wf-border:     var(--border-default);
+    --wf-input-bg:   var(--surface-input);
+    --wf-surface:    var(--surface-raised);
+    --wf-surface-2:  var(--surface-sunken);
+    --wf-error:      var(--error-fg);
+    --wf-error-bg:   var(--error-bg);
 }
 
 .editWishlistForm {
@@ -79,7 +79,7 @@
 .editWishlistForm__textarea:focus {
     outline: none;
     border-color: var(--wf-sage);
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
     background: var(--wf-surface);
 }
 
@@ -92,7 +92,7 @@
 .editWishlistForm__input--error:focus,
 .editWishlistForm__textarea--error:focus {
     border-color: var(--wf-error);
-    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    box-shadow: 0 0 0 3px var(--error-border);
 }
 
 .editWishlistForm__textarea {
@@ -130,7 +130,7 @@
 }
 
 .editWishlistForm__radioLabel:hover {
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
     background: var(--wf-surface-2);
 }
 
@@ -188,7 +188,7 @@
 }
 
 .editWishlistForm__checkboxLabel:hover {
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
     background: var(--wf-surface-2);
 }
 
@@ -250,7 +250,7 @@
     border-radius: 12px;
     padding: 18px;
     border: 1px solid var(--wf-border);
-    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.06);
+    box-shadow: var(--shadow-card);
 }
 
 .editWishlistForm__previewImage {
@@ -312,8 +312,8 @@
 }
 
 .editWishlistForm__previewBadge--private {
-    background: #f0ebf8;
-    color: #4a3a6a;                 /* 8.2:1 on #f0ebf8 ✓ */
+    background: var(--status-reserved-bg);
+    color: var(--status-reserved-fg);
 }
 
 .editWishlistForm__previewDescription {
@@ -371,7 +371,7 @@
 
 .editWishlistForm__button--primary {
     background: var(--wf-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
     letter-spacing: 0.1px;
 }
 
@@ -390,7 +390,7 @@
 .editWishlistForm__button--secondary:hover:not(:disabled) {
     background: var(--wf-surface-2);
     color: var(--wf-text);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
 }
 
 /* ── Mobile ───────────────────────────────── */

@@ -2,16 +2,16 @@
    MODAL SHELL — Garden Party
    ============================================ */
 
-:root {
-    --modal-font-serif: var(--font-cormorant, Georgia, serif);
-    --modal-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --modal-text:       #1e1a16;
-    --modal-text-2:     #4e443c;   /* 9.2:1 on white ✓ */
-    --modal-text-3:     #6b6258;   /* 5.4:1 on white ✓ */
-    --modal-border:     #ece7de;
-    --modal-surface:    #ffffff;
-    --modal-surface-2:  #f7f4ef;
-    --modal-shadow:     0 24px 64px rgba(30, 22, 10, 0.18), 0 4px 16px rgba(30, 22, 10, 0.08);
+.modal {
+    --modal-font-serif: var(--font-serif);
+    --modal-font-sans:  var(--font-sans);
+    --modal-text:       var(--text-primary);
+    --modal-text-2:     var(--text-secondary);
+    --modal-text-3:     var(--text-tertiary);
+    --modal-border:     var(--border-soft);
+    --modal-surface:    var(--surface-raised);
+    --modal-surface-2:  var(--surface-sunken);
+    --modal-shadow:     var(--shadow-modal);
 }
 
 .modal {
@@ -121,7 +121,7 @@
 .modal__closeButton:hover {
     background: var(--modal-border);
     color: var(--modal-text);
-    border-color: #c5bdb3;
+    border-color: var(--border-strong);
 }
 
 @media (max-width: 768px) {

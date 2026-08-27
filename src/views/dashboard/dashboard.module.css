@@ -3,10 +3,67 @@
    ────────────────────────────────────────────── */
 
 .dashboard {
+    /* Alias block — same --home-* tokens page.module.css defines, rescoped here
+       because <DashboardPage> is not rendered inside .pageLayout. */
+    --home-font-serif:    var(--font-serif);
+    --home-font-sans:     var(--font-sans);
+    --home-bg:            var(--surface-page);
+    --home-surface:       var(--surface-raised);
+    --home-surface-2:     var(--surface-sunken);
+    --home-border:        var(--border-default);
+    --home-border-soft:   var(--border-soft);
+    --home-border-strong: var(--border-strong);
+    --home-sage:          var(--accent);
+    --home-sage-hover:    var(--accent-hover);
+    --home-sage-light:    var(--accent-tint-bg);
+    --home-sage-contrast: var(--accent-contrast);
+    --home-amber:         var(--amber);
+    --home-amber-light:   var(--amber-tint-bg);
+    --home-text:          var(--text-primary);
+    --home-text-2:        var(--text-secondary);
+    --home-text-3:        var(--text-tertiary);
+
+    /* Decorative sage/amber accents with no semantic token — routed through
+       vars so the two-block dark override below can retune them (matches the
+       hue/alpha approach page.module.css uses for .hero::before etc.). */
+    --home-glow-sage:          rgba(92, 138, 98, 0.07);
+    --home-glow-amber:         rgba(217, 172, 110, 0.06);
+    --home-sage-border:        rgba(63, 104, 69, 0.2);
+    --home-sage-border-soft:   rgba(63, 104, 69, 0.15);
+    --home-amber-border:       rgba(110, 60, 12, 0.2);
+    --home-amber-border-md:    rgba(110, 60, 12, 0.25);
+    --home-amber-border-strong: rgba(110, 60, 12, 0.3);
+    --home-pulse:              rgba(110, 60, 12, 0.15);
+
     background: var(--home-bg, #f7f4ef);
     min-height: 100vh;
     font-family: var(--home-font-sans, system-ui, sans-serif);
     color: var(--home-text, #1e1a16);
+}
+
+/* Dark retune of the decorative accents (no semantic token). Two blocks so
+   both the explicit attribute and the system-preference default resolve. */
+:root[data-theme="dark"] .dashboard {
+    --home-glow-sage:           rgba(143, 197, 151, 0.08);
+    --home-glow-amber:          rgba(224, 168, 110, 0.09);
+    --home-sage-border:         rgba(143, 197, 151, 0.24);
+    --home-sage-border-soft:    rgba(143, 197, 151, 0.20);
+    --home-amber-border:        rgba(224, 168, 110, 0.28);
+    --home-amber-border-md:     rgba(224, 168, 110, 0.32);
+    --home-amber-border-strong: rgba(224, 168, 110, 0.36);
+    --home-pulse:               rgba(224, 168, 110, 0.18);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .dashboard {
+        --home-glow-sage:           rgba(143, 197, 151, 0.08);
+        --home-glow-amber:          rgba(224, 168, 110, 0.09);
+        --home-sage-border:         rgba(143, 197, 151, 0.24);
+        --home-sage-border-soft:    rgba(143, 197, 151, 0.20);
+        --home-amber-border:        rgba(224, 168, 110, 0.28);
+        --home-amber-border-md:     rgba(224, 168, 110, 0.32);
+        --home-amber-border-strong: rgba(224, 168, 110, 0.36);
+        --home-pulse:               rgba(224, 168, 110, 0.18);
+    }
 }
 
 /* ── Greeting hero ───────────────────────── */
@@ -24,8 +81,8 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 60% 80% at 0% 50%, rgba(92, 138, 98, 0.07) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 100% 20%, rgba(217, 172, 110, 0.06) 0%, transparent 60%);
+        radial-gradient(ellipse 60% 80% at 0% 50%, var(--home-glow-sage) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 100% 20%, var(--home-glow-amber) 0%, transparent 60%);
     pointer-events: none;
 }
 
@@ -70,7 +127,7 @@
     align-items: center;
     gap: 10px;
     background: var(--home-sage-light, #eaf2eb);
-    border: 1px solid rgba(63, 104, 69, 0.2);
+    border: 1px solid var(--home-sage-border);
     border-radius: 100px;
     padding: 8px 20px 8px 14px;
     margin-bottom: 32px;
@@ -99,8 +156,8 @@
 }
 
 .nextEvent--urgent {
-    background: #fff8f0;
-    border-color: rgba(110, 60, 12, 0.25);
+    background: var(--home-amber-light, #fff8f0);
+    border-color: var(--home-amber-border-md);
 }
 
 .nextEvent--urgent .nextEvent__label,
@@ -109,13 +166,13 @@
 }
 
 .nextEvent--today {
-    background: #fff3e8;
-    border-color: rgba(110, 60, 12, 0.3);
+    background: var(--home-amber-light, #fff3e8);
+    border-color: var(--home-amber-border-strong);
     animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
 @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(110, 60, 12, 0.15); }
+    0%, 100% { box-shadow: 0 0 0 0 var(--home-pulse); }
     50%       { box-shadow: 0 0 0 6px rgba(110, 60, 12, 0); }
 }
 
@@ -136,7 +193,7 @@
     border-radius: 100px;
     border: none;
     background: var(--home-sage, #3f6845);
-    color: #fff;
+    color: var(--home-sage-contrast, #fff);
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -166,7 +223,7 @@
 
 .greeting__ctaSecondary:hover {
     background: var(--home-surface, #fff);
-    border-color: #b8b0a8;
+    border-color: var(--home-border-strong, #b8b0a8);
     color: var(--home-text, #1e1a16);
     transform: translateY(-1px);
 }
@@ -217,8 +274,8 @@
 }
 
 .section__badge--urgent {
-    background: #fff8f0;
-    border-color: rgba(110, 60, 12, 0.2);
+    background: var(--home-amber-light, #fff8f0);
+    border-color: var(--home-amber-border);
     color: var(--home-amber, #6e3c0c);
 }
 
@@ -271,14 +328,14 @@
     z-index: 1;
     /* visually attach to the card below */
     margin-bottom: -2px;
-    border: 1px solid rgba(63, 104, 69, 0.15);
+    border: 1px solid var(--home-sage-border-soft);
     border-bottom: none;
 }
 
 .cardWrap__pill--today {
-    background: #fff3e8;
+    background: var(--home-amber-light, #fff3e8);
     color: var(--home-amber, #6e3c0c);
-    border-color: rgba(110, 60, 12, 0.2);
+    border-color: var(--home-amber-border);
 }
 
 .cardWrap__pill--past {
@@ -326,7 +383,7 @@
     border-radius: 100px;
     border: none;
     background: var(--home-sage, #3f6845);
-    color: #fff;
+    color: var(--home-sage-contrast, #fff);
     cursor: pointer;
     transition: all 0.2s ease;
 }

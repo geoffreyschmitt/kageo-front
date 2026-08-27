@@ -9,22 +9,22 @@
    #2e5033 on #eaf2eb    7.9:1 ✓ (success)
    ============================================ */
 
-:root {
-    --sw-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --sw-font-serif: var(--font-cormorant, Georgia, serif);
-    --sw-font-mono:  var(--font-mono, monospace);
-    --sw-sage:       #3f6845;
-    --sw-sage-light: #eaf2eb;
-    --sw-sage-hover: #2e5033;
-    --sw-text:       #1e1a16;
-    --sw-text-2:     #4e443c;
-    --sw-text-3:     #6b6258;
-    --sw-border:     #d6cec4;
-    --sw-input-bg:   #faf8f4;
-    --sw-surface:    #ffffff;
-    --sw-surface-2:  #f7f4ef;
-    --sw-error:      #c0392b;
-    --sw-success:    #2e5033;   /* 7.9:1 on #eaf2eb ✓ */
+.shareWishlistModal__content {
+    --sw-font-sans:  var(--font-sans);
+    --sw-font-serif: var(--font-serif);
+    --sw-font-mono:  var(--font-mono);
+    --sw-sage:       var(--accent);
+    --sw-sage-light: var(--accent-tint-bg);
+    --sw-sage-hover: var(--accent-hover);
+    --sw-text:       var(--text-primary);
+    --sw-text-2:     var(--text-secondary);
+    --sw-text-3:     var(--text-tertiary);
+    --sw-border:     var(--border-default);
+    --sw-input-bg:   var(--surface-input);
+    --sw-surface:    var(--surface-raised);
+    --sw-surface-2:  var(--surface-sunken);
+    --sw-error:      var(--error-fg);
+    --sw-success:    var(--accent-hover);
 }
 
 .shareWishlistModal__content {
@@ -99,13 +99,13 @@
 .shareWishlistModal__input:focus {
     outline: none;
     border-color: var(--sw-sage);
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
     background: var(--sw-surface);
 }
 
 .shareWishlistModal__input--error {
     border-color: var(--sw-error);
-    background: #fdecea;
+    background: var(--error-bg);
 }
 
 .shareWishlistModal__error {
@@ -149,7 +149,7 @@
 
 .shareWishlistModal__button--primary {
     background: var(--sw-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
 }
 
 .shareWishlistModal__button--primary:hover:not(:disabled) {
@@ -167,7 +167,7 @@
 .shareWishlistModal__button--secondary:hover:not(:disabled) {
     background: var(--sw-surface-2);
     color: var(--sw-text);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
 }
 
 /* ── Mobile ───────────────────────────────── */

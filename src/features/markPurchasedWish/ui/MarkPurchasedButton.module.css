@@ -4,25 +4,25 @@
    ============================================ */
 
 .mark-purchased-button {
-    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.2px;
     padding: 7px 14px;
     border-radius: 100px;
-    border: 1px solid rgba(63, 104, 69, 0.3);
+    border: 1px solid var(--accent-tint-border);
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
     display: inline-block;
     text-align: center;
-    background: #ffffff;
-    color: #3f6845;   /* 6.4:1 on white ✓ */
+    background: var(--surface-raised);
+    color: var(--status-purchased-fg);
 }
 
 .mark-purchased-button:hover:not(:disabled) {
-    background: #eaf2eb;
-    border-color: rgba(63, 104, 69, 0.5);
+    background: var(--status-purchased-bg);
+    border-color: var(--accent-tint-border);
     transform: translateY(-1px);
     box-shadow: 0 3px 10px rgba(63, 104, 69, 0.2);
 }
@@ -36,8 +36,8 @@
 
 .mark-purchased-button__error {
     display: block;
-    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-family: var(--font-sans);
     font-size: 11px;
-    color: #c0392b;
+    color: var(--error-fg);
     margin-top: 4px;
 }

@@ -5,8 +5,8 @@
 /* ── Hero section ─────────────────────────── */
 
 .pageHero {
-    background: #ffffff;
-    border-bottom: 1px solid #e5dfd5;
+    background: var(--surface-raised);
+    border-bottom: 1px solid var(--border-soft);
     padding: 56px 40px 52px;
     text-align: center;
     position: relative;
@@ -33,20 +33,20 @@
 }
 
 .pageHero__greeting {
-    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: #3f6845;
+    color: var(--accent);
     margin: 0 0 16px;
 }
 
 .pageHero__title {
-    font-family: var(--font-cormorant, Georgia, serif);
+    font-family: var(--font-serif);
     font-size: clamp(44px, 7vw, 68px);
     font-weight: 400;
-    color: #1e1a16;
+    color: var(--text-primary);
     line-height: 1.0;
     letter-spacing: -0.5px;
     margin: 0 0 24px;
@@ -62,18 +62,18 @@
 }
 
 .pageHero__stat {
-    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-family: var(--font-sans);
     font-size: 13px;
-    color: #6b6258;
+    color: var(--text-tertiary);
 }
 
 .pageHero__stat strong {
     font-weight: 600;
-    color: #1e1a16;
+    color: var(--text-primary);
 }
 
 .pageHero__statDivider {
-    color: #d6cec4;
+    color: var(--border-default);
     font-size: 14px;
 }
 
@@ -85,22 +85,22 @@
 }
 
 .pageHero__cta {
-    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
     padding: 11px 28px;
     border-radius: 100px;
-    border: 1.5px solid #3f6845;
-    background: #3f6845;
-    color: #fff;
+    border: 1.5px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-contrast);
     cursor: pointer;
     transition: all 0.2s ease;
     letter-spacing: 0.1px;
 }
 
 .pageHero__cta:hover {
-    background: #2e5033;
-    border-color: #2e5033;
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
     box-shadow: 0 4px 16px rgba(92, 138, 98, 0.3);
     transform: translateY(-1px);
 }
@@ -109,22 +109,22 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--font-dm-sans, system-ui, sans-serif);
+    font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.3px;
-    color: #8a7f75;
+    color: var(--text-tertiary);
     text-decoration: none;
     padding: 6px 14px;
     border-radius: 100px;
-    border: 1px solid #ddd7ce;
+    border: 1px solid var(--border-default);
     background: transparent;
     transition: all 0.18s ease;
 }
 
 .pageHero__historyLink:hover {
-    color: #3f6845;
-    border-color: #b5c9b7;
+    color: var(--accent);
+    border-color: var(--accent-tint-border);
     background: rgba(92, 138, 98, 0.05);
 }
 
@@ -137,7 +137,7 @@
 /* ── Page content ─────────────────────────── */
 
 .pageContent {
-    background: #f7f4ef;
+    background: var(--surface-page);
     min-height: calc(100vh - 60px);
     padding: 48px 32px 80px;
     max-width: 1300px;
@@ -169,5 +169,31 @@
     .pageHero__cta {
         width: 100%;
         max-width: 220px;
+    }
+}
+
+/* ── Dark overrides for decorative sage/amber tints (no semantic token) ── */
+
+:root[data-theme="dark"] .pageHero::before {
+    background-image:
+        radial-gradient(ellipse 70% 60% at 50% -5%, rgba(143, 197, 151, 0.08) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 35% at 90% 105%, rgba(224, 168, 110, 0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 30% at 5% 95%, rgba(143, 197, 151, 0.05) 0%, transparent 55%);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .pageHero::before {
+        background-image:
+            radial-gradient(ellipse 70% 60% at 50% -5%, rgba(143, 197, 151, 0.08) 0%, transparent 65%),
+            radial-gradient(ellipse 40% 35% at 90% 105%, rgba(224, 168, 110, 0.06) 0%, transparent 60%),
+            radial-gradient(ellipse 30% 30% at 5% 95%, rgba(143, 197, 151, 0.05) 0%, transparent 55%);
+    }
+}
+
+:root[data-theme="dark"] .pageHero__historyLink:hover {
+    background: rgba(143, 197, 151, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .pageHero__historyLink:hover {
+        background: rgba(143, 197, 151, 0.08);
     }
 }

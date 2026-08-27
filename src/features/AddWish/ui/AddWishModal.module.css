@@ -11,21 +11,21 @@
    #1a5491 on #edf3fb    7.4:1 ✓ (priority low)
    ============================================ */
 
-:root {
-    --aw-font-serif: var(--font-cormorant, Georgia, serif);
-    --aw-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --aw-sage:       #3f6845;
-    --aw-sage-light: #eaf2eb;
-    --aw-sage-hover: #2e5033;
-    --aw-text:       #1e1a16;
-    --aw-text-2:     #4e443c;
-    --aw-text-3:     #6b6258;
-    --aw-border:     #d6cec4;
-    --aw-input-bg:   #faf8f4;
-    --aw-surface:    #ffffff;
-    --aw-surface-2:  #f7f4ef;
-    --aw-error:      #c0392b;
-    --aw-error-bg:   #fdecea;
+.addWishModal {
+    --aw-font-serif: var(--font-serif);
+    --aw-font-sans:  var(--font-sans);
+    --aw-sage:       var(--accent);
+    --aw-sage-light: var(--accent-tint-bg);
+    --aw-sage-hover: var(--accent-hover);
+    --aw-text:       var(--text-primary);
+    --aw-text-2:     var(--text-secondary);
+    --aw-text-3:     var(--text-tertiary);
+    --aw-border:     var(--border-default);
+    --aw-input-bg:   var(--surface-input);
+    --aw-surface:    var(--surface-raised);
+    --aw-surface-2:  var(--surface-sunken);
+    --aw-error:      var(--error-fg);
+    --aw-error-bg:   var(--error-bg);
 }
 
 /* ── Modal shell ──────────────────────────── */
@@ -63,9 +63,9 @@
 .addWishModal__container {
     position: relative;
     background: var(--aw-surface);
-    border: 1px solid #ece7de;
+    border: 1px solid var(--border-soft);
     border-radius: 20px;
-    box-shadow: 0 24px 64px rgba(30, 22, 10, 0.18), 0 4px 16px rgba(30, 22, 10, 0.08);
+    box-shadow: var(--shadow-modal);
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
@@ -88,7 +88,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 24px 28px 18px;
-    border-bottom: 1px solid #ece7de;
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .addWishModal__title {
@@ -121,7 +121,7 @@
 .addWishModal__closeButton:hover {
     background: var(--aw-border);
     color: var(--aw-text);
-    border-color: #c5bdb3;
+    border-color: var(--border-strong);
 }
 
 /* ── Form ─────────────────────────────────── */
@@ -178,7 +178,7 @@
 .addWishModal__textarea:focus {
     outline: none;
     border-color: var(--aw-sage);
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
     background: var(--aw-surface);
 }
 
@@ -191,7 +191,7 @@
 .addWishModal__input--error:focus,
 .addWishModal__textarea--error:focus {
     border-color: var(--aw-error);
-    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    box-shadow: 0 0 0 3px var(--error-border);
 }
 
 .addWishModal__textarea {
@@ -245,7 +245,7 @@
     border-radius: 12px;
     padding: 14px;
     border: 1px solid var(--aw-border);
-    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.06);
+    box-shadow: var(--shadow-card);
 }
 
 .addWishModal__previewImage {
@@ -320,18 +320,18 @@
 }
 
 .addWishModal__previewPriority--high {
-    background: #fdecea;
-    color: #8a2318;             /* 7.2:1 on #fdecea ✓ */
+    background: var(--status-high-bg);
+    color: var(--status-high-fg);
 }
 
 .addWishModal__previewPriority--medium {
-    background: #fdf0e6;
-    color: #6e3c0c;             /* 7.8:1 on #fdf0e6 ✓ */
+    background: var(--status-proposed-bg);
+    color: var(--status-proposed-fg);
 }
 
 .addWishModal__previewPriority--low {
-    background: #edf3fb;
-    color: #1a5491;             /* 7.4:1 on #edf3fb ✓ */
+    background: var(--status-wanted-bg);
+    color: var(--status-wanted-fg);
 }
 
 /* ── Actions ──────────────────────────────── */
@@ -364,7 +364,7 @@
 
 .addWishModal__button--primary {
     background: var(--aw-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
 }
 
 .addWishModal__button--primary:hover:not(:disabled) {
@@ -382,7 +382,7 @@
 .addWishModal__button--secondary:hover:not(:disabled) {
     background: var(--aw-surface-2);
     color: var(--aw-text);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
 }
 
 /* ── Mobile ───────────────────────────────── */

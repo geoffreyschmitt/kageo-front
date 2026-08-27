@@ -11,21 +11,21 @@
    #1a5491 on #edf3fb    7.4:1 ✓ (priority low)
    ============================================ */
 
-:root {
-    --wf2-font-serif: var(--font-cormorant, Georgia, serif);
-    --wf2-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --wf2-sage:       #3f6845;
-    --wf2-sage-light: #eaf2eb;
-    --wf2-sage-hover: #2e5033;
-    --wf2-text:       #1e1a16;
-    --wf2-text-2:     #4e443c;
-    --wf2-text-3:     #6b6258;
-    --wf2-border:     #d6cec4;
-    --wf2-input-bg:   #faf8f4;
-    --wf2-surface:    #ffffff;
-    --wf2-surface-2:  #f7f4ef;
-    --wf2-error:      #c0392b;
-    --wf2-error-bg:   #fdecea;
+.wishForm {
+    --wf2-font-serif: var(--font-serif);
+    --wf2-font-sans:  var(--font-sans);
+    --wf2-sage:       var(--accent);
+    --wf2-sage-light: var(--accent-tint-bg);
+    --wf2-sage-hover: var(--accent-hover);
+    --wf2-text:       var(--text-primary);
+    --wf2-text-2:     var(--text-secondary);
+    --wf2-text-3:     var(--text-tertiary);
+    --wf2-border:     var(--border-default);
+    --wf2-input-bg:   var(--surface-input);
+    --wf2-surface:    var(--surface-raised);
+    --wf2-surface-2:  var(--surface-sunken);
+    --wf2-error:      var(--error-fg);
+    --wf2-error-bg:   var(--error-bg);
 }
 
 .wishForm {
@@ -80,7 +80,7 @@
 .wishForm__textarea:focus {
     outline: none;
     border-color: var(--wf2-sage);
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
     background: var(--wf2-surface);
 }
 
@@ -93,7 +93,7 @@
 .wishForm__input--error:focus,
 .wishForm__textarea--error:focus {
     border-color: var(--wf2-error);
-    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    box-shadow: 0 0 0 3px var(--error-border);
 }
 
 .wishForm__textarea {
@@ -131,7 +131,7 @@
 }
 
 .wishForm__radioLabel:hover {
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
     background: var(--wf2-surface-2);
 }
 
@@ -189,7 +189,7 @@
 }
 
 .wishForm__checkboxLabel:hover {
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
     background: var(--wf2-surface-2);
 }
 
@@ -253,7 +253,7 @@
     border-radius: 12px;
     padding: 14px;
     border: 1px solid var(--wf2-border);
-    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.06);
+    box-shadow: var(--shadow-card);
 }
 
 .wishForm__previewImage {
@@ -316,8 +316,8 @@
 }
 
 .wishForm__previewBadge--private {
-    background: #f0ebf8;
-    color: #4a3a6a;                    /* 8.2:1 on #f0ebf8 ✓ */
+    background: var(--status-reserved-bg);
+    color: var(--status-reserved-fg);
 }
 
 .wishForm__previewDescription {
@@ -378,7 +378,7 @@
 
 .wishForm__button--primary {
     background: var(--wf2-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
 }
 
 .wishForm__button--primary:hover:not(:disabled) {
@@ -396,7 +396,7 @@
 .wishForm__button--secondary:hover:not(:disabled) {
     background: var(--wf2-surface-2);
     color: var(--wf2-text);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
 }
 
 /* ── Mobile ───────────────────────────────── */

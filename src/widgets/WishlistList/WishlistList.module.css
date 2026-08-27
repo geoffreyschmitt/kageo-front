@@ -2,18 +2,18 @@
    WISHLIST LIST — Garden Party (elevated editorial)
    ============================================ */
 
-:root {
-    --wl-font-serif: var(--font-cormorant, Georgia, serif);
-    --wl-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --wl-sage:       #3f6845;
-    --wl-sage-hover: #2e5033;
-    --wl-sage-bg:    #eaf2eb;
-    --wl-text:       #1e1a16;
-    --wl-text-2:     #4e443c;
-    --wl-text-3:     #6b6258;
-    --wl-border:     #d6cec4;
-    --wl-shadow:     0 2px 16px rgba(40, 28, 12, 0.07), 0 1px 3px rgba(40, 28, 12, 0.04);
-    --wl-shadow-h:   0 14px 44px rgba(40, 28, 12, 0.13), 0 4px 12px rgba(40, 28, 12, 0.06);
+.wishlistList {
+    --wl-font-serif: var(--font-serif);
+    --wl-font-sans:  var(--font-sans);
+    --wl-sage:       var(--accent);
+    --wl-sage-hover: var(--accent-hover);
+    --wl-sage-bg:    var(--accent-tint-bg);
+    --wl-text:       var(--text-primary);
+    --wl-text-2:     var(--text-secondary);
+    --wl-text-3:     var(--text-tertiary);
+    --wl-border:     var(--border-default);
+    --wl-shadow:     var(--shadow-card);
+    --wl-shadow-h:   var(--shadow-hover);
 }
 
 /* ── List wrapper ─────────────────────────── */
@@ -58,7 +58,7 @@
     padding: 4px 13px 5px;
     border-radius: 100px;
     letter-spacing: 0.2px;
-    border: 1px solid rgba(63, 104, 69, 0.12);
+    border: 1px solid var(--accent-tint-border);
 }
 
 .wishlistList__createButton {
@@ -66,7 +66,7 @@
     font-size: 13px;
     font-weight: 500;
     background: var(--wl-sage);
-    color: #fff;
+    color: var(--accent-contrast);
     border: none;
     padding: 9px 22px;
     border-radius: 100px;
@@ -116,7 +116,7 @@
 .wishlistList__empty {
     text-align: center;
     padding: 64px 52px 56px;
-    background: #fff;
+    background: var(--surface-raised);
     border-radius: 24px;
     border: 1px solid var(--wl-border);
     box-shadow: var(--wl-shadow);
@@ -139,6 +139,16 @@
     pointer-events: none;
 }
 
+:root[data-theme="dark"] .wishlistList__empty::before {
+    background: radial-gradient(circle, rgba(143, 197, 151, 0.10) 0%, transparent 70%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlistList__empty::before {
+        background: radial-gradient(circle, rgba(143, 197, 151, 0.10) 0%, transparent 70%);
+    }
+}
+
 /* Subtle ambient glow bottom-left */
 .wishlistList__empty::after {
     content: '';
@@ -150,6 +160,16 @@
     border-radius: 50%;
     background: radial-gradient(circle, rgba(110, 60, 12, 0.05) 0%, transparent 70%);
     pointer-events: none;
+}
+
+:root[data-theme="dark"] .wishlistList__empty::after {
+    background: radial-gradient(circle, rgba(224, 168, 110, 0.08) 0%, transparent 70%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlistList__empty::after {
+        background: radial-gradient(circle, rgba(224, 168, 110, 0.08) 0%, transparent 70%);
+    }
 }
 
 .wishlistList__emptyIllustration {
@@ -196,7 +216,7 @@
     font-size: 13px;
     font-weight: 500;
     background: var(--wl-sage);
-    color: #fff;
+    color: var(--accent-contrast);
     border: 1.5px solid var(--wl-sage);
     padding: 12px 30px;
     border-radius: 100px;

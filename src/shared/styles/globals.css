@@ -1,5 +1,5 @@
 body {
-    font-family: var(--font-dm-sans, system-ui, sans-serif);
-    background: #f7f4ef;
-    color: #1e1a16;
+    font-family: var(--font-sans);
+    background: var(--surface-page);
+    color: var(--text-primary);
 }

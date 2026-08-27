@@ -2,21 +2,21 @@
    TOASTER — Garden Party
    ============================================ */
 
-:root {
-    --toast-surface:      #ffffff;
-    --toast-border:       #e5dfd5;
-    --toast-text:         #1e1a16;
-    --toast-text-2:       #4e443c;
-    --toast-success:      #3f6845;
-    --toast-success-bg:   #eaf2eb;
-    --toast-error:        #8a2318;
-    --toast-error-bg:     #fdecea;
-    --toast-warning:      #6e3c0c;
-    --toast-warning-bg:   #fdf0e6;
-    --toast-info:         #1a5491;
-    --toast-info-bg:      #edf3fb;
-    --toast-shadow:       0 4px 20px rgba(60, 45, 25, 0.14), 0 1px 4px rgba(60, 45, 25, 0.06);
-    --toast-font-sans:    var(--font-dm-sans, system-ui, sans-serif);
+.toaster {
+    --toast-surface:      var(--surface-raised);
+    --toast-border:       var(--border-soft);
+    --toast-text:         var(--text-primary);
+    --toast-text-2:       var(--text-secondary);
+    --toast-success:      var(--accent);
+    --toast-success-bg:   var(--accent-tint-bg);
+    --toast-error:        var(--error-fg);
+    --toast-error-bg:     var(--error-bg);
+    --toast-warning:      var(--amber);
+    --toast-warning-bg:   var(--amber-tint-bg);
+    --toast-info:         var(--status-wanted-fg);
+    --toast-info-bg:      var(--status-wanted-bg);
+    --toast-shadow:       var(--shadow-hover);
+    --toast-font-sans:    var(--font-sans);
 }
 
 .toaster {

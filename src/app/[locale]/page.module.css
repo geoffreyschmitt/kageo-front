@@ -7,24 +7,24 @@
    #6b6258 on white      5.4:1  ✓ AA
    ============================================ */
 
-:root {
-    --home-font-serif:  var(--font-cormorant, Georgia, serif);
-    --home-font-sans:   var(--font-dm-sans, system-ui, sans-serif);
-    --home-bg:          #f7f4ef;
-    --home-surface:     #ffffff;
-    --home-surface-2:   #f2ede5;
-    --home-border:      #d6cec4;
-    --home-border-soft: #e8e2d8;
-    --home-sage:        #3f6845;
-    --home-sage-hover:  #2e5033;
-    --home-sage-light:  #eaf2eb;
-    --home-amber:       #6e3c0c;
-    --home-amber-light: #fdf0e6;
-    --home-text:        #1e1a16;
-    --home-text-2:      #4e443c;
-    --home-text-3:      #6b6258;
-    --home-shadow:      0 2px 16px rgba(60, 45, 25, 0.08);
-    --home-shadow-lg:   0 8px 40px rgba(60, 45, 25, 0.12);
+.pageLayout {
+    --home-font-serif:  var(--font-serif);
+    --home-font-sans:   var(--font-sans);
+    --home-bg:          var(--surface-page);
+    --home-surface:     var(--surface-raised);
+    --home-surface-2:   var(--surface-sunken);
+    --home-border:      var(--border-default);
+    --home-border-soft: var(--border-soft);
+    --home-sage:        var(--accent);
+    --home-sage-hover:  var(--accent-hover);
+    --home-sage-light:  var(--accent-tint-bg);
+    --home-amber:       var(--amber);
+    --home-amber-light: var(--amber-tint-bg);
+    --home-text:        var(--text-primary);
+    --home-text-2:      var(--text-secondary);
+    --home-text-3:      var(--text-tertiary);
+    --home-shadow:      var(--shadow-card);
+    --home-shadow-lg:   var(--shadow-hover);
 }
 
 /* ── Page wrapper ─────────────────────────── */
@@ -111,7 +111,7 @@
     border-radius: 100px;
     border: none;
     background: var(--home-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -143,7 +143,7 @@
 
 .hero__buttonSecondary:hover {
     background: var(--home-surface);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
     color: var(--home-text);
     transform: translateY(-2px);
 }
@@ -234,14 +234,14 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--home-sage), #82b88a);
+    background: linear-gradient(90deg, var(--home-sage), #82b88a); /* decorative accent bar; dark override below */
     opacity: 0;
     transition: opacity 0.25s ease;
 }
 
 .featureCard:hover {
-    border-color: #c5bdb3;
-    box-shadow: 0 8px 28px rgba(60, 45, 25, 0.1);
+    border-color: var(--border-strong);
+    box-shadow: var(--home-shadow-lg);
     transform: translateY(-4px);
 }
 
@@ -344,7 +344,7 @@
     border-radius: 100px;
     border: none;
     background: var(--home-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -431,5 +431,60 @@
 
     .featureCard {
         padding: 28px 20px 24px;
+    }
+}
+
+/* ── Dark overrides for decorative sage/amber tints (no semantic token) ── */
+
+:root[data-theme="dark"] .hero::before {
+    background:
+        radial-gradient(ellipse 70% 60% at 5% 50%, rgba(143, 197, 151, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 95% 20%, rgba(224, 168, 110, 0.09) 0%, transparent 60%);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .hero::before {
+        background:
+            radial-gradient(ellipse 70% 60% at 5% 50%, rgba(143, 197, 151, 0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 50% at 95% 20%, rgba(224, 168, 110, 0.09) 0%, transparent 60%);
+    }
+}
+
+:root[data-theme="dark"] .hero__imageContainer::after {
+    border-color: rgba(74, 66, 53, 0.5);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .hero__imageContainer::after {
+        border-color: rgba(74, 66, 53, 0.5);
+    }
+}
+
+:root[data-theme="dark"] .featureCard::before {
+    background: linear-gradient(90deg, var(--home-sage), #a6d6ad);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .featureCard::before {
+        background: linear-gradient(90deg, var(--home-sage), #a6d6ad);
+    }
+}
+
+:root[data-theme="dark"] .cta::before {
+    background:
+        radial-gradient(ellipse 60% 70% at 20% 50%, rgba(143, 197, 151, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 50%, rgba(143, 197, 151, 0.06) 0%, transparent 60%);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .cta::before {
+        background:
+            radial-gradient(ellipse 60% 70% at 20% 50%, rgba(143, 197, 151, 0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 60% at 80% 50%, rgba(143, 197, 151, 0.06) 0%, transparent 60%);
+    }
+}
+
+:root[data-theme="dark"] .cta::after {
+    border-color: rgba(74, 66, 53, 0.4);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .cta::after {
+        border-color: rgba(74, 66, 53, 0.4);
     }
 }

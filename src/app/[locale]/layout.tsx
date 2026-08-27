@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 
+import '@/shared/styles/theme.css'
 import '@/shared/styles/reset.css'
 import '@/shared/styles/variables.css'
 import '@/shared/styles/globals.css'
@@ -12,6 +13,7 @@ import { Header } from '@/widgets'
 import { AuthProvider } from '@/shared/providers/AuthProvider'
 import { Toaster } from '@/shared/ui'
 import { routing } from '@/shared/i18n/routing'
+import { ThemeProvider, readThemeCookie, themeInitScript } from '@/shared/theme'
 
 const fraunces = Fraunces({
     subsets: ['latin'],
@@ -82,16 +84,29 @@ export default async function LocaleLayout({
 
     const messages = await getMessages()
 
+    const themePreference = await readThemeCookie()
+    const dataTheme = themePreference === 'system' ? undefined : themePreference
+
     return (
-        <html lang={locale} className={`${fraunces.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
+        <html
+            lang={locale}
+            className={`${fraunces.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}
+            data-theme={dataTheme}
+            suppressHydrationWarning
+        >
+            <head>
+                <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+            </head>
             <body>
-                <NextIntlClientProvider messages={messages}>
-                    <AuthProvider>
-                        <Header />
-                        {children}
-                        <Toaster />
-                    </AuthProvider>
-                </NextIntlClientProvider>
+                <ThemeProvider initialPreference={themePreference}>
+                    <NextIntlClientProvider messages={messages}>
+                        <AuthProvider>
+                            <Header />
+                            {children}
+                            <Toaster />
+                        </AuthProvider>
+                    </NextIntlClientProvider>
+                </ThemeProvider>
             </body>
         </html>
     )

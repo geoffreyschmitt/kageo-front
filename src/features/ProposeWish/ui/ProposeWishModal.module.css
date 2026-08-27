@@ -8,21 +8,21 @@
    #c0392b on white      5.1:1 ✓ (error)
    ============================================ */
 
-:root {
-    --pw-font-serif: var(--font-cormorant, Georgia, serif);
-    --pw-font-sans:  var(--font-dm-sans, system-ui, sans-serif);
-    --pw-sage:       #3f6845;
-    --pw-sage-light: #eaf2eb;
-    --pw-sage-hover: #2e5033;
-    --pw-text:       #1e1a16;
-    --pw-text-2:     #4e443c;
-    --pw-text-3:     #6b6258;
-    --pw-border:     #d6cec4;
-    --pw-input-bg:   #faf8f4;
-    --pw-surface:    #ffffff;
-    --pw-surface-2:  #f7f4ef;
-    --pw-error:      #c0392b;
-    --pw-error-bg:   #fdecea;
+.proposeWishModal {
+    --pw-font-serif: var(--font-serif);
+    --pw-font-sans:  var(--font-sans);
+    --pw-sage:       var(--accent);
+    --pw-sage-light: var(--accent-tint-bg);
+    --pw-sage-hover: var(--accent-hover);
+    --pw-text:       var(--text-primary);
+    --pw-text-2:     var(--text-secondary);
+    --pw-text-3:     var(--text-tertiary);
+    --pw-border:     var(--border-default);
+    --pw-input-bg:   var(--surface-input);
+    --pw-surface:    var(--surface-raised);
+    --pw-surface-2:  var(--surface-sunken);
+    --pw-error:      var(--error-fg);
+    --pw-error-bg:   var(--error-bg);
 }
 
 .proposeWishModal__form {
@@ -77,7 +77,7 @@
 .proposeWishModal__textarea:focus {
     outline: none;
     border-color: var(--pw-sage);
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.12);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
     background: var(--pw-surface);
 }
 
@@ -90,7 +90,7 @@
 .proposeWishModal__input--error:focus,
 .proposeWishModal__textarea--error:focus {
     border-color: var(--pw-error);
-    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    box-shadow: 0 0 0 3px var(--error-border);
 }
 
 .proposeWishModal__textarea {
@@ -144,7 +144,7 @@
     border-radius: 12px;
     padding: 14px;
     border: 1px solid var(--pw-border);
-    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.06);
+    box-shadow: var(--shadow-card);
 }
 
 .proposeWishModal__previewImage {
@@ -238,7 +238,7 @@
 
 .proposeWishModal__button--primary {
     background: var(--pw-sage);
-    color: #ffffff;
+    color: var(--accent-contrast);
 }
 
 .proposeWishModal__button--primary:hover:not(:disabled) {
@@ -256,7 +256,7 @@
 .proposeWishModal__button--secondary:hover:not(:disabled) {
     background: var(--pw-surface-2);
     color: var(--pw-text);
-    border-color: #b8b0a8;
+    border-color: var(--border-strong);
 }
 
 /* ── Mobile ───────────────────────────────── */
