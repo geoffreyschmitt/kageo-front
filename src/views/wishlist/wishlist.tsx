@@ -18,6 +18,7 @@ import {LoginPromptModal} from '@/shared/ui'
 
 import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
 import {TWishlistFormData} from '@/entities/wishlist';
+import type {TGetPotResponse} from '@/shared/api/wishlist/getPot';
 
 import styles from './wishlist.module.css'
 import {eventBus} from '@/shared/eventBus/';
@@ -56,11 +57,8 @@ type TWishlistPageProps = {
   currency?: string
   onContribute?: (wishlistId: string, amount: number) => void
   onContributeError?: (wishlistId: string, amount: number) => void
-  pot?: {
-    creatorName: string | null
-    totalContributed: number
-    userContributed: number
-  } | null
+  pot?: TGetPotResponse | null
+  onPotRefreshed?: (view: TGetPotResponse | null) => void
   userId?: string
   isLoggedIn?: boolean
   isInvited?: boolean
@@ -104,6 +102,7 @@ export default function Wishlist({
   onContribute,
   onContributeError,
   pot = null,
+  onPotRefreshed,
   userId = '',
   isLoggedIn = false,
   isInvited = false,
@@ -413,12 +412,11 @@ export default function Wishlist({
           currency={currency}
           isLoggedIn={isLoggedIn}
           isInvited={isInvited}
-          potCreatorName={pot?.creatorName ?? null}
-          totalContributed={pot?.totalContributed ?? 0}
-          userContributed={pot?.userContributed ?? 0}
+          pot={pot}
           onContribute={onContribute}
           onContributeError={onContributeError}
           onPotCreated={onPotCreated}
+          onPotRefreshed={onPotRefreshed}
           onRequireLogin={() => setLoginPrompt('contribute')}
           useMock={useMock}
         />

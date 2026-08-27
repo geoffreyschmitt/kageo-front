@@ -47,29 +47,27 @@ export const PotCard = ({
     currency,
     isLoggedIn,
     isInvited,
-    potCreatorName,
-    totalContributed,
-    userContributed,
+    pot,
     onContribute,
     onContributeError,
     onPotCreated,
+    onPotRefreshed,
     onRequireLogin,
     useMock = false,
 }: TPotCardProps) => {
     const t = useTranslations('potCard')
     const locale = useLocale()
-    const model = usePotCardModel({ wishlistId, potCreatorName, totalContributed, userContributed, useMock })
-    const { detail, loading, isDense } = model
+    const model = usePotCardModel({ wishlistId, pot, onPotRefreshed, useMock })
 
     const fmt = (n: number) => `${currency}${n.toFixed(2)}`
 
     const handleContribute = (wid: string, delta: number) => {
         onContribute?.(wid, delta)
-        model.refresh()
+        model.reconcile()
     }
 
     // ── No pot yet ────────────────────────────────────────────
-    if (!potCreatorName) {
+    if (!pot) {
         return (
             <div className={styles.potCard}>
                 <div className={styles.potCard__banner}>
@@ -85,7 +83,10 @@ export const PotCard = ({
                         ownerName={ownerName}
                         isLoggedIn={isLoggedIn}
                         isInvited={isInvited}
-                        onPotCreated={(creatorId, creatorName) => onPotCreated?.(creatorId, creatorName)}
+                        onPotCreated={(creatorId, creatorName) => {
+                            onPotCreated?.(creatorId, creatorName)
+                            setTimeout(model.reconcile, 400)
+                        }}
                         useMock={useMock}
                     />
                 </div>
@@ -113,56 +114,27 @@ export const PotCard = ({
         )
     }
 
-    // ── Pot exists, detail still loading (or unavailable) ─────
-    if (loading || !detail) {
-        return (
-            <div className={styles.potCard}>
-                <div className={styles.potCard__banner}>
-                    <div className={styles.potCard__brand}>
-                        <span className={styles.potCard__brandIcon}><GiftIcon /></span>
-                        <div className={styles.potCard__bannerText}>
-                            <p className={styles.potCard__bannerTitle}>{t('kicker')}</p>
-                            <p className={styles.potCard__bannerSub}>
-                                {totalContributed > 0
-                                    ? <><strong>{fmt(totalContributed)}</strong> {t('pledgedByFriends')}</>
-                                    : t('organisedBy', { creatorName: potCreatorName })}
-                            </p>
-                        </div>
-                    </div>
-                    <button
-                        className={styles.potCard__button}
-                        type="button"
-                        onClick={model.openAdd}
-                        disabled={loading}
-                    >
-                        {userContributed > 0 ? t('editPledge') : t('contribute')}
-                    </button>
-                </div>
-            </div>
-        )
-    }
-
-    const myPledge = detail.myContribution ?? 0
-    const participantCount = detail.participantCount ?? 0
-    const isCreator = detail.isCreator === true
+    const myPledge = pot.myContribution ?? 0
+    const participantCount = pot.participantCount ?? 0
+    const isCreator = pot.isCreator === true
 
     const totalsRow = (
         <div className={styles.potCard__totals}>
             <div>
-                <span className={styles.potCard__amount}>{fmt(detail.totalContributed)}</span>
+                <span className={styles.potCard__amount}>{fmt(pot.totalContributed)}</span>
                 <span className={styles.potCard__amountLabel}>{t('pledgedTotal')}</span>
             </div>
             <span className={styles.potCard__meta}>{t('participants', { count: participantCount })}</span>
         </div>
     )
 
-    const meRow = (withBorderTag: boolean) => (
+    const meRow = (organizerTag: boolean) => (
         <li className={styles.potCard__row}>
-            <span className={styles.potCard__avatar}>{initials(detail.creatorName && isCreator ? detail.creatorName : t('you'))}</span>
+            <span className={styles.potCard__avatar}>{initials(isCreator ? pot.creatorName : t('you'))}</span>
             <div className={styles.potCard__person}>
                 <p className={styles.potCard__name}>
-                    {isCreator ? detail.creatorName : t('you')}
-                    <span className={styles.potCard__tag}>{withBorderTag ? t('youOrganizer') : t('you')}</span>
+                    {isCreator ? pot.creatorName : t('you')}
+                    <span className={styles.potCard__tag}>{organizerTag ? t('youOrganizer') : t('you')}</span>
                 </p>
             </div>
             <span className={styles.potCard__rowAmount}>{fmt(myPledge)}</span>
@@ -178,7 +150,7 @@ export const PotCard = ({
             <span>
                 {isCreator
                     ? t.rich('noteOrganizer', { strong: (c) => <strong>{c}</strong> })
-                    : t.rich('noteGuest', { creatorName: detail.creatorName, strong: (c) => <strong>{c}</strong> })}
+                    : t.rich('noteGuest', { creatorName: pot.creatorName, strong: (c) => <strong>{c}</strong> })}
             </span>
         </p>
     )
@@ -190,8 +162,8 @@ export const PotCard = ({
             wishlistId={wishlistId}
             eventName={eventName}
             ownerName={ownerName}
-            creatorName={detail.creatorName}
-            totalContributed={detail.totalContributed}
+            creatorName={pot.creatorName}
+            totalContributed={pot.totalContributed}
             userContributed={myPledge}
             currency={currency}
             isLoggedIn={isLoggedIn}
@@ -205,7 +177,7 @@ export const PotCard = ({
 
     // ── Guest view ───────────────────────────────────────────
     if (!isCreator) {
-        const othersAmount = Math.max(0, detail.totalContributed - myPledge)
+        const othersAmount = Math.max(0, pot.totalContributed - myPledge)
         const othersCount = Math.max(0, participantCount - (myPledge > 0 ? 1 : 0))
         return (
             <div className={styles.potCard}>
@@ -258,7 +230,7 @@ export const PotCard = ({
     }
 
     // ── Organizer view ───────────────────────────────────────
-    const others = model.visibleContributors.filter((c) => c.name !== detail.creatorName)
+    const others = model.visibleContributors.filter((c) => c.name !== pot.creatorName)
 
     return (
         <div className={styles.potCard}>
@@ -275,7 +247,7 @@ export const PotCard = ({
 
             {totalsRow}
 
-            {isDense && (
+            {model.isDense && (
                 <div className={styles.potCard__toolbar}>
                     <div className={styles.potCard__search}>
                         <SearchIcon />
@@ -305,7 +277,7 @@ export const PotCard = ({
                 <ul className={styles.potCard__list}>{meRow(true)}</ul>
             </div>
 
-            <div className={`${styles.potCard__listWrap} ${isDense ? styles['potCard__listWrap--scroll'] : ''}`}>
+            <div className={`${styles.potCard__listWrap} ${model.isDense ? styles['potCard__listWrap--scroll'] : ''}`}>
                 {others.length === 0 ? (
                     <p className={styles.potCard__empty}>{model.search ? t('noMatches') : t('noOtherPledges')}</p>
                 ) : (

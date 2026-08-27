@@ -6,6 +6,7 @@ import Wishlist from '@/views/wishlist/wishlist'
 import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 import { TWishFormData, TProposedWishFormData } from '@/entities/wish'
 import { TWishlistFormData } from '@/entities/wishlist'
+import type { TGetPotResponse } from '@/shared/api/wishlist/getPot'
 import { eventBus } from '@/shared/eventBus'
 import { useRouter } from '@/shared/i18n/navigation'
 
@@ -28,11 +29,7 @@ type Props = {
     isLoggedIn: boolean
     isInvited: boolean
     initialItems: TWishCard[]
-    initialPot: {
-        creatorName: string | null
-        totalContributed: number
-        userContributed: number
-    }
+    initialPot: TGetPotResponse | null
 }
 
 const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
@@ -62,12 +59,41 @@ export default function WishlistPageClient({
     const t = useTranslations('wishlistToast')
     const router = useRouter()
     const [items, setItems] = useState<TWishCard[]>(initialItems)
-    const [pot, setPot] = useState(initialPot)
+    const [pot, setPot] = useState<TGetPotResponse | null>(initialPot)
     const [wishlistMeta, setWishlistMeta] = useState({ name, description, isPublic, eventDate, coverImage, allowSuggestions })
 
-    const handlePotCreated = (_creatorId: string, creatorName: string) => {
-        setPot((prev) => ({ ...prev, creatorName }))
+    // Optimistic patch of the pot view by a signed delta on the caller's pledge,
+    // keeping participant count in step when a pledge crosses 0.
+    const patchPot = (delta: number) =>
+        setPot((prev) => {
+            if (!prev) return prev
+            const wasIn = (prev.myContribution ?? 0) > 0
+            const nextMine = Math.max(0, (prev.myContribution ?? 0) + delta)
+            const willBeIn = nextMine > 0
+            const countShift = willBeIn === wasIn ? 0 : willBeIn ? 1 : -1
+            return {
+                ...prev,
+                totalContributed: Math.max(0, prev.totalContributed + delta),
+                myContribution: nextMine,
+                participantCount: Math.max(0, (prev.participantCount ?? 0) + countShift),
+            }
+        })
+
+    const handlePotCreated = (creatorId: string, creatorName: string) => {
+        setPot({
+            creatorId,
+            creatorName,
+            isCreator: true,
+            totalContributed: 0,
+            myContribution: 0,
+            participantCount: 0,
+            contributors: [],
+        })
         toast(t('potStarted'), 'success')
+    }
+
+    const handlePotRefreshed = (view: TGetPotResponse | null) => {
+        if (view) setPot(view)
     }
 
     const handleReserveWish = (wishId: string, reservedBy: string) => {
@@ -204,11 +230,7 @@ export default function WishlistPageClient({
     }
 
     const handleContribute = (_wishlistId: string, delta: number) => {
-        setPot((prev) => ({
-            ...prev,
-            totalContributed: prev.totalContributed + delta,
-            userContributed: prev.userContributed + delta,
-        }))
+        patchPot(delta)
         toast(t('contributionAdded'), 'success')
     }
 
@@ -234,11 +256,7 @@ export default function WishlistPageClient({
     }
 
     const handleContributeError = (_wishlistId: string, delta: number) => {
-        setPot((prev) => ({
-            ...prev,
-            totalContributed: prev.totalContributed - delta,
-            userContributed: prev.userContributed - delta,
-        }))
+        patchPot(-delta)
         toast(t('contributionError'), 'error')
     }
 
@@ -280,6 +298,7 @@ export default function WishlistPageClient({
                 onContribute={handleContribute}
                 onContributeError={handleContributeError}
                 pot={pot}
+                onPotRefreshed={handlePotRefreshed}
                 isLoggedIn={isLoggedIn}
                 isInvited={isInvited}
                 onPotCreated={handlePotCreated}

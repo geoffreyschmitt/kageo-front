@@ -1,3 +1,5 @@
+import type { TGetPotResponse } from '@/shared/api/wishlist/getPot'
+
 export type TPotCardProps = {
     wishlistId: string
     /** wishlist name — shown as the contribute modal subtitle */
@@ -6,13 +8,17 @@ export type TPotCardProps = {
     currency: string
     isLoggedIn: boolean
     isInvited: boolean
-    /** null when no pot has been started for this wishlist yet */
-    potCreatorName: string | null
-    totalContributed: number
-    userContributed: number
-    onContribute?: (wishlistId: string, amount: number) => void
-    onContributeError?: (wishlistId: string, amount: number) => void
+    /**
+     * The pot view for the current viewer, or null when no pot has been started.
+     * Server-rendered on first paint and kept in sync by the page: optimistic
+     * updates land here immediately, a background reconcile replaces it.
+     */
+    pot: TGetPotResponse | null
+    onContribute?: (wishlistId: string, delta: number) => void
+    onContributeError?: (wishlistId: string, delta: number) => void
     onPotCreated?: (creatorId: string, creatorName: string) => void
+    /** replace the pot view with a freshly fetched one */
+    onPotRefreshed?: (view: TGetPotResponse | null) => void
     /** called when a logged-out visitor tries to contribute */
     onRequireLogin?: () => void
     useMock?: boolean

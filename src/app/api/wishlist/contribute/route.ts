@@ -24,8 +24,10 @@ type TContributeContext = {
 
 // Shared guards for POST (add) and PATCH (replace): the caller must be a
 // logged-in non-owner, on a public wishlist that already has a pot.
+// `allowZero` is true for PATCH — a 0 pledge cancels the caller's participation.
 const loadContext = async (
     request: NextRequest,
+    { allowZero = false }: { allowZero?: boolean } = {},
 ): Promise<{ ctx: TContributeContext } | { error: NextResponse }> => {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
@@ -37,8 +39,14 @@ const loadContext = async (
         return { error: NextResponse.json({ message: 'wishlistId is required' }, { status: 400 }) }
     }
     const parsedAmount = Number(amount)
-    if (!parsedAmount || parsedAmount <= 0) {
-        return { error: NextResponse.json({ message: 'amount must be a positive number' }, { status: 400 }) }
+    const invalid = Number.isNaN(parsedAmount) || parsedAmount < 0 || (!allowZero && parsedAmount <= 0)
+    if (invalid) {
+        return {
+            error: NextResponse.json(
+                { message: allowZero ? 'amount must be zero or a positive number' : 'amount must be a positive number' },
+                { status: 400 },
+            ),
+        }
     }
 
     const wishlist = await kv.get<TWishlistKV>(`wishlist:${wishlistId}`)
@@ -86,11 +94,11 @@ export async function POST(request: NextRequest) {
 }
 
 // PATCH /api/wishlist/contribute — replace the caller's own pledge with a new
-// amount (used by "modify my pledge"). Read-modify-write on the list, matching
-// the non-atomic pattern of POST — fine at this app's scale.
+// amount. `amount: 0` removes the pledge entirely (cancel). Read-modify-write on
+// the list, matching the non-atomic pattern of POST — fine at this app's scale.
 export async function PATCH(request: NextRequest) {
     try {
-        const loaded = await loadContext(request)
+        const loaded = await loadContext(request, { allowZero: true })
         if ('error' in loaded) return loaded.error
         const { userId, wishlistId, amount, wishlist } = loaded.ctx
 
@@ -103,11 +111,15 @@ export async function PATCH(request: NextRequest) {
         const others = existing.filter((c) => c.userId !== userId)
 
         const now = new Date().toISOString()
-        const contribution: TContribution = { userId, amount, contributedAt: now }
-        const next = [...others, contribution]
+        const next =
+            amount > 0
+                ? [...others, { userId, amount, contributedAt: now } as TContribution]
+                : others
 
         await kv.del(key)
-        await kv.rpush(key, ...next.map((c) => JSON.stringify(c)))
+        if (next.length) {
+            await kv.rpush(key, ...next.map((c) => JSON.stringify(c)))
+        }
 
         const newTotal = Math.max(0, (wishlist.totalContributed ?? 0) - mine + amount)
         await kv.set(`wishlist:${wishlistId}`, { ...wishlist, totalContributed: newTotal, updatedAt: now })

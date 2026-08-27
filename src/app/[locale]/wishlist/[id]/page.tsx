@@ -111,11 +111,6 @@ export default async function WishlistPage({
     const potExists = userIsOwner
         ? Boolean(await kv.get(`wishlist:${id}:pot`))
         : potView !== null
-    const initialPot = {
-        creatorName: potView?.creatorName ?? null,
-        totalContributed: potView?.totalContributed ?? 0,
-        userContributed: potView?.myContribution ?? 0,
-    }
 
     // A wishlist can only be edited/deleted once it's in history if nothing
     // has happened on it yet — no reserved/purchased/proposed wishes, no
@@ -144,7 +139,7 @@ export default async function WishlistPage({
             isLoggedIn={isLoggedIn}
             isInvited={isInvited}
             initialItems={items}
-            initialPot={initialPot}
+            initialPot={potView}
         />
     )
 }

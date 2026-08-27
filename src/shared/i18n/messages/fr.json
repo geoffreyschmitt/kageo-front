@@ -385,6 +385,7 @@
     "addPledge": "Ajouter ma promesse",
     "saving": "Enregistrement…",
     "savePledge": "Enregistrer",
+    "removePledge": "Retirer ma promesse",
     "invalidAmount": "Veuillez saisir un montant valide supérieur à 0"
   },
   "createPotModal": {

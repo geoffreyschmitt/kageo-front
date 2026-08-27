@@ -185,9 +185,31 @@
 
 .contribute__actions {
     display: flex;
+    align-items: center;
     gap: 10px;
     justify-content: flex-end;
     padding-top: 4px;
+}
+
+.contribute__remove {
+    margin-right: auto;
+    background: none;
+    border: none;
+    padding: 4px 0;
+    font-family: var(--cp-font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--cp-error);
+    cursor: pointer;
+}
+
+.contribute__remove:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.contribute__remove:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 .contribute__button {

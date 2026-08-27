@@ -1,5 +1,7 @@
 import { kv } from '@vercel/kv'
 
+import type { TGetPotResponse, TPotContributor } from '@/shared/api/wishlist/getPot'
+
 // Server-only helper: reads the pot for a given viewer and returns a
 // role-shaped view. Shared by GET /api/wishlist/pot and the wishlist page
 // server component so the visibility rules live in exactly one place.
@@ -34,22 +36,6 @@ type TUserKV = {
     name: string
 }
 
-export type TPotContributorDetail = {
-    name: string
-    amount: number
-    lastContributedAt: string
-}
-
-export type TPotView = {
-    creatorName: string
-    creatorId?: string
-    isCreator: boolean
-    totalContributed: number
-    myContribution: number
-    participantCount: number
-    contributors?: TPotContributorDetail[]
-}
-
 export const parseContributions = (raw: (string | TContribution)[] | null): TContribution[] =>
     (raw ?? []).map((c) => (typeof c === 'string' ? (JSON.parse(c) as TContribution) : c))
 
@@ -59,7 +45,7 @@ export const readPotForViewer = async ({
 }: {
     wishlistId: string
     userId: string | null
-}): Promise<TPotView | null> => {
+}): Promise<TGetPotResponse | null> => {
     const [wishlist, pot] = await Promise.all([
         kv.get<TWishlistKV>(`wishlist:${wishlistId}`),
         kv.get<TPotKV>(`wishlist:${wishlistId}:pot`),
@@ -87,11 +73,14 @@ export const readPotForViewer = async ({
         }
     }
 
-    const participantCount = byUser.size
+    // A pledge of 0 (cancelled) no longer counts as participating.
+    const positive = Array.from(byUser.entries()).filter(([, v]) => v.amount > 0)
+
+    const participantCount = positive.length
     const myContribution = userId ? byUser.get(userId)?.amount ?? 0 : 0
     const isCreator = !!userId && pot.creatorId === userId
 
-    const base: TPotView = {
+    const base: TGetPotResponse = {
         creatorName: pot.creatorName,
         isCreator,
         totalContributed,
@@ -101,8 +90,8 @@ export const readPotForViewer = async ({
 
     if (!isCreator) return base
 
-    const contributors: TPotContributorDetail[] = await Promise.all(
-        Array.from(byUser.entries()).map(async ([uid, { amount, last }]) => {
+    const contributors: TPotContributor[] = await Promise.all(
+        positive.map(async ([uid, { amount, last }]) => {
             const email = await kv.get<string>(`user:id:${uid}`)
             const user = email ? await kv.get<TUserKV>(`user:${email}`) : null
             return { name: user?.name ?? 'Anonymous', amount, lastContributedAt: last }

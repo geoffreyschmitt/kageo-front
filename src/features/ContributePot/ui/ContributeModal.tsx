@@ -26,7 +26,7 @@ export const ContributeModal = ({
 }: TContributeModal) => {
     const t = useTranslations('contributeModal')
     const isEdit = mode === 'edit'
-    const { amount, setAmount, isSubmitting, error, handleSubmit } = useContributePotModel({
+    const { amount, setAmount, isSubmitting, error, handleSubmit, handleCancel } = useContributePotModel({
         wishlistId,
         onContribute,
         onError,
@@ -105,7 +105,7 @@ export const ContributeModal = ({
                                 <input
                                     id="contribute-amount"
                                     type="number"
-                                    min="0.01"
+                                    min={isEdit ? '0' : '0.01'}
                                     step="0.01"
                                     className={`${styles.contribute__input} ${error ? styles['contribute__input--error'] : ''}`}
                                     placeholder="0.00"
@@ -122,6 +122,16 @@ export const ContributeModal = ({
                         </div>
 
                         <div className={styles.contribute__actions}>
+                            {isEdit && initialAmount > 0 && (
+                                <button
+                                    type="button"
+                                    className={styles.contribute__remove}
+                                    onClick={handleCancel}
+                                    disabled={isSubmitting}
+                                >
+                                    {t('removePledge')}
+                                </button>
+                            )}
                             <button
                                 className={`${styles.contribute__button} ${styles['contribute__button--secondary']}`}
                                 onClick={onClose}

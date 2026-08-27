@@ -385,6 +385,7 @@
     "addPledge": "Add pledge",
     "saving": "Saving…",
     "savePledge": "Save",
+    "removePledge": "Remove my pledge",
     "invalidAmount": "Please enter a valid amount greater than 0"
   },
   "createPotModal": {

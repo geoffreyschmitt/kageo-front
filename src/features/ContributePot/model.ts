@@ -30,9 +30,12 @@ export const useContributePotModel = ({
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
+    const isEdit = mode === 'edit'
+
     const handleSubmit = useCallback(async () => {
         const parsed = parseFloat(amount)
-        if (!parsed || parsed <= 0) {
+        // In edit mode 0 is allowed — it cancels the pledge.
+        if (Number.isNaN(parsed) || parsed < 0 || (parsed <= 0 && !isEdit)) {
             setError(t('invalidAmount'))
             return
         }
@@ -41,7 +44,6 @@ export const useContributePotModel = ({
 
         // `onContribute`/`onError` operate on a delta so the page-level totals
         // stay correct whether we're adding or replacing a pledge.
-        const isEdit = mode === 'edit'
         const delta = isEdit ? parsed - initialAmount : parsed
 
         // Optimistic update — call before API so UI reflects immediately
@@ -63,7 +65,26 @@ export const useContributePotModel = ({
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishlistId, amount, onContribute, onError, onClose, useMock, mode, initialAmount, t])
+    }, [wishlistId, amount, onContribute, onError, onClose, useMock, isEdit, initialAmount, t])
 
-    return { amount, setAmount, isSubmitting, error, handleSubmit }
+    // Cancel the caller's pledge entirely (edit mode only).
+    const handleCancel = useCallback(async () => {
+        setError(null)
+        setIsSubmitting(true)
+
+        if (onContribute) onContribute(wishlistId, -initialAmount)
+        onClose()
+
+        try {
+            const runner = useMock ? mockSetContribution : setContribution
+            await runner(wishlistId, 0)
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to cancel')
+            if (onError) onError(wishlistId, -initialAmount)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }, [wishlistId, onContribute, onError, onClose, useMock, initialAmount])
+
+    return { amount, setAmount, isSubmitting, error, handleSubmit, handleCancel }
 }
