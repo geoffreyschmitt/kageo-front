@@ -8,22 +8,22 @@
    #4a3a6a on #f0ebf8  8.2:1  ✓ (private badge)
    ============================================ */
 
-:root {
-    --wc2-surface:      #ffffff;
-    --wc2-surface-2:    #f7f4ef;
-    --wc2-border:       #d6cec4;
-    --wc2-border-hover: #a8a099;
-    --wc2-text:         #1e1a16;
-    --wc2-text-2:       #4e443c;
-    --wc2-text-3:       #6b6258;
-    --wc2-sage:         #3f6845;
-    --wc2-sage-light:   #eaf2eb;
-    --wc2-sage-hover:   #2e5033;
-    --wc2-shadow:       0 2px 16px rgba(40, 28, 12, 0.07), 0 1px 3px rgba(40, 28, 12, 0.04);
-    --wc2-shadow-hover: 0 14px 44px rgba(40, 28, 12, 0.13), 0 4px 12px rgba(40, 28, 12, 0.06);
-    --wc2-font-serif:   var(--font-cormorant, Georgia, serif);
-    --wc2-font-sans:    var(--font-dm-sans, system-ui, sans-serif);
-    --wc2-font-mono:    var(--font-mono, monospace);
+.wishlistCard {
+    --wc2-surface:      var(--surface-raised);
+    --wc2-surface-2:    var(--surface-sunken);
+    --wc2-border:       var(--border-default);
+    --wc2-border-hover: var(--border-strong);
+    --wc2-text:         var(--text-primary);
+    --wc2-text-2:       var(--text-secondary);
+    --wc2-text-3:       var(--text-tertiary);
+    --wc2-sage:         var(--accent);
+    --wc2-sage-light:   var(--accent-tint-bg);
+    --wc2-sage-hover:   var(--accent-hover);
+    --wc2-shadow:       var(--shadow-card);
+    --wc2-shadow-hover: var(--shadow-hover);
+    --wc2-font-serif:   var(--font-serif);
+    --wc2-font-sans:    var(--font-sans);
+    --wc2-font-mono:    var(--font-mono);
 }
 
 /* ── Card shell ───────────────────────────── */
@@ -117,6 +117,18 @@
     background-size: 14px 14px;
 }
 
+:root[data-theme="dark"] .wishlistCard__previewCell--empty::after {
+    background-image:
+        radial-gradient(circle, rgba(143, 197, 151, 0.10) 1px, transparent 1px);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlistCard__previewCell--empty::after {
+        background-image:
+            radial-gradient(circle, rgba(143, 197, 151, 0.10) 1px, transparent 1px);
+    }
+}
+
 .wishlistCard:hover .wishlistCard__previewImage {
     transform: scale(1.06);
 }
@@ -144,10 +156,30 @@
     box-shadow: 0 1px 4px rgba(63, 104, 69, 0.2);
 }
 
+:root[data-theme="dark"] .wishlistCard__badge--public {
+    background: rgba(31, 42, 33, 0.92);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlistCard__badge--public {
+        background: rgba(31, 42, 33, 0.92);
+    }
+}
+
 .wishlistCard__badge--private {
     background: rgba(240, 235, 248, 0.92);
-    color: #4a3a6a;
+    color: var(--status-reserved-fg);
     box-shadow: 0 1px 4px rgba(74, 58, 106, 0.2);
+}
+
+:root[data-theme="dark"] .wishlistCard__badge--private {
+    background: rgba(37, 29, 52, 0.92);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .wishlistCard__badge--private {
+        background: rgba(37, 29, 52, 0.92);
+    }
 }
 
 /* ── Item count overlay (bottom-right of image) ── */
@@ -210,7 +242,7 @@
     flex-shrink: 0;
     align-self: flex-start;
     margin-top: 5px;
-    border: 1px solid rgba(63, 104, 69, 0.12);
+    border: 1px solid var(--accent-tint-border);
 }
 
 .wishlistCard__description {
@@ -235,7 +267,7 @@
     align-items: center;
     gap: 10px;
     padding-top: 14px;
-    border-top: 1px solid #ede8e0;
+    border-top: 1px solid var(--border-soft);
 }
 
 .wishlistCard__date,

@@ -1,11 +1,11 @@
-:root {
-    --pp-font-serif: var(--font-cormorant, Georgia, serif);
-    --pp-font-sans: var(--font-dm-sans, system-ui, sans-serif);
-    --pp-sage: #3f6845;
-    --pp-sage-light: #eaf2eb;
-    --pp-text: #1e1a16;
-    --pp-text-2: #4e443c;
-    --pp-border-soft: #e5ded3;
+.publicProfile {
+    --pp-font-serif: var(--font-serif);
+    --pp-font-sans: var(--font-sans);
+    --pp-sage: var(--accent);
+    --pp-sage-light: var(--accent-tint-bg);
+    --pp-text: var(--text-primary);
+    --pp-text-2: var(--text-secondary);
+    --pp-border-soft: var(--border-soft);
 }
 
 .publicProfile {
@@ -44,7 +44,7 @@
     font-family: var(--pp-font-serif);
     font-size: 28px;
     font-weight: 600;
-    color: #fff;
+    color: var(--accent-contrast);
 }
 
 .hero__name {
@@ -60,7 +60,7 @@
     font-size: 12px;
     font-weight: 500;
     color: var(--pp-sage);
-    background: #fff;
+    background: var(--surface-raised);
     border: 1px solid var(--pp-border-soft);
     border-radius: 100px;
     padding: 5px 14px;
