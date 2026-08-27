@@ -3,6 +3,26 @@
    ────────────────────────────────────────────── */
 
 .dashboard {
+    /* Alias block — same --home-* tokens page.module.css defines, rescoped here
+       because <DashboardPage> is not rendered inside .pageLayout. */
+    --home-font-serif:    var(--font-serif);
+    --home-font-sans:     var(--font-sans);
+    --home-bg:            var(--surface-page);
+    --home-surface:       var(--surface-raised);
+    --home-surface-2:     var(--surface-sunken);
+    --home-border:        var(--border-default);
+    --home-border-soft:   var(--border-soft);
+    --home-border-strong: var(--border-strong);
+    --home-sage:          var(--accent);
+    --home-sage-hover:    var(--accent-hover);
+    --home-sage-light:    var(--accent-tint-bg);
+    --home-sage-contrast: var(--accent-contrast);
+    --home-amber:         var(--amber);
+    --home-amber-light:   var(--amber-tint-bg);
+    --home-text:          var(--text-primary);
+    --home-text-2:        var(--text-secondary);
+    --home-text-3:        var(--text-tertiary);
+
     background: var(--home-bg, #f7f4ef);
     min-height: 100vh;
     font-family: var(--home-font-sans, system-ui, sans-serif);
@@ -99,7 +119,7 @@
 }
 
 .nextEvent--urgent {
-    background: #fff8f0;
+    background: var(--home-amber-light, #fff8f0);
     border-color: rgba(110, 60, 12, 0.25);
 }
 
@@ -109,7 +129,7 @@
 }
 
 .nextEvent--today {
-    background: #fff3e8;
+    background: var(--home-amber-light, #fff3e8);
     border-color: rgba(110, 60, 12, 0.3);
     animation: pulseGlow 2.5s ease-in-out infinite;
 }
@@ -136,7 +156,7 @@
     border-radius: 100px;
     border: none;
     background: var(--home-sage, #3f6845);
-    color: #fff;
+    color: var(--home-sage-contrast, #fff);
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -166,7 +186,7 @@
 
 .greeting__ctaSecondary:hover {
     background: var(--home-surface, #fff);
-    border-color: #b8b0a8;
+    border-color: var(--home-border-strong, #b8b0a8);
     color: var(--home-text, #1e1a16);
     transform: translateY(-1px);
 }
@@ -217,7 +237,7 @@
 }
 
 .section__badge--urgent {
-    background: #fff8f0;
+    background: var(--home-amber-light, #fff8f0);
     border-color: rgba(110, 60, 12, 0.2);
     color: var(--home-amber, #6e3c0c);
 }
@@ -276,7 +296,7 @@
 }
 
 .cardWrap__pill--today {
-    background: #fff3e8;
+    background: var(--home-amber-light, #fff3e8);
     color: var(--home-amber, #6e3c0c);
     border-color: rgba(110, 60, 12, 0.2);
 }
@@ -326,7 +346,7 @@
     border-radius: 100px;
     border: none;
     background: var(--home-sage, #3f6845);
-    color: #fff;
+    color: var(--home-sage-contrast, #fff);
     cursor: pointer;
     transition: all 0.2s ease;
 }
