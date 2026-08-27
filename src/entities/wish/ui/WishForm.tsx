@@ -210,7 +210,6 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                                     alt={t('previewImageAlt')}
                                     width={600}
                                     height={400}
-                                    unoptimized
                                 />
                             ) : (
                                 <div
