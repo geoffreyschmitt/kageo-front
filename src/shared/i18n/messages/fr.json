@@ -204,8 +204,7 @@
     "suggestionsAllMeta": "{count, plural, one {# idée proposée par vos amis} other {# idées proposées par vos amis}}",
     "suggestionsCtaTitle": "Une idée en tête ?",
     "suggestionsCtaSub": "Donnez une longueur d'avance aux autres — proposez quoi acheter pour {ownerName}",
-    "suggestionsEmpty": "Aucune suggestion pour l'instant.",
-    "resultsCount": "Affichage de {shown} sur {total} articles"
+    "suggestionsEmpty": "Aucune suggestion pour l'instant.",    "resultsCount": "Affichage de {shown} sur {total} articles"
   },
   "wishlistToast": {
     "potStarted": "La cagnotte a démarré — vos amis peuvent maintenant y contribuer",

@@ -769,13 +769,15 @@ export default function Wishlist({
               <div className={styles.wishlist__suggestionsHeaderWrap}>
                 <div>
                   <h2 className={styles.wishlist__suggestionsTitle}>{t('suggestionsTitle')}</h2>
-                  <p className={styles.wishlist__suggestionsMeta}>
-                    {allProposedItems.length === 0
-                      ? t('suggestionsEmptyMeta')
-                      : proposedItems.length < allProposedItems.length
-                        ? t('suggestionsPartialMeta', {shown: proposedItems.length, total: allProposedItems.length})
-                        : t('suggestionsAllMeta', {count: proposedItems.length})}
-                  </p>
+                  {isLoggedIn && (
+                    <p className={styles.wishlist__suggestionsMeta}>
+                      {allProposedItems.length === 0
+                        ? t('suggestionsEmptyMeta')
+                        : proposedItems.length < allProposedItems.length
+                          ? t('suggestionsPartialMeta', {shown: proposedItems.length, total: allProposedItems.length})
+                          : t('suggestionsAllMeta', {count: proposedItems.length})}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -794,7 +796,7 @@ export default function Wishlist({
                 </button>
               </div>
 
-              {proposedItems.length > 0 ? (
+              {!isLoggedIn ? null : proposedItems.length > 0 ? (
                 <div className={styles.wishlist__itemsGrid}>
                   {proposedItems.map((item) => (
                     <WishCard

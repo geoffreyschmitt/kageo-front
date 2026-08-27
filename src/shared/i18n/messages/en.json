@@ -204,8 +204,7 @@
     "suggestionsAllMeta": "{count, plural, one {# idea proposed by friends} other {# ideas proposed by friends}}",
     "suggestionsCtaTitle": "Have something in mind?",
     "suggestionsCtaSub": "Give other gifters a head start — propose what to buy for {ownerName}",
-    "suggestionsEmpty": "No suggestions yet.",
-    "resultsCount": "Showing {shown} of {total} items"
+    "suggestionsEmpty": "No suggestions yet.",    "resultsCount": "Showing {shown} of {total} items"
   },
   "wishlistToast": {
     "potStarted": "Pot started — friends can now chip in",
