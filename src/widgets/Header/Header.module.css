@@ -156,6 +156,29 @@
     color: var(--h-text-3);
 }
 
+/* ── Mobile menu toggle ───────────────────── */
+
+.header__menuToggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin-right: -8px;
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    color: var(--h-text-2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.header__menuToggle:hover {
+    background: var(--h-sage-light);
+    color: var(--h-sage);
+}
+
 /* ── User menu ────────────────────────────── */
 
 .header__userMenu {
@@ -191,6 +214,226 @@
 }
 
 .header__logoutButton:hover {
+    background: var(--h-surface-2);
+    color: var(--h-text-2);
+    border-color: var(--border-strong);
+}
+
+/* ── Mobile drawer ────────────────────────── */
+
+.drawer,
+.drawer__overlay {
+    --h-bg:          var(--surface-raised);
+    --h-border:      var(--border-soft);
+    --h-text:        var(--text-primary);
+    --h-text-2:      var(--text-secondary);
+    --h-text-3:      var(--text-tertiary);
+    --h-sage:        var(--accent);
+    --h-sage-hover:  var(--accent-hover);
+    --h-sage-light:  var(--accent-tint-bg);
+    --h-surface-2:   var(--surface-page);
+    --h-font-serif:  var(--font-serif);
+    --h-font-sans:   var(--font-sans);
+}
+
+.drawer__overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 26, 22, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 200;
+}
+
+.drawer__overlay--open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.drawer {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 314px;
+    max-width: 86vw;
+    padding: 12px 16px 26px;
+    background: var(--h-bg);
+    box-shadow: var(--shadow-modal);
+    z-index: 201;
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
+}
+
+.drawer--open {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.drawer__head {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.drawer__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin-right: -8px;
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    color: var(--h-text-2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drawer__close:hover {
+    background: var(--h-sage-light);
+    color: var(--h-sage);
+}
+
+.drawer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.drawer__navLink {
+    font-family: var(--h-font-sans);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--h-text-2);
+    text-decoration: none;
+    padding: 13px 14px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.drawer__navLink:hover {
+    background: var(--h-sage-light);
+    color: var(--h-sage);
+}
+
+.drawer__divider {
+    height: 1px;
+    background: var(--h-border);
+    margin: 16px 6px;
+}
+
+.drawer__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+}
+
+.drawer__rowLabel {
+    font-family: var(--h-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--h-text-3);
+}
+
+.drawer__spacer {
+    flex-grow: 1;
+    min-height: 24px;
+}
+
+.drawer__profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.drawer__profile:hover {
+    background: var(--h-surface-2);
+}
+
+.drawer__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 100px;
+    background: var(--h-sage-light);
+    color: var(--h-sage);
+    font-family: var(--h-font-serif);
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.drawer__profileText {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.drawer__profileName {
+    font-family: var(--h-font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--h-text);
+}
+
+.drawer__profileLink {
+    font-family: var(--h-font-sans);
+    font-size: 12px;
+    color: var(--h-text-3);
+}
+
+.drawer__login {
+    width: 100%;
+    padding: 13px;
+    background: var(--h-sage);
+    color: var(--accent-contrast);
+    border: none;
+    border-radius: 100px;
+    font-family: var(--h-font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drawer__login:hover {
+    background: var(--h-sage-hover);
+}
+
+.drawer__logout {
+    width: 100%;
+    padding: 11px;
+    background: transparent;
+    color: var(--h-text-3);
+    border: 1px solid var(--h-border);
+    border-radius: 100px;
+    font-family: var(--h-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drawer__logout:hover {
     background: var(--h-surface-2);
     color: var(--h-text-2);
     border-color: var(--border-strong);
@@ -446,20 +689,23 @@
 
 @media (max-width: 768px) {
     .header__container {
-        padding: 0 16px;
-        height: 56px;
+        padding: 0 10px 0 16px;
+        height: 60px;
+        gap: 12px;
     }
 
-    .header__nav {
-        margin-left: 8px;
-    }
-
-    .header__navList {
-        gap: 0;
-    }
-
-    .header__userName {
+    .header__nav,
+    .header__actions {
         display: none;
+    }
+
+    .header__menuToggle {
+        display: flex;
+    }
+
+    .drawer,
+    .drawer__overlay {
+        display: flex;
     }
 
     .modal__content {
@@ -471,10 +717,5 @@
 @media (max-width: 480px) {
     .header__logoLink {
         font-size: 22px;
-    }
-
-    .header__navLink {
-        font-size: 12px;
-        padding: 6px 10px;
     }
 }

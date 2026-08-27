@@ -40,12 +40,12 @@ export const EditWishModal = ({
         useMock,
     });
 
-    const handleSelectChange =
-        (field: keyof TWishFormData) =>
-            (e: React.ChangeEvent<HTMLSelectElement>) => {
-                const value = e.target.value;
-                handleInputChange(field, value);
-            };
+    const handleSelectChange = (
+        field: keyof TWishFormData,
+        value: TWishFormData[keyof TWishFormData],
+    ) => {
+        handleInputChange(field, value);
+    };
 
     return (
         <Modal
@@ -64,6 +64,8 @@ export const EditWishModal = ({
                 handleSubmit={handleSubmit}
                 onCancel={onClose}
                 priority={formData.priority}
+                submitLabel={t('submit')}
+                submittingLabel={t('submitting')}
             />
         </Modal>
     );

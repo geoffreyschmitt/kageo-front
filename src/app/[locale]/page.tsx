@@ -7,6 +7,8 @@ import { authOptions } from "@/shared/config/authOptions"
 import DashboardPage from "@/views/dashboard/dashboard"
 import { Link } from '@/shared/i18n/navigation'
 
+import { LoginCta } from "./LoginCta"
+
 import pageStyles from "./page.module.css"
 
 export default async function HomePage() {
@@ -38,9 +40,9 @@ export default async function HomePage() {
                     <h1 className={pageStyles.hero__title}>{t('heroTitle')}</h1>
                     <p className={pageStyles.hero__description}>{t('heroDescription')}</p>
                     <div className={pageStyles.hero__actions}>
-                        <Link href="/wishlists" className={pageStyles.hero__buttonPrimary}>
+                        <LoginCta className={pageStyles.hero__buttonPrimary}>
                             {t('getStarted')}
-                        </Link>
+                        </LoginCta>
                         <Link href="/features" className={pageStyles.hero__buttonSecondary}>
                             {t('learnMore')}
                         </Link>
@@ -86,9 +88,9 @@ export default async function HomePage() {
             <section className={pageStyles.cta}>
                 <h2 className={pageStyles.cta__title}>{t('ctaTitle')}</h2>
                 <p className={pageStyles.cta__description}>{t('ctaDescription')}</p>
-                <Link href="/wishlists" className={pageStyles.cta__button}>
+                <LoginCta className={pageStyles.cta__button}>
                     {t('ctaButton')}
-                </Link>
+                </LoginCta>
             </section>
         </main>
     )

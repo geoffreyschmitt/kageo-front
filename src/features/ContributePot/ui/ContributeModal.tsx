@@ -81,7 +81,10 @@ export const ContributeModal = ({
                         <button
                             type="button"
                             className={styles.contribute__loginBannerLink}
-                            onClick={() => eventBus.emit('auth:openLoginModal', {})}
+                            onClick={() => {
+                                onClose()
+                                eventBus.emit('auth:openLoginModal', {})
+                            }}
                         >
                             {t('logIn')}
                         </button>

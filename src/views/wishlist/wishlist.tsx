@@ -15,6 +15,7 @@ import {EditWishModal} from '@/features/EditWish'
 import {ContributeModal} from '@/features/ContributePot'
 import {CreatePotButton} from '@/features/CreatePot'
 import {CommentsSection} from '@/features/Comments'
+import {LoginPromptModal} from '@/shared/ui'
 
 import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
 import {TWishlistFormData} from '@/entities/wishlist';
@@ -32,6 +33,8 @@ type TWishlistPageProps = {
   items: TWishCard[]
   isPublic: boolean
   eventDate: string
+  coverImage?: string
+  allowSuggestions?: boolean
   ownerId: string
   ownerName: string
   ownerProfileUrl?: string | null
@@ -77,6 +80,8 @@ export default function Wishlist({
   items = [],
   isPublic,
   eventDate,
+  coverImage = '',
+  allowSuggestions = true,
   ownerId,
   ownerName,
   ownerProfileUrl = null,
@@ -123,6 +128,7 @@ export default function Wishlist({
   const [isEditWishModalOpen, setIsEditWishModalOpen] = useState(false)
   const [editingWish, setEditingWish] = useState<TWishCard | null>(null)
   const [isContributeModalOpen, setIsContributeModalOpen] = useState(false)
+  const [loginPrompt, setLoginPrompt] = useState<'suggest' | 'contribute' | null>(null)
 
   const t = useTranslations('wishlist')
   const tComments = useTranslations('comments')
@@ -219,6 +225,14 @@ export default function Wishlist({
     setIsAddItemModalOpen(false)
   }
 
+  const requireAuth = (promptKey: 'suggest' | 'contribute', action: () => void) => () => {
+    if (!isLoggedIn) {
+      setLoginPrompt(promptKey)
+      return
+    }
+    action()
+  }
+
   const handleProposeWish = (wish: TProposedWishFormData & { id: string }) => {
     // Call parent callback to update state
     if (onProposeWish) {
@@ -309,7 +323,7 @@ export default function Wishlist({
                     description,
                     eventDate: eventDate ? new Date(eventDate) : undefined,
                     isPublic,
-                    coverImage: '',
+                    coverImage,
                   })
                 }}
               >
@@ -342,7 +356,7 @@ export default function Wishlist({
             {!userIsOwner && !isHistory && (
               <button
                 className={`${styles.wishlist__button} ${styles['wishlist__button--amber']}`}
-                onClick={() => setIsProposeItemModalOpen(true)}
+                onClick={requireAuth('suggest', () => setIsProposeItemModalOpen(true))}
               >
                 {t('suggestWish')}
               </button>
@@ -403,12 +417,14 @@ export default function Wishlist({
               <div className={styles.wishlist__potText}>
                 <p className={styles.wishlist__potTitle}>{t('potTitle')}</p>
                 <p className={styles.wishlist__potSub}>
-                  {totalContributed > 0
-                    ? <><strong>{currency}{totalContributed.toFixed(2)}</strong> {t('potPledgedSuffix')}</>
-                    : t('potChipIn', {ownerName})
+                  {!isLoggedIn
+                    ? t('potLoginToSee')
+                    : totalContributed > 0
+                      ? <><strong>{currency}{totalContributed.toFixed(2)}</strong> {t('potPledgedSuffix')}</>
+                      : t('potChipIn', {ownerName})
                   }
                 </p>
-                {userContributed > 0 && (
+                {isLoggedIn && userContributed > 0 && (
                   <p className={styles.wishlist__potUserContrib}>
                     {t('potUserPledgedPrefix')} <strong>{currency}{userContributed.toFixed(2)}</strong>
                   </p>
@@ -417,7 +433,7 @@ export default function Wishlist({
             </div>
             <button
               className={`${styles.wishlist__button} ${styles['wishlist__button--pot']}`}
-              onClick={() => setIsContributeModalOpen(true)}
+              onClick={requireAuth('contribute', () => setIsContributeModalOpen(true))}
             >
               {t('contributeToThePot')}
             </button>
@@ -495,7 +511,7 @@ export default function Wishlist({
           {!userIsOwner && !isHistory && (
             <button
               className={styles.wishlist__emptyButton}
-              onClick={() => setIsProposeItemModalOpen(true)}
+              onClick={requireAuth('suggest', () => setIsProposeItemModalOpen(true))}
             >
               {t('suggestWish')}
             </button>
@@ -772,7 +788,7 @@ export default function Wishlist({
                 </div>
                 <button
                   className={`${styles.wishlist__button} ${styles['wishlist__button--amber']}`}
-                  onClick={() => setIsProposeItemModalOpen(true)}
+                  onClick={requireAuth('suggest', () => setIsProposeItemModalOpen(true))}
                 >
                   {t('suggestWish')}
                 </button>
@@ -823,6 +839,7 @@ export default function Wishlist({
               <CommentsSection
                 target={{ type: 'wishlist', wishlistId: id }}
                 enabled={!userIsOwner}
+                isLoggedIn={isLoggedIn}
                 emptyMessage={tComments('wishlistEmpty', { ownerName })}
               />
             </div>
@@ -862,8 +879,8 @@ export default function Wishlist({
             description,
             eventDate: eventDate ? new Date(eventDate).toISOString().slice(0, 10) : '',
             isPublic,
-            coverImage: '',
-            allowSuggestions: true,
+            coverImage,
+            allowSuggestions,
           }}
         />
       )}
@@ -909,6 +926,12 @@ export default function Wishlist({
           )}
         </>
       )}
+
+      <LoginPromptModal
+        isOpen={loginPrompt !== null}
+        onClose={() => setLoginPrompt(null)}
+        message={loginPrompt === 'contribute' ? t('loginToContribute', {ownerName}) : t('loginToSuggest', {name, ownerName})}
+      />
 
       <ShareWishlistModal
         isOpen={isShareModalOpen}

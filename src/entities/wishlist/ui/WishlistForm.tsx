@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl"
 
 import {TWishlistForm} from "@/entities/wishlist/ui/WishlistForm.types";
+import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 import styles from "./WishlistForm.module.css"
 
@@ -17,6 +18,10 @@ export const WishlistForm = ({
      onCancel,
  }: TWishlistForm) => {
     const t = useTranslations('wishlistForm')
+
+    const [imgError, setImgError] = React.useState(false)
+    React.useEffect(() => setImgError(false), [formData.coverImage])
+
     return (
         <form className={styles.editWishlistForm} onSubmit={handleSubmit}>
             <div className={styles.editWishlistForm__formGrid}>
@@ -140,13 +145,20 @@ export const WishlistForm = ({
             <div className={styles.editWishlistForm__preview}>
                 <h3 className={styles.editWishlistForm__previewTitle}>{t('preview')}</h3>
                 <div className={styles.editWishlistForm__previewCard}>
-                    {formData.coverImage && (
+                    {isValidUrl(formData.coverImage || "") && (
                         <div className={styles.editWishlistForm__previewImage}>
-                            <Image
-                                src={formData.coverImage || "/placeholder.svg"} alt={t('preview')}
-                                width={600}
-                                height={400}
-                            />
+                            {imgError ? (
+                                <span className={styles.editWishlistForm__previewImageError}>
+                                    {t('imageLoadError')}
+                                </span>
+                            ) : (
+                                <Image
+                                    src={formData.coverImage as string} alt={t('preview')}
+                                    width={600}
+                                    height={400}
+                                    onError={() => setImgError(true)}
+                                />
+                            )}
                         </div>
                     )}
                     <div className={styles.editWishlistForm__previewContent}>

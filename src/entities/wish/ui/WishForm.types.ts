@@ -32,6 +32,8 @@ type TBaseWishFormProps<TData, TErrors> = {
     handleCheckboxChange: TFormChangeHandler<TData>
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     onCancel: () => void
+    submitLabel?: string
+    submittingLabel?: string
 }
 
 export type TWishForm = TBaseWishFormProps<TWishFormData, TWishValidationErrors> & {

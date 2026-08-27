@@ -270,6 +270,48 @@
     object-fit: cover;
 }
 
+.wishForm__previewPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, var(--wf2-surface-2) 0%, var(--wf2-surface) 50%, var(--wf2-surface-2) 100%);
+}
+
+.wishForm__previewPlaceholderInitial {
+    font-size: 40px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--wf2-text-muted, var(--wf2-text));
+    opacity: 0.25;
+    position: relative;
+    z-index: 1;
+    user-select: none;
+}
+
+.wishForm__previewPlaceholderDecor {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.wishForm__previewImageError {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    z-index: 1;
+    text-align: center;
+    font-size: 10px;
+    line-height: 1.2;
+    color: var(--wf2-error, #b3261e);
+}
+
 .wishForm__previewContent {
     flex: 1;
     display: flex;

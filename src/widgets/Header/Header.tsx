@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react'
 import {signIn, signOut, useSession} from 'next-auth/react'
 import {useTranslations} from 'next-intl'
 
-import {Link} from '@/shared/i18n/navigation'
+import {Link, usePathname} from '@/shared/i18n/navigation'
 import {LanguageSwitcher} from '@/features/LanguageSwitcher'
 import {eventBus} from '@/shared/eventBus'
 
@@ -14,7 +14,9 @@ export const Header = () => {
   const {data: session, status} = useSession()
   const t = useTranslations('auth')
   const tNav = useTranslations('nav')
+  const pathname = usePathname()
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
   const [formData, setFormData] = useState({
     email: '',
@@ -27,6 +29,25 @@ export const Header = () => {
   useEffect(() => {
     return eventBus.on('auth:openLoginModal', () => setShowAuthModal(true))
   }, [])
+
+  // Close the mobile drawer whenever the route changes.
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
+
+  // Lock body scroll and close on Escape while the drawer is open.
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    document.body.style.overflow = 'hidden'
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = ''
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [menuOpen])
 
   const handleInputChange = (e) => {
     setFormData({
@@ -91,43 +112,25 @@ export const Header = () => {
     signOut()
   }
 
+  const openLoginModal = () => {
+    setMenuOpen(false)
+    setShowAuthModal(true)
+  }
+
   const closeModal = () => {
     setShowAuthModal(false)
     setError('')
     setFormData({email: '', password: '', name: ''})
   }
 
-  if (status === 'loading') {
-    return (
-      <header className={styles.header}>
-        <div className={styles.header__container}>
-          <div className={styles.header__logo}>
-            <Link href="/" className={styles.header__logoLink}>
-              Kageo
-            </Link>
-          </div>
-          <nav className={styles.header__nav}>
-            <ul className={styles.header__navList}>
-              <li className={styles.header__navItem}>
-                <Link href="/wishlists" className={styles.header__navLink}>
-                  {tNav('wishlists')}
-                </Link>
-              </li>
-              <li className={styles.header__navItem}>
-                <Link href="/history" className={styles.header__navLink}>
-                  {tNav('history')}
-                </Link>
-              </li>
-            </ul>
-          </nav>
-          <div className={styles.header__actions}>
-            <LanguageSwitcher />
-            <div className={styles.header__loading}>{t('loading')}</div>
-          </div>
-        </div>
-      </header>
-    )
-  }
+  const navItems = [
+    {href: '/wishlists', label: tNav('wishlists')},
+    {href: '/history', label: tNav('history')}
+  ]
+
+  const isLoading = status === 'loading'
+  const displayName = session?.user?.name || session?.user?.email || ''
+  const avatarInitial = displayName.trim().charAt(0).toUpperCase() || '?'
 
   return (
     <>
@@ -138,26 +141,27 @@ export const Header = () => {
               Kageo
             </Link>
           </div>
-          <nav className={styles.header__nav}>
-            <ul className={styles.header__navList}>
-              <li className={styles.header__navItem}>
-                <Link href="/wishlists" className={styles.header__navLink}>
-                  {tNav('wishlists')}
-                </Link>
-              </li>
-              <li className={styles.header__navItem}>
-                <Link href="/history" className={styles.header__navLink}>
-                  {tNav('history')}
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          {session?.user && (
+            <nav className={styles.header__nav}>
+              <ul className={styles.header__navList}>
+                {navItems.map((item) => (
+                  <li key={item.href} className={styles.header__navItem}>
+                    <Link href={item.href} className={styles.header__navLink}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
           <div className={styles.header__actions}>
             <LanguageSwitcher />
-            {session?.user ? (
+            {isLoading ? (
+              <div className={styles.header__loading}>{t('loading')}</div>
+            ) : session?.user ? (
               <div className={styles.header__userMenu}>
                 <Link href="/profile" className={styles.header__userName}>
-                  {t('hello', {name: session.user.name || session.user.email || ''})}
+                  {t('hello', {name: displayName})}
                 </Link>
                 <button
                   onClick={handleSignOut}
@@ -175,8 +179,89 @@ export const Header = () => {
               </button>
             )}
           </div>
+          <button
+            type="button"
+            className={styles.header__menuToggle}
+            aria-label={tNav('openMenu')}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
         </div>
       </header>
+
+      <div
+        className={`${styles.drawer__overlay} ${menuOpen ? styles['drawer__overlay--open'] : ''}`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+      <aside
+        className={`${styles.drawer} ${menuOpen ? styles['drawer--open'] : ''}`}
+        aria-hidden={!menuOpen}
+      >
+        <div className={styles.drawer__head}>
+          <button
+            type="button"
+            className={styles.drawer__close}
+            aria-label={tNav('closeMenu')}
+            onClick={() => setMenuOpen(false)}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
+
+        {session?.user && (
+          <>
+            <nav className={styles.drawer__nav}>
+              {navItems.map((item) => (
+                <Link key={item.href} href={item.href} className={styles.drawer__navLink}>
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className={styles.drawer__divider} />
+          </>
+        )}
+
+        <div className={styles.drawer__row}>
+          <span className={styles.drawer__rowLabel}>{tNav('language')}</span>
+          <LanguageSwitcher />
+        </div>
+
+        <div className={styles.drawer__spacer} />
+
+        {isLoading ? null : session?.user ? (
+          <>
+            <div className={styles.drawer__divider} />
+            <Link href="/profile" className={styles.drawer__profile}>
+              <span className={styles.drawer__avatar}>{avatarInitial}</span>
+              <span className={styles.drawer__profileText}>
+                <span className={styles.drawer__profileName}>{displayName}</span>
+                <span className={styles.drawer__profileLink}>{tNav('viewProfile')}</span>
+              </span>
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className={styles.drawer__logout}
+            >
+              {t('logout')}
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={openLoginModal}
+            className={styles.drawer__login}
+          >
+            {t('login')}
+          </button>
+        )}
+      </aside>
 
       {showAuthModal && (
         <div className={styles.modal__overlay} onClick={closeModal}>
