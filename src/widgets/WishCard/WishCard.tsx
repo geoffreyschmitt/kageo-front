@@ -234,6 +234,15 @@ export const WishCard = ({
                                     useMock={useMock}
                                 />
                             )}
+
+                            {status === 'purchased' && purchasedBy === userId && (
+                                <RemovePurchasedButton
+                                    wishId={id}
+                                    onRemovePurchased={onRemovePurchased}
+                                    onError={onRemovePurchasedError}
+                                    useMock={useMock}
+                                />
+                            )}
                         </>
                     )}
                     {showOwnerAction && (

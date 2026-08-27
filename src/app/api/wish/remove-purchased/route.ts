@@ -4,7 +4,7 @@ import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
 
-type TWishKV = { id: string; status: string; purchasedBy?: string; wishlistId: string }
+type TWishKV = { id: string; status: string; purchasedBy?: string; reservedBy?: string; wishlistId: string }
 type TWishlistKV = { ownerId: string }
 
 export async function POST(request: NextRequest) {
@@ -35,10 +35,13 @@ export async function POST(request: NextRequest) {
         }
 
         const { purchasedBy: _p, ...rest } = wish
-        const updated = { ...rest, status: 'wanted', updatedAt: new Date().toISOString() }
+        // Revert to the state the wish was in before it was marked purchased:
+        // back to reserved if it still holds a reservation, otherwise wanted.
+        const revertedStatus = rest.reservedBy ? 'reserved' : 'wanted'
+        const updated = { ...rest, status: revertedStatus, updatedAt: new Date().toISOString() }
         await kv.set(`wish:${wishId}`, updated)
 
-        return NextResponse.json({ id: wishId, status: 'wanted', purchasedBy: undefined })
+        return NextResponse.json({ id: wishId, status: revertedStatus, purchasedBy: undefined })
     } catch (error) {
         console.error('Remove purchased error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })

@@ -122,10 +122,12 @@ export default function WishlistPageClient({
     }
 
     const handleRemovePurchased = (wishId: string) => {
-        setItems((prev) => prev.map((item) =>
-            item.id === wishId ? { ...item, status: 'wanted', purchasedBy: undefined } : item
-        ))
-        toast(t('markedAvailable'), 'info')
+        setItems((prev) => prev.map((item) => {
+            if (item.id !== wishId) return item
+            // Revert to the pre-purchase state: back to the reservation if one is still held.
+            return { ...item, status: item.reservedBy ? 'reserved' : 'wanted', purchasedBy: undefined }
+        }))
+        toast(t('purchaseCancelled'), 'info')
     }
 
     const handleRemovePurchasedError = (wishId: string) => {
