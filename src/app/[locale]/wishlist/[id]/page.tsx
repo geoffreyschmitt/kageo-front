@@ -136,7 +136,7 @@ export default async function WishlistPage({
             ownerId={wishlist.ownerId}
             ownerName={ownerName}
             ownerProfileUrl={!userIsOwner && ownerHasPublicProfile ? `/u/${wishlist.ownerId}` : null}
-            currency={wishlist.currency ?? '$'}
+            currency={wishlist.currency ?? '€'}
             userIsOwner={userIsOwner}
             isHistory={isHistory}
             hasActivity={hasActivity}

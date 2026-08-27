@@ -98,7 +98,7 @@ export default function Wishlist({
   onDeleteError,
   onEditWish,
   onUpdateWish,
-  currency = '$',
+  currency = '€',
   onAddWish,
   onProposeWish,
   onContribute,
