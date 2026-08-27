@@ -27,7 +27,7 @@ export function ThemeToggle() {
 					<button
 						key={option.value}
 						type="button"
-						className={`${s.option} ${active ? s['option--active'] : ''}`}
+						className={active ? `${s.option} ${s['option--active']}` : s.option}
 						aria-pressed={active}
 						onClick={() => setPreference(option.value)}
 					>

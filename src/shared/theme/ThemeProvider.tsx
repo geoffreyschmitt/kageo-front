@@ -63,7 +63,7 @@ export function ThemeProvider({
         setSystemTheme(systemResolved())
         try {
             const stored = localStorage.getItem(THEME_STORAGE_KEY)
-            const next = isThemePreference(stored) ? stored : 'system'
+            const next = isThemePreference(stored) ? stored : preference
             if (next !== preference) {
                 setPreferenceState(next)
                 applyAttribute(next)
