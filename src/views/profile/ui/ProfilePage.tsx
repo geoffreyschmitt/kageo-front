@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 
 import { useManageAccountModel } from '@/features/ManageAccount'
+import { ThemeToggle } from '@/features/ThemeToggle'
 import { Modal, Panel } from '@/shared/ui'
 
 import s from './profile.module.css'
@@ -251,6 +252,13 @@ export default function ProfilePage() {
 
                 {/* Preferences */}
                 <Panel title={t('preferencesTitle')} subtitle={t('preferencesSubtitle')}>
+                    <div className={s.preference}>
+                        <div className={s.preference__text}>
+                            <p className={s.preference__title}>{t('appearanceTitle')}</p>
+                            <p className={s.preference__desc}>{t('appearanceDesc')}</p>
+                        </div>
+                        <ThemeToggle />
+                    </div>
                     <div className={s.preference}>
                         <div className={s.preference__text}>
                             <p className={s.preference__title}>{t('publicProfile')}</p>

@@ -2,29 +2,29 @@
    PROFILE PAGE — Garden Party
    ============================================ */
 
-:root {
-    --p-bg:           #f7f4ef;
-    --p-surface:      #ffffff;
-    --p-surface-2:    #f2ede5;
-    --p-surface-3:    #ebe5da;
-    --p-border:       #d6cec4;
-    --p-border-soft:  #e5dfd5;
-    --p-sage:         #3f6845;
-    --p-sage-hover:   #2e5033;
-    --p-sage-light:   #eaf2eb;
-    --p-amber:        #6e3c0c;
-    --p-amber-light:  #fdf0e6;
-    --p-text:         #1e1a16;
-    --p-text-2:       #4e443c;
-    --p-text-3:       #6b6258;
-    --p-error:        #8a2318;
-    --p-error-bg:     #fdecea;
-    --p-error-border: rgba(138, 35, 24, 0.2);
-    --p-shadow:       0 2px 12px rgba(60, 45, 25, 0.08);
-    --p-shadow-hover: 0 8px 28px rgba(60, 45, 25, 0.13);
-    --p-font-serif:   var(--font-cormorant, Georgia, serif);
-    --p-font-sans:    var(--font-dm-sans, system-ui, sans-serif);
-    --p-font-mono:    var(--font-mono, monospace);
+.profile {
+    --p-bg:           var(--surface-page);
+    --p-surface:      var(--surface-raised);
+    --p-surface-2:    var(--surface-sunken);
+    --p-surface-3:    var(--surface-sunken-2);
+    --p-border:       var(--border-default);
+    --p-border-soft:  var(--border-soft);
+    --p-sage:         var(--accent);
+    --p-sage-hover:   var(--accent-hover);
+    --p-sage-light:   var(--accent-tint-bg);
+    --p-amber:        var(--amber);
+    --p-amber-light:  var(--amber-tint-bg);
+    --p-text:         var(--text-primary);
+    --p-text-2:       var(--text-secondary);
+    --p-text-3:       var(--text-tertiary);
+    --p-error:        var(--error-fg);
+    --p-error-bg:     var(--error-bg);
+    --p-error-border: var(--error-border);
+    --p-shadow:       var(--shadow-card);
+    --p-shadow-hover: var(--shadow-hover);
+    --p-font-serif:   var(--font-serif);
+    --p-font-sans:    var(--font-sans);
+    --p-font-mono:    var(--font-mono);
 }
 
 /* ── Page wrapper ─────────────────────────── */
@@ -59,6 +59,22 @@
     pointer-events: none;
 }
 
+:root[data-theme="dark"] .hero::before {
+    background-image:
+        radial-gradient(ellipse 65% 55% at 50% -5%, rgba(143, 197, 151, 0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 30% at 90% 110%, rgba(224, 168, 110, 0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 25% 25% at 5% 90%, rgba(143, 197, 151, 0.05) 0%, transparent 55%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .hero::before {
+        background-image:
+            radial-gradient(ellipse 65% 55% at 50% -5%, rgba(143, 197, 151, 0.09) 0%, transparent 65%),
+            radial-gradient(ellipse 35% 30% at 90% 110%, rgba(224, 168, 110, 0.07) 0%, transparent 60%),
+            radial-gradient(ellipse 25% 25% at 5% 90%, rgba(143, 197, 151, 0.05) 0%, transparent 55%);
+    }
+}
+
 .hero__inner {
     max-width: 640px;
     margin: 0 auto;
@@ -80,7 +96,7 @@
     margin: 0 auto 24px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 0 6px rgba(63, 104, 69, 0.06), var(--p-shadow);
+    box-shadow: 0 0 0 6px var(--accent-tint-border), var(--p-shadow);
     animation: avatarIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -267,12 +283,12 @@
 .field__input {
     width: 100%;
     padding: 10px 14px;
-    border: 1.5px solid #e5ddd0;
+    border: 1.5px solid var(--border-default);
     border-radius: 10px;
     font-family: var(--p-font-sans);
     font-size: 14px;
     color: var(--p-text);
-    background: #faf8f4;
+    background: var(--surface-input);
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
 }
@@ -284,8 +300,8 @@
 .field__input:focus {
     outline: none;
     border-color: var(--p-sage);
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(63, 104, 69, 0.1);
+    background: var(--surface-raised);
+    box-shadow: 0 0 0 3px var(--accent-tint-border);
 }
 
 .field__input:disabled {
@@ -331,7 +347,7 @@
 .btn--primary {
     background: var(--p-sage);
     border-color: var(--p-sage);
-    color: #fff;
+    color: var(--accent-contrast);
 }
 
 .btn--primary:hover {
@@ -497,7 +513,7 @@
     left: 3px;
     width: 16px;
     height: 16px;
-    background: #fff;
+    background: var(--surface-raised);
     border-radius: 50%;
     transition: transform 0.2s ease;
     box-shadow: 0 1px 3px rgba(0,0,0,0.15);
