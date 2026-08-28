@@ -16,6 +16,11 @@ type TCommentsSectionProps = {
     autoLoad?: boolean
     title?: string
     emptyMessage?: string
+    // Stretch the thread to fill its container (drops the internal max-height) —
+    // used when the section owns a full-height surface such as the comments drawer.
+    fill?: boolean
+    // Fired once after a comment is successfully posted.
+    onCommentPosted?: () => void
 }
 
 function formatTimestamp(iso: string): string {
@@ -29,6 +34,8 @@ export const CommentsSection = ({
     autoLoad = true,
     title,
     emptyMessage,
+    fill = false,
+    onCommentPosted,
 }: TCommentsSectionProps) => {
     const t = useTranslations('comments')
     const [showLoginPrompt, setShowLoginPrompt] = useState(false)
@@ -47,12 +54,12 @@ export const CommentsSection = ({
         isSubmitting,
         submitError,
         handleSubmit,
-    } = useCommentsModel({ target, enabled: canView, autoLoad })
+    } = useCommentsModel({ target, enabled: canView, autoLoad, onPosted: onCommentPosted })
 
     if (!enabled) return null
 
     return (
-        <div className={styles.comments}>
+        <div className={`${styles.comments} ${fill ? styles['comments--fill'] : ''}`}>
             <h4 className={styles.comments__title}>{resolvedTitle}</h4>
 
             {!isLoggedIn && (

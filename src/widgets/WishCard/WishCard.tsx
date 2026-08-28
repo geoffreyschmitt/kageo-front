@@ -11,7 +11,8 @@ import {CancelReservationButton} from "@/features/cancelReservation";
 import {MarkPurchasedButton} from "@/features/markPurchasedWish";
 import {RemovePurchasedButton} from "@/features/removePurchasedWish";
 import {DeleteWishButton} from "@/features/DeleteWish";
-import {CommentsSection} from "@/features/Comments";
+
+import {eventBus} from "@/shared/eventBus";
 
 import {GiftPotSection} from "@/widgets/GiftPotSection";
 
@@ -59,6 +60,7 @@ export const WishCard = ({
     purchaseUrl,
     notes,
     addedDate,
+    commentCount,
     reservedBy,
     purchasedBy,
     showOwnerAction = false,
@@ -94,7 +96,6 @@ export const WishCard = ({
     const [imgError, setImgError] = useState(false)
     const [descExpanded, setDescExpanded] = useState(false)
     const [descOverflows, setDescOverflows] = useState(false)
-    const [commentsOpen, setCommentsOpen] = useState(false)
     const descRef = useRef<HTMLParagraphElement>(null)
 
     useEffect(() => {
@@ -220,16 +221,21 @@ export const WishCard = ({
                 {!isOwner && (
                     <button
                         type="button"
-                        className={styles['wish-card__commentsToggle']}
-                        onClick={() => setCommentsOpen((v) => !v)}
+                        className={styles['wish-card__commentsButton']}
+                        onClick={() => eventBus.emit('wish:openComments', { wishId: id, wishName: name })}
                     >
-                        💬 {commentsOpen ? tComments('toggleHide') : tComments('toggleShow')}
+                        <span className={styles['wish-card__commentsButtonLabel']}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"/>
+                            </svg>
+                            {commentCount && commentCount > 0
+                                ? tComments('count', {count: commentCount})
+                                : tComments('addCta')}
+                        </span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M9 6l6 6-6 6"/>
+                        </svg>
                     </button>
-                )}
-                {!isOwner && commentsOpen && (
-                    <div className={styles['wish-card__comments']}>
-                        <CommentsSection target={{ type: 'wish', wishId: id }} enabled={commentsOpen} />
-                    </div>
                 )}
 
                 {hasActionsRow && (

@@ -17,6 +17,21 @@
     font-family: var(--cm-font-sans);
 }
 
+/* Fill mode — the section owns a full-height surface (comments drawer). */
+.comments--fill {
+    flex: 1;
+    min-height: 0;
+}
+
+.comments--fill .comments__list {
+    max-height: none;
+    flex: 1;
+}
+
+.comments--fill .comments__form {
+    margin-top: auto;
+}
+
 .comments__title {
     font-size: 13px;
     font-weight: 600;

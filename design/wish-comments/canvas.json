@@ -1,0 +1,12 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 440, "h": 680, "title": "Card — compteur de commentaires" },
+    { "file": "CountStates.dc.html", "x": 0, "y": 800, "w": 560, "h": 440, "title": "États du compteur" },
+    { "file": "ModalDirection.dc.html", "x": 640, "y": 0, "w": 940, "h": 720, "title": "Direction A — Modale" },
+    { "file": "DrawerDirection.dc.html", "x": 1720, "y": 0, "w": 940, "h": 720, "title": "Direction B — Drawer" }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -190, "w": 660, "text": "Commentaires d'un wish — sortir le fil de la card.\nLa card ne porte plus qu'un bouton compteur discret (« 3 commentaires ») à la place du fil déroulant actuel. Un clic ouvre le fil complet + le champ de saisie dans une surface dédiée.\nDeux directions à trancher : A modale centrée (focus, overlay flouté comme Modal.tsx) · B drawer latéral droit (garde la liste visible, comme le drawer du header). Même contenu dans les deux. Tokens de l'app : Fraunces / DM Sans, accent sauge, rayons 20px, boutons pilule 100px." }
+  ],
+  "launch": { "view": "canvas" }
+}

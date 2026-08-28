@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
+    :root{
+      --surface-page:#f7f4ef; --surface-raised:#ffffff; --surface-sunken:#f2ede5; --surface-sunken-2:#ebe5da; --surface-input:#faf8f4;
+      --border-default:#d6cec4; --border-soft:#e5dfd5; --border-strong:#a8a099;
+      --text-primary:#1e1a16; --text-secondary:#4e443c; --text-tertiary:#6b6258;
+      --accent:#3f6845; --accent-hover:#2e5033; --accent-contrast:#ffffff; --accent-tint-bg:#eaf2eb; --accent-tint-border:rgba(63,104,69,.20);
+      --shadow-card:0 2px 12px rgba(60,45,25,.08); --shadow-modal:0 24px 64px rgba(60,45,25,.18);
+      --font-serif:'Fraunces',Georgia,serif; --font-sans:'DM Sans',system-ui,sans-serif; --font-mono:'JetBrains Mono',ui-monospace,monospace;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:var(--font-sans);background:var(--surface-page);color:var(--text-primary);}
+    a{color:var(--accent);text-decoration:none;} a:hover{color:var(--accent-hover);}
+    .cmt-item{background:var(--surface-sunken);border-radius:10px;padding:10px 13px;}
+    .cmt-author{font-size:12px;font-weight:600;color:var(--text-primary);}
+    .cmt-time{font-size:11px;color:var(--text-tertiary);white-space:nowrap;}
+    .cmt-text{font-size:13px;color:var(--text-secondary);line-height:1.5;margin:4px 0 0;}
+  </style>
+</helmet>
+<div style="width:940px;height:720px;position:relative;overflow:hidden;background:var(--surface-page);">
+
+  <!-- Blurred wishlist context behind -->
+  <div style="position:absolute;inset:0;padding:40px;display:flex;gap:24px;filter:blur(3px);opacity:0.55;pointer-events:none;">
+    <div style="flex:1;height:420px;background:var(--surface-raised);border:1px solid var(--border-default);border-radius:20px;"></div>
+    <div style="flex:1;height:420px;background:var(--surface-raised);border:1px solid var(--border-default);border-radius:20px;"></div>
+    <div style="flex:1;height:420px;background:var(--surface-raised);border:1px solid var(--border-default);border-radius:20px;"></div>
+  </div>
+
+  <!-- Overlay -->
+  <div style="position:absolute;inset:0;background:rgba(30,22,10,0.45);"></div>
+
+  <!-- Modal -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:520px;max-height:600px;background:var(--surface-raised);border:1px solid var(--border-soft);border-radius:20px;box-shadow:var(--shadow-modal);display:flex;flex-direction:column;overflow:hidden;">
+
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:24px 24px 16px;border-bottom:1px solid var(--border-soft);">
+      <div>
+        <h2 style="font-family:var(--font-serif);font-size:26px;font-weight:400;color:var(--text-primary);margin:0;line-height:1.2;letter-spacing:-0.2px;">Commentaires</h2>
+        <p style="font-family:var(--font-sans);font-size:13px;color:var(--text-tertiary);margin:4px 0 0;line-height:1.5;">Vélo de ville vintage · 3 messages</p>
+      </div>
+      <button aria-label="Fermer" style="background:var(--surface-sunken);border:1px solid var(--border-soft);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-tertiary);cursor:pointer;flex-shrink:0;margin-top:2px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div style="padding:16px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;">
+      <div class="cmt-item">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
+          <span class="cmt-author">Camille</span><span class="cmt-time">14 août, 09:42</span>
+        </div>
+        <p class="cmt-text">Je peux m'occuper du panier avant si quelqu'un prend le vélo, dites-moi.</p>
+      </div>
+      <div class="cmt-item">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
+          <span class="cmt-author">Théo</span><span class="cmt-time">14 août, 11:15</span>
+        </div>
+        <p class="cmt-text">Vu un modèle très proche chez Cyclable, taille M dispo. Je regarde le prix exact ce soir.</p>
+      </div>
+      <div class="cmt-item">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
+          <span class="cmt-author">Camille</span><span class="cmt-time">15 août, 08:03</span>
+        </div>
+        <p class="cmt-text">Parfait, merci&nbsp;!</p>
+      </div>
+    </div>
+
+    <div style="margin-top:auto;padding:16px 24px;border-top:1px solid var(--border-soft);display:flex;flex-direction:column;gap:8px;">
+      <textarea placeholder="Écrire un commentaire…" rows="2" style="font-family:var(--font-sans);font-size:13px;color:var(--text-primary);background:var(--surface-input);border:1.5px solid var(--border-default);border-radius:10px;padding:9px 11px;resize:none;min-height:44px;width:100%;"></textarea>
+      <button style="align-self:flex-end;font-family:var(--font-sans);font-size:12px;font-weight:600;color:var(--accent-contrast);background:var(--accent);border:none;border-radius:100px;padding:8px 20px;cursor:pointer;">Publier</button>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":940,"height":720}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

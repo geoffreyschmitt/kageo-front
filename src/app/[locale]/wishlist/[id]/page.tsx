@@ -83,6 +83,18 @@ export default async function WishlistPage({
               ),
           )
 
+    // Comment counts feed the per-card counter. Never computed for the owner —
+    // comments are never exposed to them, so the counter stays hidden too.
+    const commentCounts: Record<string, number> = {}
+    if (!userIsOwner && rawWishes.length) {
+        const counts = await Promise.all(
+            rawWishes.map((w) => kv.llen(`wish:${w.id}:comments`)),
+        )
+        rawWishes.forEach((w, i) => {
+            commentCounts[w.id] = counts[i] ?? 0
+        })
+    }
+
     const items: TWishCard[] = rawWishes.map((w) => ({
         id: w.id,
         name: w.name,
@@ -95,6 +107,7 @@ export default async function WishlistPage({
         purchaseUrl: w.purchaseUrl,
         notes: w.notes,
         addedDate: new Date(w.createdAt).toLocaleDateString(),
+        commentCount: userIsOwner ? undefined : (commentCounts[w.id] ?? 0),
         reservedBy: w.reservedBy,
         purchasedBy: w.purchasedBy,
         isProposed: w.status === 'proposed',

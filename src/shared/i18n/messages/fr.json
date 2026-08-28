@@ -560,8 +560,9 @@
     "postComment": "Publier",
     "loginToView": "Connectez-vous pour voir et publier des commentaires.",
     "loginToPost": "Connectez-vous pour publier un commentaire sur cette wishlist.",
-    "toggleShow": "Commentaires",
-    "toggleHide": "Masquer les commentaires",
+    "count": "{count, plural, one {# commentaire} other {# commentaires}}",
+    "addCta": "Commenter",
+    "close": "Fermer les commentaires",
     "wishlistEmpty": "Aucun commentaire pour le moment — lancez la conversation sur la wishlist de {ownerName}."
   },
   "publicProfile": {

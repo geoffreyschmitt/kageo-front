@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import Wishlist from '@/views/wishlist/wishlist'
@@ -67,6 +67,21 @@ export default function WishlistPageClient({
         () => Object.fromEntries(initialItems.map((i) => [i.id, i.giftPot ?? null])),
     )
     const [wishlistMeta, setWishlistMeta] = useState({ name, description, isPublic, eventDate, coverImage, allowSuggestions })
+
+    // Keep card comment counters in sync when a comment is posted from the drawer.
+    useEffect(
+        () =>
+            eventBus.on('wish:commentCountChanged', ({ wishId, delta }) => {
+                setItems((prev) =>
+                    prev.map((item) =>
+                        item.id === wishId
+                            ? { ...item, commentCount: Math.max(0, (item.commentCount ?? 0) + delta) }
+                            : item,
+                    ),
+                )
+            }),
+        [],
+    )
 
     // Optimistic patch of the pot view by a signed delta on the caller's pledge,
     // keeping participant count in step when a pledge crosses 0.
