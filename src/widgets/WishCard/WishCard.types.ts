@@ -19,6 +19,9 @@ export type TWishCard = {
   commentCount?: number
   reservedBy?: string
   purchasedBy?: string
+  // Display names resolved from the reservedBy/purchasedBy user ids (server-side).
+  reservedByName?: string
+  purchasedByName?: string
   isProposed?: boolean
   // Set on a proposed wish when the guest chose to share it with the owner.
   showToOwner?: boolean
