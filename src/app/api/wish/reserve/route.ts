@@ -33,6 +33,11 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Wish is not available for reservation' }, { status: 409 })
         }
 
+        const hasPot = await kv.get(`wish:${wishId}:pot`)
+        if (hasPot) {
+            return NextResponse.json({ message: 'This wish has a gift pot' }, { status: 409 })
+        }
+
         const updated = { ...wish, status: 'reserved', reservedBy: session.user.id, updatedAt: new Date().toISOString() }
         await kv.set(`wish:${wishId}`, updated)
 
