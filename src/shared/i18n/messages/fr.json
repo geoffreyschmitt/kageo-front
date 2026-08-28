@@ -233,6 +233,7 @@
   },
   "wishlistToast": {
     "potStarted": "La cagnotte a démarré — vos amis peuvent maintenant y contribuer",
+    "giftPotStarted": "La cagnotte a démarré",
     "wishReserved": "« {name} » réservé",
     "wishReservedFallback": "Souhait réservé",
     "reserveError": "Impossible de réserver le souhait — veuillez réessayer",

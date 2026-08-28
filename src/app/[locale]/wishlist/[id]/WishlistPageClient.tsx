@@ -7,6 +7,7 @@ import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 import { TWishFormData, TProposedWishFormData } from '@/entities/wish'
 import { TWishlistFormData } from '@/entities/wishlist'
 import type { TGetPotResponse } from '@/shared/api/wishlist/getPot'
+import type { TGiftPotView } from '@/shared/api/wish/getGiftPot'
 import { eventBus } from '@/shared/eventBus'
 import { useRouter } from '@/shared/i18n/navigation'
 
@@ -60,6 +61,11 @@ export default function WishlistPageClient({
     const router = useRouter()
     const [items, setItems] = useState<TWishCard[]>(initialItems)
     const [pot, setPot] = useState<TGetPotResponse | null>(initialPot)
+    // Per-wish gift pots, keyed by wish id. Seeded from the server-rendered items
+    // (owners never receive a giftPot, so their entries start as null).
+    const [giftPots, setGiftPots] = useState<Record<string, TGiftPotView | null>>(
+        () => Object.fromEntries(initialItems.map((i) => [i.id, i.giftPot ?? null])),
+    )
     const [wishlistMeta, setWishlistMeta] = useState({ name, description, isPublic, eventDate, coverImage, allowSuggestions })
 
     // Optimistic patch of the pot view by a signed delta on the caller's pledge,
@@ -95,6 +101,71 @@ export default function WishlistPageClient({
     const handlePotRefreshed = (view: TGetPotResponse | null) => {
         if (view) setPot(view)
     }
+
+    // Optimistic patch of one wish's gift pot by a signed delta on the caller's pledge,
+    // keeping the participant count and the derived funded flag in step.
+    const patchGiftPot = (wishId: string, delta: number) =>
+        setGiftPots((prev) => {
+            const cur = prev[wishId]
+            if (!cur) return prev
+            const wasIn = (cur.myContribution ?? 0) > 0
+            const nextMine = Math.max(0, (cur.myContribution ?? 0) + delta)
+            const willBeIn = nextMine > 0
+            const countShift = willBeIn === wasIn ? 0 : willBeIn ? 1 : -1
+            const total = Math.max(0, cur.totalContributed + delta)
+            const next: TGiftPotView = {
+                ...cur,
+                totalContributed: total,
+                myContribution: nextMine,
+                participantCount: Math.max(0, (cur.participantCount ?? 0) + countShift),
+                isFunded: cur.goal > 0 && total >= cur.goal,
+            }
+            // keep the card's status in step with the derived funded state
+            setItems((items) =>
+                items.map((it) =>
+                    it.id === wishId
+                        ? { ...it, status: next.isFunded ? 'funded' : it.status === 'funded' ? 'wanted' : it.status }
+                        : it,
+                ),
+            )
+            return { ...prev, [wishId]: next }
+        })
+
+    const handleGiftPotCreated = (wishId: string, creatorId: string, creatorName: string) => {
+        setGiftPots((prev) => ({
+            ...prev,
+            [wishId]: {
+                creatorId,
+                creatorName,
+                isCreator: true,
+                goal: items.find((i) => i.id === wishId)?.price ?? 0,
+                totalContributed: 0,
+                isFunded: false,
+                myContribution: 0,
+                participantCount: 0,
+                contributors: [],
+            },
+        }))
+        toast(t('giftPotStarted'), 'success')
+    }
+
+    const handleContributeGiftPot = (wishId: string, delta: number) => {
+        patchGiftPot(wishId, delta)
+        toast(t('contributionAdded'), 'success')
+    }
+
+    const handleContributeGiftPotError = (wishId: string, delta: number) => {
+        patchGiftPot(wishId, -delta)
+        toast(t('contributionError'), 'error')
+    }
+
+    const handleGiftPotRemoved = (wishId: string, removed: number) => {
+        patchGiftPot(wishId, -removed)
+        toast(t('pledgeRemoved'), 'info')
+    }
+
+    const handleGiftPotRefreshed = (wishId: string, view: TGiftPotView | null) =>
+        setGiftPots((prev) => ({ ...prev, [wishId]: view }))
 
     const handleReserveWish = (wishId: string, reservedBy: string) => {
         setItems((prev) => prev.map((item) =>
@@ -308,6 +379,13 @@ export default function WishlistPageClient({
                 isLoggedIn={isLoggedIn}
                 isInvited={isInvited}
                 onPotCreated={handlePotCreated}
+                giftPots={giftPots}
+                onGiftPotCreated={handleGiftPotCreated}
+                onContributeGiftPot={handleContributeGiftPot}
+                onContributeGiftPotError={handleContributeGiftPotError}
+                onGiftPotRemoved={handleGiftPotRemoved}
+                onGiftPotRefreshed={handleGiftPotRefreshed}
+                eventName={wishlistMeta.name}
                 useMock={false}
             />
         </main>

@@ -233,6 +233,7 @@
   },
   "wishlistToast": {
     "potStarted": "Pot started — friends can now chip in",
+    "giftPotStarted": "The gift pot has started",
     "wishReserved": "\"{name}\" reserved",
     "wishReservedFallback": "Wish reserved",
     "reserveError": "Could not reserve wish — please try again",
