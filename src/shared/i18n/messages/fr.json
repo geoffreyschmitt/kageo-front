@@ -275,7 +275,8 @@
     "statusWanted": "Désiré",
     "statusReserved": "Réservé",
     "statusPurchased": "Acheté",
-    "statusProposed": "Proposé"
+    "statusProposed": "Proposé",
+    "statusFunded": "Financé"
   },
   "wishlistCard": {
     "public": "Public",

@@ -119,7 +119,7 @@ export default function Wishlist({
 }: TWishlistPageProps) {
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'date' | 'priority'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
-  const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed')[]>(['all'])
+  const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed' | 'funded')[]>(['all'])
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({min: 0, max: 1000})
   const [isControlsOpen, setIsControlsOpen] = useState(false)
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)

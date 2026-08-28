@@ -275,7 +275,8 @@
     "statusWanted": "Wanted",
     "statusReserved": "Reserved",
     "statusPurchased": "Purchased",
-    "statusProposed": "Proposed"
+    "statusProposed": "Proposed",
+    "statusFunded": "Funded"
   },
   "wishlistCard": {
     "public": "Public",

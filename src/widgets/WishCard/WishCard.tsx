@@ -36,6 +36,8 @@ const getStatusClass = (status) => {
             return styles['wish-card__status--reserved']
         case 'proposed':
             return styles['wish-card__status--proposed']
+        case 'funded':
+            return styles['wish-card__status--funded']
         case 'wanted':
             return styles['wish-card__status--wanted']
         default:
@@ -87,7 +89,10 @@ export const WishCard = ({
         if (el) setDescOverflows(el.scrollHeight > el.clientHeight)
     }, [description])
 
-    const visibleStatus = showOwnerAction && (status === 'reserved' || status === 'purchased') ? 'wanted' : status
+    const visibleStatus =
+        showOwnerAction && (status === 'reserved' || status === 'purchased' || status === 'funded')
+            ? 'wanted'
+            : status
 
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
     const priorityLabel = t(`priority${cap(priority)}`)
