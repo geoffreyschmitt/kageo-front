@@ -63,6 +63,8 @@ export const WishCard = ({
     commentCount,
     reservedBy,
     purchasedBy,
+    reservedByName,
+    purchasedByName,
     showOwnerAction = false,
     showGuestAction = false,
     isOwner = false,
@@ -210,11 +212,17 @@ export const WishCard = ({
                     <span className={styles['wish-card__date']}>{t('added', {date: addedDate})}</span>
                     {!showOwnerAction && status === 'reserved' && reservedBy && (
                         <span className={styles['wish-card__reservedBy']}>
-                            {reservedBy === userId ? t('reservedByYou') : t('reservedBy', {name: reservedBy})}
+                            {reservedBy === userId
+                                ? t('reservedByYou')
+                                : t('reservedBy', {name: reservedByName ?? t('someone')})}
                         </span>
                     )}
                     {!showOwnerAction && status === 'purchased' && purchasedBy && (
-                        <span className={styles['wish-card__purchasedBy']}>{t('purchasedBy', {name: purchasedBy})}</span>
+                        <span className={styles['wish-card__purchasedBy']}>
+                            {purchasedBy === userId
+                                ? t('purchasedByYou')
+                                : t('purchasedBy', {name: purchasedByName ?? t('someone')})}
+                        </span>
                     )}
                 </div>
 

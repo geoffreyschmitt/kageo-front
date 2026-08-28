@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { getUserNamesByIds } from '@/shared/lib/getUserNameById'
 import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 import { readPotForViewer } from '@/app/api/wishlist/pot/readPot'
 import { readGiftPotForViewer } from '@/app/api/wish/pot/readGiftPot'
@@ -95,6 +96,11 @@ export default async function WishlistPage({
         })
     }
 
+    // Resolve reserver / purchaser ids to display names so cards never show a raw uuid.
+    const actorNames = await getUserNamesByIds(
+        rawWishes.flatMap((w) => [w.reservedBy, w.purchasedBy].filter((v): v is string => !!v)),
+    )
+
     const items: TWishCard[] = rawWishes.map((w) => ({
         id: w.id,
         name: w.name,
@@ -110,6 +116,8 @@ export default async function WishlistPage({
         commentCount: userIsOwner ? undefined : (commentCounts[w.id] ?? 0),
         reservedBy: w.reservedBy,
         purchasedBy: w.purchasedBy,
+        reservedByName: w.reservedBy ? actorNames.get(w.reservedBy) : undefined,
+        purchasedByName: w.purchasedBy ? actorNames.get(w.purchasedBy) : undefined,
         isProposed: w.status === 'proposed',
         showToOwner: w.showToOwner ?? false,
         giftPot: userIsOwner ? undefined : (giftPotViews.get(w.id) ?? null),

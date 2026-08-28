@@ -655,6 +655,8 @@ export default function Wishlist({
                     commentCount={item.commentCount}
                     reservedBy={item.reservedBy}
                     purchasedBy={item.purchasedBy}
+                    reservedByName={item.reservedByName}
+                    purchasedByName={item.purchasedByName}
                     showOwnerAction={!isHistory && !!userIsOwner}
                     isOwner={userIsOwner}
                     isHistory={isHistory}
@@ -708,6 +710,8 @@ export default function Wishlist({
                 commentCount={item.commentCount}
                 reservedBy={item.reservedBy}
                 purchasedBy={item.purchasedBy}
+                reservedByName={item.reservedByName}
+                purchasedByName={item.purchasedByName}
                 showOwnerAction={!isHistory && !!userIsOwner}
                 isOwner={userIsOwner}
                 isHistory={isHistory}
@@ -822,6 +826,8 @@ export default function Wishlist({
                       commentCount={item.commentCount}
                       reservedBy={item.reservedBy}
                       purchasedBy={item.purchasedBy}
+                      reservedByName={item.reservedByName}
+                      purchasedByName={item.purchasedByName}
                       showOwnerAction={false}
                       isOwner={userIsOwner}
                       showGuestAction={Boolean(isLoggedIn && !userIsOwner)}
