@@ -1,4 +1,5 @@
 import {TWishPriority, TWishStatus} from '@/entities/wish';
+import type {TGiftPotView} from '@/shared/api/wish/getGiftPot';
 
 
 export type TWishCard = {
@@ -37,4 +38,14 @@ export type TWishCard = {
   onEditWish?: (wish: TWishCard) => void
   userId?: string
   useMock?: boolean
+  giftPot?: TGiftPotView | null
+  onGiftPotCreated?: (wishId: string, creatorId: string, creatorName: string) => void
+  onContributeGiftPot?: (wishId: string, delta: number) => void
+  onContributeGiftPotError?: (wishId: string, delta: number) => void
+  onGiftPotRemoved?: (wishId: string, removedAmount: number) => void
+  onGiftPotRefreshed?: (wishId: string, view: TGiftPotView | null) => void
+  isLoggedIn?: boolean
+  isInvited?: boolean
+  eventName?: string
+  ownerName?: string
 }

@@ -13,6 +13,8 @@ import {RemovePurchasedButton} from "@/features/removePurchasedWish";
 import {DeleteWishButton} from "@/features/DeleteWish";
 import {CommentsSection} from "@/features/Comments";
 
+import {GiftPotSection} from "@/widgets/GiftPotSection";
+
 import styles from './WishCard.module.css'
 
 const getPriorityClass = (priority) => {
@@ -74,7 +76,17 @@ export const WishCard = ({
     onDeleteError,
     onEditWish,
     userId,
-    useMock
+    useMock,
+    giftPot,
+    onGiftPotCreated,
+    onContributeGiftPot,
+    onContributeGiftPotError,
+    onGiftPotRemoved,
+    onGiftPotRefreshed,
+    isLoggedIn,
+    isInvited,
+    eventName,
+    ownerName
 }: TWishCard) => {
     const t = useTranslations('wishCard')
     const tComments = useTranslations('comments')
@@ -93,6 +105,9 @@ export const WishCard = ({
         showOwnerAction && (status === 'reserved' || status === 'purchased' || status === 'funded')
             ? 'wanted'
             : status
+
+    const giftPotActive = giftPot != null
+    const noop = () => {}
 
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
     const priorityLabel = t(`priority${cap(priority)}`)
@@ -211,7 +226,7 @@ export const WishCard = ({
                 <div className={styles['wish-card__actions']}>
                     {showGuestAction && (
                         <>
-                            {(status === 'wanted' || status === 'proposed') && userId && (
+                            {!giftPotActive && (status === 'wanted' || status === 'proposed') && userId && (
                                 <ReserveButton wishId={id} userId={userId} onReserve={onReserve} onError={onReserveError} useMock={useMock}/>
                             )}
 
@@ -219,7 +234,7 @@ export const WishCard = ({
                                 <CancelReservationButton wishId={id} onCancel={onCancelReservation} onError={onCancelError} useMock={useMock}/>
                             )}
 
-                            {purchaseUrl && (status === 'wanted' || status === 'proposed') && (
+                            {!giftPotActive && purchaseUrl && (status === 'wanted' || status === 'proposed') && (
                                 <a
                                     href={purchaseUrl}
                                     target="_blank"
@@ -297,6 +312,30 @@ export const WishCard = ({
                         </>
                     )}
                 </div>
+                )}
+
+                {!isOwner && giftPot !== undefined && (
+                    <GiftPotSection
+                        wishId={id}
+                        wishName={name}
+                        price={price}
+                        currency={currency}
+                        status={status}
+                        eventName={eventName ?? ''}
+                        ownerName={ownerName ?? ''}
+                        isLoggedIn={!!isLoggedIn}
+                        isInvited={!!isInvited}
+                        userId={userId}
+                        giftPot={giftPot}
+                        onGiftPotCreated={onGiftPotCreated ?? noop}
+                        onContributeGiftPot={onContributeGiftPot ?? noop}
+                        onContributeGiftPotError={onContributeGiftPotError ?? noop}
+                        onGiftPotRemoved={onGiftPotRemoved ?? noop}
+                        onGiftPotRefreshed={onGiftPotRefreshed ?? noop}
+                        onMarkPurchased={onMarkPurchased}
+                        onMarkPurchasedError={onMarkPurchasedError}
+                        useMock={useMock}
+                    />
                 )}
             </div>
         </div>
