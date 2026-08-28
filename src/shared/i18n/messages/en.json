@@ -424,6 +424,7 @@
     "collectiveGift": "A collective gift for {ownerName}",
     "organisedBy": "Organised by {creatorName}",
     "raised": "{currency}{total} of {currency}{goal}",
+    "youvePledged": "You've already pledged {currency}{amount}.",
     "contributionLabel": "Your contribution",
     "disclaimer": "This records a pledge — it isn't a payment. {creatorName} collects the money directly from everyone.",
     "cancel": "Cancel",
@@ -585,5 +586,28 @@
     "cancel": "Cancel",
     "starting": "Starting…",
     "start": "Start the gift pot"
+  },
+  "giftPot": {
+    "kicker": "Gift pot",
+    "funded": "Goal reached",
+    "loginToSee": "A gift pot is running for this present — log in to see the details and join in.",
+    "organisedBy": "Organised by {creatorName}",
+    "yourPledge": "Your pledge",
+    "contribute": "Join in",
+    "modify": "Edit",
+    "pledgedTotal": "pledged in total",
+    "participants": "{count, plural, one {# participant} other {# participants}}",
+    "goal": "Goal",
+    "outOf": "of {amount}",
+    "otherParticipants": "{count, plural, one {# other participant} other {# other participants}}",
+    "pledgesHidden": "Anonymous pledges",
+    "you": "You",
+    "startedByYou": "Started by you",
+    "pledgedOn": "Pledged on {date}",
+    "noteGuest": "Your amount stays private. Only {creatorName}, who runs the pot, sees who gives how much.",
+    "noteOrganizer": "You are the only one who sees names and amounts. Other guests only see the total and the progress.",
+    "fundedBody": "{creatorName} is organising the purchase. The pot is closed — remember to hand over your share.",
+    "markPurchased": "Mark as purchased",
+    "markPurchasedHint": "Visible to you only."
   }
 }

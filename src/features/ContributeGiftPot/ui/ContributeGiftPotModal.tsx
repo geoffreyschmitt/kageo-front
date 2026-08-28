@@ -19,6 +19,7 @@ export const ContributeGiftPotModal = ({
     creatorName,
     goal,
     totalContributed,
+    userContributed = 0,
     currency,
     isLoggedIn,
     onContribute,
@@ -81,6 +82,11 @@ export const ContributeGiftPotModal = ({
                                 goal: goal.toFixed(2),
                             })}
                         </p>
+                        {userContributed > 0 && (
+                            <p className={styles.contributeGiftPot__heroUserContrib}>
+                                {t('youvePledged', { currency, amount: userContributed.toFixed(2) })}
+                            </p>
+                        )}
                     </div>
                 </div>
 

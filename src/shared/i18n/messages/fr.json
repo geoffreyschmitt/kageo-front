@@ -424,6 +424,7 @@
     "collectiveGift": "Un cadeau collectif pour {ownerName}",
     "organisedBy": "Organisé par {creatorName}",
     "raised": "{currency}{total} sur {currency}{goal}",
+    "youvePledged": "Vous avez déjà promis {currency}{amount}.",
     "contributionLabel": "Votre contribution",
     "disclaimer": "Ceci enregistre une promesse — pas un paiement. {creatorName} récupère l'argent directement auprès de chacun·e.",
     "cancel": "Annuler",
@@ -585,5 +586,28 @@
     "cancel": "Annuler",
     "starting": "Démarrage…",
     "start": "Lancer la cagnotte"
+  },
+  "giftPot": {
+    "kicker": "Cagnotte cadeau",
+    "funded": "Objectif atteint",
+    "loginToSee": "Une cagnotte est en cours pour ce cadeau — connectez-vous pour voir les détails et participer.",
+    "organisedBy": "Organisée par {creatorName}",
+    "yourPledge": "Votre promesse",
+    "contribute": "Participer",
+    "modify": "Modifier",
+    "pledgedTotal": "promis au total",
+    "participants": "{count, plural, one {# participant} other {# participants}}",
+    "goal": "Objectif",
+    "outOf": "sur {amount}",
+    "otherParticipants": "{count, plural, one {# autre participant} other {# autres participants}}",
+    "pledgesHidden": "Promesses anonymes",
+    "you": "Vous",
+    "startedByYou": "Lancée par vous",
+    "pledgedOn": "Promis le {date}",
+    "noteGuest": "Votre montant reste privé. Seul·e {creatorName}, qui organise, voit qui donne combien.",
+    "noteOrganizer": "Vous seul·e voyez les noms et les montants. Les autres invité·es ne voient que le total et la progression.",
+    "fundedBody": "{creatorName} organise l'achat. La cagnotte est close — pensez à remettre votre part.",
+    "markPurchased": "Marquer comme acheté",
+    "markPurchasedHint": "Visible uniquement par vous."
   }
 }
