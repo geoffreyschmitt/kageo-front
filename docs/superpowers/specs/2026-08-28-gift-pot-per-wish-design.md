@@ -1,7 +1,7 @@
 # Gift pot per wish — design
 
 **Date:** 2026-08-28
-**Status:** Approved, pending implementation plan
+**Status:** Implemented (feat/gift-pot); live browser QA pending
 **Branch:** `feat/gift-pot`
 
 ## Problem
