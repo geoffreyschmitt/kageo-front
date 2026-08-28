@@ -97,16 +97,18 @@ Body `{ wishId }`. Guards, in order:
 Returns `201` with the pot record.
 
 ### `POST /api/wish/contribute` — add a pledge
-Body `{ wishId, amount }`. Shared `loadContext` helper (mirrors the wishlist
-version): logged in, non-owner, wishlist public **or** caller invited, pot
-exists, `amount` is a number `> 0`. Then:
+Body `{ wishId, amount }`. Shared `loadContext` helper, **mirroring
+`/api/wishlist/contribute` exactly**: logged in (you pledge with an account),
+non-owner, `wishlist.isPublic`, pot exists, `amount` is a number `> 0`. Then:
 - `kv.lpush` the contribution
 - recompute total, reconcile `funded` (see above)
 - return `{ wishId, contribution, totalContributed, isFunded }`
 
 ### `PATCH /api/wish/contribute` — replace caller's own pledge
-Body `{ wishId, amount }`, `amount >= 0` (`0` removes the pledge). Read-modify-write
-on the list exactly like `/api/wishlist/contribute` PATCH. Then recompute total,
+Body `{ wishId, amount }`, `amount >= 0` (`0` removes the pledge). Same
+`loadContext` guards as POST (logged in, non-owner, public list, pot exists).
+Read-modify-write on the list exactly like `/api/wishlist/contribute` PATCH.
+Then recompute total,
 reconcile `funded`, return `{ wishId, totalContributed, myContribution, isFunded }`.
 
 ### `readGiftPotForViewer` (`src/app/api/wish/pot/readGiftPot.ts`)
