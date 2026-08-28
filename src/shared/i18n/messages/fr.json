@@ -233,6 +233,7 @@
   },
   "wishlistToast": {
     "potStarted": "La cagnotte a démarré — vos amis peuvent maintenant y contribuer",
+    "giftPotStarted": "La cagnotte a démarré",
     "wishReserved": "« {name} » réservé",
     "wishReservedFallback": "Souhait réservé",
     "reserveError": "Impossible de réserver le souhait — veuillez réessayer",
@@ -275,7 +276,8 @@
     "statusWanted": "Désiré",
     "statusReserved": "Réservé",
     "statusPurchased": "Acheté",
-    "statusProposed": "Proposé"
+    "statusProposed": "Proposé",
+    "statusFunded": "Financé"
   },
   "wishlistCard": {
     "public": "Public",
@@ -417,6 +419,30 @@
     "removing": "Retrait…",
     "invalidAmount": "Veuillez saisir un montant valide supérieur à 0"
   },
+  "contributeGiftPotModal": {
+    "title": "Promettre à la cagnotte",
+    "editTitle": "Modifier ma promesse",
+    "collectiveGift": "Un cadeau collectif pour {ownerName}",
+    "organisedBy": "Organisé par {creatorName}",
+    "raised": "{currency}{total} sur {currency}{goal}",
+    "youvePledged": "Vous avez déjà promis {currency}{amount}.",
+    "contributionLabel": "Votre contribution",
+    "disclaimer": "Ceci enregistre une promesse — pas un paiement. {creatorName} récupère l'argent directement auprès de chacun·e.",
+    "cancel": "Annuler",
+    "adding": "Ajout…",
+    "addPledge": "Ajouter ma promesse",
+    "saving": "Enregistrement…",
+    "savePledge": "Enregistrer",
+    "removePledge": "Retirer ma promesse",
+    "removeConfirmTitle": "Retirer votre promesse ?",
+    "removeConfirmBody": "Votre promesse de {currency}{amount} sera retirée de la cagnotte et vous ne serez plus compté·e parmi les participants.",
+    "removeKeep": "Garder ma promesse",
+    "removeConfirm": "Retirer",
+    "removing": "Retrait…",
+    "invalidAmount": "Veuillez saisir un montant valide supérieur à 0",
+    "loginPrompt": "Connectez-vous pour contribuer à cette cagnotte.",
+    "logIn": "Se connecter"
+  },
   "createPotModal": {
     "triggerButton": "Démarrer une cagnotte commune",
     "title": "Démarrer une cagnotte commune",
@@ -546,5 +572,45 @@
     "title": "Connexion requise",
     "cancel": "Annuler",
     "logIn": "Se connecter"
+  },
+  "createGiftPotModal": {
+    "triggerLead": "Trop cher pour une seule personne ?",
+    "triggerAction": "Ouvrir une cagnotte",
+    "title": "Lancer une cagnotte",
+    "goalLabel": "Objectif",
+    "goalHint": "L'objectif est le prix du cadeau. Vous pouvez le dépasser.",
+    "note": "Vous devenez l'organisateur·rice. Les invité·es participent en privé ; vous seul·e voyez qui donne combien, vous collectez l'argent et achetez le cadeau.",
+    "loginRequired": "Connectez-vous pour lancer une cagnotte pour {ownerName}. Vous devez aussi avoir été invité·e par le propriétaire de la liste.",
+    "inviteRequired": "Seuls les invité·es de {ownerName} peuvent lancer une cagnotte. Demandez-leur de partager la liste avec vous.",
+    "logIn": "Se connecter",
+    "gotIt": "Compris",
+    "cancel": "Annuler",
+    "starting": "Démarrage…",
+    "start": "Lancer la cagnotte"
+  },
+  "giftPot": {
+    "kicker": "Cagnotte cadeau",
+    "funded": "Objectif atteint",
+    "loginToSee": "Une cagnotte est en cours pour ce cadeau — connectez-vous pour voir les détails et participer.",
+    "organisedBy": "Organisée par {creatorName}",
+    "yourPledge": "Votre promesse",
+    "contribute": "Participer",
+    "modify": "Modifier",
+    "pledgedTotal": "promis au total",
+    "participants": "{count, plural, one {# participant} other {# participants}}",
+    "goal": "Objectif",
+    "outOf": "sur {amount}",
+    "otherParticipants": "{count, plural, one {# autre participant} other {# autres participants}}",
+    "pledgesHidden": "Promesses anonymes",
+    "you": "Vous",
+    "startedByYou": "Lancée par vous",
+    "pledgedOn": "Promis le {date}",
+    "noteGuest": "Votre montant reste privé. Seul·e {creatorName}, qui organise, voit qui donne combien.",
+    "noteOrganizer": "Vous seul·e voyez les noms et les montants. Les autres invité·es ne voient que le total et la progression.",
+    "fundedBody": "{creatorName} organise l'achat. La cagnotte est close — pensez à remettre votre part.",
+    "markPurchased": "Marquer comme acheté",
+    "markPurchasedHint": "Visible uniquement par vous.",
+    "purchasedNote": "Cadeau acheté par l'organisateur·rice.",
+    "pledgeReminder": "Une promesse, pas un paiement — remettez votre part à {creatorName}."
   }
 }

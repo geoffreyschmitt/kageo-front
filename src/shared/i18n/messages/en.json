@@ -233,6 +233,7 @@
   },
   "wishlistToast": {
     "potStarted": "Pot started — friends can now chip in",
+    "giftPotStarted": "The gift pot has started",
     "wishReserved": "\"{name}\" reserved",
     "wishReservedFallback": "Wish reserved",
     "reserveError": "Could not reserve wish — please try again",
@@ -275,7 +276,8 @@
     "statusWanted": "Wanted",
     "statusReserved": "Reserved",
     "statusPurchased": "Purchased",
-    "statusProposed": "Proposed"
+    "statusProposed": "Proposed",
+    "statusFunded": "Funded"
   },
   "wishlistCard": {
     "public": "Public",
@@ -417,6 +419,30 @@
     "removing": "Removing…",
     "invalidAmount": "Please enter a valid amount greater than 0"
   },
+  "contributeGiftPotModal": {
+    "title": "Pledge to the pot",
+    "editTitle": "Edit my pledge",
+    "collectiveGift": "A collective gift for {ownerName}",
+    "organisedBy": "Organised by {creatorName}",
+    "raised": "{currency}{total} of {currency}{goal}",
+    "youvePledged": "You've already pledged {currency}{amount}.",
+    "contributionLabel": "Your contribution",
+    "disclaimer": "This records a pledge — it isn't a payment. {creatorName} collects the money directly from everyone.",
+    "cancel": "Cancel",
+    "adding": "Adding…",
+    "addPledge": "Add pledge",
+    "saving": "Saving…",
+    "savePledge": "Save",
+    "removePledge": "Remove my pledge",
+    "removeConfirmTitle": "Remove your pledge?",
+    "removeConfirmBody": "Your pledge of {currency}{amount} will be removed from the pot and you'll no longer be counted as a participant.",
+    "removeKeep": "Keep my pledge",
+    "removeConfirm": "Remove",
+    "removing": "Removing…",
+    "invalidAmount": "Please enter a valid amount greater than 0",
+    "loginPrompt": "Log in to contribute to this pot.",
+    "logIn": "Log in"
+  },
   "createPotModal": {
     "triggerButton": "Start a gift pot",
     "title": "Start a gift pot",
@@ -546,5 +572,45 @@
     "title": "Log in required",
     "cancel": "Cancel",
     "logIn": "Log in"
+  },
+  "createGiftPotModal": {
+    "triggerLead": "Too pricey for one person?",
+    "triggerAction": "Open a gift pot",
+    "title": "Start a gift pot",
+    "goalLabel": "Goal",
+    "goalHint": "The goal is the price of the gift. You can go over it.",
+    "note": "You become the organiser. Guests pledge privately; only you see who gives how much, you collect the money and buy the gift.",
+    "loginRequired": "Log in to start a gift pot for {ownerName}. You also need to have been invited by the list owner.",
+    "inviteRequired": "Only {ownerName}'s guests can start a gift pot. Ask them to share the list with you.",
+    "logIn": "Log in",
+    "gotIt": "Got it",
+    "cancel": "Cancel",
+    "starting": "Starting…",
+    "start": "Start the gift pot"
+  },
+  "giftPot": {
+    "kicker": "Gift pot",
+    "funded": "Goal reached",
+    "loginToSee": "A gift pot is running for this present — log in to see the details and join in.",
+    "organisedBy": "Organised by {creatorName}",
+    "yourPledge": "Your pledge",
+    "contribute": "Join in",
+    "modify": "Edit",
+    "pledgedTotal": "pledged in total",
+    "participants": "{count, plural, one {# participant} other {# participants}}",
+    "goal": "Goal",
+    "outOf": "of {amount}",
+    "otherParticipants": "{count, plural, one {# other participant} other {# other participants}}",
+    "pledgesHidden": "Anonymous pledges",
+    "you": "You",
+    "startedByYou": "Started by you",
+    "pledgedOn": "Pledged on {date}",
+    "noteGuest": "Your amount stays private. Only {creatorName}, who runs the pot, sees who gives how much.",
+    "noteOrganizer": "You are the only one who sees names and amounts. Other guests only see the total and the progress.",
+    "fundedBody": "{creatorName} is organising the purchase. The pot is closed — remember to hand over your share.",
+    "markPurchased": "Mark as purchased",
+    "markPurchasedHint": "Visible to you only.",
+    "purchasedNote": "Bought by the organiser.",
+    "pledgeReminder": "A pledge, not a payment — hand your share to {creatorName}."
   }
 }

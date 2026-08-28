@@ -5,6 +5,7 @@ import { kv } from '@vercel/kv'
 import { authOptions } from '@/shared/config/authOptions'
 import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 import { readPotForViewer } from '@/app/api/wishlist/pot/readPot'
+import { readGiftPotForViewer } from '@/app/api/wish/pot/readGiftPot'
 import WishlistPageClient from './WishlistPageClient'
 
 type KVWishlist = {
@@ -30,7 +31,7 @@ type KVWish = {
     currency: string
     imageUrl: string
     priority: 'low' | 'medium' | 'high'
-    status: 'wanted' | 'purchased' | 'reserved' | 'proposed'
+    status: 'wanted' | 'purchased' | 'reserved' | 'proposed' | 'funded'
     purchaseUrl?: string
     notes?: string
     createdAt: string
@@ -71,6 +72,17 @@ export default async function WishlistPage({
         ? (await Promise.all(wishIds.map((wid) => kv.get<KVWish>(`wish:${wid}`)))).filter(Boolean) as KVWish[]
         : []
 
+    const giftPotViews = userIsOwner
+        ? new Map<string, null>()
+        : new Map(
+              await Promise.all(
+                  rawWishes.map(async (w) => [
+                      w.id,
+                      await readGiftPotForViewer({ wishId: w.id, userId: session?.user?.id ?? null }),
+                  ] as const),
+              ),
+          )
+
     const items: TWishCard[] = rawWishes.map((w) => ({
         id: w.id,
         name: w.name,
@@ -79,7 +91,7 @@ export default async function WishlistPage({
         currency: w.currency,
         imageUrl: w.imageUrl,
         priority: w.priority,
-        status: w.status,
+        status: userIsOwner && w.status === 'funded' ? 'wanted' : w.status,
         purchaseUrl: w.purchaseUrl,
         notes: w.notes,
         addedDate: new Date(w.createdAt).toLocaleDateString(),
@@ -87,6 +99,7 @@ export default async function WishlistPage({
         purchasedBy: w.purchasedBy,
         isProposed: w.status === 'proposed',
         showToOwner: w.showToOwner ?? false,
+        giftPot: userIsOwner ? undefined : (giftPotViews.get(w.id) ?? null),
     }))
 
     // Look up ownerName: use session name if owner, else look up via KV reverse index
@@ -116,8 +129,12 @@ export default async function WishlistPage({
     // has happened on it yet — no reserved/purchased/proposed wishes, no
     // pot, no comments from invitees.
     const commentsCount = (await kv.lrange<string>(`wishlist:${id}:comments`, 0, -1))?.length ?? 0
+    const anyGiftPot = userIsOwner
+        ? (await Promise.all(rawWishes.map((w) => kv.get(`wish:${w.id}:pot`)))).some(Boolean)
+        : Array.from(giftPotViews.values()).some((v) => v !== null)
+
     const hasActivity =
-        rawWishes.some((w) => w.status !== 'wanted') || potExists || commentsCount > 0
+        rawWishes.some((w) => w.status !== 'wanted') || potExists || anyGiftPot || commentsCount > 0
 
     return (
         <WishlistPageClient

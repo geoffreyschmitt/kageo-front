@@ -1,0 +1,472 @@
+/* ============================================================
+   GIFT POT SECTION — the per-wish gift pot accordion. Lives at
+   the bottom of a wish card, where the actions would sit.
+   Collapsed it shows a mini progress bar; expanded it adapts
+   to the viewer: logged out / guest / organiser / funded.
+   ============================================================ */
+
+.giftPot {
+    --gp-sage:        var(--accent);
+    --gp-sage-hover:  var(--accent-hover);
+    --gp-sage-tint:   var(--accent-tint-bg);
+    --gp-sage-border: var(--accent-tint-border);
+    --gp-contrast:    var(--accent-contrast);
+    --gp-sunken:      var(--surface-sunken);
+    --gp-border:      var(--border-default);
+    --gp-border-soft: var(--border-soft);
+    --gp-text:        var(--text-primary);
+    --gp-text-2:      var(--text-secondary);
+    --gp-text-3:      var(--text-tertiary);
+    --gp-font-serif:  var(--font-serif);
+    --gp-font-sans:   var(--font-sans);
+    --gp-font-mono:   var(--font-mono);
+
+    margin-top: auto;
+    font-family: var(--gp-font-sans);
+}
+
+/* ── "Open a gift pot" trigger (no pot yet) ───────────────── */
+
+.giftPot__create {
+    margin-top: auto;
+    border-top: 1px solid var(--gp-border-soft);
+    padding-top: 14px;
+}
+
+/* ── Accordion ────────────────────────────────────────────── */
+
+.giftPot__details {
+    border-top: 1px solid var(--gp-border-soft);
+    padding-top: 14px;
+}
+
+.giftPot__summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    min-height: 24px;
+    cursor: pointer;
+}
+
+.giftPot__summary::-webkit-details-marker {
+    display: none;
+}
+
+.giftPot__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gp-sage);
+    white-space: nowrap;
+}
+
+.giftPot__label svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.giftPot__you {
+    font-family: var(--gp-font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--gp-sage);
+    background: var(--gp-sage-tint);
+    border: 1px solid var(--gp-sage-border);
+    border-radius: 100px;
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+
+.giftPot__mini {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.giftPot__miniBar {
+    width: 58px;
+    height: 7px;
+    border-radius: 100px;
+    background: var(--gp-sage-tint);
+    overflow: hidden;
+}
+
+.giftPot__miniBar > i {
+    display: block;
+    height: 100%;
+    border-radius: 100px;
+    background: var(--gp-sage);
+}
+
+.giftPot__pct {
+    font-family: var(--gp-font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gp-text-2);
+    min-width: 30px;
+    text-align: right;
+}
+
+.giftPot__chevron {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: var(--gp-text-3);
+    transition: transform 0.2s ease;
+}
+
+.giftPot__details[open] .giftPot__chevron {
+    transform: rotate(180deg);
+}
+
+/* ── Panel ────────────────────────────────────────────────── */
+
+.giftPot__panel {
+    padding: 14px 0 2px;
+}
+
+.giftPot__bar {
+    height: 9px;
+    border-radius: 100px;
+    background: var(--gp-sage-tint);
+    overflow: hidden;
+}
+
+.giftPot__bar > i {
+    display: block;
+    height: 100%;
+    border-radius: 100px;
+    background: var(--gp-sage);
+}
+
+.giftPot__amounts {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 11px;
+}
+
+.giftPot__big {
+    font-family: var(--gp-font-serif);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: var(--gp-text);
+}
+
+.giftPot__goalInline {
+    font-size: 12px;
+    color: var(--gp-text-3);
+    margin-left: 6px;
+}
+
+.giftPot__people {
+    font-size: 12px;
+    color: var(--gp-text-3);
+    white-space: nowrap;
+}
+
+.giftPot__chip {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gp-sage);
+    background: var(--gp-sage-tint);
+    border: 1px solid var(--gp-sage-border);
+    border-radius: 100px;
+    padding: 3px 9px;
+    white-space: nowrap;
+}
+
+.giftPot__org {
+    font-size: 12px;
+    color: var(--gp-text-3);
+    margin: 6px 0 0;
+}
+
+/* ── Organiser: goal row ──────────────────────────────────── */
+
+.giftPot__goalRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 10px 13px;
+    background: var(--gp-sunken);
+    border: 1px solid var(--gp-border-soft);
+    border-radius: 10px;
+}
+
+.giftPot__goalKey {
+    font-size: 12px;
+    color: var(--gp-text-3);
+}
+
+.giftPot__goalValue {
+    font-family: var(--gp-font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gp-text);
+    margin-left: auto;
+}
+
+/* ── Organiser: nominative list ───────────────────────────── */
+
+.giftPot__listHead {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--gp-text-3);
+    margin: 16px 0 2px;
+}
+
+.giftPot__listWrap {
+    margin: 0 -2px;
+    padding: 0 2px;
+}
+
+/* ~3 rows tall, then it scrolls with a soft fade at the bottom. */
+.giftPot__listWrap--scroll {
+    max-height: 150px;
+    overflow-y: auto;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 16px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 16px), transparent);
+}
+
+.giftPot__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.giftPot__row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 2px;
+}
+
+.giftPot__row + .giftPot__row {
+    border-top: 1px solid var(--gp-border-soft);
+}
+
+.giftPot__avatar {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--gp-sage-tint);
+    border: 1px solid var(--gp-sage-border);
+    color: var(--gp-sage);
+    font-size: 10.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.giftPot__name {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gp-text);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.giftPot__name small {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 400;
+    color: var(--gp-text-3);
+    margin-top: 1px;
+}
+
+.giftPot__tag {
+    display: inline-block;
+    margin-left: 7px;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--gp-text-3);
+    border: 1px solid var(--gp-border);
+    border-radius: 100px;
+    padding: 1px 6px;
+    vertical-align: 1px;
+}
+
+.giftPot__rowAmount {
+    font-family: var(--gp-font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gp-text);
+    flex-shrink: 0;
+}
+
+/* ── Guest: my pledge ─────────────────────────────────────── */
+
+.giftPot__mine {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--gp-sage-tint);
+    border: 1px solid var(--gp-sage-border);
+    border-radius: 12px;
+}
+
+.giftPot__mineLabel {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--gp-sage);
+    margin: 0 0 2px;
+}
+
+.giftPot__mineAmount {
+    font-family: var(--gp-font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gp-text);
+}
+
+.giftPot__mineLink {
+    font-family: var(--gp-font-sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--gp-sage);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.giftPot__others {
+    font-size: 11.5px;
+    color: var(--gp-text-3);
+    margin: 8px 0 0;
+}
+
+/* ── Funded ───────────────────────────────────────────────── */
+
+.giftPot__done {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--gp-sage-tint);
+    border: 1px solid var(--gp-sage-border);
+    border-radius: 12px;
+}
+
+.giftPot__done svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--gp-sage);
+    margin-top: 1px;
+}
+
+.giftPot__done p {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--gp-text-2);
+}
+
+/* ── Organiser: buy now ───────────────────────────────────── */
+
+.giftPot__buy {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin-top: 14px;
+}
+
+.giftPot__buyHint {
+    font-size: 11px;
+    color: var(--gp-text-3);
+    text-align: center;
+    margin: 0;
+}
+
+/* ── Note ─────────────────────────────────────────────────── */
+
+.giftPot__note {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    background: var(--gp-sunken);
+    border: 1px solid var(--gp-border-soft);
+    border-radius: 10px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--gp-text-2);
+}
+
+.giftPot__note svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    color: var(--gp-sage);
+    margin-top: 2px;
+}
+
+/* ── Primary action ───────────────────────────────────────── */
+
+.giftPot__button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-family: var(--gp-font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 11px 22px;
+    border-radius: 100px;
+    border: 1.5px solid var(--gp-sage);
+    background: var(--gp-sage);
+    color: var(--gp-contrast);
+    cursor: pointer;
+    margin-top: 14px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.giftPot__button:hover {
+    background: var(--gp-sage-hover);
+    border-color: var(--gp-sage-hover);
+}
+
+@media (max-width: 420px) {
+    .giftPot__summary {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .giftPot__mini {
+        margin-left: auto;
+    }
+}

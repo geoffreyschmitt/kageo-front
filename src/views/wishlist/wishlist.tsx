@@ -19,6 +19,7 @@ import {LoginPromptModal} from '@/shared/ui'
 import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
 import {TWishlistFormData} from '@/entities/wishlist';
 import type {TGetPotResponse} from '@/shared/api/wishlist/getPot';
+import type {TGiftPotView} from '@/shared/api/wish/getGiftPot';
 
 import styles from './wishlist.module.css'
 import {eventBus} from '@/shared/eventBus/';
@@ -64,6 +65,14 @@ type TWishlistPageProps = {
   isLoggedIn?: boolean
   isInvited?: boolean
   onPotCreated?: (creatorId: string, creatorName: string) => void
+  // Per-wish gift pots, keyed by wish id (undefined entry = the viewer must not see a pot)
+  giftPots?: Record<string, TGiftPotView | null>
+  onGiftPotCreated?: (wishId: string, creatorId: string, creatorName: string) => void
+  onContributeGiftPot?: (wishId: string, delta: number) => void
+  onContributeGiftPotError?: (wishId: string, delta: number) => void
+  onGiftPotRemoved?: (wishId: string, removedAmount: number) => void
+  onGiftPotRefreshed?: (wishId: string, view: TGiftPotView | null) => void
+  eventName?: string
   useMock?: boolean
   userIsOwner: boolean
   isHistory?: boolean
@@ -109,6 +118,13 @@ export default function Wishlist({
   isLoggedIn = false,
   isInvited = false,
   onPotCreated,
+  giftPots = {},
+  onGiftPotCreated,
+  onContributeGiftPot,
+  onContributeGiftPotError,
+  onGiftPotRemoved,
+  onGiftPotRefreshed,
+  eventName,
   useMock = false,
   userIsOwner = false,
   isHistory = false,
@@ -119,7 +135,7 @@ export default function Wishlist({
 }: TWishlistPageProps) {
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'date' | 'priority'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
-  const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed')[]>(['all'])
+  const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed' | 'funded')[]>(['all'])
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({min: 0, max: 1000})
   const [isControlsOpen, setIsControlsOpen] = useState(false)
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)
@@ -132,6 +148,10 @@ export default function Wishlist({
   const t = useTranslations('wishlist')
   const tComments = useTranslations('comments')
   const locale = useLocale()
+
+  // The gift-pot UI labels the pot with the event it belongs to; fall back to the
+  // wishlist name when the page did not pass an explicit event name.
+  const wishEventName = eventName ?? name
 
   // Owned wishlists can always be edited while active; once in history,
   // editing/deleting is only safe if no one has interacted with it yet
@@ -178,7 +198,13 @@ export default function Wishlist({
       // Proposed items are always shown in their own section, never in the main grid
       if (item.status === 'proposed' || item.isProposed) return false
 
-      if (!statusFilter.includes('all') && !statusFilter.includes(item.status)) {
+      // A funded wish is still open to buy, so the "wanted" filter must let it through.
+      const matchesStatus =
+        statusFilter.includes('all') ||
+        statusFilter.includes(item.status) ||
+        (item.status === 'funded' && statusFilter.includes('wanted'))
+
+      if (!matchesStatus) {
         return false
       }
 
@@ -205,7 +231,8 @@ export default function Wishlist({
   }, [filteredAndSortedItems])
 
   const purchasedItems = items.filter((item) => item.status === 'purchased')
-  const wantedItems = items.filter((item) => item.status === 'wanted')
+  // Funded wishes still count as wanted — the pot is full but nobody has bought the gift yet.
+  const wantedItems = items.filter((item) => item.status === 'wanted' || item.status === 'funded')
   const reservedItems = items.filter((item) => item.status === 'reserved')
   const allProposedItems = items.filter((item) => item.isProposed || item.status === 'proposed')
   const proposedItems = useMemo(() => {
@@ -629,6 +656,7 @@ export default function Wishlist({
                     purchasedBy={item.purchasedBy}
                     showOwnerAction={!isHistory && !!userIsOwner}
                     isOwner={userIsOwner}
+                    isHistory={isHistory}
                     showGuestAction={!isHistory && Boolean(isLoggedIn && !userIsOwner)}
                     onReserve={onReserveWish}
                     onReserveError={onReserveError}
@@ -641,6 +669,16 @@ export default function Wishlist({
                     onDeleteWish={onDeleteWish}
                     onDeleteError={onDeleteError}
                     onEditWish={handleEditWish}
+                    giftPot={giftPots[item.id]}
+                    onGiftPotCreated={onGiftPotCreated}
+                    onContributeGiftPot={onContributeGiftPot}
+                    onContributeGiftPotError={onContributeGiftPotError}
+                    onGiftPotRemoved={onGiftPotRemoved}
+                    onGiftPotRefreshed={onGiftPotRefreshed}
+                    isLoggedIn={isLoggedIn}
+                    isInvited={isInvited}
+                    ownerName={ownerName}
+                    eventName={wishEventName}
                     userId={userId}
                     useMock={useMock}
                   />
@@ -670,6 +708,7 @@ export default function Wishlist({
                 purchasedBy={item.purchasedBy}
                 showOwnerAction={!isHistory && !!userIsOwner}
                 isOwner={userIsOwner}
+                isHistory={isHistory}
                 showGuestAction={!isHistory && Boolean(isLoggedIn && !userIsOwner)}
                 onReserve={onReserveWish}
                 onReserveError={onReserveError}
@@ -682,6 +721,16 @@ export default function Wishlist({
                 onDeleteWish={onDeleteWish}
                 onDeleteError={onDeleteError}
                 onEditWish={handleEditWish}
+                giftPot={giftPots[item.id]}
+                onGiftPotCreated={onGiftPotCreated}
+                onContributeGiftPot={onContributeGiftPot}
+                onContributeGiftPotError={onContributeGiftPotError}
+                onGiftPotRemoved={onGiftPotRemoved}
+                onGiftPotRefreshed={onGiftPotRefreshed}
+                isLoggedIn={isLoggedIn}
+                isInvited={isInvited}
+                ownerName={ownerName}
+                eventName={wishEventName}
                 userId={userId}
                 useMock={useMock}
               />
@@ -779,6 +828,12 @@ export default function Wishlist({
                       onCancelError={onCancelError}
                       onMarkPurchased={onMarkPurchasedWish}
                       onMarkPurchasedError={onMarkPurchasedError}
+                      // Proposed wishes never carry a gift pot — undefined hides the section entirely.
+                      giftPot={undefined}
+                      isLoggedIn={isLoggedIn}
+                      isInvited={isInvited}
+                      ownerName={ownerName}
+                      eventName={wishEventName}
                       userId={userId}
                       useMock={useMock}
                     />
@@ -838,6 +893,12 @@ export default function Wishlist({
                       showOwnerAction={false}
                       showGuestAction={false}
                       isOwner
+                      // Proposed wishes never carry a gift pot — undefined hides the section entirely.
+                      giftPot={undefined}
+                      isLoggedIn={isLoggedIn}
+                      isInvited={isInvited}
+                      ownerName={ownerName}
+                      eventName={wishEventName}
                       userId={userId}
                       useMock={useMock}
                     />

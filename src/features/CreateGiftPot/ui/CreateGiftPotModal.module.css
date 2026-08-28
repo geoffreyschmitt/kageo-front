@@ -1,0 +1,129 @@
+.createGiftPot,
+.createGiftPot__trigger {
+    --cp2-sage:       var(--accent);
+    --cp2-sage-light: var(--accent-tint-bg);
+    --cp2-sage-hover: var(--accent-hover);
+    --cp2-text:       var(--text-primary);
+    --cp2-text-2:     var(--text-secondary);
+    --cp2-border:     var(--border-default);
+    --cp2-error:      var(--error-fg);
+    --cp2-surface-2:  var(--surface-sunken);
+    --cp2-font-sans:  var(--font-sans);
+}
+
+.createGiftPot {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.createGiftPot__message {
+    font-family: var(--cp2-font-sans);
+    font-size: 14px;
+    color: var(--cp2-text-2);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.createGiftPot__message strong {
+    color: var(--cp2-text);
+    font-weight: 600;
+}
+
+.createGiftPot__goal {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--cp2-surface-2);
+}
+
+.createGiftPot__goalLabel {
+    font-family: var(--cp2-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cp2-text-2);
+}
+
+.createGiftPot__goalValue {
+    font-family: var(--cp2-font-sans);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--cp2-text);
+}
+
+.createGiftPot__hint {
+    font-family: var(--cp2-font-sans);
+    font-size: 12px;
+    color: var(--cp2-text-2);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.createGiftPot__error {
+    font-family: var(--cp2-font-sans);
+    font-size: 12px;
+    color: var(--cp2-error);
+    margin: 0;
+}
+
+.createGiftPot__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.createGiftPot__button {
+    padding: 11px 28px;
+    border-radius: 100px;
+    font-family: var(--cp2-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+.createGiftPot__button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.createGiftPot__button--primary {
+    background: var(--cp2-sage);
+    color: var(--accent-contrast);
+}
+
+.createGiftPot__button--primary:hover:not(:disabled) {
+    background: var(--cp2-sage-hover);
+}
+
+.createGiftPot__button--secondary {
+    background: transparent;
+    color: var(--cp2-text-2);
+    border: 1.5px solid var(--cp2-border);
+}
+
+.createGiftPot__button--secondary:hover:not(:disabled) {
+    background: var(--cp2-surface-2);
+}
+
+.createGiftPot__trigger {
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 0;
+}
+
+.createGiftPot__trigger b {
+    color: var(--accent);
+    font-weight: 600;
+}

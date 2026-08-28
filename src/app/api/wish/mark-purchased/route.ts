@@ -33,6 +33,14 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Wish is already purchased' }, { status: 409 })
         }
 
+        // A funded gift pot: only its creator (the organiser) may close it out.
+        if (wish.status === 'funded') {
+            const pot = await kv.get<{ creatorId: string }>(`wish:${wishId}:pot`)
+            if (!pot || pot.creatorId !== session.user.id) {
+                return NextResponse.json({ message: 'Only the pot organiser can do this' }, { status: 403 })
+            }
+        }
+
         const updated = { ...wish, status: 'purchased', purchasedBy: session.user.id, updatedAt: new Date().toISOString() }
         await kv.set(`wish:${wishId}`, updated)
 

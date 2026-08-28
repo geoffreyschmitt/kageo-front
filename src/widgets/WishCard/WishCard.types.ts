@@ -1,4 +1,5 @@
 import {TWishPriority, TWishStatus} from '@/entities/wish';
+import type {TGiftPotView} from '@/shared/api/wish/getGiftPot';
 
 
 export type TWishCard = {
@@ -24,6 +25,8 @@ export type TWishCard = {
   // this must stay true for the owner in history mode too, since comments should never
   // reach the owner regardless of view mode.
   isOwner?: boolean
+  // An archived (history) wishlist is read-only: no gift pot can be opened or joined.
+  isHistory?: boolean
   onReserve?: (wishId: string, reservedBy: string) => void
   onReserveError?: (wishId: string) => void
   onCancelReservation?: (wishId: string) => void
@@ -37,4 +40,14 @@ export type TWishCard = {
   onEditWish?: (wish: TWishCard) => void
   userId?: string
   useMock?: boolean
+  giftPot?: TGiftPotView | null
+  onGiftPotCreated?: (wishId: string, creatorId: string, creatorName: string) => void
+  onContributeGiftPot?: (wishId: string, delta: number) => void
+  onContributeGiftPotError?: (wishId: string, delta: number) => void
+  onGiftPotRemoved?: (wishId: string, removedAmount: number) => void
+  onGiftPotRefreshed?: (wishId: string, view: TGiftPotView | null) => void
+  isLoggedIn?: boolean
+  isInvited?: boolean
+  eventName?: string
+  ownerName?: string
 }

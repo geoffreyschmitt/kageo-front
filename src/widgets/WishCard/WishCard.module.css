@@ -337,6 +337,12 @@
     box-shadow: 0 1px 4px rgba(63, 104, 69, 0.15);
 }
 
+.wish-card__status--funded {
+    background: var(--status-purchased-bg);
+    color: var(--wc-purch);
+    box-shadow: 0 1px 4px rgba(63, 104, 69, 0.15);
+}
+
 .wish-card__status--reserved {
     background: var(--status-reserved-bg);
     color: var(--wc-reserv);

@@ -13,6 +13,8 @@ import {RemovePurchasedButton} from "@/features/removePurchasedWish";
 import {DeleteWishButton} from "@/features/DeleteWish";
 import {CommentsSection} from "@/features/Comments";
 
+import {GiftPotSection} from "@/widgets/GiftPotSection";
+
 import styles from './WishCard.module.css'
 
 const getPriorityClass = (priority) => {
@@ -36,6 +38,8 @@ const getStatusClass = (status) => {
             return styles['wish-card__status--reserved']
         case 'proposed':
             return styles['wish-card__status--proposed']
+        case 'funded':
+            return styles['wish-card__status--funded']
         case 'wanted':
             return styles['wish-card__status--wanted']
         default:
@@ -60,6 +64,7 @@ export const WishCard = ({
     showOwnerAction = false,
     showGuestAction = false,
     isOwner = false,
+    isHistory = false,
     onReserve,
     onReserveError,
     onCancelReservation,
@@ -72,7 +77,17 @@ export const WishCard = ({
     onDeleteError,
     onEditWish,
     userId,
-    useMock
+    useMock,
+    giftPot,
+    onGiftPotCreated,
+    onContributeGiftPot,
+    onContributeGiftPotError,
+    onGiftPotRemoved,
+    onGiftPotRefreshed,
+    isLoggedIn,
+    isInvited,
+    eventName,
+    ownerName
 }: TWishCard) => {
     const t = useTranslations('wishCard')
     const tComments = useTranslations('comments')
@@ -87,7 +102,13 @@ export const WishCard = ({
         if (el) setDescOverflows(el.scrollHeight > el.clientHeight)
     }, [description])
 
-    const visibleStatus = showOwnerAction && (status === 'reserved' || status === 'purchased') ? 'wanted' : status
+    const visibleStatus =
+        showOwnerAction && (status === 'reserved' || status === 'purchased' || status === 'funded')
+            ? 'wanted'
+            : status
+
+    const giftPotActive = giftPot != null
+    const noop = () => {}
 
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
     const priorityLabel = t(`priority${cap(priority)}`)
@@ -206,7 +227,7 @@ export const WishCard = ({
                 <div className={styles['wish-card__actions']}>
                     {showGuestAction && (
                         <>
-                            {(status === 'wanted' || status === 'proposed') && userId && (
+                            {!giftPotActive && (status === 'wanted' || status === 'proposed') && userId && (
                                 <ReserveButton wishId={id} userId={userId} onReserve={onReserve} onError={onReserveError} useMock={useMock}/>
                             )}
 
@@ -214,7 +235,7 @@ export const WishCard = ({
                                 <CancelReservationButton wishId={id} onCancel={onCancelReservation} onError={onCancelError} useMock={useMock}/>
                             )}
 
-                            {purchaseUrl && (status === 'wanted' || status === 'proposed') && (
+                            {!giftPotActive && purchaseUrl && (status === 'wanted' || status === 'proposed') && (
                                 <a
                                     href={purchaseUrl}
                                     target="_blank"
@@ -292,6 +313,30 @@ export const WishCard = ({
                         </>
                     )}
                 </div>
+                )}
+
+                {/* An archived wishlist is read-only — same rule as the wishlist-level PotCard. */}
+                {!isOwner && !isHistory && giftPot !== undefined && (
+                    <GiftPotSection
+                        wishId={id}
+                        price={price}
+                        currency={currency}
+                        status={status}
+                        eventName={eventName ?? ''}
+                        ownerName={ownerName ?? ''}
+                        isLoggedIn={!!isLoggedIn}
+                        isInvited={!!isInvited}
+                        userId={userId}
+                        giftPot={giftPot}
+                        onGiftPotCreated={onGiftPotCreated ?? noop}
+                        onContributeGiftPot={onContributeGiftPot ?? noop}
+                        onContributeGiftPotError={onContributeGiftPotError ?? noop}
+                        onGiftPotRemoved={onGiftPotRemoved ?? noop}
+                        onGiftPotRefreshed={onGiftPotRefreshed ?? noop}
+                        onMarkPurchased={onMarkPurchased}
+                        onMarkPurchasedError={onMarkPurchasedError}
+                        useMock={useMock}
+                    />
                 )}
             </div>
         </div>
