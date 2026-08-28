@@ -47,12 +47,14 @@ const loadContext = async (
     if (!wishlist) {
         return { error: NextResponse.json({ message: 'Wishlist not found' }, { status: 404 }) }
     }
+    // The owner is refused before the pot is read: a 409-vs-403 split would
+    // otherwise tell them whether a (surprise) pot exists on their own wish.
+    if (wishlist.ownerId === session.user.id) {
+        return { error: NextResponse.json({ message: 'Forbidden' }, { status: 403 }) }
+    }
     const pot = await kv.get(`wish:${wishId}:pot`)
     if (!pot) {
         return { error: NextResponse.json({ message: 'No pot has been started for this wish' }, { status: 409 }) }
-    }
-    if (wishlist.ownerId === session.user.id) {
-        return { error: NextResponse.json({ message: 'Forbidden' }, { status: 403 }) }
     }
     if (!wishlist.isPublic) {
         return { error: NextResponse.json({ message: 'Forbidden' }, { status: 403 }) }

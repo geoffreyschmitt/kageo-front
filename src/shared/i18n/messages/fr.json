@@ -609,6 +609,8 @@
     "noteOrganizer": "Vous seul·e voyez les noms et les montants. Les autres invité·es ne voient que le total et la progression.",
     "fundedBody": "{creatorName} organise l'achat. La cagnotte est close — pensez à remettre votre part.",
     "markPurchased": "Marquer comme acheté",
-    "markPurchasedHint": "Visible uniquement par vous."
+    "markPurchasedHint": "Visible uniquement par vous.",
+    "purchasedNote": "Cadeau acheté par l'organisateur·rice.",
+    "pledgeReminder": "Une promesse, pas un paiement — remettez votre part à {creatorName}."
   }
 }

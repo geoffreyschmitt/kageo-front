@@ -80,7 +80,9 @@ export const GiftPotSection = ({
         useMock,
     })
 
-    const fmt = (n: number) => `${currency}${Number.isInteger(n) ? n : n.toFixed(2)}`
+    // Always two decimals — PotCard and ContributeGiftPotModal do the same, and a
+    // single flow must not show €620 in one place and €620.00 in the next.
+    const fmt = (n: number) => `${currency}${n.toFixed(2)}`
 
     // ── No pot yet ────────────────────────────────────────────
     if (!giftPot) {
@@ -173,6 +175,12 @@ export const GiftPotSection = ({
         </p>
     )
 
+    // Once you have pledged, the panel restates what a pledge actually is — the
+    // money never moves through Kageo, it is handed to the organiser.
+    const pledgeReminder = myPledge > 0 && (
+        <p className={styles.giftPot__others}>{t('pledgeReminder', { creatorName: giftPot.creatorName })}</p>
+    )
+
     const modalEl = model.modal && (
         <ContributeGiftPotModal
             isOpen
@@ -259,23 +267,30 @@ export const GiftPotSection = ({
                     {isFunded && (
                         <>
                             {fundedBlock}
-                            {userId && (
-                                <div className={styles.giftPot__buy}>
-                                    <button
-                                        className={styles.giftPot__button}
-                                        type="button"
-                                        onClick={mark.handleMarkPurchased}
-                                        disabled={mark.isMarking}
-                                    >
-                                        {t('markPurchased')}
-                                    </button>
-                                    <p className={styles.giftPot__buyHint}>{t('markPurchasedHint')}</p>
-                                </div>
+                            {/* The wish stays funded after the purchase, so the button has to be
+                                gated on the status too — a second click would 409. */}
+                            {status === 'purchased' ? (
+                                <p className={styles.giftPot__buyHint}>{t('purchasedNote')}</p>
+                            ) : (
+                                userId && (
+                                    <div className={styles.giftPot__buy}>
+                                        <button
+                                            className={styles.giftPot__button}
+                                            type="button"
+                                            onClick={mark.handleMarkPurchased}
+                                            disabled={mark.isMarking}
+                                        >
+                                            {t('markPurchased')}
+                                        </button>
+                                        <p className={styles.giftPot__buyHint}>{t('markPurchasedHint')}</p>
+                                    </div>
+                                )
                             )}
                         </>
                     )}
 
                     {note(t('noteOrganizer'))}
+                    {pledgeReminder}
                 </>
             )
         }
@@ -298,6 +313,7 @@ export const GiftPotSection = ({
                     </p>
                 )}
                 {!isFunded && note(t('noteGuest', { creatorName: giftPot.creatorName }))}
+                {pledgeReminder}
             </>
         )
     }

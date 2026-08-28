@@ -609,6 +609,8 @@
     "noteOrganizer": "You are the only one who sees names and amounts. Other guests only see the total and the progress.",
     "fundedBody": "{creatorName} is organising the purchase. The pot is closed — remember to hand over your share.",
     "markPurchased": "Mark as purchased",
-    "markPurchasedHint": "Visible to you only."
+    "markPurchasedHint": "Visible to you only.",
+    "purchasedNote": "Bought by the organiser.",
+    "pledgeReminder": "A pledge, not a payment — hand your share to {creatorName}."
   }
 }

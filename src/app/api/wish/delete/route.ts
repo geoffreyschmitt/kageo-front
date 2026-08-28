@@ -29,7 +29,12 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        await kv.del(`wish:${wishId}`)
+        // Drop the gift-pot side keys too so nothing is left orphaned in KV.
+        await Promise.all([
+            kv.del(`wish:${wishId}`),
+            kv.del(`wish:${wishId}:pot`),
+            kv.del(`wish:${wishId}:contributions`),
+        ])
         await kv.srem(`wishlist:${wish.wishlistId}:wishes`, wishId)
 
         return NextResponse.json({ id: wishId, deleted: true })

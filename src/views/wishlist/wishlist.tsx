@@ -656,6 +656,7 @@ export default function Wishlist({
                     purchasedBy={item.purchasedBy}
                     showOwnerAction={!isHistory && !!userIsOwner}
                     isOwner={userIsOwner}
+                    isHistory={isHistory}
                     showGuestAction={!isHistory && Boolean(isLoggedIn && !userIsOwner)}
                     onReserve={onReserveWish}
                     onReserveError={onReserveError}
@@ -707,6 +708,7 @@ export default function Wishlist({
                 purchasedBy={item.purchasedBy}
                 showOwnerAction={!isHistory && !!userIsOwner}
                 isOwner={userIsOwner}
+                isHistory={isHistory}
                 showGuestAction={!isHistory && Boolean(isLoggedIn && !userIsOwner)}
                 onReserve={onReserveWish}
                 onReserveError={onReserveError}

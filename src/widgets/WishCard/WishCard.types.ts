@@ -25,6 +25,8 @@ export type TWishCard = {
   // this must stay true for the owner in history mode too, since comments should never
   // reach the owner regardless of view mode.
   isOwner?: boolean
+  // An archived (history) wishlist is read-only: no gift pot can be opened or joined.
+  isHistory?: boolean
   onReserve?: (wishId: string, reservedBy: string) => void
   onReserveError?: (wishId: string) => void
   onCancelReservation?: (wishId: string) => void

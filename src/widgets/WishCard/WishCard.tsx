@@ -64,6 +64,7 @@ export const WishCard = ({
     showOwnerAction = false,
     showGuestAction = false,
     isOwner = false,
+    isHistory = false,
     onReserve,
     onReserveError,
     onCancelReservation,
@@ -314,10 +315,10 @@ export const WishCard = ({
                 </div>
                 )}
 
-                {!isOwner && giftPot !== undefined && (
+                {/* An archived wishlist is read-only — same rule as the wishlist-level PotCard. */}
+                {!isOwner && !isHistory && giftPot !== undefined && (
                     <GiftPotSection
                         wishId={id}
-                        wishName={name}
                         price={price}
                         currency={currency}
                         status={status}

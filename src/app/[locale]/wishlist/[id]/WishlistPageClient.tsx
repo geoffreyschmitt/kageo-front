@@ -174,8 +174,27 @@ export default function WishlistPageClient({
         toast(t('pledgeRemoved'), 'info')
     }
 
-    const handleGiftPotRefreshed = (wishId: string, view: TGiftPotView | null) =>
+    // The server view is authoritative, so the card's status has to follow it too —
+    // same wanted<->funded-only rule as the optimistic patch above.
+    const handleGiftPotRefreshed = (wishId: string, view: TGiftPotView | null) => {
         setGiftPots((prev) => ({ ...prev, [wishId]: view }))
+        if (!view) return
+        setItems((prev) =>
+            prev.map((it) =>
+                it.id === wishId
+                    ? {
+                          ...it,
+                          status:
+                              it.status === 'wanted' && view.isFunded
+                                  ? 'funded'
+                                  : it.status === 'funded' && !view.isFunded
+                                    ? 'wanted'
+                                    : it.status,
+                      }
+                    : it,
+            ),
+        )
+    }
 
     const handleReserveWish = (wishId: string, reservedBy: string) => {
         setItems((prev) => prev.map((item) =>

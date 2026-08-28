@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { parseContributions } from '@/app/api/wishlist/pot/readPot'
+import { reconcileFundedStatus } from '@/app/api/wish/pot/reconcileFundedStatus'
 
 type TWishKV = {
     id: string
@@ -13,7 +15,7 @@ type TWishKV = {
     currency: string
     imageUrl: string
     priority: string
-    status: string
+    status: 'wanted' | 'purchased' | 'reserved' | 'proposed' | 'funded'
     purchaseUrl: string
     notes: string
     createdAt: string
@@ -77,6 +79,24 @@ export async function PUT(
         }
 
         await kv.set(`wish:${wishId}`, updated)
+
+        // The price IS the gift-pot goal, so editing it can push the pot over the
+        // line or back below it. Only pay for the extra reads when a pot exists.
+        const pot = await kv.get(`wish:${wishId}:pot`)
+        if (pot) {
+            const all = parseContributions(await kv.lrange<string>(`wish:${wishId}:contributions`, 0, -1))
+            const byUser = new Map<string, number>()
+            for (const c of all) byUser.set(c.userId, (byUser.get(c.userId) ?? 0) + c.amount)
+            const total = Array.from(byUser.values()).filter((v) => v > 0).reduce((s, v) => s + v, 0)
+
+            const next = reconcileFundedStatus(updated.status, total, updated.price)
+            if (next) {
+                const reconciled: TWishKV = { ...updated, status: next }
+                await kv.set(`wish:${wishId}`, reconciled)
+                return NextResponse.json(reconciled)
+            }
+        }
+
         return NextResponse.json(updated)
     } catch (error) {
         console.error('Edit wish error:', error)

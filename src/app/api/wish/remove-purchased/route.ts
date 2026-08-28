@@ -3,8 +3,17 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { parseContributions } from '@/app/api/wishlist/pot/readPot'
+import { reconcileFundedStatus } from '@/app/api/wish/pot/reconcileFundedStatus'
 
-type TWishKV = { id: string; status: string; purchasedBy?: string; reservedBy?: string; wishlistId: string }
+type TWishKV = {
+    id: string
+    status: string
+    price?: number
+    purchasedBy?: string
+    reservedBy?: string
+    wishlistId: string
+}
 type TWishlistKV = { ownerId: string }
 
 export async function POST(request: NextRequest) {
@@ -41,7 +50,23 @@ export async function POST(request: NextRequest) {
         const updated = { ...rest, status: revertedStatus, updatedAt: new Date().toISOString() }
         await kv.set(`wish:${wishId}`, updated)
 
-        return NextResponse.json({ id: wishId, status: revertedStatus, purchasedBy: undefined })
+        // A gift pot that is still full must land back on 'funded', not 'wanted'.
+        let finalStatus: string = revertedStatus
+        const pot = await kv.get(`wish:${wishId}:pot`)
+        if (pot) {
+            const all = parseContributions(await kv.lrange<string>(`wish:${wishId}:contributions`, 0, -1))
+            const byUser = new Map<string, number>()
+            for (const c of all) byUser.set(c.userId, (byUser.get(c.userId) ?? 0) + c.amount)
+            const total = Array.from(byUser.values()).filter((v) => v > 0).reduce((s, v) => s + v, 0)
+
+            const next = reconcileFundedStatus(revertedStatus, total, rest.price ?? 0)
+            if (next) {
+                finalStatus = next
+                await kv.set(`wish:${wishId}`, { ...updated, status: next })
+            }
+        }
+
+        return NextResponse.json({ id: wishId, status: finalStatus, purchasedBy: undefined })
     } catch (error) {
         console.error('Remove purchased error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })

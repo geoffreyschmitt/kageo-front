@@ -3,7 +3,6 @@ import type { TGiftPotView } from '@/shared/api/wish/getGiftPot'
 
 export type TGiftPotSectionProps = {
     wishId: string
-    wishName: string
     price: number
     currency: string
     status: TWishStatus
