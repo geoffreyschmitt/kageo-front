@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+    :root{
+      --page:#f7f4ef;--surface:#fff;--sunken:#f2ede5;--surface-input:#faf8f4;
+      --border:#d6cec4;--border-soft:#e5dfd5;
+      --text:#1e1a16;--text2:#4e443c;--text3:#6b6258;
+      --sage:#3f6845;--sage-hover:#2e5033;--sage-contrast:#fff;
+      --sage-tint:#eaf2eb;--sage-tint-border:rgba(63,104,69,.2);
+      --serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--page);font-family:var(--sans);color:var(--text);-webkit-font-smoothing:antialiased;}
+    a{color:var(--sage);}a:hover{color:var(--sage-hover);}
+    .backdrop{min-height:100%;background:rgba(30,26,22,.45);padding:34px 28px;display:flex;align-items:flex-start;justify-content:center;}
+    .modal{width:100%;max-width:440px;background:var(--surface);border-radius:16px;box-shadow:0 24px 64px rgba(60,45,25,.28);overflow:hidden;}
+    .modal__header{padding:22px 26px 0;}
+    .modal__title{font-family:var(--serif);font-size:21px;font-weight:600;margin:0;letter-spacing:-.2px;}
+    .modal__sub{font-size:12.5px;color:var(--text3);margin:3px 0 0;}
+    .modal__body{padding:18px 26px 24px;}
+
+    .hero{padding:14px;background:var(--sage-tint);border:1px solid var(--sage-tint-border);border-radius:12px;}
+    .hero__msg{font-size:13px;font-weight:600;color:var(--text);margin:0 0 9px;line-height:1.4;}
+    .bar{height:8px;border-radius:100px;background:var(--surface);overflow:hidden;border:1px solid var(--sage-tint-border);}
+    .bar > i{display:block;height:100%;border-radius:100px;background:var(--sage);}
+    .hero__meta{font-size:11.5px;color:var(--text3);margin:8px 0 0;}
+    .hero__meta strong{color:var(--sage);font-weight:600;}
+
+    .field{margin-top:18px;}
+    .label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:7px;}
+    .amountWrap{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:10px;background:var(--surface-input);padding:11px 14px;}
+    .amountWrap span{font-family:var(--mono);font-size:15px;color:var(--text3);}
+    .amountWrap input{flex:1;border:none;outline:none;background:transparent;font-family:var(--mono);font-size:16px;font-weight:600;color:var(--text);min-width:0;}
+    .chips{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+    .chip{font-family:var(--sans);font-size:13px;font-weight:600;padding:8px 16px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;}
+    .chip--active{border-color:var(--sage);background:var(--sage-tint);color:var(--sage);}
+
+    .disclaimer{font-size:11.5px;color:var(--text3);line-height:1.55;margin:12px 0 0;}
+
+    .actions{display:flex;gap:10px;margin-top:20px;}
+    .btn{flex:1;text-align:center;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.2px;padding:11px 20px;border-radius:100px;border:1.5px solid var(--sage);cursor:pointer;}
+    .btn--ghost{background:var(--surface);color:var(--sage);}
+    .btn--primary{background:var(--sage);color:var(--sage-contrast);}
+  </style>
+</helmet>
+<div class="backdrop">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 class="modal__title">Participer à la cagnotte</h2>
+      <p class="modal__sub">Vélo électrique de ville — pour Léa</p>
+    </div>
+    <div class="modal__body">
+      <div class="hero">
+        <p class="hero__msg">Un cadeau collectif pour Léa</p>
+        <div class="bar"><i style="width:41%"></i></div>
+        <p class="hero__meta"><strong>€620</strong> réunis sur €1&thinsp;499 · organisée par Camille</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="amt">Votre participation</label>
+        <div class="amountWrap">
+          <span>€</span>
+          <input id="amt" type="text" value="50.00" inputmode="decimal">
+        </div>
+        <div class="chips">
+          <button class="chip" type="button">€20</button>
+          <button class="chip chip--active" type="button">€50</button>
+          <button class="chip" type="button">€100</button>
+          <button class="chip" type="button">Autre</button>
+        </div>
+        <p class="disclaimer">Ceci enregistre une promesse — pas un paiement. Camille récupère l'argent directement auprès de chacun·e, pensez à lui remettre votre part.</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn--ghost" type="button">Annuler</button>
+        <button class="btn btn--primary" type="button">Ajouter ma promesse</button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

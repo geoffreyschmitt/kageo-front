@@ -1,0 +1,18 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 400, "h": 1260, "title": "Cadeau sans cagnotte" },
+    { "file": "CagnotteEnCours.dc.html", "x": 500, "y": 0, "w": 400, "h": 1360, "title": "Cagnotte en cours" },
+    { "file": "MaParticipation.dc.html", "x": 1000, "y": 0, "w": 400, "h": 1410, "title": "Apres ma participation" },
+    { "file": "ObjectifAtteint.dc.html", "x": 1500, "y": 0, "w": 400, "h": 1400, "title": "Objectif atteint" },
+    { "file": "VueOrganisateur.dc.html", "x": 2000, "y": 0, "w": 400, "h": 1040, "title": "Vue organisateur" },
+    { "file": "VueProprietaire.dc.html", "x": 2500, "y": 0, "w": 400, "h": 680, "title": "Vue proprietaire" },
+    { "file": "ModaleLancer.dc.html", "x": 0, "y": 1560, "w": 480, "h": 600, "title": "Modale — lancer" },
+    { "file": "ModaleParticiper.dc.html", "x": 560, "y": 1560, "w": 480, "h": 640, "title": "Modale — participer" }
+  ],
+  "annotations": [
+    { "id": "note-parcours", "x": 0, "y": -220, "w": 620, "text": "Carte reprise fidelement du code (WishCard.module.css). Parcours invite, de gauche a droite. Sans cagnotte : la carte garde Reserver / Acheter, l'amorce cagnotte est une ligne discrete sous les actions - et disparait si le wish est deja reserve ou achete. Cagnotte lancee : la partie Reserver disparait, la cagnotte occupe le bas de la carte dans un accordeon (replie = titre + barre + %)." },
+    { "id": "note-roles", "x": 2000, "y": -220, "w": 620, "text": "Organisateur-rice = l'invite-e qui a lance la cagnotte : liste des participants qui defile des ~3 personnes, bouton Acheter maintenant visible pour elle seule, objectif modifiable. Proprietaire de la liste : ne voit jamais la cagnotte (surprise, comme les reservations)." },
+    { "id": "note-modales", "x": 0, "y": 1445, "w": 540, "text": "Modales. Creation : objectif pre-rempli au prix du cadeau, ajustable. Participation : une promesse, pas un paiement - l'organisateur collecte." }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+    :root{--serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;}
+    *{box-sizing:border-box;}
+    body{margin:0;background:#f7f4ef;font-family:var(--sans);color:#1e1a16;-webkit-font-smoothing:antialiased;}
+    a{color:#3f6845;}a:hover{color:#2e5033;}
+    .stage{padding:18px 16px 26px;}
+    .caption{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#6b6258;margin:0 0 8px 2px;}
+    .card + .caption{margin-top:24px;}
+
+    .wc{background:#fff;border:1px solid rgba(63,104,69,.2);border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(60,45,25,.08);display:flex;flex-direction:column;}
+    .wc__imgc{position:relative;width:100%;height:260px;overflow:hidden;flex-shrink:0;background:#f7f4ef;}
+    .wc__ph{width:100%;height:100%;background:linear-gradient(145deg,#f2ede5,#ebe5da 50%,#f2ede5);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+    .wc__phInit{font-family:var(--serif);font-size:96px;font-weight:300;color:#4e443c;opacity:.15;line-height:1;letter-spacing:-4px;position:relative;z-index:1;user-select:none;}
+    .wc__phDecor{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+    .wc__imgc::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(63,104,69,.16),rgba(63,104,69,.06));z-index:1;pointer-events:none;}
+    .wc__status{position:absolute;top:14px;right:14px;z-index:3;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.3px;padding:4px 11px 5px;border-radius:100px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);background:#eaf2eb;color:#3f6845;box-shadow:0 1px 4px rgba(63,104,69,.15);}
+
+    .wc__content{padding:20px 22px 18px;flex:1;display:flex;flex-direction:column;}
+    .wc__header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
+    .wc__title{font-family:var(--serif);font-size:24px;font-weight:600;color:#1e1a16;margin:0;line-height:1.18;flex:1;letter-spacing:-.1px;}
+    .wc__price{font-family:var(--mono);font-size:13px;font-weight:600;color:#3f6845;white-space:nowrap;background:#eaf2eb;padding:4px 10px 5px;border-radius:6px;border:1px solid rgba(63,104,69,.2);flex-shrink:0;align-self:flex-start;margin-top:4px;letter-spacing:.2px;}
+    .wc__desc{font-family:var(--sans);font-size:13.5px;color:#4e443c;line-height:1.6;margin:0 0 6px;}
+    .wc__meta{margin:0 0 14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+    .wc__date{font-family:var(--sans);font-size:11.5px;color:#6b6258;letter-spacing:.1px;}
+
+    .takenBanner{display:flex;align-items:center;gap:9px;background:#eaf2eb;border:1px solid #3f6845;border-left:3px solid #3f6845;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:12px;font-size:12.5px;font-weight:600;color:#3f6845;letter-spacing:.15px;}
+    .takenBanner svg{flex-shrink:0;width:15px;height:15px;}
+
+    .pot{margin-top:auto;border-top:1px solid #e5dfd5;padding-top:14px;}
+    .pot__summary{list-style:none;display:flex;align-items:center;gap:10px;padding:0;min-height:24px;cursor:pointer;}
+    .pot__summary::-webkit-details-marker{display:none;}
+    .pot__label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#3f6845;white-space:nowrap;}
+    .pot__label svg{width:14px;height:14px;}
+    .pot__mini{margin-left:auto;display:flex;align-items:center;gap:9px;}
+    .minibar{width:66px;height:7px;border-radius:100px;background:#eaf2eb;overflow:hidden;}
+    .minibar>i{display:block;height:100%;background:#3f6845;border-radius:100px;}
+    .pot__pct{font-family:var(--mono);font-size:12px;font-weight:600;color:#3f6845;min-width:30px;text-align:right;}
+    .chev{width:15px;height:15px;color:#6b6258;transition:transform .2s;flex-shrink:0;}
+    details[open] .chev{transform:rotate(180deg);}
+    .pot__panel{padding:14px 0 2px;}
+    .bar{height:9px;border-radius:100px;background:#eaf2eb;overflow:hidden;}
+    .bar>i{display:block;height:100%;border-radius:100px;background:#3f6845;}
+    .pot__amounts{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:11px;}
+    .pot__big{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:-.3px;}
+    .pot__goal{font-size:12px;color:#6b6258;margin-left:6px;}
+    .pot__ppl{font-size:12px;color:#6b6258;white-space:nowrap;}
+    .done{display:flex;gap:9px;align-items:flex-start;margin-top:14px;padding:12px 14px;background:#eaf2eb;border:1px solid rgba(63,104,69,.2);border-radius:12px;}
+    .done svg{width:16px;height:16px;color:#3f6845;flex-shrink:0;margin-top:1px;}
+    .done p{margin:0;font-size:12.5px;line-height:1.5;color:#4e443c;}
+    .done strong{color:#1e1a16;font-weight:600;}
+  </style>
+</helmet>
+<div class="stage">
+  <p class="caption">Financé — cagnotte repliée</p>
+  <div class="card">
+  <article class="wc">
+    <div class="wc__imgc">
+      <div class="wc__ph"><span class="wc__phInit">V</span>
+        <svg class="wc__phDecor" viewBox="0 0 200 200" fill="none" aria-hidden="true"><path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/><path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/><path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/></svg>
+      </div>
+      <div class="wc__status">Financé</div>
+    </div>
+    <div class="wc__content">
+      <div class="wc__header">
+        <h3 class="wc__title">Vélo électrique de ville</h3>
+        <div class="wc__price">€1499.00</div>
+      </div>
+      <div class="takenBanner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Pris en charge par la cagnotte
+      </div>
+      <p class="wc__desc">Pour aller au travail sans la voiture. Le modèle avec porte-bagages et batterie longue autonomie, en gris anthracite si possible.</p>
+      <div class="wc__meta"><span class="wc__date">Ajouté le 12 août 2026</span></div>
+      <details class="pot">
+        <summary class="pot__summary">
+          <span class="pot__label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Objectif atteint
+          </span>
+          <span class="pot__mini"><span class="minibar"><i style="width:100%"></i></span><span class="pot__pct">100%</span></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+      </details>
+    </div>
+  </article>
+  </div>
+
+  <p class="caption">Dépliée</p>
+  <div class="card">
+  <article class="wc">
+    <div class="wc__imgc">
+      <div class="wc__ph"><span class="wc__phInit">V</span>
+        <svg class="wc__phDecor" viewBox="0 0 200 200" fill="none" aria-hidden="true"><path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/><path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/><path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/></svg>
+      </div>
+      <div class="wc__status">Financé</div>
+    </div>
+    <div class="wc__content">
+      <div class="wc__header">
+        <h3 class="wc__title">Vélo électrique de ville</h3>
+        <div class="wc__price">€1499.00</div>
+      </div>
+      <div class="takenBanner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Pris en charge par la cagnotte
+      </div>
+      <p class="wc__desc">Pour aller au travail sans la voiture. Le modèle avec porte-bagages et batterie longue autonomie, en gris anthracite si possible.</p>
+      <div class="wc__meta"><span class="wc__date">Ajouté le 12 août 2026</span></div>
+      <details class="pot" open>
+        <summary class="pot__summary">
+          <span class="pot__label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Objectif atteint
+          </span>
+          <span class="pot__mini"><span class="minibar"><i style="width:100%"></i></span><span class="pot__pct">100%</span></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="pot__panel">
+          <div class="bar"><i style="width:100%"></i></div>
+          <div class="pot__amounts">
+            <div><span class="pot__big">€1540</span><span class="pot__goal">objectif de €1499</span></div>
+            <span class="pot__ppl">14 amis ont participé</span>
+          </div>
+          <div class="done">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12"/><path d="M12 8S9.5 3.5 7 5.5 12 8 12 8zM12 8s2.5-4.5 5-2.5S12 8 12 8z"/></svg>
+            <p><strong>Camille organise l'achat</strong> et remettra le cadeau à Léa. La cagnotte est close — pensez à remettre votre part à Camille.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </article>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

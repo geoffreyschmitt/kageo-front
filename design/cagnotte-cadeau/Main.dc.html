@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+    :root{--serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;}
+    *{box-sizing:border-box;}
+    body{margin:0;background:#f7f4ef;font-family:var(--sans);color:#1e1a16;-webkit-font-smoothing:antialiased;}
+    a{color:#3f6845;}a:hover{color:#2e5033;}
+    .stage{padding:18px 16px 26px;}
+    .caption{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#6b6258;margin:0 0 8px 2px;}
+    .card + .caption{margin-top:24px;}
+
+    .wc{background:#fff;border:1px solid #d6cec4;border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(60,45,25,.08);display:flex;flex-direction:column;}
+    .wc__imgc{position:relative;width:100%;height:260px;overflow:hidden;flex-shrink:0;background:#f7f4ef;}
+    .wc__ph{width:100%;height:100%;background:linear-gradient(145deg,#f2ede5,#ebe5da 50%,#f2ede5);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+    .wc__phInit{font-family:var(--serif);font-size:96px;font-weight:300;color:#4e443c;opacity:.15;line-height:1;letter-spacing:-4px;position:relative;z-index:1;user-select:none;}
+    .wc__phDecor{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+    .wc__imgc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(255,255,255,.25),transparent);z-index:1;pointer-events:none;}
+    .wc__prio{position:absolute;top:14px;left:14px;z-index:3;font-family:var(--sans);font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-radius:5px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);background:#fdecea;color:#8a2318;box-shadow:0 1px 6px rgba(138,35,24,.25);font-size:11px;padding:5px 11px 5px 8px;display:flex;align-items:center;gap:4px;}
+    .wc__status{position:absolute;top:14px;right:14px;z-index:3;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.3px;padding:4px 11px 5px;border-radius:100px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+    .wc__status--wanted{background:#edf3fb;color:#1a5491;box-shadow:0 1px 4px rgba(26,84,145,.15);}
+    .wc__status--reserved{background:#f0ebf8;color:#4e3278;box-shadow:0 1px 4px rgba(78,50,120,.15);}
+
+    .wc__content{padding:20px 22px 18px;flex:1;display:flex;flex-direction:column;}
+    .wc__header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
+    .wc__title{font-family:var(--serif);font-size:24px;font-weight:600;color:#1e1a16;margin:0;line-height:1.18;flex:1;letter-spacing:-.1px;}
+    .wc__price{font-family:var(--mono);font-size:13px;font-weight:600;color:#3f6845;white-space:nowrap;background:#eaf2eb;padding:4px 10px 5px;border-radius:6px;border:1px solid rgba(63,104,69,.2);flex-shrink:0;align-self:flex-start;margin-top:4px;letter-spacing:.2px;}
+    .wc__desc{font-family:var(--sans);font-size:13.5px;color:#4e443c;line-height:1.6;margin:0 0 6px;}
+    .wc__reservedBanner{display:flex;align-items:center;gap:9px;background:#f0ebf8;border:1px solid #4e3278;border-left:3px solid #4e3278;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:12px;font-size:12.5px;font-weight:600;color:#4e3278;letter-spacing:.15px;}
+    .wc__reservedBanner svg{flex-shrink:0;width:15px;height:15px;}
+    .wc__meta{margin:0 0 14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+    .wc__date{font-family:var(--sans);font-size:11.5px;color:#6b6258;letter-spacing:.1px;}
+    .wc__comments{align-self:flex-start;font-size:12px;font-weight:500;color:#6b6258;background:none;border:none;padding:2px 0;margin:4px 0 16px;cursor:pointer;}
+
+    .wc__actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:14px;border-top:1px solid #e5dfd5;}
+    .wc__btn{font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:.2px;padding:8px 16px;border-radius:100px;border:1px solid #d6cec4;cursor:pointer;text-decoration:none;display:inline-block;text-align:center;background:#fff;color:#4e443c;}
+    .wc__btn--primary{background:#3f6845;border-color:#3f6845;color:#fff;font-weight:600;}
+    .wc__reserve{font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:.2px;padding:7px 14px;border-radius:100px;border:1px solid #d6cec4;cursor:pointer;background:#f0ebf8;color:#4e3278;}
+
+    /* amorce cagnotte — une ligne discrète sous les actions */
+    .potlink{display:block;width:100%;margin-top:9px;padding:4px 0 0;background:none;border:none;cursor:pointer;text-align:left;font-family:var(--sans);font-size:11.5px;font-weight:500;color:#6b6258;line-height:1.5;}
+    .potlink b{color:#3f6845;font-weight:600;}
+  </style>
+</helmet>
+<div class="stage">
+  <p class="caption">Souhaité — pas de cagnotte, amorce discrète</p>
+  <div class="card">
+  <article class="wc">
+    <div class="wc__imgc">
+      <div class="wc__ph">
+        <span class="wc__phInit">V</span>
+        <svg class="wc__phDecor" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+          <path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/>
+          <path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/>
+          <path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/>
+          <circle cx="100" cy="55" r="5" fill="#6e3c0c" opacity="0.1"/>
+          <circle cx="72" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
+          <circle cx="128" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
+        </svg>
+      </div>
+      <div class="wc__prio">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0l2.35 4.76 5.25.77-3.8 3.7.9 5.24L8 12.18l-4.7 2.29.9-5.24-3.8-3.7 5.25-.77z"/></svg>
+        Priorité haute
+      </div>
+      <div class="wc__status wc__status--wanted">Souhaité</div>
+    </div>
+    <div class="wc__content">
+      <div class="wc__header">
+        <h3 class="wc__title">Vélo électrique de ville</h3>
+        <div class="wc__price">€1499.00</div>
+      </div>
+      <p class="wc__desc">Pour aller au travail sans la voiture. Le modèle avec porte-bagages et batterie longue autonomie, en gris anthracite si possible.</p>
+      <div class="wc__meta"><span class="wc__date">Ajouté le 12 août 2026</span></div>
+      <button class="wc__comments" type="button">💬 Afficher les commentaires</button>
+      <div class="wc__actions">
+        <button class="wc__reserve" type="button">Réserver</button>
+        <a class="wc__btn wc__btn--primary" href="#">Acheter maintenant</a>
+      </div>
+      <button class="potlink" type="button">Trop cher pour une seule personne&nbsp;? <b>Ouvrir une cagnotte</b></button>
+    </div>
+  </article>
+  </div>
+
+  <p class="caption">Déjà réservé — cagnotte impossible (l'amorce disparaît)</p>
+  <div class="card">
+  <article class="wc">
+    <div class="wc__imgc">
+      <div class="wc__ph">
+        <span class="wc__phInit">C</span>
+        <svg class="wc__phDecor" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+          <path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/>
+          <path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/>
+          <path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/>
+        </svg>
+      </div>
+      <div class="wc__status wc__status--reserved">Réservé</div>
+    </div>
+    <div class="wc__content">
+      <div class="wc__header">
+        <h3 class="wc__title">Casque audio sans fil</h3>
+        <div class="wc__price">€279.00</div>
+      </div>
+      <div class="wc__reservedBanner">
+        <svg viewBox="0 0 13 13" fill="none" aria-hidden="true"><rect x="2" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 5.5V3.5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Vous prévoyez de l'offrir</span>
+      </div>
+      <p class="wc__desc">Réduction de bruit active, autonomie 30 h.</p>
+      <div class="wc__meta"><span class="wc__date">Ajouté le 3 août 2026</span></div>
+      <button class="wc__comments" type="button">💬 Afficher les commentaires</button>
+      <div class="wc__actions">
+        <button class="wc__btn" type="button">Annuler la réservation</button>
+        <button class="wc__btn wc__btn--primary" type="button">Marquer comme acheté</button>
+      </div>
+    </div>
+  </article>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

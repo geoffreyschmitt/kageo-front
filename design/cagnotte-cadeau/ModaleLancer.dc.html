@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+    :root{
+      --page:#f7f4ef;--surface:#fff;--sunken:#f2ede5;--surface-input:#faf8f4;
+      --border:#d6cec4;--border-soft:#e5dfd5;
+      --text:#1e1a16;--text2:#4e443c;--text3:#6b6258;
+      --sage:#3f6845;--sage-hover:#2e5033;--sage-contrast:#fff;
+      --sage-tint:#eaf2eb;--sage-tint-border:rgba(63,104,69,.2);
+      --serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--page);font-family:var(--sans);color:var(--text);-webkit-font-smoothing:antialiased;}
+    a{color:var(--sage);}a:hover{color:var(--sage-hover);}
+    .backdrop{min-height:100%;background:rgba(30,26,22,.45);padding:34px 28px;display:flex;align-items:flex-start;justify-content:center;}
+    .modal{width:100%;max-width:440px;background:var(--surface);border-radius:16px;box-shadow:0 24px 64px rgba(60,45,25,.28);overflow:hidden;}
+    .modal__header{padding:22px 26px 0;}
+    .modal__title{font-family:var(--serif);font-size:21px;font-weight:600;margin:0;letter-spacing:-.2px;}
+    .modal__sub{font-size:12.5px;color:var(--text3);margin:3px 0 0;}
+    .modal__body{padding:18px 26px 24px;}
+
+    .hero{display:flex;gap:13px;align-items:flex-start;padding:14px;background:var(--sage-tint);border:1px solid var(--sage-tint-border);border-radius:12px;}
+    .hero__icon{width:40px;height:40px;flex-shrink:0;}
+    .hero__msg{font-size:13px;font-weight:600;color:var(--text);margin:0;line-height:1.4;}
+    .hero__meta{font-size:11.5px;color:var(--text3);margin:3px 0 0;}
+
+    .field{margin-top:18px;}
+    .label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:7px;}
+    .amountWrap{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:10px;background:var(--surface-input);padding:11px 14px;}
+    .amountWrap span{font-family:var(--mono);font-size:15px;color:var(--text3);}
+    .amountWrap input{flex:1;border:none;outline:none;background:transparent;font-family:var(--mono);font-size:16px;font-weight:600;color:var(--text);min-width:0;}
+    .hint{font-size:11.5px;color:var(--text3);margin:7px 0 0;line-height:1.5;}
+
+    .note{display:flex;gap:8px;align-items:flex-start;margin-top:16px;padding:11px 13px;background:var(--sunken);border:1px solid var(--border-soft);border-radius:10px;font-size:11.5px;line-height:1.5;color:var(--text2);}
+    .note svg{width:14px;height:14px;flex-shrink:0;color:var(--sage);margin-top:1px;}
+
+    .actions{display:flex;gap:10px;margin-top:20px;}
+    .btn{flex:1;text-align:center;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.2px;padding:11px 20px;border-radius:100px;border:1.5px solid var(--sage);cursor:pointer;}
+    .btn--ghost{background:var(--surface);color:var(--sage);}
+    .btn--primary{background:var(--sage);color:var(--sage-contrast);}
+  </style>
+</helmet>
+<div class="backdrop">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 class="modal__title">Lancer une cagnotte</h2>
+      <p class="modal__sub">Vélo électrique de ville — liste de Léa</p>
+    </div>
+    <div class="modal__body">
+      <div class="hero">
+        <svg class="hero__icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="22" fill="#eaf2eb" stroke="#b8dbb9" stroke-width="1.2"/>
+          <path d="M24 33 Q18 27 16 21 Q14 15 20 13 Q23 12 25 16 Q27 12 30 13 Q36 15 28 25 Q27 27 24 33Z" fill="#3f6845" opacity="0.75"/>
+          <path d="M24 33 Q24 26 24 20" stroke="#3f6845" stroke-width="1.2" opacity="0.5" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <p class="hero__msg">Une cagnotte commune pour ce cadeau</p>
+          <p class="hero__meta">Vous en serez l'organisateur·rice</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="goal">Objectif à atteindre</label>
+        <div class="amountWrap">
+          <span>€</span>
+          <input id="goal" type="text" value="1499.00" inputmode="decimal">
+        </div>
+        <p class="hint">Pré-rempli avec le prix du cadeau. Ajustez-le librement — la cagnotte peut dépasser l'objectif.</p>
+      </div>
+
+      <p class="note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+        <span>Les invité·es de Léa pourront participer en privé. Vous seul·e verrez qui donne combien ; vous collectez l'argent et achetez le cadeau.</span>
+      </p>
+
+      <div class="actions">
+        <button class="btn btn--ghost" type="button">Annuler</button>
+        <button class="btn btn--primary" type="button">Lancer la cagnotte</button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
