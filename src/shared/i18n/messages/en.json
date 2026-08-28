@@ -547,5 +547,20 @@
     "title": "Log in required",
     "cancel": "Cancel",
     "logIn": "Log in"
+  },
+  "createGiftPotModal": {
+    "triggerLead": "Too pricey for one person?",
+    "triggerAction": "Open a gift pot",
+    "title": "Start a gift pot",
+    "goalLabel": "Goal",
+    "goalHint": "The goal is the price of the gift. You can go over it.",
+    "note": "You become the organiser. Guests pledge privately; only you see who gives how much, you collect the money and buy the gift.",
+    "loginRequired": "Log in to start a gift pot for {ownerName}. You also need to have been invited by the list owner.",
+    "inviteRequired": "Only {ownerName}'s guests can start a gift pot. Ask them to share the list with you.",
+    "logIn": "Log in",
+    "gotIt": "Got it",
+    "cancel": "Cancel",
+    "starting": "Starting…",
+    "start": "Start the gift pot"
   }
 }

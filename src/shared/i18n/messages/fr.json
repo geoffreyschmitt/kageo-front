@@ -547,5 +547,20 @@
     "title": "Connexion requise",
     "cancel": "Annuler",
     "logIn": "Se connecter"
+  },
+  "createGiftPotModal": {
+    "triggerLead": "Trop cher pour une seule personne ?",
+    "triggerAction": "Ouvrir une cagnotte",
+    "title": "Lancer une cagnotte",
+    "goalLabel": "Objectif",
+    "goalHint": "L'objectif est le prix du cadeau. Vous pouvez le dépasser.",
+    "note": "Vous devenez l'organisateur·rice. Les invité·es participent en privé ; vous seul·e voyez qui donne combien, vous collectez l'argent et achetez le cadeau.",
+    "loginRequired": "Connectez-vous pour lancer une cagnotte pour {ownerName}. Vous devez aussi avoir été invité·e par le propriétaire de la liste.",
+    "inviteRequired": "Seuls les invité·es de {ownerName} peuvent lancer une cagnotte. Demandez-leur de partager la liste avec vous.",
+    "logIn": "Se connecter",
+    "gotIt": "Compris",
+    "cancel": "Annuler",
+    "starting": "Démarrage…",
+    "start": "Lancer la cagnotte"
   }
 }
