@@ -149,13 +149,13 @@ export default function Wishlist({
   const tComments = useTranslations('comments')
   const locale = useLocale()
 
-  // Owned wishlists can always be edited while active; once in history,
-  // editing/deleting is only safe if no one has interacted with it yet
-  // (no reservations/purchases/suggestions, no pot, no comments).
   // The gift-pot UI labels the pot with the event it belongs to; fall back to the
   // wishlist name when the page did not pass an explicit event name.
   const wishEventName = eventName ?? name
 
+  // Owned wishlists can always be edited while active; once in history,
+  // editing/deleting is only safe if no one has interacted with it yet
+  // (no reservations/purchases/suggestions, no pot, no comments).
   const canEditWishlist = userIsOwner && (!isHistory || !hasActivity)
   const canDeleteWishlist = userIsOwner && isHistory && !hasActivity
   const showLockedNotice = userIsOwner && isHistory && hasActivity

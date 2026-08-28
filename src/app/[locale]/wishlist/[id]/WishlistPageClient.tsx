@@ -120,11 +120,21 @@ export default function WishlistPageClient({
                 participantCount: Math.max(0, (cur.participantCount ?? 0) + countShift),
                 isFunded: cur.goal > 0 && total >= cur.goal,
             }
-            // keep the card's status in step with the derived funded state
+            // Keep the card's status in step with the derived funded state. Mirrors the server's
+            // reconcileFundedStatus: only ever moves between 'wanted' and 'funded', so a wish that
+            // is already purchased/reserved/proposed is never rewritten by this optimistic flip.
             setItems((items) =>
                 items.map((it) =>
                     it.id === wishId
-                        ? { ...it, status: next.isFunded ? 'funded' : it.status === 'funded' ? 'wanted' : it.status }
+                        ? {
+                              ...it,
+                              status:
+                                  it.status === 'wanted' && next.isFunded
+                                      ? 'funded'
+                                      : it.status === 'funded' && !next.isFunded
+                                        ? 'wanted'
+                                        : it.status,
+                          }
                         : it,
                 ),
             )
@@ -264,6 +274,10 @@ export default function WishlistPageClient({
         ))
     }
 
+    // Note: a client-added wish gets no `giftPots` entry, so its card renders with
+    // `giftPot === undefined` (no gift-pot UI) until a reload. That is fine today — owner-added
+    // wishes have the pot subtree gated behind `!isOwner`, and proposed wishes never get a pot.
+    // A future guest-visible, non-proposed add path would need to seed `giftPots[wish.id]` here.
     const handleAddWish = (wish: TWishFormData & { id: string }) => {
         const newWishCard: TWishCard = {
             id: wish.id,
