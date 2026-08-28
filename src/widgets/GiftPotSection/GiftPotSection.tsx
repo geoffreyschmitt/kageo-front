@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from 'next-intl'
 
 import { ContributeGiftPotModal } from '@/features/ContributeGiftPot'
 import { CreateGiftPotButton } from '@/features/CreateGiftPot'
-import { MarkPurchasedButton } from '@/features/markPurchasedWish'
+import { useMarkPurchasedWishModel } from '@/features/markPurchasedWish'
 import { eventBus } from '@/shared/eventBus'
 import { formatDate } from '@/shared/lib/formatDate'
 
@@ -70,6 +70,15 @@ export const GiftPotSection = ({
     const t = useTranslations('giftPot')
     const locale = useLocale()
     const model = useGiftPotSectionModel({ wishId, onGiftPotRefreshed, useMock })
+    // The feature's own button hard-codes an English caption, so we drive its
+    // hook directly and render a translated button below.
+    const mark = useMarkPurchasedWishModel({
+        wishId,
+        userId: userId ?? '',
+        onMarkPurchased,
+        onError: onMarkPurchasedError,
+        useMock,
+    })
 
     const fmt = (n: number) => `${currency}${Number.isInteger(n) ? n : n.toFixed(2)}`
 
@@ -137,6 +146,26 @@ export const GiftPotSection = ({
         </div>
     )
 
+    // The pledge control every logged-in viewer gets, organiser included.
+    // Editing stays available once the pot is funded — a wrong amount has to
+    // stay correctable — but a fresh pledge does not.
+    const pledgeControl =
+        myPledge > 0 ? (
+            <div className={styles.giftPot__mine}>
+                <div>
+                    <p className={styles.giftPot__mineLabel}>{t('yourPledge')}</p>
+                    <span className={styles.giftPot__mineAmount}>{fmt(myPledge)}</span>
+                </div>
+                <button className={styles.giftPot__mineLink} type="button" onClick={model.openEdit}>
+                    {t('modify')}
+                </button>
+            </div>
+        ) : isFunded ? null : (
+            <button className={styles.giftPot__button} type="button" onClick={model.openAdd}>
+                {t('contribute')}
+            </button>
+        )
+
     const note = (text: string) => (
         <p className={styles.giftPot__note}>
             <LockIcon />
@@ -198,6 +227,8 @@ export const GiftPotSection = ({
                         <span className={styles.giftPot__goalValue}>{fmt(goal)}</span>
                     </div>
 
+                    {pledgeControl}
+
                     {contributors.length > 0 && (
                         <>
                             <p className={styles.giftPot__listHead}>{t('participants', { count: participantCount })}</p>
@@ -229,14 +260,15 @@ export const GiftPotSection = ({
                         <>
                             {fundedBlock}
                             {userId && (
-                                <div className={styles.giftPot__buy} role="group" aria-label={t('markPurchased')}>
-                                    <MarkPurchasedButton
-                                        wishId={wishId}
-                                        userId={userId}
-                                        onMarkPurchased={(wid) => onMarkPurchased?.(wid, userId)}
-                                        onError={onMarkPurchasedError}
-                                        useMock={useMock}
-                                    />
+                                <div className={styles.giftPot__buy}>
+                                    <button
+                                        className={styles.giftPot__button}
+                                        type="button"
+                                        onClick={mark.handleMarkPurchased}
+                                        disabled={mark.isMarking}
+                                    >
+                                        {t('markPurchased')}
+                                    </button>
                                     <p className={styles.giftPot__buyHint}>{t('markPurchasedHint')}</p>
                                 </div>
                             )}
@@ -248,51 +280,24 @@ export const GiftPotSection = ({
             )
         }
 
-        // Guest, goal reached — the pot is closed, no more pledging.
-        if (isFunded) {
-            return (
-                <>
-                    {progress}
-                    {fundedBlock}
-                </>
-            )
-        }
-
-        // Guest who has already pledged.
-        if (myPledge > 0) {
-            const othersCount = Math.max(0, participantCount - 1)
-            return (
-                <>
-                    {progress}
-                    <p className={styles.giftPot__org}>{t('organisedBy', { creatorName: giftPot.creatorName })}</p>
-                    <div className={styles.giftPot__mine}>
-                        <div>
-                            <p className={styles.giftPot__mineLabel}>{t('yourPledge')}</p>
-                            <span className={styles.giftPot__mineAmount}>{fmt(myPledge)}</span>
-                        </div>
-                        <button className={styles.giftPot__mineLink} type="button" onClick={model.openEdit}>
-                            {t('modify')}
-                        </button>
-                    </div>
-                    {othersCount > 0 && (
-                        <p className={styles.giftPot__others}>
-                            {t('otherParticipants', { count: othersCount })} &middot; {t('pledgesHidden')}
-                        </p>
-                    )}
-                    {note(t('noteGuest', { creatorName: giftPot.creatorName }))}
-                </>
-            )
-        }
-
-        // Guest who has not pledged yet.
+        // Guest — funded swaps the "organised by" line for the closing copy and
+        // drops the note, but a pledge already made stays editable.
+        const othersCount = Math.max(0, participantCount - 1)
         return (
             <>
                 {progress}
-                <p className={styles.giftPot__org}>{t('organisedBy', { creatorName: giftPot.creatorName })}</p>
-                <button className={styles.giftPot__button} type="button" onClick={model.openAdd}>
-                    {t('contribute')}
-                </button>
-                {note(t('noteGuest', { creatorName: giftPot.creatorName }))}
+                {isFunded ? (
+                    fundedBlock
+                ) : (
+                    <p className={styles.giftPot__org}>{t('organisedBy', { creatorName: giftPot.creatorName })}</p>
+                )}
+                {pledgeControl}
+                {myPledge > 0 && othersCount > 0 && (
+                    <p className={styles.giftPot__others}>
+                        {t('otherParticipants', { count: othersCount })} &middot; {t('pledgesHidden')}
+                    </p>
+                )}
+                {!isFunded && note(t('noteGuest', { creatorName: giftPot.creatorName }))}
             </>
         )
     }

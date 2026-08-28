@@ -11,7 +11,6 @@
     --gp-sage-tint:   var(--accent-tint-bg);
     --gp-sage-border: var(--accent-tint-border);
     --gp-contrast:    var(--accent-contrast);
-    --gp-surface:     var(--surface-raised);
     --gp-sunken:      var(--surface-sunken);
     --gp-border:      var(--border-default);
     --gp-border-soft: var(--border-soft);
