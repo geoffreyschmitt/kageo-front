@@ -57,6 +57,7 @@ export const GiftPotSection = ({
     isLoggedIn,
     isInvited,
     userId,
+    attached = false,
     giftPot,
     onGiftPotCreated,
     onContributeGiftPot,
@@ -84,13 +85,15 @@ export const GiftPotSection = ({
     // single flow must not show €620 in one place and €620.00 in the next.
     const fmt = (n: number) => `${currency}${n.toFixed(2)}`
 
+    const wrapClass = `${styles.giftPot} ${attached ? styles['giftPot--flush'] : ''}`
+
     // ── No pot yet ────────────────────────────────────────────
     if (!giftPot) {
         const isEligible = price > 0 && status === 'wanted'
         if (!isEligible) return null
 
         return (
-            <div className={styles.giftPot__create}>
+            <div className={`${wrapClass} ${styles.giftPot__create}`}>
                 <CreateGiftPotButton
                     wishId={wishId}
                     ownerName={ownerName}
@@ -319,7 +322,7 @@ export const GiftPotSection = ({
     }
 
     return (
-        <div className={styles.giftPot}>
+        <div className={wrapClass}>
             <details className={styles.giftPot__details}>
                 <summary className={styles.giftPot__summary}>
                     <span className={styles.giftPot__label}>

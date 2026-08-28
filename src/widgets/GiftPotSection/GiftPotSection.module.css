@@ -28,9 +28,18 @@
 /* ── "Open a gift pot" trigger (no pot yet) ───────────────── */
 
 .giftPot__create {
-    margin-top: auto;
     border-top: 1px solid var(--gp-border-soft);
     padding-top: 14px;
+}
+
+/* A wish-card actions row already drew the divider above — sit flush
+   under it instead of stacking a second border + 14px gap.
+   No-pot wrapper carries .giftPot__create itself; the pot case has
+   .giftPot__details on a child <details>. */
+.giftPot--flush.giftPot__create,
+.giftPot--flush .giftPot__details {
+    border-top: none;
+    padding-top: 6px;
 }
 
 /* ── Accordion ────────────────────────────────────────────── */

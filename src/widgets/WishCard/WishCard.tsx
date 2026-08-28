@@ -110,6 +110,15 @@ export const WishCard = ({
     const giftPotActive = giftPot != null
     const noop = () => {}
 
+    // Whether the actions row will actually render a button. Without this the row
+    // renders as an empty bordered strip above the gift pot — a double divider.
+    const hasGuestActions =
+        showGuestAction &&
+        ((!giftPotActive && (status === 'wanted' || status === 'proposed') && (!!userId || !!purchaseUrl)) ||
+            (status === 'reserved' && reservedBy === userId) ||
+            (status === 'purchased' && purchasedBy === userId))
+    const hasActionsRow = hasGuestActions || showOwnerAction
+
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
     const priorityLabel = t(`priority${cap(priority)}`)
     const statusLabel = t(`status${cap(visibleStatus)}`)
@@ -223,7 +232,7 @@ export const WishCard = ({
                     </div>
                 )}
 
-                {(showGuestAction || showOwnerAction) && (
+                {hasActionsRow && (
                 <div className={styles['wish-card__actions']}>
                     {showGuestAction && (
                         <>
@@ -319,6 +328,7 @@ export const WishCard = ({
                 {!isOwner && !isHistory && giftPot !== undefined && (
                     <GiftPotSection
                         wishId={id}
+                        attached={hasActionsRow}
                         price={price}
                         currency={currency}
                         status={status}

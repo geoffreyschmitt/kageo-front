@@ -11,6 +11,9 @@ export type TGiftPotSectionProps = {
     isLoggedIn: boolean
     isInvited: boolean
     userId?: string
+    /** true when a wish-card actions row renders directly above — the section
+     *  then sits flush under it instead of drawing its own top divider. */
+    attached?: boolean
     /** null = no pot yet (the wish may still be eligible for one) */
     giftPot: TGiftPotView | null
     onGiftPotCreated: (wishId: string, creatorId: string, creatorName: string) => void
