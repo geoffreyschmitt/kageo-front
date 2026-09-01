@@ -3,6 +3,7 @@ import { TUserProfile } from './getProfile'
 export type TUpdateProfilePayload = {
     name?: string
     isPublic?: boolean
+    birthdate?: string | null
 }
 
 export const updateProfile = async (payload: TUpdateProfilePayload): Promise<TUserProfile> => {

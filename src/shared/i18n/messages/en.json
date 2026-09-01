@@ -503,6 +503,8 @@
     "namePlaceholder": "Your name",
     "emailAddress": "Email Address",
     "emailHint": "Email cannot be changed at this time.",
+    "birthdate": "Date of Birth",
+    "birthdateHint": "Optional. Leave blank if you'd rather not say.",
     "saveChanges": "Save changes",
     "saving": "Saving…",
     "securityTitle": "Security",

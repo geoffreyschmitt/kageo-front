@@ -23,6 +23,7 @@ export const useManageAccountModel = () => {
     const [loadError, setLoadError] = useState<string | null>(null)
 
     const [nameValue, setNameValue] = useState('')
+    const [birthdateValue, setBirthdateValue] = useState('')
     const [isSavingName, setIsSavingName] = useState(false)
     const [nameSaved, setNameSaved] = useState(false)
     const [nameError, setNameError] = useState<string | null>(null)
@@ -48,6 +49,7 @@ export const useManageAccountModel = () => {
                 if (cancelled) return
                 setProfile(profileData)
                 setNameValue(profileData.name)
+                setBirthdateValue(profileData.birthdate ?? '')
                 setStats(statsData)
             })
             .catch((err) => {
@@ -71,17 +73,21 @@ export const useManageAccountModel = () => {
         setIsSavingName(true)
         setNameError(null)
         try {
-            const updated = await updateProfile({ name: nameValue.trim() })
+            const updated = await updateProfile({
+                name: nameValue.trim(),
+                birthdate: birthdateValue || null,
+            })
             setProfile(updated)
+            setBirthdateValue(updated.birthdate ?? '')
             await updateSession({ name: updated.name })
             setNameSaved(true)
             setTimeout(() => setNameSaved(false), 2500)
         } catch (err) {
-            setNameError(err instanceof Error ? err.message : 'Could not save name')
+            setNameError(err instanceof Error ? err.message : 'Could not save changes')
         } finally {
             setIsSavingName(false)
         }
-    }, [nameValue, updateSession])
+    }, [nameValue, birthdateValue, updateSession])
 
     const handleTogglePublicProfile = useCallback(async (next: boolean) => {
         if (!profile) return
@@ -156,6 +162,8 @@ export const useManageAccountModel = () => {
 
         nameValue,
         setNameValue,
+        birthdateValue,
+        setBirthdateValue,
         isSavingName,
         nameSaved,
         nameError,

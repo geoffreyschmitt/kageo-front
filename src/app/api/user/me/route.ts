@@ -12,6 +12,16 @@ type KVUser = {
     provider: string
     createdAt: string
     isPublic?: boolean
+    birthdate?: string
+}
+
+// Validates an ISO YYYY-MM-DD string that is a real date and not in the future.
+function isValidBirthdate(value: string): boolean {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+    const date = new Date(`${value}T00:00:00.000Z`)
+    if (Number.isNaN(date.getTime())) return false
+    if (date.toISOString().slice(0, 10) !== value) return false
+    return date.getTime() <= Date.now()
 }
 
 // GET /api/user/me — current user's profile
@@ -37,6 +47,7 @@ export async function GET() {
         email: user.email,
         createdAt: user.createdAt,
         isPublic: user.isPublic ?? false,
+        birthdate: user.birthdate ?? null,
         hasPassword: Boolean(user.password),
     })
 }
@@ -60,7 +71,7 @@ export async function PATCH(request: NextRequest) {
 
     try {
         const body = await request.json()
-        const { name, isPublic } = body
+        const { name, isPublic, birthdate } = body
 
         const updated: KVUser = { ...user }
 
@@ -75,6 +86,16 @@ export async function PATCH(request: NextRequest) {
             updated.isPublic = Boolean(isPublic)
         }
 
+        if (birthdate !== undefined) {
+            if (birthdate === null || birthdate === '') {
+                delete updated.birthdate
+            } else if (typeof birthdate === 'string' && isValidBirthdate(birthdate)) {
+                updated.birthdate = birthdate
+            } else {
+                return NextResponse.json({ message: 'Invalid birthdate' }, { status: 400 })
+            }
+        }
+
         await kv.set(`user:${email}`, updated)
 
         return NextResponse.json({
@@ -83,6 +104,7 @@ export async function PATCH(request: NextRequest) {
             email: updated.email,
             createdAt: updated.createdAt,
             isPublic: updated.isPublic ?? false,
+            birthdate: updated.birthdate ?? null,
             hasPassword: Boolean(updated.password),
         })
     } catch (error) {

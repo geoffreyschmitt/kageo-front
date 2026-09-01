@@ -35,6 +35,8 @@ export default function ProfilePage() {
 
         nameValue,
         setNameValue,
+        birthdateValue,
+        setBirthdateValue,
         isSavingName,
         nameSaved,
         nameError,
@@ -168,6 +170,25 @@ export default function ProfilePage() {
                                 />
                                 <p id="email-hint" className={s.field__hint}>
                                     {t('emailHint')}
+                                </p>
+                            </div>
+                        </div>
+                        <div className={s.form__row}>
+                            <div className={s.field}>
+                                <label className={s.field__label} htmlFor="profile-birthdate">
+                                    {t('birthdate')}
+                                </label>
+                                <input
+                                    id="profile-birthdate"
+                                    className={s.field__input}
+                                    type="date"
+                                    value={birthdateValue}
+                                    max={new Date().toISOString().slice(0, 10)}
+                                    onChange={(e) => setBirthdateValue(e.target.value)}
+                                    aria-describedby="birthdate-hint"
+                                />
+                                <p id="birthdate-hint" className={s.field__hint}>
+                                    {t('birthdateHint')}
                                 </p>
                             </div>
                         </div>

@@ -503,6 +503,8 @@
     "namePlaceholder": "Votre nom",
     "emailAddress": "Adresse e-mail",
     "emailHint": "L'e-mail ne peut pas être modifié pour le moment.",
+    "birthdate": "Date de naissance",
+    "birthdateHint": "Facultatif. Laissez vide si vous préférez ne pas le préciser.",
     "saveChanges": "Enregistrer les modifications",
     "saving": "Enregistrement…",
     "securityTitle": "Sécurité",

@@ -11,6 +11,7 @@ type KVUser = {
     provider: string
     createdAt: string
     isPublic?: boolean
+    birthdate?: string
 }
 
 type KVWishlist = Record<string, unknown> & { id: string; ownerId: string }
@@ -50,7 +51,7 @@ export async function GET() {
     return NextResponse.json({
         exportedAt: new Date().toISOString(),
         profile: user
-            ? { id: user.id, name: user.name, email: user.email, createdAt: user.createdAt }
+            ? { id: user.id, name: user.name, email: user.email, createdAt: user.createdAt, birthdate: user.birthdate ?? null }
             : null,
         wishlists: wishlistsWithWishes,
     })

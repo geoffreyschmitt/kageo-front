@@ -4,6 +4,7 @@ export type TUserProfile = {
     email: string
     createdAt: string
     isPublic: boolean
+    birthdate: string | null
     hasPassword: boolean
 }
 
