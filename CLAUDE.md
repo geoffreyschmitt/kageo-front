@@ -1,64 +1,72 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code (claude.ai/code) in this repository. Deeper context lives in `docs/`:
+[product](docs/product.md) · [architecture](docs/architecture.md) · [roadmap](docs/roadmap.md).
+Read `product.md` before making product decisions, `architecture.md` before touching data or auth.
 
 ## Commands
 
 ```bash
-# Development
-pnpm dev          # Start dev server with Turbopack
-pnpm build        # Production build
-pnpm start        # Start production server
-
-# Linting
-pnpm lint         # Check for ESLint errors
-pnpm lint:fix     # Auto-fix ESLint errors
-pnpm format       # Format src/**/*.{ts,tsx} via ESLint fix
+npm run dev       # Dev server (Turbopack)
+npm run build     # Production build — THE verification gate (type-checks everything)
+npm start         # Serve the production build
 ```
 
-There is no test runner configured in this project.
+- **Use `npm`, not `pnpm`** — pnpm isn't on PATH in Claude's shell here (a `package-lock.json` is committed).
+- **Lint is broken**: `next lint` was removed in Next 16 and `eslint` crashes. Don't rely on `npm run lint`; use `npm run build`.
+- **No test runner.** Verify by building, then exercising the flow in a browser.
+- Windows + PhpStorm: `mv` can fail with "Permission denied" while the IDE is open — use PowerShell `Move-Item`/`Rename-Item`.
 
-## Architecture
+## Stack
 
-Kageo is a wishlist management app built on **Next.js App Router** following **Feature-Sliced Design (FSD)**. Backend storage is **Vercel KV** (Redis). Auth is **NextAuth v4** with a Credentials provider and bcrypt password hashing.
+Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · CSS Modules · NextAuth v4 (Credentials + Google, JWT) ·
+Vercel KV (Upstash Redis) · next-intl (`fr` default, `en`) · Serwist PWA · Resend (email) · deployed on Vercel.
 
-### Implementing new features
+## Architecture (FSD)
 
-Always follow FSD when adding functionality. Place new code in the appropriate layer:
-- Business logic and state → `features/<FeatureName>/model.ts` (custom hook)
-- UI for the feature → `features/<FeatureName>/ui/`
-- Reusable domain types/forms → `entities/<domain>/`
-- API calls → `shared/api/<domain>/`
-- Reusable UI primitives → `shared/ui/`
-
-Never skip layers or import upward (e.g. `shared` must not import from `features`).
-
-### Layer hierarchy (FSD — lower layers cannot import from higher)
+Feature-Sliced Design. Lower layers never import from higher ones; never skip layers.
 
 | Layer | Path | Purpose |
 |-------|------|---------|
-| `shared/` | Infrastructure | UI primitives, providers, hooks, utils, event bus, api wrappers, styles |
-| `entities/` | Domain models | Types and forms for `user`, `wish`, `wishlist` |
-| `features/` | User interactions | Each feature has a `model.ts` (hook) + `ui/` (modal/form) |
-| `widgets/` | Page composites | `Header`, `WishCard`, `WishlistCard`, `WishlistList` |
-| `pages/` | Page components | Full-page client components (e.g. wishlist detail) |
-| `app/` | Pages & routes | App Router pages + `/api` route handlers |
+| `shared/` | `src/shared` | UI primitives, providers, hooks, lib, event bus, API wrappers, i18n, theme, styles |
+| `entities/` | `src/entities` | Domain types/forms: `user`, `wish`, `wishlist`, `comment` |
+| `features/` | `src/features` | One user interaction each: `model.ts` (hook) + `ui/` |
+| `widgets/` | `src/widgets` | Composites: `Header`, `WishCard`, `WishlistCard`, `WishlistList`, `PotCard`, `GiftPotSection` |
+| `views/` | `src/views` | Full-page client components (`dashboard`, `wishlist`, `profile`, `publicProfile`). This is FSD's "pages" layer, renamed to avoid clashing with Next's `pages/` |
+| `app/` | `src/app` | Routes under `[locale]/`, plus `/api` route handlers |
+
+Where new code goes:
+- Business logic/state → `features/<Name>/model.ts`; UI → `features/<Name>/ui/`
+- Domain types → `entities/<domain>/`
+- Fetch wrappers → `shared/api/<domain>/`
+- Reusable primitives → `shared/ui/`
 
 ### Data flow
 
-1. A **feature hook** (e.g. `useAddWishModel`) holds local form state and calls an **API wrapper** (e.g. `shared/api/wish/addWish.ts`).
-2. API wrappers call internal Next.js App Router route handlers via `fetch`.
-3. Route handlers (`app/api/**\/route.ts`) authenticate via `getServerSession(authOptions)` and read/write **Vercel KV**.
-4. Cross-component communication uses the **Event Bus** (`shared/eventBus`).
-4. Cross-component communication uses the **Event Bus** (`shared/eventBus`) — a singleton pub/sub with typed events defined in `shared/eventBus/config/eventTypes.ts`. Example: `wishlist:openCreationModal` fires from the header to open a modal rendered elsewhere.
+1. A feature hook (e.g. `useAddWishModel`) holds form state and calls an API wrapper in `shared/api/**`.
+2. The wrapper `fetch`es an internal route handler in `app/api/**/route.ts`.
+3. The handler authenticates with `getServerSession(authOptions)` and reads/writes Vercel KV (`@vercel/kv`).
+4. Cross-component communication uses the **event bus** (`shared/eventBus`): a typed singleton pub/sub, events declared in `shared/eventBus/config/eventTypes.ts` (e.g. `wishlist:openCreationModal`, `wish:openComments`).
 
-### Styling
+Server pages (`app/[locale]/**/page.tsx`) may read KV directly and pass data to a `views/` client component.
 
-CSS Modules per component. Global tokens in `shared/styles/variables.css`. No utility-class framework.
+### Conventions and gotchas
 
-### Path aliases (`tsconfig.json`)
+- Imports use the `@/*` → `src/*` alias.
+- Styling: CSS Modules per component; global tokens in `shared/styles/variables.css`; light/dark themes in `shared/styles/theme.css`. No utility-class framework.
+- **i18n**: every user-visible string goes in **both** `shared/i18n/messages/fr.json` and `en.json`. Use the navigation helpers from `shared/i18n/navigation.ts`, not `next/link`.
+- **Display font is Fraunces**, bound to the `--font-cormorant` CSS var (the var name is historical). Do not reintroduce Cormorant Garamond.
+- **Pots are a surprise from the wishlist owner.** Both pot types are hidden from the owner; role-shaped payloads come from one place (`readPotForViewer` / `readGiftPot` in `app/api/wishlist/pot/readPot.ts`). Don't re-derive role rules in the UI.
+- Two pot surfaces coexist: wishlist-level `PotCard` and per-wish `GiftPotSection` (the wish's goal is its price, never stored).
+- Many features still contain `lib/mock*.ts` and a `useMock` flag from the pre-KV era. The real wrappers are the default; don't add new mocks.
+- `src/middleware.ts` is the next-intl locale middleware (Next 16 calls this convention `proxy`).
+- Env vars and KV key schema: see `docs/architecture.md`.
 
-`@/*` maps to `src/*` — use this for all internal imports.
+## Docs maintenance
+
+When you ship a user-visible feature or change the data model, update the matching doc in the same change:
+`docs/roadmap.md` (move the item), `docs/architecture.md` (new KV keys/routes). Feature specs/plans from
+the superpowers workflow live in `docs/superpowers/{specs,plans}/`.
 
 <!-- code-review-graph MCP tools -->
 ## MCP Tools: code-review-graph
