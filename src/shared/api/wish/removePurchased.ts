@@ -1,6 +1,6 @@
 export type TRemovePurchasedWishResponse = {
     id: string
-    status: 'wanted'
+    status: 'wanted' | 'reserved' | 'funded'
     purchasedBy: undefined
 }
 

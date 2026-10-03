@@ -101,7 +101,6 @@ Local values come from `.env.local` (created by the Vercel CLI; never commit it)
 ## Known architectural debt
 
 - Leftover `lib/mock*.ts` + `useMock` flags in many features (real wrappers are the default).
-- `parseContributions` does an unguarded `JSON.parse`; a malformed KV entry would 500 the pot routes.
 - Organiser is tagged in pot contributor lists by display-name equality (namesake collision); needs `creatorId`.
 - No automated tests; lint is broken on Next 16 (`next lint` removed, eslint crashes).
 - `middleware.ts` uses the pre-Next-16 name for what is now `proxy`.

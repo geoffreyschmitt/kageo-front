@@ -119,42 +119,43 @@ export default function WishlistPageClient({
 
     // Optimistic patch of one wish's gift pot by a signed delta on the caller's pledge,
     // keeping the participant count and the derived funded flag in step.
-    const patchGiftPot = (wishId: string, delta: number) =>
-        setGiftPots((prev) => {
-            const cur = prev[wishId]
-            if (!cur) return prev
-            const wasIn = (cur.myContribution ?? 0) > 0
-            const nextMine = Math.max(0, (cur.myContribution ?? 0) + delta)
-            const willBeIn = nextMine > 0
-            const countShift = willBeIn === wasIn ? 0 : willBeIn ? 1 : -1
-            const total = Math.max(0, cur.totalContributed + delta)
-            const next: TGiftPotView = {
-                ...cur,
-                totalContributed: total,
-                myContribution: nextMine,
-                participantCount: Math.max(0, (cur.participantCount ?? 0) + countShift),
-                isFunded: cur.goal > 0 && total >= cur.goal,
-            }
-            // Keep the card's status in step with the derived funded state. Mirrors the server's
-            // reconcileFundedStatus: only ever moves between 'wanted' and 'funded', so a wish that
-            // is already purchased/reserved/proposed is never rewritten by this optimistic flip.
-            setItems((items) =>
-                items.map((it) =>
-                    it.id === wishId
-                        ? {
-                              ...it,
-                              status:
-                                  it.status === 'wanted' && next.isFunded
-                                      ? 'funded'
-                                      : it.status === 'funded' && !next.isFunded
-                                        ? 'wanted'
-                                        : it.status,
-                          }
-                        : it,
-                ),
-            )
-            return { ...prev, [wishId]: next }
-        })
+    // The next state is computed from the current render's pot (not inside a state updater) so the
+    // items update below stays out of an updater, which React may double-invoke under StrictMode.
+    const patchGiftPot = (wishId: string, delta: number) => {
+        const cur = giftPots[wishId]
+        if (!cur) return
+        const wasIn = (cur.myContribution ?? 0) > 0
+        const nextMine = Math.max(0, (cur.myContribution ?? 0) + delta)
+        const willBeIn = nextMine > 0
+        const countShift = willBeIn === wasIn ? 0 : willBeIn ? 1 : -1
+        const total = Math.max(0, cur.totalContributed + delta)
+        const next: TGiftPotView = {
+            ...cur,
+            totalContributed: total,
+            myContribution: nextMine,
+            participantCount: Math.max(0, (cur.participantCount ?? 0) + countShift),
+            isFunded: cur.goal > 0 && total >= cur.goal,
+        }
+        setGiftPots((prev) => ({ ...prev, [wishId]: next }))
+        // Keep the card's status in step with the derived funded state. Mirrors the server's
+        // reconcileFundedStatus: only ever moves between 'wanted' and 'funded', so a wish that
+        // is already purchased/reserved/proposed is never rewritten by this optimistic flip.
+        setItems((items) =>
+            items.map((it) =>
+                it.id === wishId
+                    ? {
+                          ...it,
+                          status:
+                              it.status === 'wanted' && next.isFunded
+                                  ? 'funded'
+                                  : it.status === 'funded' && !next.isFunded
+                                    ? 'wanted'
+                                    : it.status,
+                      }
+                    : it,
+            ),
+        )
+    }
 
     const handleGiftPotCreated = (wishId: string, creatorId: string, creatorName: string) => {
         setGiftPots((prev) => ({
@@ -263,8 +264,10 @@ export default function WishlistPageClient({
     const handleRemovePurchased = (wishId: string) => {
         setItems((prev) => prev.map((item) => {
             if (item.id !== wishId) return item
-            // Revert to the pre-purchase state: back to the reservation if one is still held.
-            return { ...item, status: item.reservedBy ? 'reserved' : 'wanted', purchasedBy: undefined }
+            // Revert to the pre-purchase state: back to the reservation if one is still held,
+            // or to 'funded' if its gift pot is still full (mirrors the server).
+            const status = item.reservedBy ? 'reserved' : giftPots[wishId]?.isFunded ? 'funded' : 'wanted'
+            return { ...item, status, purchasedBy: undefined }
         }))
         toast(t('purchaseCancelled'), 'info')
     }

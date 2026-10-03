@@ -18,12 +18,7 @@ Ordered: do these top to bottom.
 
 ## Next — fix known defects and debt
 
-- **[Bug]** Pot contributor lists tag the organiser by display-name equality (`GiftPotSection`, `PotCard`) → namesake collision. Add `creatorId` to `TGiftPotContributor` and plumb it through `readGiftPot`.
-- **[Bug]** `parseContributions` (`api/wishlist/pot/readPot.ts`) does an unguarded `JSON.parse`; one malformed KV entry makes the pot routes 500.
 - **[Bug]** Multi-key writes (delete cascades etc.) are not atomic; a mid-way failure can leave orphaned keys. Use pipelines/`multi` where possible and add an orphan-cleanup script.
-- `giftPot.pledgeReminder` renders in the organiser's own view ("give your share to {creatorName}" is self-addressed); add a `!isCreator &&` guard.
-- `patchGiftPot` in `WishlistPageClient` calls `setItems` inside the `setGiftPots` updater (impure, double-fires under StrictMode); hoist it.
-- Client `remove-purchased` hardcodes `reserved`/`wanted` while the server may return `funded`; align them.
 - Remove dead `lib/mock*.ts` files and `useMock` flags across features.
 - CSV export of pledges for pot organisers.
 - Rename `middleware.ts` → `proxy.ts` (Next 16 convention).

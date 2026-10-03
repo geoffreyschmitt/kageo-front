@@ -1,4 +1,4 @@
-export type TGiftPotContributor = { name: string; amount: number; lastContributedAt?: string }
+export type TGiftPotContributor = { name: string; amount: number; lastContributedAt?: string; isOrganiser?: boolean }
 
 export type TGiftPotView = {
     creatorId?: string
