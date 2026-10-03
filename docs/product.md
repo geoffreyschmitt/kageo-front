@@ -32,11 +32,11 @@ Shipped and backed by real KV storage unless noted.
 | Money | Wishlist-level pot (add/replace/cancel pledge), per-wish gift pot with funded status |
 | Platform | fr/en i18n, light/dark theme, PWA with offline page |
 
-**Scaffolded, not finished:** invite emails (invitee is recorded, no email sent); account confirmation (token issued, no confirm endpoint; email mocked without `RESEND_API_KEY`); cover images (field exists, no upload/storage); `allowComments` flag.
+**Scaffolded, not finished:** invite emails (invitee is recorded, no email sent); cover images (field exists, no upload/storage); `allowComments` flag.
 
 ## Privacy and data
 
-Stored in Vercel KV: name, email, bcrypt password hash (empty for Google users), optional birthdate, wishlists, wishes, pledges (amount + user id), comments, invited emails. No payment data is handled — pots only *track* pledges; money moves outside the app. Users can export their data (`/api/user/export`). Retention: data persists until the user deletes it; confirmation tokens expire after 24h. Define account-deletion and invitee-email handling before wide launch (see roadmap).
+Stored in Vercel KV: name, email, bcrypt password hash (empty for Google users), optional birthdate, wishlists, wishes, pledges (amount + user id), comments, invited emails. No payment data is handled — pots only *track* pledges; money moves outside the app. Users can export their data (`/api/user/export`). Retention: data persists until the user deletes it. Define account-deletion and invitee-email handling before wide launch (see roadmap).
 
 ## Out of scope (for now)
 

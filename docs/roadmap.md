@@ -10,7 +10,6 @@ Ordered: do these top to bottom.
 
 1. **[B] Browser QA of the per-wish gift pot.** Merged 2026-08-29 without live QA; checklist is in `docs/superpowers/specs/2026-08-28-gift-pot-per-wish-design.md` (Testing section). Cheap, and catches regressions in the riskiest area (money pledges).
 2. **[B] Send invite emails** via Resend from `api/wishlist/share`. Today the invitee is only recorded in `wishlist:{id}:invitees`, with a `console.info`; invited people are never notified.
-3. **[B] Email confirmation.** Sign-up issues `confirmation:{token}` (24h TTL) but no endpoint consumes it, and email is mocked without `RESEND_API_KEY`. Build the confirm route + page, or remove the flow.
 4. **[B] Account deletion.** Users can export their data (`api/user/export`) but not delete it. Must also clean up their wishlists, wishes, pledges, comments, and invitee entries. Needed before a public launch.
 5. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs, and Resend sender-domain verification are set for production (only `.env.local` has been seen).
 6. **[P] Verification gate.** Repair lint (`next lint` was removed in Next 16; eslint crashes) and add a minimal test setup, starting with the pledge/pot logic (`reconcileFundedStatus`, `readPotForViewer`).
