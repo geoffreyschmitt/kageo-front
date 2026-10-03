@@ -36,8 +36,17 @@ type TUserKV = {
     name: string
 }
 
+// A malformed KV entry is skipped (and logged) rather than failing every pot route.
 export const parseContributions = (raw: (string | TContribution)[] | null): TContribution[] =>
-    (raw ?? []).map((c) => (typeof c === 'string' ? (JSON.parse(c) as TContribution) : c))
+    (raw ?? []).flatMap((c) => {
+        if (typeof c !== 'string') return [c]
+        try {
+            return [JSON.parse(c) as TContribution]
+        } catch {
+            console.warn('Skipping malformed contribution entry')
+            return []
+        }
+    })
 
 export const readPotForViewer = async ({
     wishlistId,
@@ -94,7 +103,7 @@ export const readPotForViewer = async ({
         positive.map(async ([uid, { amount, last }]) => {
             const email = await kv.get<string>(`user:id:${uid}`)
             const user = email ? await kv.get<TUserKV>(`user:${email}`) : null
-            return { name: user?.name ?? 'Anonymous', amount, lastContributedAt: last }
+            return { name: user?.name ?? 'Anonymous', amount, lastContributedAt: last, isOrganiser: uid === pot.creatorId }
         }),
     )
     contributors.sort((a, b) => b.amount - a.amount)

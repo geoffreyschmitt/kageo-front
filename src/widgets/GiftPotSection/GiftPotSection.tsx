@@ -252,7 +252,7 @@ export const GiftPotSection = ({
                                             <span className={styles.giftPot__avatar}>{initials(c.name)}</span>
                                             <p className={styles.giftPot__name}>
                                                 {c.name}
-                                                {c.name === giftPot.creatorName && (
+                                                {c.isOrganiser && (
                                                     <span className={styles.giftPot__tag}>{t('you')}</span>
                                                 )}
                                                 {c.lastContributedAt && (
@@ -293,7 +293,6 @@ export const GiftPotSection = ({
                     )}
 
                     {note(t('noteOrganizer'))}
-                    {pledgeReminder}
                 </>
             )
         }

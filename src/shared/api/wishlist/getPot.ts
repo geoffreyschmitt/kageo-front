@@ -1,4 +1,4 @@
-export type TPotContributor = { name: string; amount: number; lastContributedAt?: string }
+export type TPotContributor = { name: string; amount: number; lastContributedAt?: string; isOrganiser?: boolean }
 
 export type TGetPotResponse = {
     creatorId?: string

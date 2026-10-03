@@ -25,7 +25,7 @@ API (`app/api/`):
 
 | Route | Purpose |
 |---|---|
-| `auth/[...nextauth]`, `auth/register` | NextAuth; credentials sign-up (issues a confirmation token) |
+| `auth/[...nextauth]`, `auth/register` | NextAuth; credentials sign-up |
 | `user/me`, `user/password`, `user/stats`, `user/export` | Account info (incl. optional birthdate), password change, dashboard stats, data export |
 | `wishlist` , `wishlist/[id]` | Wishlist CRUD |
 | `wishlist/share` | Invite by email (adds invitee; email not yet sent) |
@@ -53,7 +53,6 @@ All values are JSON unless noted. IDs are UUIDs.
 | `user:id:{id}` | value | email (reverse lookup) |
 | `user:{id}:wishlists` | set | wishlist ids owned by the user |
 | `email:{email}:invitedWishlists` | set | wishlists an email was invited to (works before the invitee has an account) |
-| `confirmation:{token}` | value, TTL 24h | `{userId, email, createdAt}` |
 | `wishlist:{id}` | value | `TWishlist` (name, description, isPublic, eventDate, allowSuggestions, coverImage?, ownerId, timestamps) |
 | `wishlist:{id}:wishes` | set | wish ids |
 | `wishlist:{id}:invitees` | set | invited emails |
@@ -81,7 +80,7 @@ FSD layers in `src/`: `shared → entities → features → widgets → views �
 |---|---|---|
 | Vercel KV | all persistence | `KV_REST_API_*`, `KV_URL`, `REDIS_URL` |
 | Google OAuth | sign-in | `GOOGLE_CLIENT_ID/SECRET` |
-| Resend | confirmation email | falls back to a mock if `RESEND_API_KEY` is unset or `USE_MOCK_EMAIL=true` |
+| Resend | not used yet (planned for invite emails) | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` |
 | Serwist | PWA / offline | disabled in development |
 
 ## Environment
@@ -92,8 +91,7 @@ FSD layers in `src/`: `shared → entities → features → widgets → views �
 | `NEXTAUTH_URL` | yes | canonical URL |
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN`, `KV_URL`, `REDIS_URL` | yes | Vercel KV (provisioned by the integration) |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | yes | Google sign-in |
-| `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | for real email | otherwise mocked |
-| `USE_MOCK_EMAIL` | no | force mock email |
+| `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | not yet | reserved for invite emails |
 | `NEXT_PUBLIC_APP_URL` | no | used when building share URLs |
 
 Local values come from `.env.local` (created by the Vercel CLI; never commit it). Project is linked via `.vercel/`; origin is `geoffreyschmitt/kageo-front` on GitHub.
@@ -101,7 +99,6 @@ Local values come from `.env.local` (created by the Vercel CLI; never commit it)
 ## Known architectural debt
 
 - Leftover `lib/mock*.ts` + `useMock` flags in many features (real wrappers are the default).
-- `parseContributions` does an unguarded `JSON.parse`; a malformed KV entry would 500 the pot routes.
 - Organiser is tagged in pot contributor lists by display-name equality (namesake collision); needs `creatorId`.
 - No automated tests; lint is broken on Next 16 (`next lint` removed, eslint crashes).
 - `middleware.ts` uses the pre-Next-16 name for what is now `proxy`.

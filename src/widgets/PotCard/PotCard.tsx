@@ -251,7 +251,7 @@ export const PotCard = ({
     }
 
     // ── Organizer view ───────────────────────────────────────
-    const others = model.visibleContributors.filter((c) => c.name !== pot.creatorName)
+    const others = model.visibleContributors.filter((c) => !c.isOrganiser)
 
     return (
         <div className={styles.potCard}>

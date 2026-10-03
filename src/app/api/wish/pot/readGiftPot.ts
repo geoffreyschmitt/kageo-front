@@ -70,7 +70,7 @@ export const readGiftPotForViewer = async ({
         positive.map(async ([uid, { amount, last }]) => {
             const email = await kv.get<string>(`user:id:${uid}`)
             const user = email ? await kv.get<TUserKV>(`user:${email}`) : null
-            return { name: user?.name ?? 'Anonymous', amount, lastContributedAt: last }
+            return { name: user?.name ?? 'Anonymous', amount, lastContributedAt: last, isOrganiser: uid === pot.creatorId }
         }),
     )
     contributors.sort((a, b) => b.amount - a.amount)
