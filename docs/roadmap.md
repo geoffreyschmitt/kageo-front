@@ -1,32 +1,35 @@
 # Roadmap
 
-Draft derived from the repo state (2026-10-03). Edit freely — this is a starting point, not a commitment.
+Updated 2026-10-07. Edit freely; this is a starting point, not a commitment.
 
 Legend: **[B]** blocker for real users · **[P]** production readiness · **[Bug]** known defect · items without a tag are improvements.
 
-## Now — make it launchable
+## Now: make it launchable
 
-Ordered: do these top to bottom.
+Ordered: do these top to bottom. All three need something outside the repo.
 
-1. **[B] Browser QA of the per-wish gift pot.** Merged 2026-08-29 without live QA; checklist is in `docs/superpowers/specs/2026-08-28-gift-pot-per-wish-design.md` (Testing section). Cheap, and catches regressions in the riskiest area (money pledges).
-2. **[B] Send invite emails** via Resend from `api/wishlist/share`. Today the invitee is only recorded in `wishlist:{id}:invitees`, with a `console.info`; invited people are never notified.
-4. **[B] Account deletion.** Users can export their data (`api/user/export`) but not delete it. Must also clean up their wishlists, wishes, pledges, comments, and invitee entries. Needed before a public launch.
-5. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs, and Resend sender-domain verification are set for production (only `.env.local` has been seen).
-6. **[P] Verification gate.** Repair lint (`next lint` was removed in Next 16; eslint crashes) and add a minimal test setup, starting with the pledge/pot logic (`reconcileFundedStatus`, `readPotForViewer`).
-7. **[P] `docs/runbook.md`.** Deploy, rollback, env vars, and KV backup/restore. KV is the only datastore, so a bad delete currently has no safety net.
+1. **[B] Browser QA of the per-wish gift pot and the new account purge.** The gift pot merged 2026-08-29 without live QA (checklist: `docs/superpowers/specs/2026-08-28-gift-pot-per-wish-design.md`, Testing section). The purge and the CSV exports are covered by unit tests against an in-memory KV, never against a real one: run it once on a development database, with a throwaway account that has pledges, comments and a reservation on someone else's list. **Do not point this at production data.**
+2. **[B] Send invite emails** via Resend from `api/wishlist/share`. Today the invitee is only recorded in `wishlist:{id}:invitees`; invited people are never notified. Needs a verified Resend sender domain.
+3. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
+4. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
 
-## Next — fix known defects and debt
+## Next: debt and follow-ups
 
-- **[Bug]** Multi-key writes (delete cascades etc.) are not atomic; a mid-way failure can leave orphaned keys. Use pipelines/`multi` where possible and add an orphan-cleanup script.
-- Remove dead `lib/mock*.ts` files and `useMock` flags across features.
-- CSV export of pledges for pot organisers.
-- Rename `middleware.ts` → `proxy.ts` (Next 16 convention).
-- Replace the boilerplate `README.md` with a human intro and run instructions; add `CHANGELOG.md` and `docs/decisions.md`.
+- Raise `import/order` and the React 19 rules (`react-hooks/purity`, `set-state-in-effect`) from warnings to errors after an autofix pass (~300 warnings today).
+- Tests beyond the pot logic: route-level tests for reserve / mark-purchased / contribute using `src/test/fakeKv.ts`; consider Playwright for the main flows.
+- Run `scripts/cleanup-orphans.mjs` (dry run first, after a `kv-backup.mjs backup`) against production to clear orphans left by pre-transaction deletes.
+- The read-modify-write paths (pledge totals, funded reconciliation) are atomic only at the final write; use `WATCH`/a Lua script if concurrent pledging becomes real.
+- Organiser is tagged in pot contributor lists by display-name equality; add `creatorId` matching.
 
 ## Later
 
 - Cover images: upload + storage (e.g. Vercel Blob); the `coverImage` field already exists on `TWishlist`.
-- Per-wishlist `allowComments` toggle (flag exists, unused).
-- Notifications: reservation, new suggestion, pot funded.
-- Privacy page and a written data-retention policy.
+- Notifications: reservation, new suggestion, pot funded (needs the email pipeline).
+- Privacy page and a written data-retention policy (needs legal review; the behaviour is documented in `docs/decisions.md`).
+- Hand over a pot to another organiser instead of dropping it when the organiser deletes their account.
 - Evaluate moving relational data off KV if query needs outgrow it.
+
+## Done
+
+- 2026-10-07: removed the mock layer; `middleware.ts` → `proxy.ts`; transactional deletes and a complete account purge; orphan-cleanup and KV backup/restore scripts; CSV export of pledges; working lint; Vitest + first tests; README, CHANGELOG, `docs/runbook.md`, `docs/decisions.md`.
+- Dropped: per-wishlist `allowComments` toggle. The setting was removed on purpose earlier; see `docs/decisions.md`.

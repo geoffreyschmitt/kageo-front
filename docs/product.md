@@ -25,18 +25,18 @@ Shipped and backed by real KV storage unless noted.
 
 | Area | Features |
 |---|---|
-| Accounts | Email+password and Google sign-in; profile; optional date of birth; password change; data export; public profile `/u/[id]` |
+| Accounts | Email+password and Google sign-in; profile; optional date of birth; password change; data export; account deletion; public profile `/u/[id]` |
 | Wishlists | CRUD, event date, public/private, share link, invite by email, dashboard, history of past lists |
 | Wishes | CRUD, name/description/URL/priority, statuses `wanted`/`reserved`/`purchased`/`proposed`/`funded` |
 | Coordination | Reserve/cancel, mark/remove purchased, propose a wish, comments (drawer + counter) |
-| Money | Wishlist-level pot (add/replace/cancel pledge), per-wish gift pot with funded status |
+| Money | Wishlist-level pot (add/replace/cancel pledge), per-wish gift pot with funded status, CSV export of pledges for organisers |
 | Platform | fr/en i18n, light/dark theme, PWA with offline page |
 
-**Scaffolded, not finished:** invite emails (invitee is recorded, no email sent); cover images (field exists, no upload/storage); `allowComments` flag.
+**Scaffolded, not finished:** invite emails (invitee is recorded, no email sent); cover images (field exists, no upload/storage).
 
 ## Privacy and data
 
-Stored in Vercel KV: name, email, bcrypt password hash (empty for Google users), optional birthdate, wishlists, wishes, pledges (amount + user id), comments, invited emails. No payment data is handled — pots only *track* pledges; money moves outside the app. Users can export their data (`/api/user/export`). Retention: data persists until the user deletes it. Define account-deletion and invitee-email handling before wide launch (see roadmap).
+Stored in Vercel KV: name, email, bcrypt password hash (empty for Google users), optional birthdate, wishlists, wishes, pledges (amount + user id), comments, invited emails. No payment data is handled — pots only *track* pledges; money moves outside the app. Users can export their data (`/api/user/export`). Retention: data persists until the user deletes it. Account deletion removes the user's lists, pledges, comments, reservations and organised pots (see `docs/decisions.md`). Invitee emails are stored until the wishlist or the invited person's account is deleted; a written retention policy and privacy page are still to do (see roadmap).
 
 ## Out of scope (for now)
 

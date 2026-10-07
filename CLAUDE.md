@@ -10,11 +10,13 @@ Read `product.md` before making product decisions, `architecture.md` before touc
 npm run dev       # Dev server (Turbopack)
 npm run build     # Production build — THE verification gate (type-checks everything)
 npm start         # Serve the production build
+npm test          # Vitest unit tests (pot logic, CSV, account purge)
+npm run lint      # ESLint, 0 errors expected (warnings are known debt)
 ```
 
 - **Use `npm`, not `pnpm`** — pnpm isn't on PATH in Claude's shell here (a `package-lock.json` is committed).
-- **Lint is broken**: `next lint` was removed in Next 16 and `eslint` crashes. Don't rely on `npm run lint`; use `npm run build`.
-- **No test runner.** Verify by building, then exercising the flow in a browser.
+- Lint works again (native flat config). Import-order and a few React 19 rules are warnings, not errors.
+- Tests are Vitest unit tests next to the code (`*.test.ts`); `src/test/fakeKv.ts` is an in-memory KV for route logic. No e2e: after `npm run build`, exercise the flow in a browser.
 - Windows + PhpStorm: `mv` can fail with "Permission denied" while the IDE is open — use PowerShell `Move-Item`/`Rename-Item`.
 
 ## Stack
@@ -58,8 +60,8 @@ Server pages (`app/[locale]/**/page.tsx`) may read KV directly and pass data to 
 - **Display font is Fraunces**, bound to the `--font-cormorant` CSS var (the var name is historical). Do not reintroduce Cormorant Garamond.
 - **Pots are a surprise from the wishlist owner.** Both pot types are hidden from the owner; role-shaped payloads come from one place (`readPotForViewer` / `readGiftPot` in `app/api/wishlist/pot/readPot.ts`). Don't re-derive role rules in the UI.
 - Two pot surfaces coexist: wishlist-level `PotCard` and per-wish `GiftPotSection` (the wish's goal is its price, never stored).
-- Many features still contain `lib/mock*.ts` and a `useMock` flag from the pre-KV era. The real wrappers are the default; don't add new mocks.
-- `src/middleware.ts` is the next-intl locale middleware (Next 16 calls this convention `proxy`).
+- The old `lib/mock*.ts` / `useMock` layer is gone; don't add mocks. Multi-key KV writes go through `kv.multi()` (see `shared/lib/kvCascade.ts`); account deletion is `app/api/user/me/purgeUser.ts`.
+- `src/proxy.ts` is the next-intl locale proxy (Next 16's name for middleware).
 - Env vars and KV key schema: see `docs/architecture.md`.
 
 ## Docs maintenance

@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kageo
 
-## Getting Started
+A social wishlist app. Create a wishlist for any occasion, share it, and let the people you invite reserve items, mark them as bought, suggest wishes, chip in to a pot and comment, without spoiling the surprise for the owner. French by default, English available.
 
-First, run the development server:
+Built with Next.js 16 (App Router), React 19, TypeScript, NextAuth, Vercel KV and next-intl, structured with Feature-Sliced Design.
+
+## Run it locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # or: vercel env pull .env.local
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The environment variables (NextAuth, Google OAuth, Vercel KV, Resend) are listed in [docs/architecture.md](docs/architecture.md#environment). KV is required even in development: there is no local fallback store, so point `.env.local` at a development database, not production.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Dev server (Turbopack) |
+| `npm run build` | Production build; also type-checks everything |
+| `npm start` | Serve the production build |
+| `npm test` | Unit tests (Vitest) |
+| `npm run lint` | ESLint (0 errors expected, warnings are known debt) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Use `npm`, not `pnpm` (a `package-lock.json` is committed).
 
-## Learn More
+## Documentation
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [docs/product.md](docs/product.md): what Kageo is, who it is for, the rules that shape it
+- [docs/architecture.md](docs/architecture.md): structure, routes, KV key schema, environment
+- [docs/roadmap.md](docs/roadmap.md): what is done, next and later
+- [docs/runbook.md](docs/runbook.md): deploy, rollback, KV backup/restore, troubleshooting
+- [docs/decisions.md](docs/decisions.md): why things are the way they are
+- [CHANGELOG.md](CHANGELOG.md)
+- [CLAUDE.md](CLAUDE.md): conventions for AI-assisted work in this repo
