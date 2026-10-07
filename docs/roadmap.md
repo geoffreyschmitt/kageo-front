@@ -16,8 +16,7 @@ Ordered: do these top to bottom. All of these need something outside the repo.
 
 ## Next: debt and follow-ups
 
-- Fix the remaining 26 lint warnings (React 19 `purity` / `set-state-in-effect`, `exhaustive-deps`, `any` in the event bus) and raise those rules to errors.
-- Route tests exist for reserve / cancel / purchase / contribute; extend to wish and wishlist CRUD, comments and share, and consider Playwright for the main flows.
+- Route tests cover wish/wishlist CRUD, access rules, comments, share, pots and pledges (81 tests). Still untested: account routes (`user/me` GET/PATCH, password, export, stats), register, and the server pages. Consider Playwright for the main flows.
 - Run `scripts/cleanup-orphans.mjs` (dry run first, after a `kv-backup.mjs backup`) against production to clear orphans left by pre-transaction deletes.
 - The read-modify-write paths (pledge totals, funded reconciliation) are atomic only at the final write; use `WATCH`/a Lua script if concurrent pledging becomes real.
 - **Decide how the PWA ships.** `npm run build` uses Turbopack and `@serwist/next` does not support it, so **no `sw.js` is generated or registered in production today**: only the manifest ships. Either build with `next build --webpack` (simple, slower builds) or migrate to `@serwist/turbopack`. Until then the offline fallback and cache rules in `src/sw.ts` are inert (they compile and were checked with a webpack build only).
@@ -34,6 +33,7 @@ Ordered: do these top to bottom. All of these need something outside the repo.
 
 ## Done
 
+- 2026-10-07 (hardening): lint at 0 warnings with React 19 rules as errors; server now enforces wishlist access and `allowSuggestions` on proposing a wish, and invited guests can act on private lists; route tests for CRUD, comments, share.
 - 2026-10-07 (follow-up): service worker never caches pages/RSC/API and purges legacy user-data caches; offline fallback precached; theme colours aligned with tokens; route tests; owner pot-existence leak fixed on `/api/wishlist/contribute`; `eslint --fix` import-order pass (now an error).
 - 2026-10-07: removed the mock layer; `middleware.ts` → `proxy.ts`; transactional deletes and a complete account purge; orphan-cleanup and KV backup/restore scripts; CSV export of pledges; working lint; Vitest + first tests; README, CHANGELOG, `docs/runbook.md`, `docs/decisions.md`.
 - Dropped: per-wishlist `allowComments` toggle. The setting was removed on purpose earlier; see `docs/decisions.md`.

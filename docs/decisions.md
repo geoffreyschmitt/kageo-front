@@ -26,8 +26,12 @@ Short records of choices that are not obvious from the code. Newest first. Add o
 Bound to the `--font-cormorant` CSS variable for historical reasons. Cormorant Garamond was dropped on purpose; do not reintroduce it.
 
 ## Lint: native flat config, warnings for historical debt
-`next lint` was removed in Next 16 and `FlatCompat` crashes with `eslint-config-next` 16, so `eslint.config.mjs` uses its native flat exports. `import/order` was autofixed (once) and is an error; a few React 19 rules (`react-hooks/purity`, `set-state-in-effect`) stay warnings until their ~25 findings are fixed.
+`next lint` was removed in Next 16 and `FlatCompat` crashes with `eslint-config-next` 16, so `eslint.config.mjs` uses its native flat exports. `import/order` was autofixed (once) and, with the React 19 rules, is an error; lint is at 0 warnings. `_`-prefixed names and rest-sibling omissions may be unused.
 
 ## The service worker never caches user data
 **Decision.** In `src/sw.ts`, navigations, RSC payloads and `/api/*` are network-only, ahead of Serwist's `defaultCache` (which would cache them network-first for 24h). Caches named `apis`, `pages`, `pages-rsc`, `pages-rsc-prefetch` are deleted on activate.
 **Why.** Responses are per-user and role-shaped (pots are hidden from the owner). A shared device must never replay the previous user's data when the network is slow. Cost: no offline reading of lists; only static assets and the offline fallback page are cached.
+
+## Access is decided on the server, by one helper
+**Decision.** Any route that lets a non-owner act on a wishlist (propose a wish, reserve, mark purchased, pledge, comment) uses `getWishlistAccess`: the owner, anyone on a public list, or a guest invited (by email) to a private one. Suggestions additionally require `allowSuggestions !== false` (a missing flag counts as open, like the page).
+**Why.** The UI hid buttons, but the API trusted the client: any signed-in user could write to any list, and invited guests of private lists were locked out of reserving and pledging. Pot *creation* still additionally requires an invitation, by design.

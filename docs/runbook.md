@@ -14,7 +14,7 @@ Operational notes for Kageo. Structure and key schema: [architecture.md](archite
 ```bash
 npm run build   # type-checks everything; the gate
 npm test        # vitest: pot/pledge logic, CSV, account purge
-npm run lint    # 0 errors expected; ~26 warnings are known debt (a few React 19 rules)
+npm run lint    # clean (0 errors, 0 warnings)
 ```
 
 There is no end-to-end suite. After a build, exercise the touched flow in a browser (`npm run dev`, or `npm start` for the production build).
