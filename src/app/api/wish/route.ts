@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 import { v4 as uuidv4 } from 'uuid'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 type TWishlistKV = {
     id: string
@@ -48,7 +49,12 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
         }
 
-        const isOwner = wishlist.ownerId === session.user.id
+        const { isOwner, canView } = await getWishlistAccess(wishlist, session.user)
+        // Suggestions come from people who can see the list, and only if the owner allows them
+        // (lists created before the flag existed count as open, like the page does).
+        if (!isOwner && (!canView || wishlist.allowSuggestions === false)) {
+            return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+        }
         const isProposed = !isOwner
 
         const id = uuidv4()

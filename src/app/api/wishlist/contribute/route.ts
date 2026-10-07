@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { queueListReplace } from '@/shared/lib/kvCascade'
+import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 import { parseContributions } from '../pot/readPot'
 
@@ -68,7 +69,9 @@ const loadContext = async (
         return { error: NextResponse.json({ message: 'No pot has been started for this wishlist' }, { status: 409 }) }
     }
 
-    if (!wishlist.isPublic) {
+    // Anyone on a public list, or a guest invited to a private one.
+    const { canView } = await getWishlistAccess(wishlist, session.user)
+    if (!canView) {
         return { error: NextResponse.json({ message: 'Forbidden' }, { status: 403 }) }
     }
 

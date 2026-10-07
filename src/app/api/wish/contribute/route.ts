@@ -8,6 +8,7 @@ import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { queueListReplace } from '@/shared/lib/kvCascade'
+import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 type TWishKV = { id: string; wishlistId: string; price: number; status: string }
 type TWishlistKV = { id: string; ownerId: string; isPublic: boolean }
@@ -59,7 +60,9 @@ const loadContext = async (
     if (!pot) {
         return { error: NextResponse.json({ message: 'No pot has been started for this wish' }, { status: 409 }) }
     }
-    if (!wishlist.isPublic) {
+    // Anyone on a public list, or a guest invited to a private one.
+    const { canView } = await getWishlistAccess(wishlist, session.user)
+    if (!canView) {
         return { error: NextResponse.json({ message: 'Forbidden' }, { status: 403 }) }
     }
     return { ctx: { userId: session.user.id, wishId, amount: parsedAmount, wish } }

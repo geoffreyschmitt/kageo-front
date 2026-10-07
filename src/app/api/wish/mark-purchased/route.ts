@@ -4,9 +4,10 @@ import { kv } from '@vercel/kv'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 type TWishKV = { id: string; status: string; wishlistId: string }
-type TWishlistKV = { isPublic: boolean; ownerId: string }
+type TWishlistKV = { id?: string; isPublic: boolean; ownerId: string }
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
@@ -26,7 +27,11 @@ export async function POST(request: NextRequest) {
         }
 
         const wishlist = await kv.get<TWishlistKV>(`wishlist:${wish.wishlistId}`)
-        if (!wishlist || (!wishlist.isPublic && wishlist.ownerId !== session.user.id)) {
+        // Owner, anyone on a public list, or a guest invited to a private one.
+        const access = wishlist
+            ? await getWishlistAccess({ ...wishlist, id: wish.wishlistId }, session.user)
+            : null
+        if (!access?.canView) {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
