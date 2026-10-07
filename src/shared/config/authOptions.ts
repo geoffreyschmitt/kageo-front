@@ -59,8 +59,7 @@ export const authOptions: NextAuthOptions = {
                         provider: 'google',
                         createdAt: new Date().toISOString(),
                     }
-                    await kv.set(`user:${email}`, newUser)
-                    await kv.set(`user:id:${id}`, email)
+                    await kv.multi().set(`user:${email}`, newUser).set(`user:id:${id}`, email).exec()
                     user.id = id
                 } else {
                     user.id = existing.id

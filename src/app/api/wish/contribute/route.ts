@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { queueListReplace } from '@/shared/lib/kvCascade'
 import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 import { reconcileFundedStatus } from '@/app/api/wish/pot/reconcileFundedStatus'
 
@@ -107,8 +108,9 @@ export async function PATCH(request: NextRequest) {
         const next =
             amount > 0 ? [...others, { userId, amount, contributedAt: now } as TContribution] : others
 
-        await kv.del(key)
-        if (next.length) await kv.rpush(key, ...next.map((c) => JSON.stringify(c)))
+        const tx = kv.multi()
+        queueListReplace(tx, key, next.map((c) => JSON.stringify(c)))
+        await tx.exec()
 
         const { total, isFunded } = await reconcile(wish)
         return NextResponse.json({ wishId, totalContributed: total, myContribution: amount, isFunded })

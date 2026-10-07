@@ -32,14 +32,15 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        // Record invitee — sadd is idempotent
         const invitedEmail = email.toLowerCase()
-        await kv.sadd(`wishlist:${wishlistId}:invitees`, invitedEmail)
-
-        // Reverse index so the invitee sees this wishlist under "Shared with Me"
-        // as soon as they're logged in with this email — keyed by email (not
-        // user id) since they may not have an account yet at invite time.
-        await kv.sadd(`email:${invitedEmail}:invitedWishlists`, wishlistId)
+        // Record the invitee (sadd is idempotent) plus a reverse index so they see this
+        // wishlist under "Shared with Me" as soon as they log in with this email. It is
+        // keyed by email (not user id) since they may not have an account yet.
+        await kv
+            .multi()
+            .sadd(`wishlist:${wishlistId}:invitees`, invitedEmail)
+            .sadd(`email:${invitedEmail}:invitedWishlists`, wishlistId)
+            .exec()
 
         console.info(`[share] Wishlist ${wishlistId} invite sent to ${email}`)
 

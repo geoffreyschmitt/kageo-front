@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { queueListReplace } from '@/shared/lib/kvCascade'
 import { parseContributions } from '../pot/readPot'
 
 type TWishlistKV = {
@@ -116,13 +117,11 @@ export async function PATCH(request: NextRequest) {
                 ? [...others, { userId, amount, contributedAt: now } as TContribution]
                 : others
 
-        await kv.del(key)
-        if (next.length) {
-            await kv.rpush(key, ...next.map((c) => JSON.stringify(c)))
-        }
-
         const newTotal = Math.max(0, (wishlist.totalContributed ?? 0) - mine + amount)
-        await kv.set(`wishlist:${wishlistId}`, { ...wishlist, totalContributed: newTotal, updatedAt: now })
+        const tx = kv.multi()
+        queueListReplace(tx, key, next.map((c) => JSON.stringify(c)))
+        tx.set(`wishlist:${wishlistId}`, { ...wishlist, totalContributed: newTotal, updatedAt: now })
+        await tx.exec()
 
         return NextResponse.json({ wishlistId, totalContributed: newTotal, myContribution: amount })
     } catch (error) {

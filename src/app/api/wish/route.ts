@@ -70,8 +70,7 @@ export async function POST(request: NextRequest) {
             updatedAt: now,
         }
 
-        await kv.set(`wish:${id}`, wish)
-        await kv.sadd(`wishlist:${wishlistId}:wishes`, id)
+        await kv.multi().set(`wish:${id}`, wish).sadd(`wishlist:${wishlistId}:wishes`, id).exec()
 
         return NextResponse.json(wish, { status: 201 })
     } catch (error) {

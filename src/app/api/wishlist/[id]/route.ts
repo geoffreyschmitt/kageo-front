@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { queueWishlistDeletion } from '@/shared/lib/kvCascade'
 
 type TWishlistKV = {
     id: string
@@ -145,27 +146,12 @@ export async function DELETE(
             )
         }
 
-        // Drop each wish with its gift-pot side keys so nothing is orphaned.
-        await Promise.all(
-            wishIds.flatMap((wid) => [
-                kv.del(`wish:${wid}`),
-                kv.del(`wish:${wid}:pot`),
-                kv.del(`wish:${wid}:contributions`),
-            ]),
-        )
-
         const invitees = (await kv.smembers<string[]>(`wishlist:${id}:invitees`)) ?? []
-        await Promise.all(invitees.map((email) => kv.srem(`email:${email}:invitedWishlists`, id)))
 
-        await Promise.all([
-            kv.del(`wishlist:${id}:wishes`),
-            kv.del(`wishlist:${id}:invitees`),
-            kv.del(`wishlist:${id}:contributions`),
-            kv.del(`wishlist:${id}:comments`),
-            kv.srem(`user:${session.user.id}:wishlists`, id),
-        ])
-
-        await kv.del(`wishlist:${id}`)
+        // One transaction: no orphaned wishes, pots or reverse-index entries on failure.
+        const tx = kv.multi()
+        queueWishlistDeletion(tx, { wishlistId: id, ownerId: session.user.id, wishIds, invitees })
+        await tx.exec()
 
         return NextResponse.json({ id, deleted: true })
     } catch (error) {
