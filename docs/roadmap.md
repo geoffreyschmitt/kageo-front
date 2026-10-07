@@ -20,7 +20,6 @@ Ordered: do these top to bottom. All of these need something outside the repo.
 - Tests beyond the pot logic: route-level tests for reserve / mark-purchased / contribute using `src/test/fakeKv.ts`; consider Playwright for the main flows.
 - Run `scripts/cleanup-orphans.mjs` (dry run first, after a `kv-backup.mjs backup`) against production to clear orphans left by pre-transaction deletes.
 - The read-modify-write paths (pledge totals, funded reconciliation) are atomic only at the final write; use `WATCH`/a Lua script if concurrent pledging becomes real.
-- Organiser is tagged in pot contributor lists by display-name equality; add `creatorId` matching.
 - Finish the PWA. The base already ships (Serwist service worker in `src/sw.ts`, `src/app/manifest.ts`, 192/512 icons), but it is not installable-grade yet:
   - Real maskable icon (today the 512 icon is reused with padding-less art) and an `apple-touch-icon` for iOS.
   - Offline fallback page (`fallback` entry in the Serwist config) instead of the browser error.

@@ -6,6 +6,8 @@ const withSerwist = withSerwistInit({
     swSrc: "src/sw.ts",
     swDest: "public/sw.js",
     disable: process.env.NODE_ENV === "development",
+    // Offline fallback pages used by src/sw.ts; precached so they work with no network.
+    additionalPrecacheEntries: ["/fr/~offline", "/en/~offline"].map((url) => ({ url, revision: crypto.randomUUID() })),
 });
 
 const withNextIntl = createNextIntlPlugin("./src/shared/i18n/request.ts");

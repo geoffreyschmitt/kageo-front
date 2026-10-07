@@ -55,6 +55,15 @@ describe('readPotForViewer role rules', () => {
             ['Gus', 40, false],
         ])
     })
+
+    it('tags the organiser by user id, not by display name (namesakes)', async () => {
+        await fake.set('user:guest@x.io', { id: 'guest', email: 'guest@x.io', name: 'Olivia' })
+        const view = await readPotForViewer({ wishlistId: 'L', userId: 'org' })
+        expect(view?.contributors?.map((c) => [c.name, c.isOrganiser]).sort()).toEqual([
+            ['Olivia', false],
+            ['Olivia', true],
+        ])
+    })
 })
 
 describe('parseContributions', () => {
