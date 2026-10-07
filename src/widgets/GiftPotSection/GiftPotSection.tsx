@@ -260,6 +260,13 @@ export const GiftPotSection = ({
                                     ))}
                                 </ul>
                             </div>
+                    <a
+                        className={styles.giftPot__export}
+                        href={`/api/wish/pot/export?wishId=${encodeURIComponent(wishId)}`}
+                        download
+                    >
+                        {t('exportCsv')}
+                    </a>
                         </>
                     )}
 

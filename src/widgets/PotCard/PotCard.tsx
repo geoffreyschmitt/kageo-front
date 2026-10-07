@@ -318,6 +318,16 @@ export const PotCard = ({
                 )}
             </div>
 
+            {(pot?.contributors?.length ?? 0) > 0 && (
+                <a
+                    className={styles.potCard__export}
+                    href={`/api/wishlist/pot/export?wishlistId=${encodeURIComponent(wishlistId)}`}
+                    download
+                >
+                    {t('exportCsv')}
+                </a>
+            )}
+
             {note}
             {modalEl}
         </div>

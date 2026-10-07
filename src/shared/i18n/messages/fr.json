@@ -459,6 +459,7 @@
   },
   "potCard": {
     "kicker": "Cagnotte cadeau",
+    "exportCsv": "Exporter les promesses (CSV)",
     "guestTitle": "Votre aperçu",
     "organizerTitle": "Votre tableau de bord",
     "startedByYou": "Cagnotte lancée par vous",
@@ -595,6 +596,7 @@
   },
   "giftPot": {
     "kicker": "Cagnotte cadeau",
+    "exportCsv": "Exporter les promesses (CSV)",
     "funded": "Objectif atteint",
     "loginToSee": "Une cagnotte est en cours pour ce cadeau — connectez-vous pour voir les détails et participer.",
     "organisedBy": "Organisée par {creatorName}",

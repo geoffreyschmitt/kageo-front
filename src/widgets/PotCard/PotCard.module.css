@@ -413,3 +413,12 @@
         flex-wrap: wrap;
     }
 }
+
+.potCard__export {
+    display: block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--pc-text-3);
+    text-align: center;
+    text-decoration: underline;
+}
