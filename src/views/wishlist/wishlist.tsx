@@ -1,6 +1,6 @@
 'use client'
 
-import {useMemo, useState} from 'react'
+import {useCallback, useMemo, useState} from 'react'
 
 import {useLocale, useTranslations} from 'next-intl'
 
@@ -85,6 +85,9 @@ type TWishlistPageProps = {
   onDeleteWishlistError?: (wishlistId: string) => void
 }
 
+// `addedDate` is a relative label such as "1 week ago" / "yesterday".
+const ageInDays = (addedDate: string) => (addedDate.includes('week') ? 7 : 1)
+
 export default function Wishlist({
   id,
   name,
@@ -94,7 +97,6 @@ export default function Wishlist({
   eventDate,
   coverImage = '',
   allowSuggestions = true,
-  ownerId,
   ownerName,
   ownerProfileUrl = null,
   onReserveWish,
@@ -166,7 +168,7 @@ export default function Wishlist({
   const minPrice = Math.min(...itemPrices, 0)
   const maxPrice = Math.max(...itemPrices, 1000)
 
-  const compareItems = (a: TWishCard, b: TWishCard) => {
+  const compareItems = useCallback((a: TWishCard, b: TWishCard) => {
     let comparison = 0
     switch (sortBy) {
       case 'name':
@@ -176,15 +178,8 @@ export default function Wishlist({
         comparison = a.price - b.price
         break
       case 'date':
-        // For demo purposes, using a simple comparison
-        // In real app, you'd parse actual dates
-        const dateA = new Date(
-          a.addedDate.includes('week') ? Date.now() - 7 * 24 * 60 * 60 * 1000 : Date.now() - 24 * 60 * 60 * 1000,
-        )
-        const dateB = new Date(
-          b.addedDate.includes('week') ? Date.now() - 7 * 24 * 60 * 60 * 1000 : Date.now() - 24 * 60 * 60 * 1000,
-        )
-        comparison = dateA.getTime() - dateB.getTime()
+        // `addedDate` is a relative label ("1 week ago"); rank by its age in days.
+        comparison = ageInDays(b.addedDate) - ageInDays(a.addedDate)
         break
       case 'priority': {
         const priorityOrder = { high: 3, medium: 2, low: 1 }
@@ -193,7 +188,7 @@ export default function Wishlist({
       }
     }
     return sortOrder === 'asc' ? comparison : -comparison
-  }
+  }, [sortBy, sortOrder])
 
   const filteredAndSortedItems = useMemo(() => {
     const filtered = items.filter((item) => {
@@ -220,7 +215,7 @@ export default function Wishlist({
     filtered.sort(compareItems)
 
     return filtered
-  }, [items, sortBy, sortOrder, statusFilter, priceRange])
+  }, [items, compareItems, statusFilter, priceRange])
 
   const { mostWantedItems, regularItems } = useMemo(() => {
     const mostWanted = filteredAndSortedItems.filter(
@@ -241,7 +236,7 @@ export default function Wishlist({
     const filtered = allProposedItems.filter((item) => item.price >= priceRange.min && item.price <= priceRange.max)
     filtered.sort(compareItems)
     return filtered
-  }, [allProposedItems, sortBy, sortOrder, priceRange])
+  }, [allProposedItems, compareItems, priceRange])
 
   // Suggestions a guest explicitly chose to share with the owner.
   const ownerVisibleSuggestions = useMemo(
@@ -303,7 +298,7 @@ export default function Wishlist({
     setEditingWish(null)
   }
 
-  const handleSendShareEmail: (email: string, url: string) => Promise<void> = async (email, url) => {
+  const handleSendShareEmail: (email: string, url: string) => Promise<void> = async (email) => {
     return shareWishlist(id, email)
   }
 

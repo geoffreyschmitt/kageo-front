@@ -1,5 +1,7 @@
 "use client"
 
+import { useId } from "react"
+
 import type { Session } from "next-auth"
 import { useSession, signIn, signOut } from "next-auth/react"
 
@@ -7,6 +9,8 @@ import { TUserPrivate } from "@/entities/user";
 
 export const useUserModel = () => {
     const { data: session, status } = useSession()
+    // Stable per-mount fallback id (a random value in render changes on every render).
+    const anonId = useId()
 
     const user: TUserPrivate | null = session?.user
         ? {
@@ -15,7 +19,7 @@ export const useUserModel = () => {
                 session.user.id ??
                 (session.user.email
                     ? `email:${session.user.email}`
-                    : `anon:${Math.random().toString(36).substring(2, 10)}`),
+                    : `anon:${anonId}`),
 
             name: session.user.name ?? null,
             email: session.user.email ?? null,

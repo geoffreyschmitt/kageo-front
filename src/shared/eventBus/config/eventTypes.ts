@@ -1,3 +1,6 @@
+// Events that carry no data.
+type NoPayload = Record<string, never>;
+
 export type AppEvents = UIEvents & UserEvents & WishlistEvents & WishEvents;
 
 type UIEvents = {
@@ -8,13 +11,13 @@ type UIEvents = {
 
 
 type UserEvents = {
-  'auth:openLoginModal': {};
+  'auth:openLoginModal': NoPayload;
 };
 
 type WishlistEvents = {
-  'wishlist:openCreationModal': {};
-  'wishlist:closeCreationModal': {};
-  'wishlist:create': {};
+  'wishlist:openCreationModal': NoPayload;
+  'wishlist:closeCreationModal': NoPayload;
+  'wishlist:create': NoPayload;
 
   'wishlist:openUpdateModal': {
     id?: string
@@ -28,11 +31,11 @@ type WishlistEvents = {
     ownerName?: string
     createdAt?: Date
   };
-  'wishlist:closeUpdateModal': {};
+  'wishlist:closeUpdateModal': NoPayload;
 
-  'wishlist:update': {};
+  'wishlist:update': NoPayload;
   
-  'wishlist:delete': {};
+  'wishlist:delete': NoPayload;
 };
 
 

@@ -79,10 +79,8 @@ const eslintConfig = [
     {
         // Pre-existing debt surfaced by the Next 16 / React 19 rule sets. Tracked, not blocking.
         rules: {
-            'react-hooks/purity': 'warn',
-            'react-hooks/set-state-in-effect': 'warn',
-            '@typescript-eslint/no-empty-object-type': 'warn',
-            '@typescript-eslint/no-explicit-any': 'warn',
+            // `_`-prefixed names and rest-sibling omissions are intentional (e.g. `const { password: _p, ...rest }`).
+            '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^_', argsIgnorePattern: '^_', ignoreRestSiblings: true }],
         },
     },
 ];

@@ -31,7 +31,7 @@ export const usePotCardModel = ({ wishlistId, pot, onPotRefreshed }: TUsePotCard
         }
     }, [wishlistId, onPotRefreshed])
 
-    const contributors = pot?.contributors ?? []
+    const contributors = useMemo(() => pot?.contributors ?? [], [pot?.contributors])
     const isDense = contributors.length > POT_DENSE_THRESHOLD
 
     const visibleContributors = useMemo(() => {

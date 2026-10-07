@@ -93,7 +93,7 @@ export const useCreateWishlistModel = ({
                 setIsSubmitting(false)
             }
         },
-        [formData, onSubmit, onClose, resetForm, t],
+        [formData, onSubmit, onError, onClose, resetForm, t],
     )
 
     return {

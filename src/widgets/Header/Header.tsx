@@ -31,10 +31,13 @@ export const Header = () => {
     return eventBus.on('auth:openLoginModal', () => setShowAuthModal(true))
   }, [])
 
-  // Close the mobile drawer whenever the route changes.
-  useEffect(() => {
+  // Close the mobile drawer whenever the route changes (adjusting state during render,
+  // not in an effect, avoids a cascading re-render).
+  const [lastPathname, setLastPathname] = useState(pathname)
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname)
     setMenuOpen(false)
-  }, [pathname])
+  }
 
   // Lock body scroll and close on Escape while the drawer is open.
   useEffect(() => {

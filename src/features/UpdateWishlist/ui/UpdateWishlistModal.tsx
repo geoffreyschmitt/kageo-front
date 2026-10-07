@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -16,6 +16,11 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpda
     const t = useTranslations('updateWishlistModal')
     const [isOpen, setIsOpen] = useState(false)
     const [initialDataToUse, setIsInitialDataToUse] = useState(initialData)
+    // The listeners below are registered once but must reset to the latest prop.
+    const initialDataRef = useRef(initialData)
+    useEffect(() => {
+        initialDataRef.current = initialData
+    }, [initialData])
 
     useEffect(() => {
         const removeOpenModalEvent = eventBus.on('wishlist:openUpdateModal', (payload) => {
@@ -32,7 +37,7 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpda
         });
         const removeCloseModalEvent = eventBus.on('wishlist:closeUpdateModal', () => {
             setIsOpen(false);
-            setIsInitialDataToUse(initialData)
+            setIsInitialDataToUse(initialDataRef.current)
         });
         return () => {
             removeOpenModalEvent();

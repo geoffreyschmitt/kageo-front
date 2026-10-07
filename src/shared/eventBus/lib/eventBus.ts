@@ -3,7 +3,8 @@ import {EventName, EventPayload, Listener} from '@/shared/eventBus/config';
 // Use a Map to store listeners for each event.
 // This variable is encapsulated by the function scope below (a closure)
 // and acts as the state for our singleton Event Bus.
-const listeners = new Map<EventName, Listener<any>[]>();
+type AnyListener = (payload: unknown) => void;
+const listeners = new Map<EventName, AnyListener[]>();
 
 /**
  * Registers a listener for a given event.
@@ -13,7 +14,7 @@ function on<T extends EventName>(eventName: T, listener: Listener<T>): () => voi
     listeners.set(eventName, []);
   }
   // Type assertion is safe here
-  listeners.get(eventName)!.push(listener as Listener<any>);
+  listeners.get(eventName)!.push(listener as unknown as AnyListener);
 
   // Returns the unsubscribe function (cleanup)
   return () => off(eventName, listener);
@@ -27,7 +28,7 @@ function off<T extends EventName>(eventName: T, listener: Listener<T>): void {
   if (handlers) {
     listeners.set(
       eventName,
-      handlers.filter(h => h !== listener)
+      handlers.filter(h => h !== (listener as unknown as AnyListener))
     );
   }
 }

@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -34,14 +34,6 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
     const t = useTranslations('wishlists')
     const [wishlists, setWishlists] = useState<TWishlistCard[]>(initialWishlists)
     const [selectedOwnerFilter, setSelectedOwnerFilter] = useState<TWishlistOwner | null>(null)
-    const [updatingWishlistId, setUpdatingWishlistId] = useState<string | null>(null)
-
-    useEffect(() => {
-        const removeOpenModalEvent = eventBus.on('wishlist:openUpdateModal', (payload: { id?: string }) => {
-            if (payload.id) setUpdatingWishlistId(payload.id)
-        })
-        return () => { removeOpenModalEvent() }
-    }, [])
 
     const sortByEventDate = (a: TWishlistCard, b: TWishlistCard) =>
         a.eventDate.getTime() - b.eventDate.getTime()
@@ -128,7 +120,6 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
                     : wishlist
             )
         )
-        setUpdatingWishlistId(null)
         toast(t('updated', { name: wishlistData.name }), 'success')
     }
 
