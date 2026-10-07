@@ -63,7 +63,11 @@ export async function generateMetadata({
 }
 
 export const viewport: Viewport = {
-    themeColor: '#0ea5e9',
+    // --surface-page in shared/styles/theme.css (light / dark)
+    themeColor: [
+        { media: '(prefers-color-scheme: light)', color: '#f7f4ef' },
+        { media: '(prefers-color-scheme: dark)', color: '#17130e' },
+    ],
     width: 'device-width',
     initialScale: 1,
     maximumScale: 1,
