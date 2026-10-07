@@ -3,14 +3,12 @@
 import {useCallback, useState} from "react"
 
 import {markPurchased} from "@/shared/api/wish/markPurchased";
-import {mockMarkPurchasedWish} from "./lib/mockMarkPurchasedWish"
 
 type TUseMarkPurchasedWishModelParams = {
     wishId: string
     userId: string
     onMarkPurchased?: (wishId: string, userId: string) => void
     onError?: (wishId: string) => void
-    useMock?: boolean
 }
 
 export const useMarkPurchasedWishModel = ({
@@ -18,7 +16,6 @@ export const useMarkPurchasedWishModel = ({
     userId,
     onMarkPurchased,
     onError,
-    useMock = false,
 }: TUseMarkPurchasedWishModelParams) => {
     const [isMarking, setIsMarking] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -34,8 +31,7 @@ export const useMarkPurchasedWishModel = ({
             }
 
             // Backend sync
-            const runner = useMock ? mockMarkPurchasedWish : markPurchased
-            await runner(wishId, userId)
+            await markPurchased(wishId, userId)
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to mark wish as purchased")
             // Revert optimistic update
@@ -45,7 +41,7 @@ export const useMarkPurchasedWishModel = ({
         } finally {
             setIsMarking(false)
         }
-    }, [wishId, userId, onMarkPurchased, onError, useMock])
+    }, [wishId, userId, onMarkPurchased, onError])
 
     return {
         isMarking,

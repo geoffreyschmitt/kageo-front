@@ -8,21 +8,18 @@ import {eventBus} from '@/shared/eventBus'
 import {TWishlistFormData, TWishlistValidationErrors, validateWishlistForm} from '@/entities/wishlist'
 import {DEFAULT_WISHLIST_SETTINGS} from '@/entities/wishlist/model/constants';
 
-import {mockUpdateWishlist} from './lib/mockUpdateWishlist'
 
 
 type TUseEditWishlistModel = {
     onSubmit: (wishlistData: TWishlistFormData & { id: string }) => void
     onClose: () => void
     initialData?: Partial<TWishlistFormData> & { id?: string }
-    useMock?: boolean
 }
 
 export const useEditWishlistModel = ({
     onSubmit,
     onClose,
     initialData = {},
-    useMock = false,
 }: TUseEditWishlistModel) => {
     // Extract and store the wishlist ID separately
     const [wishlistId, setWishlistId] = useState<string | undefined>(initialData.id)
@@ -78,8 +75,7 @@ export const useEditWishlistModel = ({
             try {
                 if (!wishlistId) throw new Error('Missing wishlist ID')
                 const dataWithId = { ...formData, id: wishlistId }
-                const runner = useMock ? mockUpdateWishlist : updateWishlist
-                const result = await runner(dataWithId)
+                const result = await updateWishlist(dataWithId)
                 onSubmit(result)
                 resetForm()
                 onClose()
@@ -90,7 +86,7 @@ export const useEditWishlistModel = ({
                 setIsSubmitting(false)
             }
         },
-        [formData, onSubmit, onClose, resetForm, useMock, wishlistId, t],
+        [formData, onSubmit, onClose, resetForm, wishlistId, t],
     )
 
     return {

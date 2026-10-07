@@ -21,7 +21,6 @@ export const AddWishModal = ({
     onClose,
     onSubmit,
     wishlistId,
-    useMock = false,
 }: TAddWishModal) => {
     const t = useTranslations('addWishModal')
     const {
@@ -35,7 +34,6 @@ export const AddWishModal = ({
         onSubmit,
         onClose,
         wishlistId,
-        useMock,
     });
 
     const handleSelectChange = (

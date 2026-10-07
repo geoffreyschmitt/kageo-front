@@ -7,13 +7,12 @@ import type {TRemovePurchasedButton} from "./RemovePurchasedButton.types"
 
 import styles from "./RemovePurchasedButton.module.css"
 
-export const RemovePurchasedButton = ({wishId, onRemovePurchased, onError, useMock = false}: TRemovePurchasedButton) => {
+export const RemovePurchasedButton = ({wishId, onRemovePurchased, onError}: TRemovePurchasedButton) => {
     const t = useTranslations('wishCard')
     const {isRemoving, error, handleRemovePurchased} = useRemovePurchasedWishModel({
         wishId,
         onRemovePurchased,
         onError,
-        useMock,
     })
 
     return (

@@ -14,7 +14,6 @@ export const CreateGiftPotButton = ({
     isLoggedIn,
     isInvited,
     onPotCreated,
-    useMock = false,
 }: TCreateGiftPotButtonProps) => {
     const t = useTranslations('createGiftPotModal')
     const { modalState, openModal, closeModal, isCreating, error, handleConfirm } = useCreateGiftPotModel({
@@ -22,7 +21,6 @@ export const CreateGiftPotButton = ({
         isLoggedIn,
         isInvited,
         onPotCreated,
-        useMock,
     })
 
     return (

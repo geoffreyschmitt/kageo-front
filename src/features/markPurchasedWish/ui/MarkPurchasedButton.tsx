@@ -5,13 +5,12 @@ import type {TMarkPurchasedButton} from "./MarkPurchasedButton.types"
 
 import styles from "./MarkPurchasedButton.module.css"
 
-export const MarkPurchasedButton = ({wishId, userId, onMarkPurchased, onError, useMock = false}: TMarkPurchasedButton) => {
+export const MarkPurchasedButton = ({wishId, userId, onMarkPurchased, onError}: TMarkPurchasedButton) => {
     const {isMarking, error, handleMarkPurchased} = useMarkPurchasedWishModel({
         wishId,
         userId,
         onMarkPurchased,
         onError,
-        useMock,
     })
 
     return (

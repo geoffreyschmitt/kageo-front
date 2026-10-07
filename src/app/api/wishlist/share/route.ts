@@ -41,7 +41,6 @@ export async function POST(request: NextRequest) {
         // user id) since they may not have an account yet at invite time.
         await kv.sadd(`email:${invitedEmail}:invitedWishlists`, wishlistId)
 
-        // Email sending is mocked — replace with real provider when ready
         console.info(`[share] Wishlist ${wishlistId} invite sent to ${email}`)
 
         return NextResponse.json({ ok: true })

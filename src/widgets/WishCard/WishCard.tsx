@@ -81,7 +81,6 @@ export const WishCard = ({
     onDeleteError,
     onEditWish,
     userId,
-    useMock,
     giftPot,
     onGiftPotCreated,
     onContributeGiftPot,
@@ -251,11 +250,11 @@ export const WishCard = ({
                     {showGuestAction && (
                         <>
                             {!giftPotActive && (status === 'wanted' || status === 'proposed') && userId && (
-                                <ReserveButton wishId={id} userId={userId} onReserve={onReserve} onError={onReserveError} useMock={useMock}/>
+                                <ReserveButton wishId={id} userId={userId} onReserve={onReserve} onError={onReserveError}/>
                             )}
 
                             {status === 'reserved' && reservedBy === userId && (
-                                <CancelReservationButton wishId={id} onCancel={onCancelReservation} onError={onCancelError} useMock={useMock}/>
+                                <CancelReservationButton wishId={id} onCancel={onCancelReservation} onError={onCancelError}/>
                             )}
 
                             {!giftPotActive && purchaseUrl && (status === 'wanted' || status === 'proposed') && (
@@ -275,7 +274,6 @@ export const WishCard = ({
                                     userId={userId}
                                     onMarkPurchased={onMarkPurchased}
                                     onError={onMarkPurchasedError}
-                                    useMock={useMock}
                                 />
                             )}
 
@@ -284,7 +282,6 @@ export const WishCard = ({
                                     wishId={id}
                                     onRemovePurchased={onRemovePurchased}
                                     onError={onRemovePurchasedError}
-                                    useMock={useMock}
                                 />
                             )}
                         </>
@@ -321,7 +318,6 @@ export const WishCard = ({
                                     onDeleteError,
                                     onEditWish,
                                     userId,
-                                    useMock
                                 })}
                             >
                                 {t('edit')}
@@ -331,7 +327,6 @@ export const WishCard = ({
                                 wishName={name}
                                 onDelete={onDeleteWish}
                                 onError={onDeleteError}
-                                useMock={useMock}
                             />
                         </>
                     )}
@@ -359,7 +354,6 @@ export const WishCard = ({
                         onGiftPotRefreshed={onGiftPotRefreshed ?? noop}
                         onMarkPurchased={onMarkPurchased}
                         onMarkPurchasedError={onMarkPurchasedError}
-                        useMock={useMock}
                     />
                 )}
             </div>

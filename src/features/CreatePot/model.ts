@@ -9,7 +9,6 @@ type TUseCreatePotModelParams = {
     isLoggedIn: boolean
     isInvited: boolean
     onPotCreated: (creatorId: string, creatorName: string) => void
-    useMock?: boolean
 }
 
 export const useCreatePotModel = ({
@@ -17,7 +16,6 @@ export const useCreatePotModel = ({
     isLoggedIn,
     isInvited,
     onPotCreated,
-    useMock = false,
 }: TUseCreatePotModelParams) => {
     const [modalState, setModalState] = useState<TCreatePotModalState>('closed')
     const [isCreating, setIsCreating] = useState(false)
@@ -45,12 +43,6 @@ export const useCreatePotModel = ({
         setError(null)
 
         try {
-            if (useMock) {
-                await new Promise(resolve => setTimeout(resolve, 400))
-                onPotCreated('mock-creator-id', 'You')
-                closeModal()
-                return
-            }
 
             const pot = await createPot(wishlistId)
             onPotCreated(pot.creatorId, pot.creatorName)
@@ -60,7 +52,7 @@ export const useCreatePotModel = ({
         } finally {
             setIsCreating(false)
         }
-    }, [wishlistId, useMock, onPotCreated, closeModal])
+    }, [wishlistId, onPotCreated, closeModal])
 
     return { modalState, openModal, closeModal, isCreating, error, handleConfirm }
 }

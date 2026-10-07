@@ -5,13 +5,12 @@ import type {TReserveButton} from "./ReserveButton.types"
 
 import styles from "./ReserveButton.module.css"
 
-export const ReserveButton = ({wishId, userId, onReserve, onError, useMock = false}: TReserveButton) => {
+export const ReserveButton = ({wishId, userId, onReserve, onError}: TReserveButton) => {
     const {isReserving, error, handleReserve} = useReserveWishModel({
         wishId,
         userId,
         onReserve,
         onError,
-        useMock,
     })
 
     return (

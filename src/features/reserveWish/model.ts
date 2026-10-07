@@ -3,14 +3,12 @@
 import {useCallback, useState} from "react"
 
 import {reserveWish} from "@/shared/api/wish/reserveWish";
-import {mockReserveWish} from "./lib/mockReserveWish"
 
 type TUseReserveWishModelParams = {
     wishId: string
     userId: string
     onReserve?: (wishId: string, reservedBy: string) => void
     onError?: (wishId: string) => void
-    useMock?: boolean
 }
 
 export const useReserveWishModel = ({
@@ -18,7 +16,6 @@ export const useReserveWishModel = ({
     userId,
     onReserve,
     onError,
-    useMock = false,
 }: TUseReserveWishModelParams) => {
     const [isReserving, setIsReserving] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -34,8 +31,7 @@ export const useReserveWishModel = ({
             }
 
             // Backend sync
-            const runner = useMock ? mockReserveWish : reserveWish
-            await runner(wishId, userId)
+            await reserveWish(wishId, userId)
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to reserve wish")
             // Revert optimistic update
@@ -45,7 +41,7 @@ export const useReserveWishModel = ({
         } finally {
             setIsReserving(false)
         }
-    }, [wishId, userId, onReserve, onError, useMock])
+    }, [wishId, userId, onReserve, onError])
 
     return {
         isReserving,

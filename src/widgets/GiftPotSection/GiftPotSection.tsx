@@ -66,11 +66,10 @@ export const GiftPotSection = ({
     onGiftPotRefreshed,
     onMarkPurchased,
     onMarkPurchasedError,
-    useMock = false,
 }: TGiftPotSectionProps) => {
     const t = useTranslations('giftPot')
     const locale = useLocale()
-    const model = useGiftPotSectionModel({ wishId, onGiftPotRefreshed, useMock })
+    const model = useGiftPotSectionModel({ wishId, onGiftPotRefreshed })
     // The feature's own button hard-codes an English caption, so we drive its
     // hook directly and render a translated button below.
     const mark = useMarkPurchasedWishModel({
@@ -78,7 +77,6 @@ export const GiftPotSection = ({
         userId: userId ?? '',
         onMarkPurchased,
         onError: onMarkPurchasedError,
-        useMock,
     })
 
     // Always two decimals — PotCard and ContributeGiftPotModal do the same, and a
@@ -102,7 +100,6 @@ export const GiftPotSection = ({
                     isLoggedIn={isLoggedIn}
                     isInvited={isInvited}
                     onPotCreated={(creatorId, creatorName) => onGiftPotCreated(wishId, creatorId, creatorName)}
-                    useMock={useMock}
                 />
             </div>
         )
@@ -203,7 +200,6 @@ export const GiftPotSection = ({
             onError={(_wishId, delta) => onContributeGiftPotError(wishId, delta)}
             onRemove={(_wishId, removedAmount) => onGiftPotRemoved(wishId, removedAmount)}
             onSaved={model.reconcile}
-            useMock={useMock}
         />
     )
 

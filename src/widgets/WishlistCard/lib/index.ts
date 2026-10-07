@@ -1,1 +1,0 @@
-export { wishlistCardMock } from './mockWishlistCard'

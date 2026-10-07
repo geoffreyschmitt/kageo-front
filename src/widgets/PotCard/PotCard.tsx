@@ -54,11 +54,10 @@ export const PotCard = ({
     onPotCreated,
     onPotRefreshed,
     onRequireLogin,
-    useMock = false,
 }: TPotCardProps) => {
     const t = useTranslations('potCard')
     const locale = useLocale()
-    const model = usePotCardModel({ wishlistId, pot, onPotRefreshed, useMock })
+    const model = usePotCardModel({ wishlistId, pot, onPotRefreshed })
 
     const fmt = (n: number) => `${currency}${n.toFixed(2)}`
 
@@ -83,7 +82,6 @@ export const PotCard = ({
                             onPotCreated?.(creatorId, creatorName)
                             model.reconcile()
                         }}
-                        useMock={useMock}
                     />
                 </div>
             </div>
@@ -177,7 +175,6 @@ export const PotCard = ({
             onError={onContributeError}
             onRemove={onContributeRemoved}
             onSaved={model.reconcile}
-            useMock={useMock}
         />
     )
 

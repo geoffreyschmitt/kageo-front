@@ -9,7 +9,6 @@ type TUseCreateGiftPotModelParams = {
     isLoggedIn: boolean
     isInvited: boolean
     onPotCreated: (creatorId: string, creatorName: string) => void
-    useMock?: boolean
 }
 
 export const useCreateGiftPotModel = ({
@@ -17,7 +16,6 @@ export const useCreateGiftPotModel = ({
     isLoggedIn,
     isInvited,
     onPotCreated,
-    useMock = false,
 }: TUseCreateGiftPotModelParams) => {
     const [modalState, setModalState] = useState<TCreateGiftPotModalState>('closed')
     const [isCreating, setIsCreating] = useState(false)
@@ -45,12 +43,6 @@ export const useCreateGiftPotModel = ({
         setError(null)
 
         try {
-            if (useMock) {
-                await new Promise(resolve => setTimeout(resolve, 400))
-                onPotCreated('mock-creator-id', 'You')
-                closeModal()
-                return
-            }
 
             const pot = await createGiftPot(wishId)
             onPotCreated(pot.creatorId, pot.creatorName)
@@ -60,7 +52,7 @@ export const useCreateGiftPotModel = ({
         } finally {
             setIsCreating(false)
         }
-    }, [wishId, useMock, onPotCreated, closeModal])
+    }, [wishId, onPotCreated, closeModal])
 
     return { modalState, openModal, closeModal, isCreating, error, handleConfirm }
 }

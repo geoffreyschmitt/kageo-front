@@ -6,7 +6,7 @@ Kageo is a Next.js 16 App Router app, structured with Feature-Sliced Design, sto
 
 ```
 Browser ──► Next.js (Vercel)
-             ├─ middleware.ts          next-intl locale routing (fr default, en)
+             ├─ proxy.ts               next-intl locale routing (fr default, en)
              ├─ app/[locale]/**        server pages: read KV directly, hand data to views/
              ├─ app/api/**/route.ts    route handlers: auth check → KV read/write
              └─ sw.ts (Serwist)        PWA service worker, /~offline fallback
@@ -98,8 +98,6 @@ Local values come from `.env.local` (created by the Vercel CLI; never commit it)
 
 ## Known architectural debt
 
-- Leftover `lib/mock*.ts` + `useMock` flags in many features (real wrappers are the default).
 - Organiser is tagged in pot contributor lists by display-name equality (namesake collision); needs `creatorId`.
 - No automated tests; lint is broken on Next 16 (`next lint` removed, eslint crashes).
-- `middleware.ts` uses the pre-Next-16 name for what is now `proxy`.
 - No transactions: multi-key writes (e.g. delete cascades) are not atomic.

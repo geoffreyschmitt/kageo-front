@@ -5,12 +5,11 @@ import type {TCancelReservationButton} from "./CancelReservationButton.types"
 
 import styles from "./CancelReservationButton.module.css"
 
-export const CancelReservationButton = ({wishId, onCancel, onError, useMock = false}: TCancelReservationButton) => {
+export const CancelReservationButton = ({wishId, onCancel, onError}: TCancelReservationButton) => {
     const {isCancelling, error, handleCancel} = useCancelReservationModel({
         wishId,
         onCancel,
         onError,
-        useMock,
     })
 
     return (
