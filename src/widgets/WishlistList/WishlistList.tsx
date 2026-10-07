@@ -3,8 +3,9 @@ import {useTranslations} from 'next-intl'
 import {WishlistCard} from '@/widgets/WishlistCard'
 import {TWishlistList} from '@/widgets/WishlistList/WishlistList.types';
 
-import styles from './WishlistList.module.css'
 import {eventBus} from '@/shared/eventBus/lib/eventBus';
+
+import styles from './WishlistList.module.css'
 
 export const WishlistList = ({
   wishlistCardList,

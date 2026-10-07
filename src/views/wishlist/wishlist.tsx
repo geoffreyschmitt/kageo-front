@@ -1,30 +1,34 @@
 'use client'
 
 import {useMemo, useState} from 'react'
+
 import {useLocale, useTranslations} from 'next-intl'
 
+
+import {PotCard} from '@/widgets/PotCard'
 import {TWishCard, WishCard} from '@/widgets/WishCard';
 
 import {AddWishModal} from '@/features/AddWish'
-import {ProposeWishModal} from '@/features/ProposeWish';
-import {shareWishlist} from '@/shared/api/wishlist/shareWishlist'
-import {UpdateWishlistModal} from '@/features/UpdateWishlist'
-import {ShareWishlistModal} from '@/features/ShareWishlist'
+import {CommentsSection, CommentsDrawer} from '@/features/Comments'
 import {DeleteWishlistButton} from '@/features/DeleteWishlist'
 import {EditWishModal} from '@/features/EditWish'
-import {PotCard} from '@/widgets/PotCard'
-import {CommentsSection, CommentsDrawer} from '@/features/Comments'
-import {LoginPromptModal} from '@/shared/ui'
+import {ProposeWishModal} from '@/features/ProposeWish';
+import {ShareWishlistModal} from '@/features/ShareWishlist'
+import {UpdateWishlistModal} from '@/features/UpdateWishlist'
+
 
 import {TProposedWishFormData, TWishFormData} from '@/entities/wish'
 import {TWishlistFormData} from '@/entities/wishlist';
-import type {TGetPotResponse} from '@/shared/api/wishlist/getPot';
+
 import type {TGiftPotView} from '@/shared/api/wish/getGiftPot';
+import type {TGetPotResponse} from '@/shared/api/wishlist/getPot';
+import {shareWishlist} from '@/shared/api/wishlist/shareWishlist'
+import {eventBus} from '@/shared/eventBus/';
+import {formatDate} from '@/shared/lib/formatDate';
+import {generateShareUrl} from '@/shared/lib/generateShareUrl';
+import {LoginPromptModal} from '@/shared/ui'
 
 import styles from './wishlist.module.css'
-import {eventBus} from '@/shared/eventBus/';
-import {generateShareUrl} from '@/shared/lib/generateShareUrl';
-import {formatDate} from '@/shared/lib/formatDate';
 
 
 type TWishlistPageProps = {

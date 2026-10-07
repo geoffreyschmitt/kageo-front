@@ -26,4 +26,8 @@ Short records of choices that are not obvious from the code. Newest first. Add o
 Bound to the `--font-cormorant` CSS variable for historical reasons. Cormorant Garamond was dropped on purpose; do not reintroduce it.
 
 ## Lint: native flat config, warnings for historical debt
-`next lint` was removed in Next 16 and `FlatCompat` crashes with `eslint-config-next` 16, so `eslint.config.mjs` uses its native flat exports. `import/order` (~290 violations) and a few React 19 rules (`react-hooks/purity`, `set-state-in-effect`) are warnings so lint can gate on real errors. Raise them to errors once an autofix pass has landed.
+`next lint` was removed in Next 16 and `FlatCompat` crashes with `eslint-config-next` 16, so `eslint.config.mjs` uses its native flat exports. `import/order` was autofixed (once) and is an error; a few React 19 rules (`react-hooks/purity`, `set-state-in-effect`) stay warnings until their ~25 findings are fixed.
+
+## The service worker never caches user data
+**Decision.** In `src/sw.ts`, navigations, RSC payloads and `/api/*` are network-only, ahead of Serwist's `defaultCache` (which would cache them network-first for 24h). Caches named `apis`, `pages`, `pages-rsc`, `pages-rsc-prefetch` are deleted on activate.
+**Why.** Responses are per-user and role-shaped (pots are hidden from the owner). A shared device must never replay the previous user's data when the network is slow. Cost: no offline reading of lists; only static assets and the offline fallback page are cached.

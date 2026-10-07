@@ -1,9 +1,11 @@
 import React from "react"
 
 import Image from "next/image";
+
 import { useTranslations } from "next-intl"
 
 import {TProposedWishForm, TProposedWishFormData, TWishForm} from "@/entities/wish/ui/WishForm.types";
+
 import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 import styles from "./WishForm.module.css"

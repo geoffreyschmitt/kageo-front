@@ -1,6 +1,7 @@
 'use client'
 
 import { useDeleteWishlistModel } from '../model'
+
 import type { TDeleteWishlistButton } from './DeleteWishlistButton.types'
 import { DeleteWishlistConfirmationModal } from './DeleteWishlistConfirmationModal'
 

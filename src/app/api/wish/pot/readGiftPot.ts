@@ -1,7 +1,8 @@
 import { kv } from '@vercel/kv'
 
-import type { TGiftPotView, TGiftPotContributor } from '@/shared/api/wish/getGiftPot'
 import { parseContributions } from '@/app/api/wishlist/pot/readPot'
+
+import type { TGiftPotView, TGiftPotContributor } from '@/shared/api/wish/getGiftPot'
 
 type TWishKV = { id: string; wishlistId: string; price: number; status: string }
 type TWishlistKV = { id: string; ownerId: string }

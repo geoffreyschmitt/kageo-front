@@ -2,11 +2,12 @@ import {useCallback, useEffect, useState} from 'react'
 
 import {useTranslations} from 'next-intl'
 
+import {TWishlistFormData, TWishlistValidationErrors, validateWishlistForm} from '@/entities/wishlist'
+import {DEFAULT_WISHLIST_SETTINGS} from '@/entities/wishlist/model/constants';
+
 import {updateWishlist} from '@/shared/api/wishlist/updateWishlist'
 import {eventBus} from '@/shared/eventBus'
 
-import {TWishlistFormData, TWishlistValidationErrors, validateWishlistForm} from '@/entities/wishlist'
-import {DEFAULT_WISHLIST_SETTINGS} from '@/entities/wishlist/model/constants';
 
 
 

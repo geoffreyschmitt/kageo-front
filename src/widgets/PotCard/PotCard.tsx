@@ -4,11 +4,12 @@ import { useLocale, useTranslations } from 'next-intl'
 
 import { ContributeModal } from '@/features/ContributePot'
 import { CreatePotButton } from '@/features/CreatePot'
+
 import { formatDate } from '@/shared/lib/formatDate'
 
 import { usePotCardModel } from './model'
-import type { TPotCardProps } from './PotCard.types'
 import styles from './PotCard.module.css'
+import type { TPotCardProps } from './PotCard.types'
 
 const GiftIcon = () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">

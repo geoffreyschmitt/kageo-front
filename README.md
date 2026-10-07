@@ -20,7 +20,7 @@ The environment variables (NextAuth, Google OAuth, Vercel KV, Resend) are listed
 | `npm run build` | Production build; also type-checks everything |
 | `npm start` | Serve the production build |
 | `npm test` | Unit tests (Vitest) |
-| `npm run lint` | ESLint (0 errors expected, warnings are known debt) |
+| `npm run lint` | ESLint (0 errors expected) |
 
 Use `npm`, not `pnpm` (a `package-lock.json` is committed).
 

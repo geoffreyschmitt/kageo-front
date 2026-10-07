@@ -1,20 +1,22 @@
 'use client'
 
-import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
+
+import Image from 'next/image'
+
 import {useTranslations} from 'next-intl'
 
+import {GiftPotSection} from "@/widgets/GiftPotSection";
 import {TWishCard} from '@/widgets/WishCard/WishCard.types';
 
-import {ReserveButton} from "@/features/reserveWish";
 import {CancelReservationButton} from "@/features/cancelReservation";
+import {DeleteWishButton} from "@/features/DeleteWish";
 import {MarkPurchasedButton} from "@/features/markPurchasedWish";
 import {RemovePurchasedButton} from "@/features/removePurchasedWish";
-import {DeleteWishButton} from "@/features/DeleteWish";
+import {ReserveButton} from "@/features/reserveWish";
 
 import {eventBus} from "@/shared/eventBus";
 
-import {GiftPotSection} from "@/widgets/GiftPotSection";
 
 import styles from './WishCard.module.css'
 

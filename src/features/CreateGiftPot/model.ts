@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+
 import { createGiftPot } from '@/shared/api/wish/createGiftPot'
+
 import type { TCreateGiftPotModalState } from './ui/CreateGiftPotModal.types'
 
 type TUseCreateGiftPotModelParams = {

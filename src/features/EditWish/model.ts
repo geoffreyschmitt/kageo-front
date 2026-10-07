@@ -1,10 +1,10 @@
 import { useState, useCallback, useEffect } from "react"
-import { useTranslations } from "next-intl"
 
-import { editWish as editWishService } from "@/shared/api/wish/editWish"
+import { useTranslations } from "next-intl"
 
 import type { TWishFormData, TWishValidationErrors, TWishPriority} from "@/entities/wish"
 
+import { editWish as editWishService } from "@/shared/api/wish/editWish"
 import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 

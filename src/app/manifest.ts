@@ -7,8 +7,9 @@ export default function manifest(): MetadataRoute.Manifest {
         description: "Manage your wishlists with Kageo",
         start_url: "/",
         display: "standalone",
-        background_color: "#ffffff",
-        theme_color: "#0ea5e9",
+        // Match --surface-page (light) in shared/styles/theme.css; the manifest cannot vary by scheme.
+        background_color: "#f7f4ef",
+        theme_color: "#f7f4ef",
         icons: [
             {
                 src: "/icons/icon-192x192.png",

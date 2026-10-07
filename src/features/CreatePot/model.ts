@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+
 import { createPot } from '@/shared/api/wishlist/createPot'
+
 import type { TCreatePotModalState } from './ui/CreatePotModal.types'
 
 type TUseCreatePotModelParams = {

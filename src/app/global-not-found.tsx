@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+
 import { Fraunces, DM_Sans } from 'next/font/google'
+import Link from 'next/link'
 
 import '@/shared/styles/theme.css'
 import '@/shared/styles/reset.css'

@@ -1,10 +1,12 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { Modal } from '@/shared/ui'
+
 import { eventBus } from '@/shared/eventBus'
-import type { TCreatePotModalState } from './CreatePotModal.types'
+import { Modal } from '@/shared/ui'
+
 import styles from './CreatePotModal.module.css'
+import type { TCreatePotModalState } from './CreatePotModal.types'
 
 type TCreatePotModalProps = {
     modalState: TCreatePotModalState

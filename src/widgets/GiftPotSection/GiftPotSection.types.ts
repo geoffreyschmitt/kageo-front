@@ -1,4 +1,5 @@
 import type { TWishStatus } from '@/entities/wish'
+
 import type { TGiftPotView } from '@/shared/api/wish/getGiftPot'
 
 export type TGiftPotSectionProps = {

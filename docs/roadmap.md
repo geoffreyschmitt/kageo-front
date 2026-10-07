@@ -16,17 +16,13 @@ Ordered: do these top to bottom. All of these need something outside the repo.
 
 ## Next: debt and follow-ups
 
-- Raise `import/order` and the React 19 rules (`react-hooks/purity`, `set-state-in-effect`) from warnings to errors after an autofix pass (~300 warnings today).
-- Tests beyond the pot logic: route-level tests for reserve / mark-purchased / contribute using `src/test/fakeKv.ts`; consider Playwright for the main flows.
+- Fix the remaining 26 lint warnings (React 19 `purity` / `set-state-in-effect`, `exhaustive-deps`, `any` in the event bus) and raise those rules to errors.
+- Route tests exist for reserve / cancel / purchase / contribute; extend to wish and wishlist CRUD, comments and share, and consider Playwright for the main flows.
 - Run `scripts/cleanup-orphans.mjs` (dry run first, after a `kv-backup.mjs backup`) against production to clear orphans left by pre-transaction deletes.
 - The read-modify-write paths (pledge totals, funded reconciliation) are atomic only at the final write; use `WATCH`/a Lua script if concurrent pledging becomes real.
-- Organiser is tagged in pot contributor lists by display-name equality; add `creatorId` matching.
-- Finish the PWA. The base already ships (Serwist service worker in `src/sw.ts`, `src/app/manifest.ts`, 192/512 icons), but it is not installable-grade yet:
-  - Real maskable icon (today the 512 icon is reused with padding-less art) and an `apple-touch-icon` for iOS.
-  - Offline fallback page (`fallback` entry in the Serwist config) instead of the browser error.
-  - Install prompt (`beforeinstallprompt` on Android/desktop, an "Add to Home Screen" hint on iOS), fr/en strings.
-  - Check what `defaultCache` does with authenticated `/api` GETs: pot payloads are role-shaped and hidden from the owner, so they must never be served from a shared or stale cache.
-  - Align `theme_color` / `background_color` with the light/dark theme tokens and run a Lighthouse PWA audit on the production build.
+- **Decide how the PWA ships.** `npm run build` uses Turbopack and `@serwist/next` does not support it, so **no `sw.js` is generated or registered in production today**: only the manifest ships. Either build with `next build --webpack` (simple, slower builds) or migrate to `@serwist/turbopack`. Until then the offline fallback and cache rules in `src/sw.ts` are inert (they compile and were checked with a webpack build only).
+- Then, once a service worker really ships: an install prompt (`beforeinstallprompt` on Android/desktop, an "Add to Home Screen" hint on iOS, fr/en strings), and a Lighthouse PWA audit on the production build.
+- **Brand app icon.** The current icon is a placeholder (sky-blue rounded "K", off-brand against the sage-green UI). Needs a designed full-bleed maskable icon and an iOS touch icon (no transparency or baked-in rounded corners).
 
 ## Later
 
@@ -38,5 +34,6 @@ Ordered: do these top to bottom. All of these need something outside the repo.
 
 ## Done
 
+- 2026-10-07 (follow-up): service worker never caches pages/RSC/API and purges legacy user-data caches; offline fallback precached; theme colours aligned with tokens; route tests; owner pot-existence leak fixed on `/api/wishlist/contribute`; `eslint --fix` import-order pass (now an error).
 - 2026-10-07: removed the mock layer; `middleware.ts` → `proxy.ts`; transactional deletes and a complete account purge; orphan-cleanup and KV backup/restore scripts; CSV export of pledges; working lint; Vitest + first tests; README, CHANGELOG, `docs/runbook.md`, `docs/decisions.md`.
 - Dropped: per-wishlist `allowComments` toggle. The setting was removed on purpose earlier; see `docs/decisions.md`.

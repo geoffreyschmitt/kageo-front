@@ -1,9 +1,10 @@
 "use client"
 
 import {useCancelReservationModel} from "../model"
-import type {TCancelReservationButton} from "./CancelReservationButton.types"
 
 import styles from "./CancelReservationButton.module.css"
+import type {TCancelReservationButton} from "./CancelReservationButton.types"
+
 
 export const CancelReservationButton = ({wishId, onCancel, onError}: TCancelReservationButton) => {
     const {isCancelling, error, handleCancel} = useCancelReservationModel({

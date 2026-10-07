@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from 'next'
+
 import { Fraunces, DM_Sans, JetBrains_Mono } from 'next/font/google'
+import { notFound } from 'next/navigation'
+
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
-import { notFound } from 'next/navigation'
 
 import '@/shared/styles/theme.css'
 import '@/shared/styles/reset.css'
@@ -10,10 +12,10 @@ import '@/shared/styles/variables.css'
 import '@/shared/styles/globals.css'
 import { Header } from '@/widgets'
 
-import { AuthProvider } from '@/shared/providers/AuthProvider'
-import { Toaster } from '@/shared/ui'
 import { routing } from '@/shared/i18n/routing'
+import { AuthProvider } from '@/shared/providers/AuthProvider'
 import { ThemeProvider, readThemeCookie, themeInitScript } from '@/shared/theme'
+import { Toaster } from '@/shared/ui'
 
 const fraunces = Fraunces({
     subsets: ['latin'],
@@ -63,7 +65,11 @@ export async function generateMetadata({
 }
 
 export const viewport: Viewport = {
-    themeColor: '#0ea5e9',
+    // --surface-page in shared/styles/theme.css (light / dark)
+    themeColor: [
+        { media: '(prefers-color-scheme: light)', color: '#f7f4ef' },
+        { media: '(prefers-color-scheme: dark)', color: '#17130e' },
+    ],
     width: 'device-width',
     initialScale: 1,
     maximumScale: 1,

@@ -1,10 +1,12 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { Modal } from '@/shared/ui'
+
 import { eventBus } from '@/shared/eventBus'
-import type { TCreateGiftPotModalProps } from './CreateGiftPotModal.types'
+import { Modal } from '@/shared/ui'
+
 import styles from './CreateGiftPotModal.module.css'
+import type { TCreateGiftPotModalProps } from './CreateGiftPotModal.types'
 
 export const CreateGiftPotModal = ({
     modalState,

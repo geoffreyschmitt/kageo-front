@@ -2,12 +2,13 @@ import {useCallback, useState} from "react"
 
 import {useTranslations} from 'next-intl'
 
-import {createWishlist} from "@/shared/api/wishlist/createWishlist";
-import {eventBus} from "@/shared/eventBus";
 
 import type {TWishlistFormData, TWishlistValidationErrors} from "@/entities/wishlist"
 import {validateWishlistForm} from '@/entities/wishlist/lib/validateWishlistForm';
 import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
+
+import {createWishlist} from "@/shared/api/wishlist/createWishlist";
+import {eventBus} from "@/shared/eventBus";
 
 
 type TUseCreateWishlistModel = {

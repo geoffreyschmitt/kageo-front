@@ -1,12 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import { eventBus } from '@/shared/eventBus'
 
-import { CommentsSection } from './CommentsSection'
 import styles from './CommentsDrawer.module.css'
+import { CommentsSection } from './CommentsSection'
 
 type TCommentsDrawerProps = {
     // Logged-out visitors may open the drawer (the composer prompts them to log in)

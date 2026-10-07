@@ -1,12 +1,16 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useTranslations } from 'next-intl'
-import { Modal } from '@/shared/ui'
+
 import { eventBus } from '@/shared/eventBus'
+import { Modal } from '@/shared/ui'
+
 import { useContributeGiftPotModel } from '../model'
-import type { TContributeGiftPotModal } from './ContributeGiftPotModal.types'
+
 import styles from './ContributeGiftPotModal.module.css'
+import type { TContributeGiftPotModal } from './ContributeGiftPotModal.types'
 
 const QUICK_PICKS = [20, 50, 100]
 

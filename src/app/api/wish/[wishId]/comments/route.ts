@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+
 import { kv } from '@vercel/kv'
+import { getServerSession } from 'next-auth'
 import { v4 as uuidv4 } from 'uuid'
+
+import type { TComment } from '@/entities/comment'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
-import type { TComment } from '@/entities/comment'
 
 type TWishKV = { id: string; wishlistId: string }
 type TWishlistKV = { id: string; ownerId: string; isPublic: boolean }

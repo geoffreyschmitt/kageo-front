@@ -1,10 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useTranslations } from 'next-intl'
-import { useCommentsModel } from '../model'
-import { LoginPromptModal } from '@/shared/ui'
+
 import type { TCommentTarget } from '@/shared/api/comment'
+import { LoginPromptModal } from '@/shared/ui'
+
+import { useCommentsModel } from '../model'
+
 import styles from './CommentsSection.module.css'
 
 type TCommentsSectionProps = {

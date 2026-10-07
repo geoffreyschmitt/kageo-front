@@ -1,8 +1,11 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+
 import { useTranslations } from 'next-intl'
+
 import { eventBus } from '@/shared/eventBus'
+
 import styles from './Toast.module.css'
 
 type ToastItem = {

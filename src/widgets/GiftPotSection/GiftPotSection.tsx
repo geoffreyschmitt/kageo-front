@@ -5,12 +5,13 @@ import { useLocale, useTranslations } from 'next-intl'
 import { ContributeGiftPotModal } from '@/features/ContributeGiftPot'
 import { CreateGiftPotButton } from '@/features/CreateGiftPot'
 import { useMarkPurchasedWishModel } from '@/features/markPurchasedWish'
+
 import { eventBus } from '@/shared/eventBus'
 import { formatDate } from '@/shared/lib/formatDate'
 
-import { GIFT_POT_LIST_SCROLL_THRESHOLD, useGiftPotSectionModel } from './model'
-import type { TGiftPotSectionProps } from './GiftPotSection.types'
 import styles from './GiftPotSection.module.css'
+import type { TGiftPotSectionProps } from './GiftPotSection.types'
+import { GIFT_POT_LIST_SCROLL_THRESHOLD, useGiftPotSectionModel } from './model'
 
 const GiftIcon = () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

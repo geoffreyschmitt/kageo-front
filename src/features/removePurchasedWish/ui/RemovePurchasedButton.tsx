@@ -3,9 +3,10 @@
 import {useTranslations} from "next-intl"
 
 import {useRemovePurchasedWishModel} from "../model"
-import type {TRemovePurchasedButton} from "./RemovePurchasedButton.types"
 
 import styles from "./RemovePurchasedButton.module.css"
+import type {TRemovePurchasedButton} from "./RemovePurchasedButton.types"
+
 
 export const RemovePurchasedButton = ({wishId, onRemovePurchased, onError}: TRemovePurchasedButton) => {
     const t = useTranslations('wishCard')
