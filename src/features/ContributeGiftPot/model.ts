@@ -13,7 +13,6 @@ type TUseContributeGiftPotModelParams = {
     /** fired once the server write has landed — safe point to re-read the pot */
     onSaved?: () => void
     onClose: () => void
-    useMock?: boolean
     mode?: 'add' | 'edit'
     initialAmount?: number
 }
@@ -25,7 +24,6 @@ export const useContributeGiftPotModel = ({
     onRemove,
     onSaved,
     onClose,
-    useMock = false,
     mode = 'add',
     initialAmount = 0,
 }: TUseContributeGiftPotModelParams) => {
@@ -55,9 +53,7 @@ export const useContributeGiftPotModel = ({
         onClose()
 
         try {
-            if (useMock) {
-                await new Promise(resolve => setTimeout(resolve, 400))
-            } else if (isEdit) {
+            if (isEdit) {
                 await setGiftContribution(wishId, parsed)
             } else {
                 await contributeGiftPot(wishId, parsed)
@@ -70,7 +66,7 @@ export const useContributeGiftPotModel = ({
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishId, amount, onContribute, onError, onSaved, onClose, useMock, isEdit, initialAmount, t])
+    }, [wishId, amount, onContribute, onError, onSaved, onClose, isEdit, initialAmount, t])
 
     // Cancel the caller's pledge entirely (edit mode only).
     const handleCancel = useCallback(async () => {
@@ -82,11 +78,7 @@ export const useContributeGiftPotModel = ({
         onClose()
 
         try {
-            if (useMock) {
-                await new Promise(resolve => setTimeout(resolve, 400))
-            } else {
-                await setGiftContribution(wishId, 0)
-            }
+            await setGiftContribution(wishId, 0)
             onSaved?.()
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to cancel')
@@ -94,7 +86,7 @@ export const useContributeGiftPotModel = ({
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishId, onContribute, onError, onRemove, onSaved, onClose, useMock, initialAmount])
+    }, [wishId, onContribute, onError, onRemove, onSaved, onClose, initialAmount])
 
     return { amount, setAmount, isSubmitting, error, handleSubmit, handleCancel }
 }

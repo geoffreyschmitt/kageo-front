@@ -9,20 +9,17 @@ import type {TWishlistFormData, TWishlistValidationErrors} from "@/entities/wish
 import {validateWishlistForm} from '@/entities/wishlist/lib/validateWishlistForm';
 import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
 
-import {mockCreateWishlist} from "./lib/mockCreateWishlist"
 
 type TUseCreateWishlistModel = {
     onSubmit: (wishlistData: TWishlistFormData & { id: string; isPending?: boolean }) => void
     onError?: (tempId: string) => void
     onClose: () => void
-    useMock?: boolean
 }
 
 export const useCreateWishlistModel = ({
     onSubmit,
     onError,
     onClose,
-    useMock = false,
 }: TUseCreateWishlistModel) => {
     const [formData, setFormData] = useState<TWishlistFormData>({
         ...DEFAULT_WISHLIST_SETTINGS,
@@ -79,8 +76,7 @@ export const useCreateWishlistModel = ({
             })
 
             try {
-                const runner = useMock ? mockCreateWishlist : createWishlist
-                const result = await runner(formData)
+                const result = await createWishlist(formData)
                 // Call onSubmit again with real ID from API
                 onSubmit({
                     ...result,
@@ -96,7 +92,7 @@ export const useCreateWishlistModel = ({
                 setIsSubmitting(false)
             }
         },
-        [formData, onSubmit, onClose, resetForm, useMock, t],
+        [formData, onSubmit, onClose, resetForm, t],
     )
 
     return {

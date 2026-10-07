@@ -459,6 +459,7 @@
   },
   "potCard": {
     "kicker": "Gift pot",
+    "exportCsv": "Export pledges (CSV)",
     "guestTitle": "Your overview",
     "organizerTitle": "Your dashboard",
     "startedByYou": "Pot started by you",
@@ -595,6 +596,7 @@
   },
   "giftPot": {
     "kicker": "Gift pot",
+    "exportCsv": "Export pledges (CSV)",
     "funded": "Goal reached",
     "loginToSee": "A gift pot is running for this present — log in to see the details and join in.",
     "organisedBy": "Organised by {creatorName}",

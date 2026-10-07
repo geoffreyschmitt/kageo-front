@@ -3,20 +3,17 @@
 import {useCallback, useState} from "react"
 
 import {removePurchased} from "@/shared/api/wish/removePurchased";
-import {mockRemovePurchasedWish} from "./lib/mockRemovePurchasedWish"
 
 type TUseRemovePurchasedWishModelParams = {
     wishId: string
     onRemovePurchased?: (wishId: string) => void
     onError?: (wishId: string) => void
-    useMock?: boolean
 }
 
 export const useRemovePurchasedWishModel = ({
     wishId,
     onRemovePurchased,
     onError,
-    useMock = false,
 }: TUseRemovePurchasedWishModelParams) => {
     const [isRemoving, setIsRemoving] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -32,8 +29,7 @@ export const useRemovePurchasedWishModel = ({
             }
 
             // Backend sync
-            const runner = useMock ? mockRemovePurchasedWish : removePurchased
-            await runner(wishId)
+            await removePurchased(wishId)
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to remove purchased status")
             // Revert optimistic update
@@ -43,7 +39,7 @@ export const useRemovePurchasedWishModel = ({
         } finally {
             setIsRemoving(false)
         }
-    }, [wishId, onRemovePurchased, onError, useMock])
+    }, [wishId, onRemovePurchased, onError])
 
     return {
         isRemoving,

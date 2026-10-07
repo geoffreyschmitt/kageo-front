@@ -437,7 +437,6 @@ export default function WishlistPageClient({
                 onGiftPotRemoved={handleGiftPotRemoved}
                 onGiftPotRefreshed={handleGiftPotRefreshed}
                 eventName={wishlistMeta.name}
-                useMock={false}
             />
         </main>
     )

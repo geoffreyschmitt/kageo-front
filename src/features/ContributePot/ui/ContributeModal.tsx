@@ -23,7 +23,6 @@ export const ContributeModal = ({
     onError,
     onRemove,
     onSaved,
-    useMock = false,
     mode = 'add',
     initialAmount = 0,
 }: TContributeModal) => {
@@ -37,7 +36,6 @@ export const ContributeModal = ({
         onRemove,
         onSaved,
         onClose,
-        useMock,
         mode,
         initialAmount,
     })

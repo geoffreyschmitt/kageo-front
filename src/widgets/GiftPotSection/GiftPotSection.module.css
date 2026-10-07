@@ -479,3 +479,12 @@
         margin-left: auto;
     }
 }
+
+.giftPot__export {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--gp-text-3);
+    text-align: center;
+    text-decoration: underline;
+}

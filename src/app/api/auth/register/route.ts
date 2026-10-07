@@ -39,8 +39,7 @@ export async function POST(request: NextRequest) {
             createdAt: new Date().toISOString(),
         }
 
-        await kv.set(`user:${email.toLowerCase()}`, user)
-        await kv.set(`user:id:${userId}`, email.toLowerCase())
+        await kv.multi().set(`user:${email.toLowerCase()}`, user).set(`user:id:${userId}`, email.toLowerCase()).exec()
 
         const { password: _password, ...userWithoutPassword } = user
 

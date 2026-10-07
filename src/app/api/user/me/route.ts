@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { purgeUser } from './purgeUser'
 
 type KVUser = {
     id: string
@@ -127,23 +128,7 @@ export async function DELETE() {
     }
 
     try {
-        const wishlistIds = (await kv.smembers<string[]>(`user:${userId}:wishlists`)) ?? []
-
-        for (const wishlistId of wishlistIds) {
-            const wishIds = (await kv.smembers<string[]>(`wishlist:${wishlistId}:wishes`)) ?? []
-            for (const wishId of wishIds) {
-                await kv.del(`wish:${wishId}`)
-            }
-            await kv.del(`wishlist:${wishlistId}:wishes`)
-            await kv.del(`wishlist:${wishlistId}:pot`)
-            await kv.del(`wishlist:${wishlistId}:contributions`)
-            await kv.del(`wishlist:${wishlistId}:invitees`)
-            await kv.del(`wishlist:${wishlistId}`)
-        }
-
-        await kv.del(`user:${userId}:wishlists`)
-        await kv.del(`user:${email}`)
-        await kv.del(`user:id:${userId}`)
+        await purgeUser(userId, email)
 
         return NextResponse.json({ ok: true })
     } catch (error) {

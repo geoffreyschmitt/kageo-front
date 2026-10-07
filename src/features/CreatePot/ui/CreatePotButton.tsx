@@ -12,7 +12,6 @@ export const CreatePotButton = ({
     isLoggedIn,
     isInvited,
     onPotCreated,
-    useMock = false,
 }: TCreatePotButtonProps) => {
     const t = useTranslations('createPotModal')
     const { modalState, openModal, closeModal, isCreating, error, handleConfirm } = useCreatePotModel({
@@ -20,7 +19,6 @@ export const CreatePotButton = ({
         isLoggedIn,
         isInvited,
         onPotCreated,
-        useMock,
     })
 
     return (

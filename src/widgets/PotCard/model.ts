@@ -12,10 +12,9 @@ type TUsePotCardModelParams = {
     wishlistId: string
     pot: TGetPotResponse | null
     onPotRefreshed?: (view: TGetPotResponse | null) => void
-    useMock: boolean
 }
 
-export const usePotCardModel = ({ wishlistId, pot, onPotRefreshed, useMock }: TUsePotCardModelParams) => {
+export const usePotCardModel = ({ wishlistId, pot, onPotRefreshed }: TUsePotCardModelParams) => {
     const [modal, setModal] = useState<'add' | 'edit' | null>(null)
     const [search, setSearch] = useState('')
     const [sortBy, setSortBy] = useState<TSortBy>('amount')
@@ -24,13 +23,13 @@ export const usePotCardModel = ({ wishlistId, pot, onPotRefreshed, useMock }: TU
     // page. Optimistic values are already on screen, so this only reconciles —
     // no layout change unless the server genuinely differs.
     const reconcile = useCallback(async () => {
-        if (useMock || !onPotRefreshed) return
+        if (!onPotRefreshed) return
         try {
             onPotRefreshed(await getPot(wishlistId))
         } catch {
             /* keep the optimistic view */
         }
-    }, [wishlistId, useMock, onPotRefreshed])
+    }, [wishlistId, onPotRefreshed])
 
     const contributors = pot?.contributors ?? []
     const isDense = contributors.length > POT_DENSE_THRESHOLD

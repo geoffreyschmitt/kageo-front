@@ -45,7 +45,6 @@ export type TWishCard = {
   onDeleteError?: (wishId: string) => void
   onEditWish?: (wish: TWishCard) => void
   userId?: string
-  useMock?: boolean
   giftPot?: TGiftPotView | null
   onGiftPotCreated?: (wishId: string, creatorId: string, creatorName: string) => void
   onContributeGiftPot?: (wishId: string, delta: number) => void

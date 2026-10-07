@@ -23,5 +23,4 @@ export type TGiftPotSectionProps = {
     onGiftPotRefreshed: (wishId: string, view: TGiftPotView | null) => void
     onMarkPurchased?: (wishId: string, userId: string) => void
     onMarkPurchasedError?: (wishId: string) => void
-    useMock?: boolean
 }

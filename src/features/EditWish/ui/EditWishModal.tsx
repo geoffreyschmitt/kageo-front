@@ -22,7 +22,6 @@ export const EditWishModal = ({
     onSubmit,
     wishId,
     initialData,
-    useMock = false,
 }: TEditWishModal) => {
     const t = useTranslations('editWishModal')
     const {
@@ -37,7 +36,6 @@ export const EditWishModal = ({
         initialData,
         onSubmit,
         onClose,
-        useMock,
     });
 
     const handleSelectChange = (

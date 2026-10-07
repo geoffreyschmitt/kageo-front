@@ -22,5 +22,4 @@ export type TPotCardProps = {
     onPotRefreshed?: (view: TGetPotResponse | null) => void
     /** called when a logged-out visitor tries to contribute */
     onRequireLogin?: () => void
-    useMock?: boolean
 }

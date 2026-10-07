@@ -26,7 +26,6 @@ export const ContributeGiftPotModal = ({
     onError,
     onRemove,
     onSaved,
-    useMock = false,
     mode = 'add',
     initialAmount = 0,
 }: TContributeGiftPotModal) => {
@@ -40,7 +39,6 @@ export const ContributeGiftPotModal = ({
         onRemove,
         onSaved,
         onClose,
-        useMock,
         mode,
         initialAmount,
     })

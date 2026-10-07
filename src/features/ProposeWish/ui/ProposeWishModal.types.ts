@@ -5,5 +5,4 @@ export type TProposeWishModal = {
     onClose: () => void
     onSubmit: (itemData: TProposedWishFormData & { id: string }) => void
     wishlistId: string
-    useMock?: boolean
 }

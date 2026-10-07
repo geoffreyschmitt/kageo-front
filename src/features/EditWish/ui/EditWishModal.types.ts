@@ -6,5 +6,4 @@ export type TEditWishModal = {
     onSubmit: (itemData: TWishFormData & { id: string }) => void
     wishId: string
     initialData: Partial<TWishFormData>
-    useMock?: boolean
 }

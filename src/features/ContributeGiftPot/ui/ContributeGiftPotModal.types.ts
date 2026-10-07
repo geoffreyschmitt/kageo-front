@@ -16,7 +16,6 @@ export type TContributeGiftPotModal = {
     onRemove?: (wishId: string, removedAmount: number) => void
     /** fired once the server write has landed */
     onSaved?: () => void
-    useMock?: boolean
     /** 'add' records a new pledge; 'edit' replaces the caller's current pledge. */
     mode?: 'add' | 'edit'
     /** The caller's current pledge, pre-filled in 'edit' mode. */

@@ -6,5 +6,4 @@ export type TCreatePotButtonProps = {
     isLoggedIn: boolean
     isInvited: boolean
     onPotCreated: (creatorId: string, creatorName: string) => void
-    useMock?: boolean
 }

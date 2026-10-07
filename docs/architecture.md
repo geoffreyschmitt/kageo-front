@@ -6,7 +6,7 @@ Kageo is a Next.js 16 App Router app, structured with Feature-Sliced Design, sto
 
 ```
 Browser ──► Next.js (Vercel)
-             ├─ middleware.ts          next-intl locale routing (fr default, en)
+             ├─ proxy.ts               next-intl locale routing (fr default, en)
              ├─ app/[locale]/**        server pages: read KV directly, hand data to views/
              ├─ app/api/**/route.ts    route handlers: auth check → KV read/write
              └─ sw.ts (Serwist)        PWA service worker, /~offline fallback
@@ -26,10 +26,11 @@ API (`app/api/`):
 | Route | Purpose |
 |---|---|
 | `auth/[...nextauth]`, `auth/register` | NextAuth; credentials sign-up |
-| `user/me`, `user/password`, `user/stats`, `user/export` | Account info (incl. optional birthdate), password change, dashboard stats, data export |
+| `user/me`, `user/password`, `user/stats`, `user/export` | Account info (incl. optional birthdate), `DELETE` = full account purge, password change, dashboard stats, data export |
 | `wishlist` , `wishlist/[id]` | Wishlist CRUD |
 | `wishlist/share` | Invite by email (adds invitee; email not yet sent) |
 | `wishlist/pot`, `wishlist/contribute` | Wishlist-level pot; `PATCH` replaces the caller's pledge, `amount: 0` cancels |
+| `wishlist/pot/export`, `wish/pot/export` | Pledges as CSV; pot organiser only |
 | `wishlist/[id]/comments`, `wish/[wishId]/comments` | Comments |
 | `wish`, `wish/[wishId]` | Wish create / read / update |
 | `wish/reserve`, `cancel`, `mark-purchased`, `remove-purchased`, `delete` | Wish state transitions |
@@ -66,7 +67,7 @@ All values are JSON unless noted. IDs are UUIDs.
 
 Wish status: `wanted` · `reserved` · `purchased` · `proposed` · `funded`. `funded` is set by `reconcileFundedStatus` on every contribution write; the organiser may override to `purchased`. Priority: `low` · `medium` · `high`.
 
-Deleting a wishlist or wish must also delete its sub-keys (wishes set, pot, contributions, comments, invitees) and remove it from `user:{id}:wishlists`; the delete handlers do this by hand — there are no cascades.
+Deleting a wishlist, wish or account must also delete every sub-key and back-reference. This is centralised in `shared/lib/kvCascade.ts` (`wishKeys`, `wishlistKeys`, `queueWishlistDeletion`) and runs inside `kv.multi()` transactions; account deletion is `app/api/user/me/purgeUser.ts`. When you add a key under `wish:{id}` or `wishlist:{id}`, add it to those lists.
 
 **Visibility rules**: pots and comments never reach the wishlist owner (surprise). Role-shaped pot payloads are built in one place, `app/api/wishlist/pot/readPot.ts`.
 
@@ -98,8 +99,6 @@ Local values come from `.env.local` (created by the Vercel CLI; never commit it)
 
 ## Known architectural debt
 
-- Leftover `lib/mock*.ts` + `useMock` flags in many features (real wrappers are the default).
 - Organiser is tagged in pot contributor lists by display-name equality (namesake collision); needs `creatorId`.
-- No automated tests; lint is broken on Next 16 (`next lint` removed, eslint crashes).
-- `middleware.ts` uses the pre-Next-16 name for what is now `proxy`.
-- No transactions: multi-key writes (e.g. delete cascades) are not atomic.
+- Tests cover only the pot/pledge logic, CSV and account purge (Vitest); there is no e2e suite. Lint passes with 0 errors but ~300 warnings (import order, some React 19 rules).
+- Writes that span a read-modify-write (pledge totals, funded reconciliation) are still not atomic across the read; only the final multi-key write is. Account purge scans keys (O(keys)).

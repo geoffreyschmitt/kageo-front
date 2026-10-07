@@ -51,3 +51,7 @@ public/swe-worker-*.js
 
 .vercel
 .env*
+
+# KV backups (personal data + password hashes)
+/backups/
+!.env.example

@@ -3,14 +3,12 @@
 import {useCallback, useState} from "react"
 
 import {deleteWish} from "@/shared/api/wish/deleteWish";
-import {mockDeleteWish} from "./lib/mockDeleteWish"
 
 type TUseDeleteWishModelParams = {
     wishId: string
     wishName?: string
     onDelete?: (wishId: string) => void
     onError?: (wishId: string) => void
-    useMock?: boolean
 }
 
 export const useDeleteWishModel = ({
@@ -18,7 +16,6 @@ export const useDeleteWishModel = ({
     wishName,
     onDelete,
     onError,
-    useMock = false,
 }: TUseDeleteWishModelParams) => {
     const [isDeleting, setIsDeleting] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -46,8 +43,7 @@ export const useDeleteWishModel = ({
             }
 
             // Backend sync
-            const runner = useMock ? mockDeleteWish : deleteWish
-            await runner(wishId)
+            await deleteWish(wishId)
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to delete wish")
             // Revert optimistic update
@@ -57,7 +53,7 @@ export const useDeleteWishModel = ({
         } finally {
             setIsDeleting(false)
         }
-    }, [wishId, onDelete, onError, useMock])
+    }, [wishId, onDelete, onError])
 
     return {
         isDeleting,

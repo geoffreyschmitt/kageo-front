@@ -7,7 +7,6 @@ import type { TWishFormData, TWishValidationErrors, TWishPriority} from "@/entit
 
 import {isValidUrl} from "@/shared/lib/isValidUrl";
 
-import { mockEditWish } from "./lib/mockEditWish"
 
 
 type TUseEditWishModelParams = {
@@ -15,7 +14,6 @@ type TUseEditWishModelParams = {
     initialData: Partial<TWishFormData>
     onSubmit: (item: TWishFormData & { id: string }) => void
     onClose: () => void
-    useMock?: boolean
 }
 
 export const useEditWishModel = ({
@@ -23,7 +21,6 @@ export const useEditWishModel = ({
     initialData,
     onSubmit,
     onClose,
-    useMock = false,
 }: TUseEditWishModelParams) => {
     const [formData, setFormData] = useState<TWishFormData>({
         name: initialData.name || "",
@@ -125,8 +122,7 @@ export const useEditWishModel = ({
 
             setIsSubmitting(true)
             try {
-                const runner = useMock ? mockEditWish : editWishService
-                const result = await runner(wishId, formData)
+                const result = await editWishService(wishId, formData)
                 // ensure id exists in result
                 onSubmit(result)
                 resetForm()
@@ -138,7 +134,7 @@ export const useEditWishModel = ({
                 setIsSubmitting(false)
             }
         },
-        [wishId, formData, onSubmit, onClose, resetForm, useMock, validateForm],
+        [wishId, formData, onSubmit, onClose, resetForm, validateForm],
     )
 
     return {

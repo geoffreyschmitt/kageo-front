@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { kv } from '@vercel/kv'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { queueWishDeletion } from '@/shared/lib/kvCascade'
 
 type TWishKV = { id: string; wishlistId: string }
 type TWishlistKV = { ownerId: string }
@@ -29,13 +30,11 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        // Drop the gift-pot side keys too so nothing is left orphaned in KV.
-        await Promise.all([
-            kv.del(`wish:${wishId}`),
-            kv.del(`wish:${wishId}:pot`),
-            kv.del(`wish:${wishId}:contributions`),
-        ])
-        await kv.srem(`wishlist:${wish.wishlistId}:wishes`, wishId)
+        // One transaction: the wish, its pot, pledges and comments go together.
+        const tx = kv.multi()
+        queueWishDeletion(tx, wishId)
+        tx.srem(`wishlist:${wish.wishlistId}:wishes`, wishId)
+        await tx.exec()
 
         return NextResponse.json({ id: wishId, deleted: true })
     } catch (error) {

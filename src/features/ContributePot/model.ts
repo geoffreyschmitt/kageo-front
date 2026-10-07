@@ -4,7 +4,6 @@ import { useState, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { contributePot, setContribution } from '@/shared/api/wishlist/contributePot'
-import { mockContributePot, mockSetContribution } from './lib/mockContributePot'
 
 type TUseContributePotModelParams = {
     wishlistId: string
@@ -14,7 +13,6 @@ type TUseContributePotModelParams = {
     /** fired once the server write has landed — safe point to re-read the pot */
     onSaved?: () => void
     onClose: () => void
-    useMock?: boolean
     mode?: 'add' | 'edit'
     initialAmount?: number
 }
@@ -26,7 +24,6 @@ export const useContributePotModel = ({
     onRemove,
     onSaved,
     onClose,
-    useMock = false,
     mode = 'add',
     initialAmount = 0,
 }: TUseContributePotModelParams) => {
@@ -57,11 +54,9 @@ export const useContributePotModel = ({
 
         try {
             if (isEdit) {
-                const runner = useMock ? mockSetContribution : setContribution
-                await runner(wishlistId, parsed)
+                await setContribution(wishlistId, parsed)
             } else {
-                const runner = useMock ? mockContributePot : contributePot
-                await runner(wishlistId, parsed)
+                await contributePot(wishlistId, parsed)
                 setAmount('')
             }
             onSaved?.()
@@ -71,7 +66,7 @@ export const useContributePotModel = ({
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishlistId, amount, onContribute, onError, onSaved, onClose, useMock, isEdit, initialAmount, t])
+    }, [wishlistId, amount, onContribute, onError, onSaved, onClose, isEdit, initialAmount, t])
 
     // Cancel the caller's pledge entirely (edit mode only).
     const handleCancel = useCallback(async () => {
@@ -83,8 +78,7 @@ export const useContributePotModel = ({
         onClose()
 
         try {
-            const runner = useMock ? mockSetContribution : setContribution
-            await runner(wishlistId, 0)
+            await setContribution(wishlistId, 0)
             onSaved?.()
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to cancel')
@@ -92,7 +86,7 @@ export const useContributePotModel = ({
         } finally {
             setIsSubmitting(false)
         }
-    }, [wishlistId, onContribute, onError, onRemove, onSaved, onClose, useMock, initialAmount])
+    }, [wishlistId, onContribute, onError, onRemove, onSaved, onClose, initialAmount])
 
     return { amount, setAmount, isSubmitting, error, handleSubmit, handleCancel }
 }

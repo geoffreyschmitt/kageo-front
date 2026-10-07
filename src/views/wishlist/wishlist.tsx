@@ -7,9 +7,9 @@ import {TWishCard, WishCard} from '@/widgets/WishCard';
 
 import {AddWishModal} from '@/features/AddWish'
 import {ProposeWishModal} from '@/features/ProposeWish';
-import {ShareWishlistModal, mockShareWishlistByEmail} from '@/features/ShareWishlist'
 import {shareWishlist} from '@/shared/api/wishlist/shareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
+import {ShareWishlistModal} from '@/features/ShareWishlist'
 import {DeleteWishlistButton} from '@/features/DeleteWishlist'
 import {EditWishModal} from '@/features/EditWish'
 import {PotCard} from '@/widgets/PotCard'
@@ -73,7 +73,6 @@ type TWishlistPageProps = {
   onGiftPotRemoved?: (wishId: string, removedAmount: number) => void
   onGiftPotRefreshed?: (wishId: string, view: TGiftPotView | null) => void
   eventName?: string
-  useMock?: boolean
   userIsOwner: boolean
   isHistory?: boolean
   hasActivity?: boolean
@@ -125,7 +124,6 @@ export default function Wishlist({
   onGiftPotRemoved,
   onGiftPotRefreshed,
   eventName,
-  useMock = false,
   userIsOwner = false,
   isHistory = false,
   hasActivity = false,
@@ -302,7 +300,6 @@ export default function Wishlist({
   }
 
   const handleSendShareEmail: (email: string, url: string) => Promise<void> = async (email, url) => {
-    if (useMock) return mockShareWishlistByEmail(email, url)
     return shareWishlist(id, email)
   }
 
@@ -448,7 +445,6 @@ export default function Wishlist({
           onPotCreated={onPotCreated}
           onPotRefreshed={onPotRefreshed}
           onRequireLogin={() => setLoginPrompt('contribute')}
-          useMock={useMock}
         />
       )}
 
@@ -683,7 +679,6 @@ export default function Wishlist({
                     ownerName={ownerName}
                     eventName={wishEventName}
                     userId={userId}
-                    useMock={useMock}
                   />
                 ))}
               </div>
@@ -738,7 +733,6 @@ export default function Wishlist({
                 ownerName={ownerName}
                 eventName={wishEventName}
                 userId={userId}
-                useMock={useMock}
               />
             ))}
           </div>
@@ -844,7 +838,6 @@ export default function Wishlist({
                       ownerName={ownerName}
                       eventName={wishEventName}
                       userId={userId}
-                      useMock={useMock}
                     />
                   ))}
                 </div>
@@ -909,7 +902,6 @@ export default function Wishlist({
                       ownerName={ownerName}
                       eventName={wishEventName}
                       userId={userId}
-                      useMock={useMock}
                     />
                   ))}
                 </div>
@@ -963,7 +955,6 @@ export default function Wishlist({
             onClose={() => setIsAddItemModalOpen(false)}
             onSubmit={handleAddWish}
             wishlistId={id}
-            useMock={useMock}
           />
 
           <ProposeWishModal
@@ -992,7 +983,6 @@ export default function Wishlist({
                 purchaseUrl: editingWish.purchaseUrl || '',
                 notes: editingWish.notes || '',
               }}
-              useMock={useMock}
             />
           )}
         </>
