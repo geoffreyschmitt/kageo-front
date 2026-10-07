@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl'
 
 import { useManageAccountModel } from '@/features/ManageAccount'
 import { ThemeToggle } from '@/features/ThemeToggle'
+
 import { Modal, Panel } from '@/shared/ui'
 
 import s from './profile.module.css'

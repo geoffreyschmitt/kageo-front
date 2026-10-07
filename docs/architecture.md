@@ -99,5 +99,5 @@ Local values come from `.env.local` (created by the Vercel CLI; never commit it)
 
 ## Known architectural debt
 
-- Tests cover only the pot/pledge logic, CSV and account purge (Vitest); there is no e2e suite. Lint passes with 0 errors but ~300 warnings (import order, some React 19 rules).
+- Tests cover the pot/pledge logic, wish actions, CSV and account purge (Vitest); there is no e2e suite. Lint passes with 0 errors and ~26 warnings (some React 19 rules).
 - Writes that span a read-modify-write (pledge totals, funded reconciliation) are still not atomic across the read; only the final multi-key write is. Account purge scans keys (O(keys)).

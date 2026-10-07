@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react'
+
 import { useTranslations } from 'next-intl'
+
+import {useCreateWishlistModel} from '@/features/CreateWishlist';
+import {TCreateWishlistModal} from '@/features/CreateWishlist/ui/CreateWishlistModal.types';
 
 import {WishlistForm} from '@/entities/wishlist/ui';
 
+import {eventBus} from '@/shared/eventBus/lib/eventBus';
 import {Modal} from '@/shared/ui';
 
 import styles from './CreateWishlistModal.module.css'
-import {TCreateWishlistModal} from '@/features/CreateWishlist/ui/CreateWishlistModal.types';
-import {useCreateWishlistModel} from '@/features/CreateWishlist';
-import {eventBus} from '@/shared/eventBus/lib/eventBus';
+
 
 export const CreateWishlistModal = ({onClose, onSubmit, onError}: TCreateWishlistModal) => {
   const t = useTranslations('createWishlistModal')

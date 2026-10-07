@@ -1,9 +1,11 @@
 import React from "react"
 
 import Image from "next/image";
+
 import { useTranslations } from "next-intl"
 
 import {TWishlistForm} from "@/entities/wishlist/ui/WishlistForm.types";
+
 import {isValidUrl} from "@/shared/lib/isValidUrl";
 
 import styles from "./WishlistForm.module.css"

@@ -3,9 +3,10 @@
 import { useTranslations } from 'next-intl'
 
 import {Modal} from "@/shared/ui/Modal"
-import type {TDeleteWishConfirmationModal} from "./DeleteWishConfirmationModal.types"
 
 import styles from "./DeleteWishConfirmationModal.module.css"
+import type {TDeleteWishConfirmationModal} from "./DeleteWishConfirmationModal.types"
+
 
 export const DeleteWishConfirmationModal = ({
     isOpen,

@@ -1,13 +1,13 @@
+import { kv } from "@vercel/kv"
 import { getServerSession } from "next-auth"
 import { getTranslations } from 'next-intl/server'
-import { kv } from "@vercel/kv"
+
+import DashboardPage from "@/views/dashboard/dashboard"
 
 import { authOptions } from "@/shared/config/authOptions"
-import DashboardPage from "@/views/dashboard/dashboard"
 import { Link } from '@/shared/i18n/navigation'
 
 import { LoginCta } from "./LoginCta"
-
 import pageStyles from "./page.module.css"
 
 export default async function HomePage() {

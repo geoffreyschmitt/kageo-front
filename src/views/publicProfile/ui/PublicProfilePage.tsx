@@ -1,7 +1,9 @@
 'use client'
 
 import { useLocale, useTranslations } from 'next-intl'
+
 import { WishlistList } from '@/widgets'
+
 import { TWishlistCard } from '@/widgets/WishlistCard'
 
 import s from './publicProfile.module.css'

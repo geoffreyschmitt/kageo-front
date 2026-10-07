@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-import { getComments, postComment, TCommentTarget } from '@/shared/api/comment'
 import type { TComment } from '@/entities/comment'
+
+import { getComments, postComment, TCommentTarget } from '@/shared/api/comment'
 
 type TUseCommentsModelParams = {
     target: TCommentTarget

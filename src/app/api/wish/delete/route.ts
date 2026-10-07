@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+
 import { kv } from '@vercel/kv'
+import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { queueWishDeletion } from '@/shared/lib/kvCascade'

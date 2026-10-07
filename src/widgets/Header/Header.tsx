@@ -4,9 +4,10 @@ import {useEffect, useState} from 'react'
 import {signIn, signOut, useSession} from 'next-auth/react'
 import {useTranslations} from 'next-intl'
 
-import {Link, usePathname} from '@/shared/i18n/navigation'
 import {LanguageSwitcher} from '@/features/LanguageSwitcher'
+
 import {eventBus} from '@/shared/eventBus'
+import {Link, usePathname} from '@/shared/i18n/navigation'
 
 import styles from './Header.module.css'
 

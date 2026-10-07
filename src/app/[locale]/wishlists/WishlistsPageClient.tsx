@@ -1,18 +1,23 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import { WishlistList } from '@/widgets'
+
 import { TWishlistCard } from '@/widgets/WishlistCard'
+
+import { CreateWishlistModal } from '@/features/CreateWishlist'
 import { OwnerFilter } from '@/features/FilterWishlistOwner'
 import { TWishlistOwner } from '@/features/FilterWishlistOwner/ui/FilterWishlistOwner.types'
-import { Tabs } from '@/shared/ui'
+import { UpdateWishlistModal } from '@/features/UpdateWishlist'
+
+import { TWishlistFormData } from '@/entities/wishlist'
+
 import { eventBus } from '@/shared/eventBus'
 import { Link } from '@/shared/i18n/navigation'
-import { CreateWishlistModal } from '@/features/CreateWishlist'
-import { TWishlistFormData } from '@/entities/wishlist'
-import { UpdateWishlistModal } from '@/features/UpdateWishlist'
 import { isEventPast } from '@/shared/lib/isEventPast'
+import { Tabs } from '@/shared/ui'
 
 import pageStyles from './page.module.css'
 

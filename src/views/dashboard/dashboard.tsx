@@ -1,11 +1,14 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+
 import { useTranslations } from 'next-intl'
 
 import { WishlistCard } from '@/widgets/WishlistCard'
 import { TWishlistCard } from '@/widgets/WishlistCard'
+
 import { CreateWishlistModal } from '@/features/CreateWishlist'
+
 import { eventBus } from '@/shared/eventBus'
 import { Link } from '@/shared/i18n/navigation'
 

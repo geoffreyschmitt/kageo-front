@@ -16,8 +16,7 @@ const eslintConfig = [
     {
         rules: {
             'import/order': [
-                // Never enforced historically (~290 violations); warn until a dedicated autofix pass.
-                'warn',
+                'error',
                 {
                     groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
                     'newlines-between': 'always',

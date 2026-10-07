@@ -1,4 +1,5 @@
 import {TWishPriority, TWishStatus} from '@/entities/wish';
+
 import type {TGiftPotView} from '@/shared/api/wish/getGiftPot';
 
 

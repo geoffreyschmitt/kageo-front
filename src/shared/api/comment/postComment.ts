@@ -1,4 +1,5 @@
 import type { TComment } from '@/entities/comment'
+
 import type { TCommentTarget } from './getComments'
 
 const urlFor = (target: TCommentTarget) =>

@@ -1,13 +1,17 @@
 'use client'
 import { useEffect, useState } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import Wishlist from '@/views/wishlist/wishlist'
+
 import { TWishCard } from '@/widgets/WishCard/WishCard.types'
+
 import { TWishFormData, TProposedWishFormData } from '@/entities/wish'
 import { TWishlistFormData } from '@/entities/wishlist'
-import type { TGetPotResponse } from '@/shared/api/wishlist/getPot'
+
 import type { TGiftPotView } from '@/shared/api/wish/getGiftPot'
+import type { TGetPotResponse } from '@/shared/api/wishlist/getPot'
 import { eventBus } from '@/shared/eventBus'
 import { useRouter } from '@/shared/i18n/navigation'
 

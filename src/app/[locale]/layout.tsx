@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from 'next'
+
 import { Fraunces, DM_Sans, JetBrains_Mono } from 'next/font/google'
+import { notFound } from 'next/navigation'
+
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
-import { notFound } from 'next/navigation'
 
 import '@/shared/styles/theme.css'
 import '@/shared/styles/reset.css'
@@ -10,10 +12,10 @@ import '@/shared/styles/variables.css'
 import '@/shared/styles/globals.css'
 import { Header } from '@/widgets'
 
-import { AuthProvider } from '@/shared/providers/AuthProvider'
-import { Toaster } from '@/shared/ui'
 import { routing } from '@/shared/i18n/routing'
+import { AuthProvider } from '@/shared/providers/AuthProvider'
 import { ThemeProvider, readThemeCookie, themeInitScript } from '@/shared/theme'
+import { Toaster } from '@/shared/ui'
 
 const fraunces = Fraunces({
     subsets: ['latin'],

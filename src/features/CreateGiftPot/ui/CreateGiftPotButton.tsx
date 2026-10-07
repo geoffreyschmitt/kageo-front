@@ -1,10 +1,12 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+
 import { useCreateGiftPotModel } from '../model'
+
 import { CreateGiftPotModal } from './CreateGiftPotModal'
-import type { TCreateGiftPotButtonProps } from './CreateGiftPotModal.types'
 import styles from './CreateGiftPotModal.module.css'
+import type { TCreateGiftPotButtonProps } from './CreateGiftPotModal.types'
 
 export const CreateGiftPotButton = ({
     wishId,

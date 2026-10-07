@@ -1,9 +1,10 @@
 "use client"
 
 import {useReserveWishModel} from "../model"
-import type {TReserveButton} from "./ReserveButton.types"
 
 import styles from "./ReserveButton.module.css"
+import type {TReserveButton} from "./ReserveButton.types"
+
 
 export const ReserveButton = ({wishId, userId, onReserve, onError}: TReserveButton) => {
     const {isReserving, error, handleReserve} = useReserveWishModel({

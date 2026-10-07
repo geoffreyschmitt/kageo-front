@@ -2,8 +2,8 @@
 
 import { useTranslations } from 'next-intl'
 
-import { Modal } from '@/shared/ui/Modal'
 import { eventBus } from '@/shared/eventBus'
+import { Modal } from '@/shared/ui/Modal'
 
 import styles from './LoginPromptModal.module.css'
 

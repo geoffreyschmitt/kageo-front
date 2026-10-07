@@ -1,6 +1,7 @@
 'use client'
 
 import { useLocale } from 'next-intl'
+
 import { usePathname, Link } from '@/shared/i18n/navigation'
 
 import styles from './LanguageSwitcher.module.css'

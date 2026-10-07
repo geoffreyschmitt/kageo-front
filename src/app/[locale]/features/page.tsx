@@ -1,5 +1,7 @@
 import Image from "next/image"
+
 import { getTranslations } from 'next-intl/server'
+
 import { Link } from '@/shared/i18n/navigation'
 
 import styles from "./page.module.css"

@@ -1,12 +1,13 @@
 import Image from 'next/image'
+
 import {useTranslations, useFormatter} from 'next-intl'
 
 import {TWishlistCard} from '@/widgets/WishlistCard';
 
+import {eventBus} from '@/shared/eventBus';
 import {Button} from '@/shared/ui';
 
 import styles from './WishlistCard.module.css'
-import {eventBus} from '@/shared/eventBus';
 
 export const WishlistCard = ({
     id,

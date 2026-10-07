@@ -1,12 +1,16 @@
 import { notFound, redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
+
 import { kv } from '@vercel/kv'
+import { getServerSession } from 'next-auth'
+
+import { readGiftPotForViewer } from '@/app/api/wish/pot/readGiftPot'
+import { readPotForViewer } from '@/app/api/wishlist/pot/readPot'
+
+import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { getUserNamesByIds } from '@/shared/lib/getUserNameById'
-import { TWishCard } from '@/widgets/WishCard/WishCard.types'
-import { readPotForViewer } from '@/app/api/wishlist/pot/readPot'
-import { readGiftPotForViewer } from '@/app/api/wish/pot/readGiftPot'
+
 import WishlistPageClient from './WishlistPageClient'
 
 type KVWishlist = {

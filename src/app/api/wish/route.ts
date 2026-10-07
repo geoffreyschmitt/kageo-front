@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+
 import { kv } from '@vercel/kv'
+import { getServerSession } from 'next-auth'
 import { v4 as uuidv4 } from 'uuid'
 
 import { authOptions } from '@/shared/config/authOptions'

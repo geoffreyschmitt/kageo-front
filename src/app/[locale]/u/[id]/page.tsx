@@ -1,11 +1,14 @@
 import { notFound } from 'next/navigation'
-import { getServerSession } from 'next-auth'
+
 import { kv } from '@vercel/kv'
+import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 
-import { authOptions } from '@/shared/config/authOptions'
-import { TWishlistCard } from '@/widgets/WishlistCard'
 import PublicProfilePage from '@/views/publicProfile/ui/PublicProfilePage'
+
+import { TWishlistCard } from '@/widgets/WishlistCard'
+
+import { authOptions } from '@/shared/config/authOptions'
 
 type KVUser = {
     id: string

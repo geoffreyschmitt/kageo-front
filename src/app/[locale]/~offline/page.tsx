@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+
 import styles from './offline.module.css'
 
 export default function OfflinePage() {

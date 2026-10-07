@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react";
+
 import { useTranslations } from "next-intl";
 
 import { useFilterWishlistOwner } from "@/features/FilterWishlistOwner/model";

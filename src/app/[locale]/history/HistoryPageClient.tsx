@@ -1,11 +1,15 @@
 'use client'
 import { useMemo, useState } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import { WishlistList } from '@/widgets'
+
 import { TWishlistCard } from '@/widgets/WishlistCard'
+
 import { OwnerFilter } from '@/features/FilterWishlistOwner'
 import { TWishlistOwner } from '@/features/FilterWishlistOwner/ui/FilterWishlistOwner.types'
+
 import { Tabs } from '@/shared/ui'
 
 import pageStyles from './page.module.css'

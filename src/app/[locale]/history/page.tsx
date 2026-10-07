@@ -1,11 +1,14 @@
 import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
+
 import { kv } from '@vercel/kv'
+import { getServerSession } from 'next-auth'
+
+import { TWishlistCard } from '@/widgets/WishlistCard'
 
 import { authOptions } from '@/shared/config/authOptions'
-import { TWishlistCard } from '@/widgets/WishlistCard'
-import { isEventPast } from '@/shared/lib/isEventPast'
 import { getUserNamesByIds } from '@/shared/lib/getUserNameById'
+import { isEventPast } from '@/shared/lib/isEventPast'
+
 import HistoryPageClient from './HistoryPageClient'
 
 type KVWishlist = {

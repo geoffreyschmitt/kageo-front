@@ -1,12 +1,16 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useTranslations } from 'next-intl'
-import { Modal } from '@/shared/ui'
+
 import { eventBus } from '@/shared/eventBus'
+import { Modal } from '@/shared/ui'
+
 import { useContributePotModel } from '../model'
-import type { TContributeModal } from './ContributeModal.types'
+
 import styles from './ContributeModal.module.css'
+import type { TContributeModal } from './ContributeModal.types'
 
 export const ContributeModal = ({
     isOpen,

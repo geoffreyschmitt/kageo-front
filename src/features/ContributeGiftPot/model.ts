@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import { contributeGiftPot, setGiftContribution } from '@/shared/api/wish/contributeGiftPot'
