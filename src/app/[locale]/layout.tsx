@@ -10,7 +10,9 @@ import '@/shared/styles/theme.css'
 import '@/shared/styles/reset.css'
 import '@/shared/styles/variables.css'
 import '@/shared/styles/globals.css'
-import { Header } from '@/widgets'
+import { Footer, Header } from '@/widgets'
+
+import { InstallPrompt } from '@/features/InstallPrompt'
 
 import { routing } from '@/shared/i18n/routing'
 import { AuthProvider } from '@/shared/providers/AuthProvider'
@@ -59,7 +61,7 @@ export async function generateMetadata({
         },
         icons: {
             icon: '/icons/icon-192x192.png',
-            apple: '/icons/icon-192x192.png',
+            apple: '/icons/apple-touch-icon.png',
         },
     }
 }
@@ -109,7 +111,9 @@ export default async function LocaleLayout({
                         <AuthProvider>
                             <Header />
                             {children}
+                            <Footer />
                             <Toaster />
+                            <InstallPrompt />
                         </AuthProvider>
                     </NextIntlClientProvider>
                 </ThemeProvider>

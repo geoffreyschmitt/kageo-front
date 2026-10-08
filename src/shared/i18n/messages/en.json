@@ -551,6 +551,97 @@
     "description": "Check your internet connection and try again.",
     "retry": "Try again"
   },
+  "privacy": {
+    "title": "Privacy policy",
+    "updated": "Last updated: 8 October 2026",
+    "draftNotice": "This policy is a draft that has not yet been reviewed by a lawyer.",
+    "contactLabel": "Contact",
+    "sections": [
+      {
+        "title": "What Kageo is",
+        "paragraphs": [
+          "Kageo lets you keep wishlists, share them, and coordinate with the people you share them with: reserve a gift, mark it as bought, suggest a wish, chip in on a pot, comment."
+        ]
+      },
+      {
+        "title": "What we store",
+        "paragraphs": [
+          "We only store what the app needs to work:"
+        ],
+        "items": [
+          "Your account: name, email address and a password hash (we never store your password itself). If you sign in with Google, we receive your name and email from Google and store no password.",
+          "Your date of birth, only if you choose to add it. It is visible only to you.",
+          "What you create: wishlists, wishes, comments, and the email addresses you invite.",
+          "What you do on other people's lists: reservations, purchases, pledges to pots, pots you organise, comments and suggested wishes."
+        ]
+      },
+      {
+        "title": "What we do not do",
+        "items": [
+          "We do not handle payments. A pot only records pledges; the money moves outside Kageo.",
+          "We use no advertising, no analytics and no tracking cookies, and we do not sell or share your data for marketing.",
+          "Kageo does not send emails yet. If it starts to (for example invitations), this policy will say so."
+        ]
+      },
+      {
+        "title": "Who can see what",
+        "items": [
+          "A public wishlist is visible to anyone with the link. A private wishlist is visible only to you and the people you invite.",
+          "Surprises are kept: the owner of a wishlist never sees its pots or the comments guests leave on it.",
+          "The organiser of a pot sees each person's name and pledged amount. Other guests only see the total.",
+          "If you turn on your public profile, your name, the date you joined and your public wishlists are visible to everyone. Otherwise your profile is private."
+        ]
+      },
+      {
+        "title": "Cookies and local storage",
+        "paragraphs": [
+          "Kageo sets only what it needs to run, so there is no cookie banner:"
+        ],
+        "items": [
+          "Sign-in cookies (session and security tokens) keep you logged in.",
+          "A language cookie and a theme setting (cookie and local storage) remember your choices.",
+          "A local-storage entry remembers that you dismissed the “install the app” banner."
+        ]
+      },
+      {
+        "title": "Service providers",
+        "paragraphs": [
+          "Your data is processed by the services that run Kageo: Vercel (hosting and the Redis-compatible database that stores everything) and, if you choose it, Google (sign-in). When you add an image link to a wish, visitors' browsers load that image from its own website."
+        ]
+      },
+      {
+        "title": "How long we keep it",
+        "paragraphs": [
+          "We keep your data until you delete it. Deleting your account removes your wishlists and wishes, your comments, pledges, reservations and invitations on other people's lists, and your account itself.",
+          "Two details: a gift you marked as purchased stays marked as purchased (only your identity is removed), so the owner is not told it is still unbought. And a pot you organise passes to its largest remaining pledger, who then sees the pledges; it is deleted only if nobody else pledged.",
+          "Backups, if any are made, may keep deleted data until they are discarded."
+        ]
+      },
+      {
+        "title": "Your rights",
+        "paragraphs": [
+          "You can see and correct your details on your profile page, download all your data as a file from there, and delete your account at any time. You can also contact us to exercise your rights under the GDPR (access, rectification, erasure, portability, objection), or complain to your data-protection authority (in France, the CNIL)."
+        ]
+      },
+      {
+        "title": "Changes",
+        "paragraphs": [
+          "If this policy changes in a way that matters to you, we will update the date above and, where it makes sense, tell you in the app."
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "privacy": "Privacy"
+  },
+  "installPrompt": {
+    "title": "Install Kageo",
+    "description": "Add it to your home screen to open your wishlists in one tap.",
+    "iosDescription": "Tap the Share button, then “Add to Home Screen”.",
+    "install": "Install",
+    "notNow": "Not now",
+    "gotIt": "Got it"
+  },
   "filterOwner": {
     "filterLabel": "Filter by Owner",
     "searchPlaceholder": "Search or select owner...",

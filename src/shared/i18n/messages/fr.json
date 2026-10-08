@@ -551,6 +551,97 @@
     "description": "Vérifiez votre connexion internet et réessayez.",
     "retry": "Réessayer"
   },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "updated": "Dernière mise à jour : 8 octobre 2026",
+    "draftNotice": "Cette politique est un brouillon qui n’a pas encore été relu par un juriste.",
+    "contactLabel": "Contact",
+    "sections": [
+      {
+        "title": "Ce qu’est Kageo",
+        "paragraphs": [
+          "Kageo vous permet de tenir des listes d’envies, de les partager et de vous coordonner avec les personnes concernées : réserver un cadeau, le marquer comme acheté, suggérer une envie, participer à une cagnotte, commenter."
+        ]
+      },
+      {
+        "title": "Ce que nous conservons",
+        "paragraphs": [
+          "Nous ne conservons que ce dont l’application a besoin pour fonctionner :"
+        ],
+        "items": [
+          "Votre compte : nom, adresse e-mail et empreinte du mot de passe (nous ne conservons jamais le mot de passe lui-même). Si vous vous connectez avec Google, nous recevons votre nom et votre e-mail de Google et ne conservons aucun mot de passe.",
+          "Votre date de naissance, seulement si vous choisissez de l’ajouter. Elle n’est visible que de vous.",
+          "Ce que vous créez : listes, envies, commentaires, et les adresses e-mail que vous invitez.",
+          "Ce que vous faites sur les listes des autres : réservations, achats, participations aux cagnottes, cagnottes que vous organisez, commentaires et suggestions d’envies."
+        ]
+      },
+      {
+        "title": "Ce que nous ne faisons pas",
+        "items": [
+          "Nous ne gérons aucun paiement. Une cagnotte enregistre seulement des promesses de participation ; l’argent circule en dehors de Kageo.",
+          "Nous n’utilisons ni publicité, ni outil d’analyse, ni cookie de suivi, et nous ne vendons ni ne partageons vos données à des fins commerciales.",
+          "Kageo n’envoie pas encore d’e-mails. S’il commence à le faire (par exemple pour les invitations), cette politique le précisera."
+        ]
+      },
+      {
+        "title": "Qui voit quoi",
+        "items": [
+          "Une liste publique est visible de toute personne ayant le lien. Une liste privée n’est visible que de vous et des personnes que vous invitez.",
+          "La surprise est préservée : le propriétaire d’une liste ne voit jamais ses cagnottes ni les commentaires laissés par les invités.",
+          "L’organisateur d’une cagnotte voit le nom et le montant promis de chacun. Les autres invités ne voient que le total.",
+          "Si vous activez votre profil public, votre nom, votre date d’inscription et vos listes publiques sont visibles de tous. Sinon, votre profil reste privé."
+        ]
+      },
+      {
+        "title": "Cookies et stockage local",
+        "paragraphs": [
+          "Kageo ne dépose que ce qui est nécessaire à son fonctionnement ; il n’y a donc pas de bandeau de cookies :"
+        ],
+        "items": [
+          "Des cookies de connexion (session et jetons de sécurité) vous gardent connecté.",
+          "Un cookie de langue et un réglage de thème (cookie et stockage local) mémorisent vos choix.",
+          "Une entrée de stockage local retient que vous avez fermé le bandeau « installer l’application »."
+        ]
+      },
+      {
+        "title": "Prestataires",
+        "paragraphs": [
+          "Vos données sont traitées par les services qui font fonctionner Kageo : Vercel (hébergement et base de données compatible Redis qui stocke l’ensemble) et, si vous le choisissez, Google (connexion). Lorsque vous ajoutez le lien d’une image à une envie, le navigateur des visiteurs charge cette image depuis son propre site."
+        ]
+      },
+      {
+        "title": "Durée de conservation",
+        "paragraphs": [
+          "Nous conservons vos données jusqu’à ce que vous les supprimiez. Supprimer votre compte efface vos listes et envies, vos commentaires, participations, réservations et invitations sur les listes des autres, ainsi que le compte lui-même.",
+          "Deux précisions : un cadeau que vous avez marqué comme acheté reste marqué comme acheté (seule votre identité est retirée), afin que le propriétaire ne croie pas qu’il reste à acheter. Et une cagnotte que vous organisez passe à la personne qui a promis le plus parmi les autres, qui voit alors les promesses ; elle n’est supprimée que si personne d’autre n’a participé.",
+          "Les sauvegardes éventuelles peuvent conserver des données supprimées jusqu’à leur élimination."
+        ]
+      },
+      {
+        "title": "Vos droits",
+        "paragraphs": [
+          "Vous pouvez consulter et corriger vos informations sur votre page de profil, y télécharger toutes vos données sous forme de fichier, et supprimer votre compte à tout moment. Vous pouvez aussi nous contacter pour exercer vos droits au titre du RGPD (accès, rectification, effacement, portabilité, opposition), ou introduire une réclamation auprès de votre autorité de protection des données (en France, la CNIL)."
+        ]
+      },
+      {
+        "title": "Modifications",
+        "paragraphs": [
+          "Si cette politique change d’une manière qui vous concerne, nous mettrons à jour la date ci-dessus et, quand c’est pertinent, nous vous en informerons dans l’application."
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "privacy": "Confidentialité"
+  },
+  "installPrompt": {
+    "title": "Installer Kageo",
+    "description": "Ajoutez-la à votre écran d’accueil pour ouvrir vos listes en un geste.",
+    "iosDescription": "Touchez le bouton Partager, puis « Sur l’écran d’accueil ».",
+    "install": "Installer",
+    "notNow": "Plus tard",
+    "gotIt": "Compris"
+  },
   "filterOwner": {
     "filterLabel": "Filtrer par propriétaire",
     "searchPlaceholder": "Rechercher ou sélectionner un propriétaire...",
