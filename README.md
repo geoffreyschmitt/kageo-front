@@ -19,6 +19,7 @@ The environment variables (NextAuth, Google OAuth, Vercel KV, Resend) are listed
 | `npm run dev` | Dev server (Turbopack) |
 | `npm run build` | Production build; also type-checks everything |
 | `npm start` | Serve the production build |
+| `npm run test:e2e` | Playwright end-to-end tests (in-memory KV, no database; uses the installed Chrome) |
 | `npm test` | Unit tests (Vitest) |
 | `npm run lint` | ESLint (0 errors expected) |
 

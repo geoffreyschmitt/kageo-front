@@ -2,10 +2,15 @@
 
 Short records of choices that are not obvious from the code. Newest first. Add one when you make a call someone might later question.
 
+## One lock per record, not optimistic locking
+**Decision.** Read-modify-write on a wish or wishlist holds a short `SET NX EX` lock on that record (`withLock`) and re-reads inside it.
+**Why.** `@vercel/kv` is Upstash's stateless REST API: no `WATCH`, and a Lua script cannot be tested against the in-memory fake. A lock is testable and fixes real bugs: two people could both reserve the same wish, an edit could overwrite a reservation, and concurrent pledge replacements dropped each other.
+**Cost.** Writers to one record queue (a few KV round-trips each); a request that cannot get the lock in 3 s returns 503. The lock expires after 10 s if a function dies.
+
 ## Account deletion erases the user's contributions elsewhere
-**Decision.** `DELETE /api/user/me` removes the user's pledges, comments, reservations/purchases and organised pots on other people's content, not just their own wishlists.
-**Why.** Erasure should be complete. Pledges are non-binding intentions (no money moves through Kageo), so dropping an organiser's pot loses an intention, not funds. A purchase stays marked `purchased` (only the buyer's identity is removed) so the owner is not told the gift is unbought.
-**Cost.** Other contributors to a deleted organiser's pot lose their pledge silently. Acceptable until pots can be handed over.
+**Decision.** `DELETE /api/user/me` removes the user's pledges, comments and reservations/purchases on other people's content, not just their own wishlists. A pot they organise is handed to its biggest remaining pledger (earliest pledge wins a tie; accounts that no longer exist and the wishlist owner are skipped) and is only dropped when nobody can inherit it.
+**Why.** Erasure should be complete. Pledges are non-binding intentions (no money moves through Kageo), so a pot is not worth destroying when others have pledged to it. A purchase stays marked `purchased` (only the buyer's identity is removed) so the owner is not told the gift is unbought.
+**Cost.** The new organiser sees every pledger's name and amount, which were private to the old organiser, and is not told (there is no notification pipeline yet). A pot with no other pledger is still dropped.
 
 ## Cascades are transactions; the account record is deleted last
 **Decision.** Multi-key deletes use `kv.multi()` (`shared/lib/kvCascade.ts`). The account purge is several idempotent transactions, ending with the account record.

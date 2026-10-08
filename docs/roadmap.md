@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated 2026-10-07. Edit freely; this is a starting point, not a commitment.
+Updated 2026-10-08. Edit freely; this is a starting point, not a commitment.
 
 Legend: **[B]** blocker for real users · **[P]** production readiness · **[Bug]** known defect · items without a tag are improvements.
 
@@ -16,23 +16,22 @@ Ordered: do these top to bottom. All of these need something outside the repo.
 
 ## Next: debt and follow-ups
 
-- Route tests cover wish/wishlist CRUD, access rules, comments, share, pots and pledges (81 tests). Still untested: account routes (`user/me` GET/PATCH, password, export, stats), register, and the server pages. Consider Playwright for the main flows.
+- Route, page and race tests cover the app (155 Vitest tests) and `e2e/` runs the main flows in Playwright. Still untested: the client views, and everything against a real KV (see Now).
 - Run `scripts/cleanup-orphans.mjs` (dry run first, after a `kv-backup.mjs backup`) against production to clear orphans left by pre-transaction deletes.
-- The read-modify-write paths (pledge totals, funded reconciliation) are atomic only at the final write; use `WATCH`/a Lua script if concurrent pledging becomes real.
-- **Decide how the PWA ships.** `npm run build` uses Turbopack and `@serwist/next` does not support it, so **no `sw.js` is generated or registered in production today**: only the manifest ships. Either build with `next build --webpack` (simple, slower builds) or migrate to `@serwist/turbopack`. Until then the offline fallback and cache rules in `src/sw.ts` are inert (they compile and were checked with a webpack build only).
-- Then, once a service worker really ships: an install prompt (`beforeinstallprompt` on Android/desktop, an "Add to Home Screen" hint on iOS, fr/en strings), and a Lighthouse PWA audit on the production build.
-- **Brand app icon.** The current icon is a placeholder (sky-blue rounded "K", off-brand against the sage-green UI). Needs a designed full-bleed maskable icon and an iOS touch icon (no transparency or baked-in rounded corners).
+- Not locked: comment lists, and cross-record races such as deleting a wishlist while a pledge lands on one of its wishes. **Deleted accounts keep a valid JWT**: until it expires, routes that only check the session id (e.g. creating a wishlist) would act for a user who no longer exists. Consider checking the account in the `jwt` callback (one KV read per session check).
+- **PWA: verify on a deploy.** The build is now `next build --webpack`, so `sw.js` ships. Check a Vercel preview: registration, the offline fallback, the install banner on Android Chrome and iOS Safari, and a Lighthouse PWA audit. Revisit `@serwist/turbopack` if build time becomes a problem.
 
 ## Later
 
 - Cover images: upload + storage (e.g. Vercel Blob); the `coverImage` field already exists on `TWishlist`.
-- Notifications: reservation, new suggestion, pot funded (needs the email pipeline).
-- Privacy page and a written data-retention policy (needs legal review; the behaviour is documented in `docs/decisions.md`).
-- Hand over a pot to another organiser instead of dropping it when the organiser deletes their account.
+- Notifications: reservation, new suggestion, pot funded, "you are now organiser of a pot" (needs the email pipeline).
+- **Privacy page review.** `/privacy` (fr/en) is live as a draft, linked from the footer. Needs a lawyer's review (points in `docs/decisions.md`), then set `NEXT_PUBLIC_PRIVACY_CONTACT` and `NEXT_PUBLIC_PRIVACY_REVIEWED=1` in Vercel.
 - Evaluate moving relational data off KV if query needs outgrow it.
 
 ## Done
 
+- 2026-10-08 (second pass): server page tests; per-record locks on every wish/wishlist writer (fixes double reservation and lost edits); race tests on a latency-simulating fake KV; Playwright e2e on an in-memory KV; brand app icons (maskable, iOS, favicon); `/privacy` page (fr/en, draft) and footer.
+- 2026-10-08: account/register route tests; per-pot lock for pledge writes (+ concurrency tests); webpack build so the service worker ships; install prompt (fr/en); pots are handed to the biggest remaining pledger when their organiser deletes their account.
 - 2026-10-07 (hardening): lint at 0 warnings with React 19 rules as errors; server now enforces wishlist access and `allowSuggestions` on proposing a wish, and invited guests can act on private lists; route tests for CRUD, comments, share.
 - 2026-10-07 (follow-up): service worker never caches pages/RSC/API and purges legacy user-data caches; offline fallback precached; theme colours aligned with tokens; route tests; owner pot-existence leak fixed on `/api/wishlist/contribute`; `eslint --fix` import-order pass (now an error).
 - 2026-10-07: removed the mock layer; `middleware.ts` → `proxy.ts`; transactional deletes and a complete account purge; orphan-cleanup and KV backup/restore scripts; CSV export of pledges; working lint; Vitest + first tests; README, CHANGELOG, `docs/runbook.md`, `docs/decisions.md`.

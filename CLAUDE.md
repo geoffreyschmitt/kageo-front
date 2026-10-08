@@ -8,15 +8,16 @@ Read `product.md` before making product decisions, `architecture.md` before touc
 
 ```bash
 npm run dev       # Dev server (Turbopack)
-npm run build     # Production build — THE verification gate (type-checks everything)
+npm run build     # Production build (webpack, so Serwist emits sw.js) — THE verification gate (type-checks everything)
 npm start         # Serve the production build
 npm test          # Vitest unit tests (pot logic, CSV, account purge)
 npm run lint      # ESLint, 0 errors expected (warnings are known debt)
+npm run test:e2e  # Playwright on Turbopack dev with an in-memory KV (no database needed)
 ```
 
 - **Use `npm`, not `pnpm`** — pnpm isn't on PATH in Claude's shell here (a `package-lock.json` is committed).
 - Lint works again (native flat config). Import-order and a few React 19 rules are warnings, not errors.
-- Tests are Vitest unit tests next to the code (`*.test.ts`); `src/test/fakeKv.ts` is an in-memory KV for route logic. No e2e: after `npm run build`, exercise the flow in a browser.
+- Tests are Vitest unit tests next to the code (`*.test.ts`); `src/test/fakeKv.ts` is an in-memory KV for route logic. `e2e/` holds Playwright specs that run the real app against the in-memory KV (`E2E_FAKE_KV=1`, see `playwright.config.ts`); they never touch a database. Concurrency tests build the fake with `createFakeKv({ latency: true })`.
 - Windows + PhpStorm: `mv` can fail with "Permission denied" while the IDE is open — use PowerShell `Move-Item`/`Rename-Item`.
 
 ## Stack
@@ -60,7 +61,7 @@ Server pages (`app/[locale]/**/page.tsx`) may read KV directly and pass data to 
 - **Display font is Fraunces**, bound to the `--font-cormorant` CSS var (the var name is historical). Do not reintroduce Cormorant Garamond.
 - **Pots are a surprise from the wishlist owner.** Both pot types are hidden from the owner; role-shaped payloads come from one place (`readPotForViewer` / `readGiftPot` in `app/api/wishlist/pot/readPot.ts`). Don't re-derive role rules in the UI.
 - Two pot surfaces coexist: wishlist-level `PotCard` and per-wish `GiftPotSection` (the wish's goal is its price, never stored).
-- The old `lib/mock*.ts` / `useMock` layer is gone; don't add mocks. Multi-key KV writes go through `kv.multi()` (see `shared/lib/kvCascade.ts`); account deletion is `app/api/user/me/purgeUser.ts`.
+- The old `lib/mock*.ts` / `useMock` layer is gone; don't add mocks. Read-modify-write on a wish or wishlist goes through `withLock(wishLock(id) | wishlistLock(id))` (`shared/lib/kvLock.ts`) and re-reads the record inside the lock. Multi-key KV writes go through `kv.multi()` (see `shared/lib/kvCascade.ts`); account deletion is `app/api/user/me/purgeUser.ts`.
 - `src/proxy.ts` is the next-intl locale proxy (Next 16's name for middleware).
 - Env vars and KV key schema: see `docs/architecture.md`.
 

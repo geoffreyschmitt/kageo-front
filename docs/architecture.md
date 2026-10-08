@@ -64,6 +64,7 @@ All values are JSON unless noted. IDs are UUIDs.
 | `wish:{id}:pot` | value | per-wish gift pot (goal is the wish's price, never stored) |
 | `wish:{id}:contributions` | list | pledge entries |
 | `wish:{id}:comments` | list | `TComment` |
+| `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}` or `lock:wishlist:{id}`. Excluded from backups |
 
 Wish status: `wanted` · `reserved` · `purchased` · `proposed` · `funded`. `funded` is set by `reconcileFundedStatus` on every contribution write; the organiser may override to `purchased`. Priority: `low` · `medium` · `high`.
 
@@ -82,7 +83,7 @@ FSD layers in `src/`: `shared → entities → features → widgets → views �
 | Vercel KV | all persistence | `KV_REST_API_*`, `KV_URL`, `REDIS_URL` |
 | Google OAuth | sign-in | `GOOGLE_CLIENT_ID/SECRET` |
 | Resend | not used yet (planned for invite emails) | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` |
-| Serwist | PWA / offline | disabled in development |
+| Serwist | PWA / offline | disabled in development; needs the webpack build (`npm run build` uses `--webpack`) |
 
 ## Environment
 
@@ -99,5 +100,5 @@ Local values come from `.env.local` (created by the Vercel CLI; never commit it)
 
 ## Known architectural debt
 
-- Route and logic tests (Vitest, in-memory KV) cover wish and wishlist CRUD, access rules, comments, share, pots, pledges, CSV and account purge; there is no e2e suite. Lint passes clean.
-- Writes that span a read-modify-write (pledge totals, funded reconciliation) are still not atomic across the read; only the final multi-key write is. Account purge scans keys (O(keys)).
+- Route, page and logic tests (Vitest, in-memory KV) cover wish and wishlist CRUD, access rules, comments, share, pots, pledges, races, CSV, account routes, the account purge and the server pages; `e2e/` has Playwright flows against the in-memory KV. Lint passes clean.
+- Every route that rewrites a wish or wishlist record (edit, delete, reserve, cancel, mark/remove purchased, pledges, gift-pot creation, the account purge's pot and reservation changes) holds `withLock` on that record and re-reads it inside the lock (`SET NX EX`, since `@vercel/kv` is stateless REST and has no `WATCH`). A contended record answers 503. Not locked: comment lists (append-only `rpush`, but the purge rewrites them), wishlist creation/sharing, and cross-record operations such as deleting a wishlist while a pledge lands on one of its wishes. Account purge scans keys (O(keys)). Sessions are stateless JWTs, so a deleted account's cookie still passes `getServerSession` until it expires; routes that only check the session id would then act for a user who no longer exists.
