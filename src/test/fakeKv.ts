@@ -2,7 +2,14 @@
 // Values are stored as given (like Upstash, objects round-trip through JSON).
 type TValue = unknown
 
-export const createFakeKv = () => {
+type TFakeKvOptions = {
+    // Every call takes one event-loop tick, so concurrent handlers interleave at each await
+    // (as real network round-trips do) and read-modify-write races show up deterministically.
+    // multi().exec() stays atomic, like MULTI/EXEC.
+    latency?: boolean
+}
+
+export const createFakeKv = ({ latency = false }: TFakeKvOptions = {}) => {
     const strings = new Map<string, TValue>()
     const sets = new Map<string, Set<string>>()
     const lists = new Map<string, string[]>()
@@ -11,7 +18,7 @@ export const createFakeKv = () => {
     const globToRegex = (glob: string) =>
         new RegExp('^' + glob.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$')
 
-    const ops = {
+    const rawOps = {
         get: async (key: string) => (strings.has(key) ? clone(strings.get(key)) : null),
         mget: async (...keys: string[]) => keys.map((k) => (strings.has(k) ? clone(strings.get(k)) : null)),
         set: async (key: string, value: TValue, opts?: { nx?: boolean }) => {
@@ -42,6 +49,7 @@ export const createFakeKv = () => {
             return members.length
         },
         smembers: async (key: string) => [...(sets.get(key) ?? [])],
+        scard: async (key: string) => sets.get(key)?.size ?? 0,
         sismember: async (key: string, member: string) => (sets.get(key)?.has(member) ? 1 : 0),
         rpush: async (key: string, ...items: string[]) => {
             const l = lists.get(key) ?? []
@@ -55,6 +63,7 @@ export const createFakeKv = () => {
             lists.set(key, l)
             return l.length
         },
+        llen: async (key: string) => lists.get(key)?.length ?? 0,
         lrange: async (key: string, start: number, stop: number) => {
             const l = lists.get(key) ?? []
             return l.slice(start, stop === -1 ? undefined : stop + 1)
@@ -66,17 +75,31 @@ export const createFakeKv = () => {
         },
     }
 
+    const tick = () => new Promise<void>((resolve) => setImmediate(resolve))
+    const ops = latency
+        ? (Object.fromEntries(
+              Object.entries(rawOps).map(([name, fn]) => [
+                  name,
+                  async (...args: unknown[]) => {
+                      await tick()
+                      return (fn as unknown as (...a: unknown[]) => Promise<unknown>)(...args)
+                  },
+              ]),
+          ) as typeof rawOps)
+        : rawOps
+
     // Records commands and applies them together on exec(), like MULTI/EXEC.
     const multi = () => {
         const queue: (() => Promise<unknown>)[] = []
         const tx: Record<string, unknown> = {}
-        for (const name of Object.keys(ops) as (keyof typeof ops)[]) {
+        for (const name of Object.keys(rawOps) as (keyof typeof rawOps)[]) {
             tx[name] = (...args: unknown[]) => {
-                queue.push(() => (ops[name] as (...a: unknown[]) => Promise<unknown>)(...args))
+                queue.push(() => (rawOps[name] as (...a: unknown[]) => Promise<unknown>)(...args))
                 return tx
             }
         }
         tx.exec = async () => {
+            if (latency) await tick()
             const results: unknown[] = []
             for (const run of queue) results.push(await run())
             return results

@@ -29,6 +29,8 @@ const backup = async () => {
     const file = fileArg ?? `backups/kv-${new Date().toISOString().replace(/[:.]/g, '-')}.json`
     const dump = {}
     for (const key of await scanAll()) {
+        // Locks are transient (10 s TTL); a restored one would have no TTL and block its record.
+        if (key.startsWith('lock:')) continue
         const type = await kv.type(key)
         if (type === 'string') dump[key] = { type, value: await kv.get(key) }
         else if (type === 'set') dump[key] = { type, value: await kv.smembers(key) }

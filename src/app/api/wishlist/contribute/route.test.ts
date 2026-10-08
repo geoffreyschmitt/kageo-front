@@ -18,7 +18,7 @@ const total = async () => ((await fake.get('wishlist:L')) as { totalContributed?
 const pledges = () => fake.list('wishlist:L:contributions').map((c) => [c.userId, c.amount])
 
 beforeEach(async () => {
-    fake = createFakeKv()
+    fake = createFakeKv({ latency: true })
     await fake.set('wishlist:L', { id: 'L', ownerId: 'owner', isPublic: true })
     await fake.set('wishlist:L:pot', { creatorId: 'org' })
 })
@@ -70,6 +70,28 @@ describe('pledges and the stored total', () => {
         await PATCH(jsonRequest({ wishlistId: 'L', amount: 5 }, 'PATCH'))
         expect(pledges().sort()).toEqual([['a', 30], ['b', 5]])
         expect(await total()).toBe(35)
+    })
+
+    it('concurrent pledges from different people are all kept and the total adds up', async () => {
+        const users = ['a', 'b', 'c', 'd', 'e']
+        const calls = users.map((u, i) => {
+            signInAs(u) // the session is read synchronously when each handler starts
+            return (i % 2 ? PATCH : POST)(jsonRequest({ wishlistId: 'L', amount: 10 * (i + 1) }, i % 2 ? 'PATCH' : 'POST'))
+        })
+        const responses = await Promise.all(calls)
+
+        expect(responses.map((r) => r.status)).toEqual([200, 200, 200, 200, 200])
+        expect(pledges().map(([u]) => u).sort()).toEqual(users)
+        expect(await total()).toBe(10 + 20 + 30 + 40 + 50)
+        expect(fake.has('lock:wishlist:L')).toBe(false)
+    })
+
+    it("a pledge does not overwrite a concurrent edit to the wishlist record", async () => {
+        signInAs('a')
+        const pledge = POST(jsonRequest({ wishlistId: 'L', amount: 30 }))
+        await fake.set('wishlist:L', { id: 'L', ownerId: 'owner', isPublic: true, title: 'Renamed' })
+        await pledge
+        expect(await fake.get('wishlist:L')).toMatchObject({ title: 'Renamed', totalContributed: 30 })
     })
 
     it('PATCH 0 cancels only the caller\'s pledge', async () => {

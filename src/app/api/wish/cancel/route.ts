@@ -4,6 +4,7 @@ import { kv } from '@vercel/kv'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
 
 type TWishKV = { id: string; status: string; reservedBy?: string; wishlistId: string; proposedBy?: string }
 
@@ -19,27 +20,30 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'wishId is required' }, { status: 400 })
         }
 
-        const wish = await kv.get<TWishKV>(`wish:${wishId}`)
-        if (!wish) {
-            return NextResponse.json({ message: 'Wish not found' }, { status: 404 })
-        }
+        return await withLock(wishLock(wishId), async () => {
+            const wish = await kv.get<TWishKV>(`wish:${wishId}`)
+            if (!wish) {
+                return NextResponse.json({ message: 'Wish not found' }, { status: 404 })
+            }
 
-        if (wish.status !== 'reserved') {
-            return NextResponse.json({ message: 'Wish is not reserved' }, { status: 409 })
-        }
+            if (wish.status !== 'reserved') {
+                return NextResponse.json({ message: 'Wish is not reserved' }, { status: 409 })
+            }
 
-        // Only the person who reserved it can cancel
-        if (wish.reservedBy !== session.user.id) {
-            return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
-        }
+            // Only the person who reserved it can cancel
+            if (wish.reservedBy !== session.user.id) {
+                return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+            }
 
-        const { reservedBy: _r, ...rest } = wish
-        const restoredStatus = wish.proposedBy ? 'proposed' : 'wanted'
-        const updated = { ...rest, status: restoredStatus, updatedAt: new Date().toISOString() }
-        await kv.set(`wish:${wishId}`, updated)
+            const { reservedBy: _r, ...rest } = wish
+            const restoredStatus = wish.proposedBy ? 'proposed' : 'wanted'
+            const updated = { ...rest, status: restoredStatus, updatedAt: new Date().toISOString() }
+            await kv.set(`wish:${wishId}`, updated)
 
-        return NextResponse.json({ id: wishId, status: restoredStatus, reservedBy: undefined })
+            return NextResponse.json({ id: wishId, status: restoredStatus, reservedBy: undefined })
+        })
     } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
         console.error('Cancel reservation error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }

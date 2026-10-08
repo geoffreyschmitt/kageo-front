@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { queueWishlistDeletion } from '@/shared/lib/kvCascade'
+import { LockTimeoutError, busyResponse, withLock, wishlistLock } from '@/shared/lib/kvLock'
 
 type TWishlistKV = {
     id: string
@@ -52,7 +53,7 @@ export async function GET(
 }
 
 // PUT /api/wishlist/[id] — update wishlist metadata
-export async function PUT(
+async function innerPUT(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> },
 ) {
@@ -108,7 +109,7 @@ type TWishKV = { id: string; status: 'wanted' | 'purchased' | 'reserved' | 'prop
 // Only allowed for the owner, and only if nothing has happened on it yet:
 // no reserved/purchased/proposed wishes, no wishlist pot, no per-wish gift pot,
 // no comments.
-export async function DELETE(
+async function innerDELETE(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> },
 ) {
@@ -158,5 +159,25 @@ export async function DELETE(
     } catch (error) {
         console.error('Delete wishlist error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
+    }
+}
+
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+    const { id } = await context.params
+    try {
+        return await withLock(wishlistLock(id), () => innerPUT(request, context))
+    } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
+        throw error
+    }
+}
+
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+    const { id } = await context.params
+    try {
+        return await withLock(wishlistLock(id), () => innerDELETE(request, context))
+    } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
+        throw error
     }
 }

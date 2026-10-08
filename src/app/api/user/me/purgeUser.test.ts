@@ -20,6 +20,10 @@ const seed = async () => {
     await fake.set('user:id:alice', 'alice@x.io')
     await fake.set('user:bob@x.io', { id: 'bob', email: 'bob@x.io' })
     await fake.set('user:id:bob', 'bob@x.io')
+    await fake.set('user:carol@x.io', { id: 'carol', email: 'carol@x.io', name: 'Carol' })
+    await fake.set('user:id:carol', 'carol@x.io')
+    await fake.set('user:dave@x.io', { id: 'dave', email: 'dave@x.io', name: 'Dave' })
+    await fake.set('user:id:dave', 'dave@x.io')
 
     // Alice's wishlist A, with a wish carrying a pot, pledges and a comment.
     await fake.sadd('user:alice:wishlists', 'A')
@@ -49,6 +53,12 @@ const seed = async () => {
     await fake.set('wish:w3', { id: 'w3', wishlistId: 'B', status: 'funded', price: 40 })
     await fake.set('wish:w3:pot', { creatorId: 'alice' })
     await fake.rpush('wish:w3:contributions', contribution('dave', 40))
+
+    // w4: a pot Alice organises that nobody else pledged to.
+    await fake.sadd('wishlist:B:wishes', 'w4')
+    await fake.set('wish:w4', { id: 'w4', wishlistId: 'B', status: 'wanted', price: 40 })
+    await fake.set('wish:w4:pot', { creatorId: 'alice', creatorName: 'Alice' })
+    await fake.rpush('wish:w4:contributions', contribution('alice', 40))
 }
 
 beforeEach(async () => {
@@ -112,11 +122,69 @@ describe('purgeUser', () => {
         expect(w2.purchasedBy).toBeUndefined()
     })
 
-    it('drops a pot the user organised and un-funds the wish', async () => {
+    it('hands a gift pot to its biggest remaining pledger and keeps the pledges and funded status', async () => {
         await purgeUser('alice', 'alice@x.io')
-        expect(fake.has('wish:w3:pot')).toBe(false)
-        expect(fake.has('wish:w3:contributions')).toBe(false)
-        expect(((await fake.get('wish:w3')) as { status: string }).status).toBe('wanted')
+        expect(await fake.get('wish:w3:pot')).toMatchObject({ creatorId: 'dave', creatorName: 'Dave' })
+        expect(fake.list('wish:w3:contributions').map((c) => c.userId)).toEqual(['dave'])
+        expect(((await fake.get('wish:w3')) as { status: string }).status).toBe('funded')
+    })
+
+    it('hands a wishlist pot over, removes the leaving user’s own pledge and fixes the total', async () => {
+        await fake.set('wishlist:C', { id: 'C', ownerId: 'bob', totalContributed: 80 })
+        await fake.set('wishlist:C:pot', { creatorId: 'alice', creatorName: 'Alice' })
+        await fake.rpush(
+            'wishlist:C:contributions',
+            contribution('alice', 10),
+            contribution('carol', 20),
+            contribution('dave', 50),
+        )
+        await purgeUser('alice', 'alice@x.io')
+
+        expect(await fake.get('wishlist:C:pot')).toMatchObject({ creatorId: 'dave', creatorName: 'Dave' })
+        expect(fake.list('wishlist:C:contributions').map((c) => c.userId).sort()).toEqual(['carol', 'dave'])
+        expect(((await fake.get('wishlist:C')) as { totalContributed: number }).totalContributed).toBe(70)
+    })
+
+    it('breaks a tie in favour of the earliest pledge', async () => {
+        await fake.set('wishlist:C', { id: 'C', ownerId: 'bob', totalContributed: 60 })
+        await fake.set('wishlist:C:pot', { creatorId: 'alice' })
+        await fake.rpush(
+            'wishlist:C:contributions',
+            JSON.stringify({ userId: 'dave', amount: 30, contributedAt: '2026-02-01' }),
+            JSON.stringify({ userId: 'carol', amount: 30, contributedAt: '2026-01-01' }),
+        )
+        await purgeUser('alice', 'alice@x.io')
+        expect(await fake.get('wishlist:C:pot')).toMatchObject({ creatorId: 'carol' })
+    })
+
+    it('skips a pledger whose account is gone and falls through to the next', async () => {
+        await fake.set('wishlist:C', { id: 'C', ownerId: 'bob', totalContributed: 90 })
+        await fake.set('wishlist:C:pot', { creatorId: 'alice' })
+        await fake.rpush('wishlist:C:contributions', contribution('ghost', 70), contribution('carol', 20))
+        await purgeUser('alice', 'alice@x.io')
+        expect(await fake.get('wishlist:C:pot')).toMatchObject({ creatorId: 'carol', creatorName: 'Carol' })
+    })
+
+    it('never hands a pot to the wishlist owner', async () => {
+        await fake.set('wishlist:C', { id: 'C', ownerId: 'bob', totalContributed: 90 })
+        await fake.set('wishlist:C:pot', { creatorId: 'alice' })
+        await fake.rpush('wishlist:C:contributions', contribution('bob', 70), contribution('carol', 20))
+        await purgeUser('alice', 'alice@x.io')
+        expect(await fake.get('wishlist:C:pot')).toMatchObject({ creatorId: 'carol' })
+    })
+
+    it('drops a pot nobody else pledged to, and un-funds the wish', async () => {
+        await fake.set('wish:w4', { id: 'w4', wishlistId: 'B', status: 'funded', price: 40 })
+        await purgeUser('alice', 'alice@x.io')
+        expect(fake.has('wish:w4:pot')).toBe(false)
+        expect(fake.has('wish:w4:contributions')).toBe(false)
+        expect(((await fake.get('wish:w4')) as { status: string }).status).toBe('wanted')
+    })
+
+    it('leaves a handed-over pot alone on a retry', async () => {
+        await purgeUser('alice', 'alice@x.io')
+        await purgeUser('alice', 'alice@x.io')
+        expect(await fake.get('wish:w3:pot')).toMatchObject({ creatorId: 'dave' })
     })
 
     it('is safe to run twice (a failed run can be retried)', async () => {

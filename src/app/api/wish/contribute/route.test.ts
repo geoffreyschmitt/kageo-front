@@ -18,10 +18,37 @@ const status = async () => ((await fake.get('wish:w')) as { status: string }).st
 const pledges = () => fake.list('wish:w:contributions').map((c) => [c.userId, c.amount])
 
 beforeEach(async () => {
-    fake = createFakeKv()
+    fake = createFakeKv({ latency: true })
     await fake.set('wishlist:L', { id: 'L', ownerId: 'owner', isPublic: true })
     await fake.set('wish:w', { id: 'w', wishlistId: 'L', status: 'wanted', price: 100 })
     await fake.set('wish:w:pot', { creatorId: 'org' })
+})
+
+describe('concurrency', () => {
+    it('simultaneous pledges that together reach the price all land and flip the wish to funded once', async () => {
+        const users = ['a', 'b', 'c', 'd']
+        const responses = await Promise.all(
+            users.map((u) => {
+                signInAs(u) // the session is read synchronously when each handler starts
+                return POST(jsonRequest({ wishId: 'w', amount: 25 }))
+            }),
+        )
+        expect(responses.map((r) => r.status)).toEqual([200, 200, 200, 200])
+        expect(pledges()).toHaveLength(4)
+        expect(await status()).toBe('funded')
+        expect(fake.has('lock:wish:w')).toBe(false)
+    })
+
+    it('concurrent replacements by different people never drop one another', async () => {
+        const users = ['a', 'b', 'c']
+        await Promise.all(
+            users.map((u, i) => {
+                signInAs(u)
+                return PATCH(jsonRequest({ wishId: 'w', amount: 10 * (i + 1) }, 'PATCH'))
+            }),
+        )
+        expect(pledges().sort()).toEqual([['a', 10], ['b', 20], ['c', 30]])
+    })
 })
 
 describe('guards', () => {

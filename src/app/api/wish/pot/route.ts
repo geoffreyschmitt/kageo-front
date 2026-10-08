@@ -4,6 +4,7 @@ import { kv } from '@vercel/kv'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
 
 import { readGiftPotForViewer } from './readGiftPot'
 
@@ -40,46 +41,49 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'wishId is required' }, { status: 400 })
         }
 
-        const wish = await kv.get<TWishKV>(`wish:${wishId}`)
-        if (!wish) {
-            return NextResponse.json({ message: 'Wish not found' }, { status: 404 })
-        }
-        const wishlist = await kv.get<TWishlistKV>(`wishlist:${wish.wishlistId}`)
-        if (!wishlist) {
-            return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
-        }
-        if (wishlist.ownerId === session.user.id) {
-            return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
-        }
+        return await withLock(wishLock(wishId), async () => {
+            const wish = await kv.get<TWishKV>(`wish:${wishId}`)
+            if (!wish) {
+                return NextResponse.json({ message: 'Wish not found' }, { status: 404 })
+            }
+            const wishlist = await kv.get<TWishlistKV>(`wishlist:${wish.wishlistId}`)
+            if (!wishlist) {
+                return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
+            }
+            if (wishlist.ownerId === session.user.id) {
+                return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+            }
 
-        const userEmail = session.user.email?.toLowerCase()
-        if (!userEmail) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-        const isInvited = await kv.sismember(`wishlist:${wish.wishlistId}:invitees`, userEmail)
-        if (!isInvited) {
-            return NextResponse.json({ message: 'You must be invited to start a pot' }, { status: 403 })
-        }
+            const userEmail = session.user.email?.toLowerCase()
+            if (!userEmail) {
+                return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+            }
+            const isInvited = await kv.sismember(`wishlist:${wish.wishlistId}:invitees`, userEmail)
+            if (!isInvited) {
+                return NextResponse.json({ message: 'You must be invited to start a pot' }, { status: 403 })
+            }
 
-        if (!(wish.price > 0)) {
-            return NextResponse.json({ message: 'This wish has no price' }, { status: 422 })
-        }
-        if (wish.status !== 'wanted') {
-            return NextResponse.json({ message: 'This wish is not available for a pot' }, { status: 409 })
-        }
+            if (!(wish.price > 0)) {
+                return NextResponse.json({ message: 'This wish has no price' }, { status: 422 })
+            }
+            if (wish.status !== 'wanted') {
+                return NextResponse.json({ message: 'This wish is not available for a pot' }, { status: 409 })
+            }
 
-        const now = new Date().toISOString()
-        const pot: TPotKV = {
-            creatorId: session.user.id,
-            creatorName: session.user.name ?? 'Someone',
-            createdAt: now,
-        }
-        const wasSet = await kv.set(`wish:${wishId}:pot`, pot, { nx: true })
-        if (!wasSet) {
-            return NextResponse.json({ message: 'A pot already exists for this wish' }, { status: 409 })
-        }
-        return NextResponse.json(pot, { status: 201 })
+            const now = new Date().toISOString()
+            const pot: TPotKV = {
+                creatorId: session.user.id,
+                creatorName: session.user.name ?? 'Someone',
+                createdAt: now,
+            }
+            const wasSet = await kv.set(`wish:${wishId}:pot`, pot, { nx: true })
+            if (!wasSet) {
+                return NextResponse.json({ message: 'A pot already exists for this wish' }, { status: 409 })
+            }
+            return NextResponse.json(pot, { status: 201 })
+        })
     } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
         console.error('Create gift pot error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }

@@ -7,6 +7,7 @@ import { reconcileFundedStatus } from '@/app/api/wish/pot/reconcileFundedStatus'
 import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
 
 type TWishKV = {
     id: string
@@ -27,7 +28,7 @@ type TWishKV = {
 type TWishlistKV = { ownerId: string }
 
 // PUT /api/wish/[wishId] — edit a wish
-export async function PUT(
+async function innerPUT(
     request: NextRequest,
     { params }: { params: Promise<{ wishId: string }> },
 ) {
@@ -103,5 +104,15 @@ export async function PUT(
     } catch (error) {
         console.error('Edit wish error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
+    }
+}
+
+export async function PUT(request: NextRequest, context: { params: Promise<{ wishId: string }> }) {
+    const { wishId } = await context.params
+    try {
+        return await withLock(wishLock(wishId), () => innerPUT(request, context))
+    } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
+        throw error
     }
 }

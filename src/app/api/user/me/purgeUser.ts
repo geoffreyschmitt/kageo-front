@@ -4,17 +4,19 @@ import { reconcileFundedStatus } from '@/app/api/wish/pot/reconcileFundedStatus'
 import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 
 import { queueListReplace, queueWishlistDeletion, scanKeys } from '@/shared/lib/kvCascade'
+import { withLock, wishLock, wishlistLock } from '@/shared/lib/kvLock'
 
 type TWishKV = {
     id: string
+    wishlistId?: string
     status: string
     price?: number
     reservedBy?: string
     purchasedBy?: string
     proposedBy?: string
 }
-type TWishlistKV = { id: string; totalContributed?: number }
-type TPotKV = { creatorId: string }
+type TWishlistKV = { id: string; ownerId?: string; totalContributed?: number }
+type TPotKV = { creatorId: string; creatorName?: string }
 type TOwned = { wishlists: Set<string>; wishes: Set<string> }
 
 // `wish:{id}:suffix` / `wishlist:{id}:suffix` -> id
@@ -37,33 +39,86 @@ const totalOf = (contributions: { userId: string; amount: number }[]): number =>
     return Array.from(byUser.values()).filter((v) => v > 0).reduce((s, v) => s + v, 0)
 }
 
-// Pots the user organises on other people's content. Pledges are only intentions
-// (no money moves through Kageo), so the pot goes away with its organiser.
-const dropOrganisedPots = async (userId: string, owned: TOwned) => {
+type TPledge = { userId: string; amount: number; contributedAt: string }
+
+// Who should inherit a pot: the biggest remaining pledger, the earliest pledge winning a tie.
+// Pledges are summed per person and non-positive totals do not count. The wishlist owner is
+// never eligible (pots are a surprise to them). Returns candidates best-first.
+const rankSuccessors = (pledges: TPledge[], leavingId: string, wishlistOwnerId?: string): string[] => {
+    const byUser = new Map<string, { total: number; first: string }>()
+    for (const c of pledges) {
+        if (c.userId === leavingId || c.userId === wishlistOwnerId) continue
+        const entry = byUser.get(c.userId) ?? { total: 0, first: c.contributedAt }
+        entry.total += c.amount
+        if (c.contributedAt < entry.first) entry.first = c.contributedAt
+        byUser.set(c.userId, entry)
+    }
+    return Array.from(byUser.entries())
+        .filter(([, e]) => e.total > 0)
+        .sort(([, a], [, b]) => b.total - a.total || (a.first < b.first ? -1 : a.first > b.first ? 1 : 0))
+        .map(([id]) => id)
+}
+
+// The first candidate that still has an account, with the name to show as organiser.
+const resolveSuccessor = async (candidates: string[]): Promise<{ id: string; name: string } | null> => {
+    for (const id of candidates) {
+        const email = await kv.get<string>(`user:id:${id}`)
+        const user = email ? await kv.get<{ name?: string }>(`user:${email}`) : null
+        if (user) return { id, name: user.name ?? '' }
+    }
+    return null
+}
+
+// Pots the user organises on other people's content. The pot moves to its biggest remaining
+// pledger so the others keep their pledges; with nobody to inherit it, it is dropped (pledges
+// are only intentions, no money moves through Kageo). The leaving user's own pledge is removed
+// afterwards by dropPledges. Note the new organiser can see every pledger's name and amount.
+const handOverOrDropOrganisedPots = async (userId: string, owned: TOwned) => {
     for (const key of await scanKeys('wishlist:*:pot')) {
         const wishlistId = idOf(key)
         if (owned.wishlists.has(wishlistId)) continue
-        const pot = await kv.get<TPotKV>(key)
-        if (pot?.creatorId !== userId) continue
 
-        const wishlist = await kv.get<TWishlistKV>(`wishlist:${wishlistId}`)
-        const tx = kv.multi()
-        tx.del(key, `wishlist:${wishlistId}:contributions`)
-        if (wishlist) tx.set(`wishlist:${wishlistId}`, { ...wishlist, totalContributed: 0 })
-        await tx.exec()
+        await withLock(wishlistLock(wishlistId), async () => {
+            const pot = await kv.get<TPotKV>(key)
+            if (pot?.creatorId !== userId) return
+
+            const wishlist = await kv.get<TWishlistKV>(`wishlist:${wishlistId}`)
+            const pledges = parseContributions((await kv.lrange<string>(`wishlist:${wishlistId}:contributions`, 0, -1)) ?? [])
+            const successor = await resolveSuccessor(rankSuccessors(pledges, userId, wishlist?.ownerId))
+            if (successor) {
+                await kv.set(key, { ...pot, creatorId: successor.id, creatorName: successor.name })
+                return
+            }
+
+            const tx = kv.multi()
+            tx.del(key, `wishlist:${wishlistId}:contributions`)
+            if (wishlist) tx.set(`wishlist:${wishlistId}`, { ...wishlist, totalContributed: 0 })
+            await tx.exec()
+        })
     }
 
     for (const key of await scanKeys('wish:*:pot')) {
         const wishId = idOf(key)
         if (owned.wishes.has(wishId)) continue
-        const pot = await kv.get<TPotKV>(key)
-        if (pot?.creatorId !== userId) continue
 
-        const wish = await kv.get<TWishKV>(`wish:${wishId}`)
-        const tx = kv.multi()
-        tx.del(key, `wish:${wishId}:contributions`)
-        if (wish?.status === 'funded') tx.set(`wish:${wishId}`, { ...wish, status: 'wanted' })
-        await tx.exec()
+        await withLock(wishLock(wishId), async () => {
+            const pot = await kv.get<TPotKV>(key)
+            if (pot?.creatorId !== userId) return
+
+            const wish = await kv.get<TWishKV>(`wish:${wishId}`)
+            const wishlist = wish?.wishlistId ? await kv.get<TWishlistKV>(`wishlist:${wish.wishlistId}`) : null
+            const pledges = parseContributions((await kv.lrange<string>(`wish:${wishId}:contributions`, 0, -1)) ?? [])
+            const successor = await resolveSuccessor(rankSuccessors(pledges, userId, wishlist?.ownerId))
+            if (successor) {
+                await kv.set(key, { ...pot, creatorId: successor.id, creatorName: successor.name })
+                return
+            }
+
+            const tx = kv.multi()
+            tx.del(key, `wish:${wishId}:contributions`)
+            if (wish?.status === 'funded') tx.set(`wish:${wishId}`, { ...wish, status: 'wanted' })
+            await tx.exec()
+        })
     }
 }
 
@@ -73,39 +128,43 @@ const dropPledges = async (userId: string, owned: TOwned) => {
         const wishlistId = idOf(key)
         if (owned.wishlists.has(wishlistId)) continue
 
-        const all = parseContributions((await kv.lrange<string>(key, 0, -1)) ?? [])
-        const mine = all.filter((c) => c.userId === userId)
-        if (!mine.length) continue
+        await withLock(wishlistLock(wishlistId), async () => {
+            const all = parseContributions((await kv.lrange<string>(key, 0, -1)) ?? [])
+            const mine = all.filter((c) => c.userId === userId)
+            if (!mine.length) return
 
-        const myTotal = mine.reduce((s, c) => s + c.amount, 0)
-        const wishlist = await kv.get<TWishlistKV>(`wishlist:${wishlistId}`)
-        const tx = kv.multi()
-        queueListReplace(tx, key, all.filter((c) => c.userId !== userId).map((c) => JSON.stringify(c)))
-        if (wishlist) {
-            tx.set(`wishlist:${wishlistId}`, {
-                ...wishlist,
-                totalContributed: Math.max(0, (wishlist.totalContributed ?? 0) - myTotal),
-            })
-        }
-        await tx.exec()
+            const myTotal = mine.reduce((s, c) => s + c.amount, 0)
+            const wishlist = await kv.get<TWishlistKV>(`wishlist:${wishlistId}`)
+            const tx = kv.multi()
+            queueListReplace(tx, key, all.filter((c) => c.userId !== userId).map((c) => JSON.stringify(c)))
+            if (wishlist) {
+                tx.set(`wishlist:${wishlistId}`, {
+                    ...wishlist,
+                    totalContributed: Math.max(0, (wishlist.totalContributed ?? 0) - myTotal),
+                })
+            }
+            await tx.exec()
+        })
     }
 
     for (const key of await scanKeys('wish:*:contributions')) {
         const wishId = idOf(key)
         if (owned.wishes.has(wishId)) continue
 
-        const all = parseContributions((await kv.lrange<string>(key, 0, -1)) ?? [])
-        if (!all.some((c) => c.userId === userId)) continue
+        await withLock(wishLock(wishId), async () => {
+            const all = parseContributions((await kv.lrange<string>(key, 0, -1)) ?? [])
+            if (!all.some((c) => c.userId === userId)) return
 
-        const rest = all.filter((c) => c.userId !== userId)
-        const wish = await kv.get<TWishKV>(`wish:${wishId}`)
-        const tx = kv.multi()
-        queueListReplace(tx, key, rest.map((c) => JSON.stringify(c)))
-        if (wish) {
-            const next = reconcileFundedStatus(wish.status, totalOf(rest), wish.price ?? 0)
-            if (next) tx.set(`wish:${wishId}`, { ...wish, status: next })
-        }
-        await tx.exec()
+            const rest = all.filter((c) => c.userId !== userId)
+            const wish = await kv.get<TWishKV>(`wish:${wishId}`)
+            const tx = kv.multi()
+            queueListReplace(tx, key, rest.map((c) => JSON.stringify(c)))
+            if (wish) {
+                const next = reconcileFundedStatus(wish.status, totalOf(rest), wish.price ?? 0)
+                if (next) tx.set(`wish:${wishId}`, { ...wish, status: next })
+            }
+            await tx.exec()
+        })
     }
 }
 
@@ -132,25 +191,26 @@ const releaseWishClaims = async (userId: string, owned: TOwned) => {
     for (let i = 0; i < keys.length; i += 100) {
         const chunk = keys.slice(i, i + 100)
         const wishes = await kv.mget<(TWishKV | null)[]>(...chunk)
-        const tx = kv.multi()
-        let queued = 0
 
-        wishes.forEach((wish, idx) => {
-            if (!wish || (wish.reservedBy !== userId && wish.purchasedBy !== userId)) return
+        // The bulk read only finds candidates; each is re-read under its lock before it is rewritten.
+        for (const [idx, candidate] of wishes.entries()) {
+            if (!candidate || (candidate.reservedBy !== userId && candidate.purchasedBy !== userId)) continue
 
-            const next: TWishKV = { ...wish }
-            if (wish.reservedBy === userId) {
-                delete next.reservedBy
-                if (wish.status === 'reserved') next.status = wish.proposedBy ? 'proposed' : 'wanted'
-            }
-            // A purchase stays a purchase; only the buyer's identity goes.
-            if (wish.purchasedBy === userId) delete next.purchasedBy
+            await withLock(wishLock(idOf(chunk[idx])), async () => {
+                const wish = await kv.get<TWishKV>(chunk[idx])
+                if (!wish || (wish.reservedBy !== userId && wish.purchasedBy !== userId)) return
 
-            tx.set(chunk[idx], next)
-            queued++
-        })
+                const next: TWishKV = { ...wish }
+                if (wish.reservedBy === userId) {
+                    delete next.reservedBy
+                    if (wish.status === 'reserved') next.status = wish.proposedBy ? 'proposed' : 'wanted'
+                }
+                // A purchase stays a purchase; only the buyer's identity goes.
+                if (wish.purchasedBy === userId) delete next.purchasedBy
 
-        if (queued) await tx.exec()
+                await kv.set(chunk[idx], next)
+            })
+        }
     }
 }
 
@@ -172,7 +232,7 @@ export const purgeUser = async (userId: string, email: string) => {
         wishes: new Set(plans.flatMap((p) => p.wishIds)),
     }
 
-    await dropOrganisedPots(userId, owned)
+    await handOverOrDropOrganisedPots(userId, owned)
     await dropPledges(userId, owned)
     await dropComments(userId, owned)
     await releaseWishClaims(userId, owned)

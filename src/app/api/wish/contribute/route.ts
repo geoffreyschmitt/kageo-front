@@ -8,13 +8,15 @@ import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { queueListReplace } from '@/shared/lib/kvCascade'
+import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
 import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 type TWishKV = { id: string; wishlistId: string; price: number; status: string }
 type TWishlistKV = { id: string; ownerId: string; isPublic: boolean }
 type TContribution = { userId: string; amount: number; contributedAt: string }
 
-type TCtx = { userId: string; wishId: string; amount: number; wish: TWishKV }
+
+type TCtx ={ userId: string; wishId: string; amount: number; wish: TWishKV }
 
 // Shared guards for POST (add) and PATCH (replace). Mirrors the wishlist
 // contribute route: logged in, non-owner, public list, pot exists.
@@ -69,7 +71,9 @@ const loadContext = async (
 }
 
 // Recompute the total from the list and flip wanted<->funded if needed.
-const reconcile = async (wish: TWishKV): Promise<{ total: number; isFunded: boolean }> => {
+// Call it inside the pot lock: it re-reads the wish so a stale snapshot never overwrites it.
+const reconcile = async (staleWish: TWishKV): Promise<{ total: number; isFunded: boolean }> => {
+    const wish = (await kv.get<TWishKV>(`wish:${staleWish.id}`)) ?? staleWish
     const all = parseContributions(await kv.lrange<string>(`wish:${wish.id}:contributions`, 0, -1))
     const byUser = new Map<string, number>()
     for (const c of all) byUser.set(c.userId, (byUser.get(c.userId) ?? 0) + c.amount)
@@ -90,11 +94,13 @@ export async function POST(request: NextRequest) {
 
         const now = new Date().toISOString()
         const contribution: TContribution = { userId, amount, contributedAt: now }
-        await kv.lpush(`wish:${wishId}:contributions`, JSON.stringify(contribution))
-
-        const { total, isFunded } = await reconcile(wish)
+        const { total, isFunded } = await withLock(wishLock(wishId), async () => {
+            await kv.lpush(`wish:${wishId}:contributions`, JSON.stringify(contribution))
+            return reconcile(wish)
+        })
         return NextResponse.json({ wishId, contribution, totalContributed: total, isFunded })
     } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
         console.error('Contribute gift pot error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }
@@ -107,19 +113,22 @@ export async function PATCH(request: NextRequest) {
         const { userId, wishId, amount, wish } = loaded.ctx
 
         const key = `wish:${wishId}:contributions`
-        const existing = parseContributions(await kv.lrange<string>(key, 0, -1))
-        const others = existing.filter((c) => c.userId !== userId)
-        const now = new Date().toISOString()
-        const next =
-            amount > 0 ? [...others, { userId, amount, contributedAt: now } as TContribution] : others
+        const { total, isFunded } = await withLock(wishLock(wishId), async () => {
+            const existing = parseContributions(await kv.lrange<string>(key, 0, -1))
+            const others = existing.filter((c) => c.userId !== userId)
+            const now = new Date().toISOString()
+            const next =
+                amount > 0 ? [...others, { userId, amount, contributedAt: now } as TContribution] : others
 
-        const tx = kv.multi()
-        queueListReplace(tx, key, next.map((c) => JSON.stringify(c)))
-        await tx.exec()
+            const tx = kv.multi()
+            queueListReplace(tx, key, next.map((c) => JSON.stringify(c)))
+            await tx.exec()
 
-        const { total, isFunded } = await reconcile(wish)
+            return reconcile(wish)
+        })
         return NextResponse.json({ wishId, totalContributed: total, myContribution: amount, isFunded })
     } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
         console.error('Edit gift contribution error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }

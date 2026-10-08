@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { queueListReplace } from '@/shared/lib/kvCascade'
+import { LockTimeoutError, busyResponse, withLock, wishlistLock } from '@/shared/lib/kvLock'
 import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 import { parseContributions } from '../pot/readPot'
@@ -18,6 +19,7 @@ type TWishlistKV = {
 }
 
 type TContribution = { userId: string; amount: number; contributedAt: string }
+
 
 type TContributeContext = {
     userId: string
@@ -88,21 +90,26 @@ export async function POST(request: NextRequest) {
         const now = new Date().toISOString()
         const contribution: TContribution = { userId, amount, contributedAt: now }
 
-        await kv.lpush(`wishlist:${wishlistId}:contributions`, JSON.stringify(contribution))
-
-        const newTotal = (wishlist.totalContributed ?? 0) + amount
-        await kv.set(`wishlist:${wishlistId}`, { ...wishlist, totalContributed: newTotal, updatedAt: now })
+        const newTotal = await withLock(wishlistLock(wishlistId), async () => {
+            // Re-read inside the lock: the total and the rest of the record may have moved.
+            const fresh = (await kv.get<TWishlistKV>(`wishlist:${wishlistId}`)) ?? wishlist
+            await kv.lpush(`wishlist:${wishlistId}:contributions`, JSON.stringify(contribution))
+            const total = (fresh.totalContributed ?? 0) + amount
+            await kv.set(`wishlist:${wishlistId}`, { ...fresh, totalContributed: total, updatedAt: now })
+            return total
+        })
 
         return NextResponse.json({ wishlistId, contribution, totalContributed: newTotal })
     } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
         console.error('Contribute pot error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }
 }
 
 // PATCH /api/wishlist/contribute — replace the caller's own pledge with a new
-// amount. `amount: 0` removes the pledge entirely (cancel). Read-modify-write on
-// the list, matching the non-atomic pattern of POST — fine at this app's scale.
+// amount. `amount: 0` removes the pledge entirely (cancel). The
+// read-modify-write runs under a per-pot lock so concurrent pledges don't lose updates.
 export async function PATCH(request: NextRequest) {
     try {
         const loaded = await loadContext(request, { allowZero: true })
@@ -110,27 +117,32 @@ export async function PATCH(request: NextRequest) {
         const { userId, wishlistId, amount, wishlist } = loaded.ctx
 
         const key = `wishlist:${wishlistId}:contributions`
-        const existing = parseContributions(await kv.lrange<string>(key, 0, -1))
+        const newTotal = await withLock(wishlistLock(wishlistId), async () => {
+            const fresh = (await kv.get<TWishlistKV>(`wishlist:${wishlistId}`)) ?? wishlist
+            const existing = parseContributions(await kv.lrange<string>(key, 0, -1))
 
-        const mine = existing
-            .filter((c) => c.userId === userId)
-            .reduce((sum, c) => sum + c.amount, 0)
-        const others = existing.filter((c) => c.userId !== userId)
+            const mine = existing
+                .filter((c) => c.userId === userId)
+                .reduce((sum, c) => sum + c.amount, 0)
+            const others = existing.filter((c) => c.userId !== userId)
 
-        const now = new Date().toISOString()
-        const next =
-            amount > 0
-                ? [...others, { userId, amount, contributedAt: now } as TContribution]
-                : others
+            const now = new Date().toISOString()
+            const next =
+                amount > 0
+                    ? [...others, { userId, amount, contributedAt: now } as TContribution]
+                    : others
 
-        const newTotal = Math.max(0, (wishlist.totalContributed ?? 0) - mine + amount)
-        const tx = kv.multi()
-        queueListReplace(tx, key, next.map((c) => JSON.stringify(c)))
-        tx.set(`wishlist:${wishlistId}`, { ...wishlist, totalContributed: newTotal, updatedAt: now })
-        await tx.exec()
+            const total = Math.max(0, (fresh.totalContributed ?? 0) - mine + amount)
+            const tx = kv.multi()
+            queueListReplace(tx, key, next.map((c) => JSON.stringify(c)))
+            tx.set(`wishlist:${wishlistId}`, { ...fresh, totalContributed: total, updatedAt: now })
+            await tx.exec()
+            return total
+        })
 
         return NextResponse.json({ wishlistId, totalContributed: newTotal, myContribution: amount })
     } catch (error) {
+        if (error instanceof LockTimeoutError) return busyResponse()
         console.error('Edit contribution error:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }
