@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
     "format": "eslint --fix \"src/**/*.{ts,tsx}\" --ignore-pattern \"node_modules/*\" --ignore-pattern \".next/*\"",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.8",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
+    "@playwright/test": "^1.64.0",
     "@serwist/next": "^9.5.7",
     "@types/node": "^25.0.2",
     "@types/react": "^19.2.7",

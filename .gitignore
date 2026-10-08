@@ -55,3 +55,7 @@ public/swe-worker-*.js
 # KV backups (personal data + password hashes)
 /backups/
 !.env.example
+
+# playwright
+/test-results/
+/playwright-report/
