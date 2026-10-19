@@ -57,31 +57,21 @@
 }
 
 .header__logoLink {
-    font-family: var(--h-font-serif);
-    font-size: 26px;
-    font-weight: 500;
-    font-style: italic;
-    color: var(--h-text);
+    color: var(--h-sage);
     text-decoration: none;
-    letter-spacing: -0.3px;
     transition: color 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 6px;
 }
 
-.header__logoLink::before {
-    content: '✦';
-    font-style: normal;
-    font-size: 11px;
-    color: var(--h-sage);
-    opacity: 0.9;
-    position: relative;
-    top: -1px;
+.header__logoImage {
+    display: block;
+    height: 30px;
+    width: auto;
 }
 
 .header__logoLink:hover {
-    color: var(--h-sage);
+    color: var(--h-sage-hover);
 }
 
 /* ── Nav ──────────────────────────────────── */
@@ -715,7 +705,7 @@
 }
 
 @media (max-width: 480px) {
-    .header__logoLink {
-        font-size: 22px;
+    .header__logoImage {
+        height: 26px;
     }
 }

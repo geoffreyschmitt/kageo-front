@@ -8,6 +8,7 @@ import {LanguageSwitcher} from '@/features/LanguageSwitcher'
 
 import {eventBus} from '@/shared/eventBus'
 import {Link, usePathname} from '@/shared/i18n/navigation'
+import {Logo} from '@/shared/ui/Logo'
 
 import styles from './Header.module.css'
 
@@ -141,8 +142,8 @@ export const Header = () => {
       <header className={styles.header}>
         <div className={styles.header__container}>
           <div className={styles.header__logo}>
-            <Link href="/" className={styles.header__logoLink}>
-              Kageo
+            <Link href="/" className={styles.header__logoLink} aria-label="Kageo">
+              <Logo className={styles.header__logoImage} aria-hidden="true" />
             </Link>
           </div>
           {session?.user && (
