@@ -17,7 +17,7 @@ Work on a branch `feat/rate-limiting`. Prefix shell commands with `rtk` (user's 
 - Fail open: if KV throws, the request is allowed.
 - Plain GETs are never limited. Only the three export GETs are (Tier 3).
 - Limiter runs **after** the session check (unauthenticated requests never consume budget) and **before** body parsing/validation.
-- Starting numbers (`limit` per `windowSeconds`): loginFailures 10/900 · register 5/3600 · reserve 30/600 · contribute 30/600 · comment 30/600 · invite 30/600 · write 120/600 · ipCeiling 600/600. **suggest is 60/600, not 30** (our call: `POST /api/wish` is also how an owner adds wishes in bulk; revisit with URL import).
+- Starting numbers (`limit` per `windowSeconds`): loginFailures 10/900 · register 20/3600 · reserve 30/600 · contribute 30/600 · comment 30/600 · invite 30/600 · write 120/600 · ipCeiling 600/600. **suggest is 60/600, not 30** (our call: `POST /api/wish` is also how an owner adds wishes in bulk; revisit with URL import).
 - All numbers are multiplied by env `RATE_LIMIT_MULTIPLIER` (positive number, default 1).
 - 429 body `{ message: 'Too many requests' }` plus a `Retry-After` header (seconds, integer ≥ 1).
 - UI message is static: fr "Trop de tentatives, réessayez dans une minute." · en "Too many tries, please wait a minute." Every user-visible string goes in both `fr.json` and `en.json`.

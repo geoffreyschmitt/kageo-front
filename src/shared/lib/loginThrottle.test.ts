@@ -55,9 +55,31 @@ describe('loginThrottle', () => {
         expect(await isLoginBlocked('bob@x.io', '1.1.1.1')).toBe(false)
     })
 
-    it('fails open when KV throws', async () => {
+    it('fails open when KV throws, and warns each time', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         fake = { ...fake, get: undefined, incr: async () => { throw new Error('down') } } as never
         await expect(recordLoginFailure('bob@x.io', '1.1.1.1')).resolves.toBeUndefined()
         expect(await isLoginBlocked('bob@x.io', '1.1.1.1')).toBe(false)
+        expect(warn).toHaveBeenCalledTimes(2)
+        warn.mockRestore()
+    })
+
+    it('isLoginBlocked heals a counter that lost its expiry', async () => {
+        vi.useFakeTimers()
+        const key = 'ratelimit:loginFailures:bob@x.io|1.1.1.1'
+        for (let i = 0; i < 12; i++) await fake.incr(key)
+        expect(await fake.ttl(key)).toBe(-1)
+        expect(await isLoginBlocked('bob@x.io', '1.1.1.1')).toBe(true)
+        expect(await fake.ttl(key)).toBeGreaterThan(895)
+        vi.advanceTimersByTime(901_000)
+        expect(await isLoginBlocked('bob@x.io', '1.1.1.1')).toBe(false)
+    })
+
+    it('recordLoginFailure heals a counter that lost its expiry', async () => {
+        const key = 'ratelimit:loginFailures:bob@x.io|1.1.1.1'
+        await fake.incr(key)
+        expect(await fake.ttl(key)).toBe(-1)
+        await recordLoginFailure('bob@x.io', '1.1.1.1')
+        expect(await fake.ttl(key)).toBeGreaterThan(895)
     })
 })

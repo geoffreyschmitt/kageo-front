@@ -20,8 +20,11 @@ export const hit = async (name: TRateLimitName, subject: string): Promise<THitRe
         if (count === 1) await kv.expire(key, windowSeconds)
         if (count <= limit) return { ok: true }
         const ttl = await kv.ttl(key)
+        // A counter without expiry (INCR succeeded, EXPIRE never ran) would block forever: repair it.
+        if (ttl === -1) await kv.expire(key, windowSeconds)
         return { ok: false, retryAfter: ttl < 0 ? windowSeconds : Math.max(1, ttl) }
-    } catch {
+    } catch (err) {
+        console.warn('rate limit check failed', key, err)
         return { ok: true }
     }
 }

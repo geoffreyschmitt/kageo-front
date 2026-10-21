@@ -19,7 +19,7 @@ export const RATE_LIMITED_ERROR = 'RATE_LIMITED'
 
 const RULES: Record<TRateLimitName, TRateRule> = {
     loginFailures: { limit: 10, windowSeconds: 900 },
-    register: { limit: 5, windowSeconds: 3600 },
+    register: { limit: 20, windowSeconds: 3600 },
     reserve: { limit: 30, windowSeconds: 600 },
     contribute: { limit: 30, windowSeconds: 600 },
     comment: { limit: 30, windowSeconds: 600 },

@@ -72,8 +72,23 @@ describe('hit', () => {
         expect(await hit('register', 'a')).toEqual({ ok: true })
     })
 
-    it('fails open when KV errors', async () => {
+    it('fails open when KV errors, and warns once', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         fake.incr = vi.fn().mockRejectedValue(new Error('down'))
+        expect(await hit('register', 'a')).toEqual({ ok: true })
+        expect(warn).toHaveBeenCalledTimes(1)
+        warn.mockRestore()
+    })
+
+    it('heals a counter that lost its expiry', async () => {
+        const { limit, windowSeconds } = getRule('register')
+        const key = 'ratelimit:register:a'
+        for (let i = 0; i < limit + 3; i++) await fake.incr(key)
+        expect(await fake.ttl(key)).toBe(-1)
+        const blocked = await hit('register', 'a')
+        expect(blocked).toEqual({ ok: false, retryAfter: windowSeconds })
+        expect(await fake.ttl(key)).toBeGreaterThan(windowSeconds - 5)
+        vi.advanceTimersByTime((windowSeconds + 1) * 1000)
         expect(await hit('register', 'a')).toEqual({ ok: true })
     })
 })

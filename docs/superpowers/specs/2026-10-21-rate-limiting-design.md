@@ -40,7 +40,7 @@ All numbers are our starting guesses, in one config file.
 
 **Tier 1 — no account, counted per IP**
 - Login: failures, about 10 per 15 minutes per email + IP.
-- Register: about 5 per hour per IP.
+- Register: about 20 per hour per IP (a family on one wifi must not be blocked).
 - Password reset: same tier, once roadmap item 4 adds the route.
 
 **Tier 2 — per account, actions bots would abuse (about 30 per 10 minutes)**

@@ -64,7 +64,7 @@ All values are JSON unless noted. IDs are UUIDs.
 | `wish:{id}:pot` | value | per-wish gift pot (goal is the wish's price, never stored) |
 | `wish:{id}:contributions` | list | pledge entries |
 | `wish:{id}:comments` | list | `TComment` |
-| `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}` or `lock:wishlist:{id}`. Excluded from backups |
+| `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}` or `lock:wishlist:{id}`. Excluded from backups (as are `ratelimit:*` counters) |
 | `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `reserve`, `contribute`, `comment`, `suggest`, `invite` or `write`; `{subject}` is the user id (register: the client IP) |
 | `ratelimit:ip:{ip}` | counter (TTL) | per-IP ceiling across all accounts on write routes |
 | `ratelimit:loginFailures:{email}\|{ip}` | counter (TTL) | failed password sign-ins per email and IP (`shared/lib/loginThrottle.ts`); cleared on success |
@@ -75,7 +75,7 @@ Deleting a wishlist, wish or account must also delete every sub-key and back-ref
 
 **Visibility rules**: pots and comments never reach the wishlist owner (surprise). Role-shaped pot payloads are built in one place, `app/api/wishlist/pot/readPot.ts`.
 
-**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 5 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, suggest 60 / 10 min, other writes 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
+**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 20 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, suggest 60 / 10 min, other writes 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
 
 ## Frontend structure
 

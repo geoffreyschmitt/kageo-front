@@ -11,6 +11,8 @@ vi.mock('@vercel/kv', () => ({
     },
 }))
 
+import { getRule } from '@/shared/config/rateLimits'
+
 import { POST } from './route'
 
 const register = (ip: string, n: number) =>
@@ -27,15 +29,17 @@ beforeEach(() => {
 })
 
 describe('register rate limit', () => {
-    it('allows 5 per IP, then 429 with Retry-After', async () => {
-        for (let i = 0; i < 5; i++) expect((await register('9.9.9.9', i)).status).toBe(201)
-        const res = await register('9.9.9.9', 5)
+    it('allows the register limit per IP, then 429 with Retry-After', async () => {
+        const { limit } = getRule('register')
+        for (let i = 0; i < limit; i++) expect((await register('9.9.9.9', i)).status).toBe(201)
+        const res = await register('9.9.9.9', limit)
         expect(res.status).toBe(429)
         expect(Number(res.headers.get('Retry-After'))).toBeGreaterThan(0)
-    })
+    }, 60_000)
 
     it('does not affect another IP', async () => {
-        for (let i = 0; i < 6; i++) await register('9.9.9.9', i)
+        const { limit } = getRule('register')
+        for (let i = 0; i < limit + 1; i++) await register('9.9.9.9', i)
         expect((await register('8.8.8.8', 100)).status).toBe(201)
-    })
+    }, 60_000)
 })
