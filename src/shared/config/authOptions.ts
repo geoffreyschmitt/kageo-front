@@ -1,10 +1,11 @@
 import { randomUUID } from 'crypto'
 
 import { kv } from '@vercel/kv'
-import bcrypt from 'bcryptjs'
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
+
+import { authorizeCredentials } from '@/shared/config/authorizeCredentials'
 
 
 type KVUser = {
@@ -29,20 +30,9 @@ export const authOptions: NextAuthOptions = {
                 email: { label: 'Email', type: 'email' },
                 password: { label: 'Password', type: 'password' },
             },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) return null
-
-                const user = await kv.get<KVUser>(`user:${credentials.email.toLowerCase()}`)
-                if (!user) return null
-
-                const passwordMatch = await bcrypt.compare(credentials.password, user.password)
-                if (!passwordMatch) return null
-
-                return {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                }
+            async authorize(credentials, req) {
+                const forwardedFor = req?.headers?.['x-forwarded-for']
+                return authorizeCredentials(credentials, typeof forwardedFor === 'string' ? forwardedFor : undefined)
             },
         }),
     ],

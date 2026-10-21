@@ -6,6 +6,7 @@ import {useTranslations} from 'next-intl'
 
 import {LanguageSwitcher} from '@/features/LanguageSwitcher'
 
+import {RATE_LIMITED_ERROR} from '@/shared/config/rateLimits'
 import {eventBus} from '@/shared/eventBus'
 import {Link, usePathname} from '@/shared/i18n/navigation'
 import {Logo} from '@/shared/ui/Logo'
@@ -74,7 +75,7 @@ export const Header = () => {
       })
 
       if (result?.error) {
-        setError(t('invalidCredentials'))
+        setError(result.error === RATE_LIMITED_ERROR ? t('rateLimited') : t('invalidCredentials'))
       } else {
         setShowAuthModal(false)
         setFormData({email: '', password: '', name: ''})
@@ -98,6 +99,8 @@ export const Header = () => {
             setShowAuthModal(false)
             setFormData({email: '', password: '', name: ''})
           }
+        } else if (res.status === 429) {
+          setError(t('rateLimited'))
         } else {
           const data = await res.json()
           setError(data.message || t('registrationFailed'))

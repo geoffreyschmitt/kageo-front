@@ -21,6 +21,7 @@
     "loading": "Loading...",
     "pleaseWait": "Please wait...",
     "invalidCredentials": "Invalid credentials",
+    "rateLimited": "Too many tries, please wait a minute.",
     "registrationFailed": "Registration failed",
     "networkError": "Network error",
     "continueWithGoogle": "Continue with Google",

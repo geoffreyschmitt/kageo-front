@@ -21,6 +21,7 @@
     "loading": "Chargement...",
     "pleaseWait": "Veuillez patienter...",
     "invalidCredentials": "Identifiants incorrects",
+    "rateLimited": "Trop de tentatives, réessayez dans une minute.",
     "registrationFailed": "Échec de l'inscription",
     "networkError": "Erreur réseau",
     "continueWithGoogle": "Continuer avec Google",

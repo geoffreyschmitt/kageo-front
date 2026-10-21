@@ -4,7 +4,12 @@ import { kv } from '@vercel/kv'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
+import { limitRegister } from '@/shared/lib/rateLimit'
+
 export async function POST(request: NextRequest) {
+    const limited = await limitRegister(request)
+    if (limited) return limited
+
     try {
         const body = await request.json()
         const { email, password, name } = body

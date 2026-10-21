@@ -52,7 +52,9 @@ export const createFakeKv = ({ latency = false }: TFakeKvOptions = {}) => {
             if (c.expiresAt === undefined) return -1
             return Math.ceil((c.expiresAt - Date.now()) / 1000)
         },
-        get: async (key: string) => (strings.has(key) ? clone(strings.get(key)) : null),
+        // Like Redis, GET on an INCR counter returns its number.
+        get: async (key: string) =>
+            strings.has(key) ? clone(strings.get(key)) : (liveCounter(key)?.n ?? null),
         mget: async (...keys: string[]) => keys.map((k) => (strings.has(k) ? clone(strings.get(k)) : null)),
         set: async (key: string, value: TValue, opts?: { nx?: boolean }) => {
             if (opts?.nx && strings.has(key)) return null
