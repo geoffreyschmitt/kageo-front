@@ -6,6 +6,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/shared/config/authOptions'
 import { queueListReplace } from '@/shared/lib/kvCascade'
 import { LockTimeoutError, busyResponse, withLock, wishlistLock } from '@/shared/lib/kvLock'
+import { limitWrite } from '@/shared/lib/rateLimit'
 import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 import { parseContributions } from '../pot/readPot'
@@ -39,6 +40,8 @@ const loadContext = async (
     if (!session?.user?.id) {
         return { error: NextResponse.json({ message: 'Unauthorized' }, { status: 401 }) }
     }
+    const limited = await limitWrite(request, session.user.id, 'contribute')
+    if (limited) return { error: limited }
 
     const { wishlistId, amount } = await request.json()
     if (!wishlistId) {

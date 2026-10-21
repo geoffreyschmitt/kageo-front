@@ -9,6 +9,7 @@ import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 import { authOptions } from '@/shared/config/authOptions'
 import { queueListReplace } from '@/shared/lib/kvCascade'
 import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
+import { limitWrite } from '@/shared/lib/rateLimit'
 import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 type TWishKV = { id: string; wishlistId: string; price: number; status: string }
@@ -29,6 +30,8 @@ const loadContext = async (
     if (!session?.user?.id) {
         return { error: NextResponse.json({ message: 'Unauthorized' }, { status: 401 }) }
     }
+    const limited = await limitWrite(request, session.user.id, 'contribute')
+    if (limited) return { error: limited }
     const { wishId, amount } = await request.json()
     if (!wishId) {
         return { error: NextResponse.json({ message: 'wishId is required' }, { status: 400 }) }

@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { TComment } from '@/entities/comment'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { limitWrite } from '@/shared/lib/rateLimit'
 import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
 
 type TWishlistKV = { id: string; ownerId: string; isPublic: boolean }
@@ -44,6 +45,8 @@ export async function POST(
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'comment')
+    if (limited) return limited
 
     const { id } = await params
     const wishlist = await kv.get<TWishlistKV>(`wishlist:${id}`)
