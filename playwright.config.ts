@@ -36,6 +36,8 @@ export default defineConfig({
             NEXTAUTH_SECRET: 'e2e-only-secret',
             GOOGLE_CLIENT_ID: 'e2e',
             GOOGLE_CLIENT_SECRET: 'e2e',
+            // Every e2e request shares the IP 'unknown'; keep the rate-limit ceilings out of the way.
+            RATE_LIMIT_MULTIPLIER: '1000',
         },
     },
 })

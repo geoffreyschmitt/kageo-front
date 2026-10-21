@@ -65,12 +65,17 @@ All values are JSON unless noted. IDs are UUIDs.
 | `wish:{id}:contributions` | list | pledge entries |
 | `wish:{id}:comments` | list | `TComment` |
 | `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}` or `lock:wishlist:{id}`. Excluded from backups |
+| `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `reserve`, `contribute`, `comment`, `suggest`, `invite` or `write`; `{subject}` is the user id (register: the client IP) |
+| `ratelimit:ip:{ip}` | counter (TTL) | per-IP ceiling across all accounts on write routes |
+| `ratelimit:loginFailures:{email}\|{ip}` | counter (TTL) | failed password sign-ins per email and IP (`shared/lib/loginThrottle.ts`); cleared on success |
 
 Wish status: `wanted` · `reserved` · `purchased` · `proposed` · `funded`. `funded` is set by `reconcileFundedStatus` on every contribution write; the organiser may override to `purchased`. Priority: `low` · `medium` · `high`.
 
 Deleting a wishlist, wish or account must also delete every sub-key and back-reference. This is centralised in `shared/lib/kvCascade.ts` (`wishKeys`, `wishlistKeys`, `queueWishlistDeletion`) and runs inside `kv.multi()` transactions; account deletion is `app/api/user/me/purgeUser.ts`. When you add a key under `wish:{id}` or `wishlist:{id}`, add it to those lists.
 
 **Visibility rules**: pots and comments never reach the wishlist owner (surprise). Role-shaped pot payloads are built in one place, `app/api/wishlist/pot/readPot.ts`.
+
+**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 5 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, suggest 60 / 10 min, other writes 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
 
 ## Frontend structure
 
@@ -95,6 +100,7 @@ FSD layers in `src/`: `shared → entities → features → widgets → views �
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | yes | Google sign-in |
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | not yet | reserved for invite emails |
 | `NEXT_PUBLIC_APP_URL` | no | used when building share URLs |
+| `RATE_LIMIT_MULTIPLIER` | no | scales every rate-limit ceiling (default 1); the e2e config sets 1000 |
 
 Local values come from `.env.local` (created by the Vercel CLI; never commit it). Project is linked via `.vercel/`; origin is `geoffreyschmitt/kageo-front` on GitHub.
 
@@ -102,7 +108,7 @@ Local values come from `.env.local` (created by the Vercel CLI; never commit it)
 
 - **Event-suite vision.** A wishlist currently stands alone (`eventDate` is a field on it). If other event modules ever ship, an "event" concept may own wishlists; avoid assumptions that make that hard (e.g. hard-coding one wishlist per occasion), but build nothing for it yet.
 - **Needs that will change the stack:** Resend (invite emails, password reset, notifications), Vercel Cron (automatic birthday/Christmas lists, reminders), Vercel Blob (cover images), a regulated payment provider such as Stripe Connect (integrated pots; Kageo never holds funds), and likely relational storage once billing and subscriptions exist. KV is fine up to a few hundred users.
-- **Abuse surface:** public-link actions (reserve, comment, contribute) and auth routes need rate limiting; owner cannot see reservations, so fake/bot reservations would go unnoticed.
+- **Abuse surface:** public-link actions (reserve, comment, contribute) and auth routes are rate limited (see Data model); owner cannot see reservations, so fake/bot reservations would go unnoticed.
 
 ## Known architectural debt
 
