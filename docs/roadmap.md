@@ -15,10 +15,11 @@ Success test: the creators' own circle uses Kageo for one real event. No new fea
 3. **[B] Send invite emails** via Resend from `api/wishlist/share`. Today the invitee is only recorded in `wishlist:{id}:invitees`; invited people are never notified. Needs a verified Resend sender domain.
 4. **[B] Forgot / reset password by email.** Today a user who forgets their password is locked out. Uses the same Resend pipeline as item 3.
 5. **[P] Basic rate limiting** on login, register, password reset and the public-link actions (reserve, comment, contribute). Also the first defence against fake/bot reservations (see `docs/product.md`).
-6. **Wishlist export for people who are not online**: a print-friendly view first, then a CSV of the wishlist (wishes, status, link). Pledge CSV already exists.
-7. **Mobile and grandma audit of the public-link flow**: readability, tap targets, no account needed to view, clear sign-up when acting. Fix what it finds.
-8. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
-9. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
+6. **Wish import from a URL** via Open Graph / schema.org metadata (name, image, price), best-effort and free; the user can always edit the prefilled fields or fall back to manual entry. Needs SSRF protection (block private/loopback addresses, limit redirects and response size), a short timeout and rate limiting (item 5). Sites that block server fetches simply fall back to manual entry. No Amazon-specific import (see Open).
+7. **Wishlist export for people who are not online**: a print-friendly view first, then a CSV of the wishlist (wishes, status, link). Pledge CSV already exists.
+8. **Mobile and grandma audit of the public-link flow**: readability, tap targets, no account needed to view, clear sign-up when acting. Fix what it finds.
+9. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
+10. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
 
 ## 2. Open — beyond the family
 
@@ -32,7 +33,7 @@ Exit criteria from Launch to Open:
 
 Features and debt:
 - **Magic-link sign-in** (passwordless) as a simplicity experiment, alongside Google and password.
-- **Wish import from a URL** via Open Graph / schema.org metadata (name, image, price), best-effort and free. Needs SSRF protection, a timeout and rate limiting. Amazon often blocks server fetches. *Amazon-specific import is considered, not planned:* the official Product Advertising API needs an Associates account with qualifying sales and has usage terms; scraping breaks Amazon's terms. Affiliate links conflict with the no-ads principle and would need disclosure.
+- **Amazon-specific wish import** (the generic URL import is in Launch; Amazon often blocks server fetches). *Considered, not planned:* the official Product Advertising API needs an Associates account with qualifying sales and has usage terms; scraping breaks Amazon's terms. Affiliate links conflict with the no-ads principle and would need disclosure.
 - **Cover images**: upload + storage (e.g. Vercel Blob); the `coverImage` field already exists on `TWishlist`.
 - **Notifications (essential, free)**: pot funded, "you are now organiser of a pot", new suggestion. Never tell the owner about reservations (surprise).
 - **"Create your own list" prompt** on public lists, the main growth loop. No marketing before then; word of mouth.
