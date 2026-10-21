@@ -13,12 +13,45 @@ export const createFakeKv = ({ latency = false }: TFakeKvOptions = {}) => {
     const strings = new Map<string, TValue>()
     const sets = new Map<string, Set<string>>()
     const lists = new Map<string, string[]>()
+    const counters = new Map<string, { n: number; expiresAt?: number }>()
 
     const clone = <T>(v: T): T => (v === undefined ? v : JSON.parse(JSON.stringify(v)))
     const globToRegex = (glob: string) =>
         new RegExp('^' + glob.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$')
 
+    // Expiry is evaluated lazily against Date.now() so vi.useFakeTimers() drives it.
+    const liveCounter = (key: string) => {
+        const c = counters.get(key)
+        if (!c) return undefined
+        if (c.expiresAt !== undefined && Date.now() >= c.expiresAt) {
+            counters.delete(key)
+            return undefined
+        }
+        return c
+    }
+
     const rawOps = {
+        incr: async (key: string) => {
+            const c = liveCounter(key)
+            if (c) {
+                c.n++
+                return c.n
+            }
+            counters.set(key, { n: 1 })
+            return 1
+        },
+        expire: async (key: string, seconds: number) => {
+            const c = liveCounter(key)
+            if (!c) return 0
+            c.expiresAt = Date.now() + seconds * 1000
+            return 1
+        },
+        ttl: async (key: string) => {
+            const c = liveCounter(key)
+            if (!c) return -2
+            if (c.expiresAt === undefined) return -1
+            return Math.ceil((c.expiresAt - Date.now()) / 1000)
+        },
         get: async (key: string) => (strings.has(key) ? clone(strings.get(key)) : null),
         mget: async (...keys: string[]) => keys.map((k) => (strings.has(k) ? clone(strings.get(k)) : null)),
         set: async (key: string, value: TValue, opts?: { nx?: boolean }) => {
@@ -32,6 +65,7 @@ export const createFakeKv = ({ latency = false }: TFakeKvOptions = {}) => {
                 if (strings.delete(k)) n++
                 if (sets.delete(k)) n++
                 if (lists.delete(k)) n++
+                if (counters.delete(k)) n++
             }
             return n
         },
@@ -115,6 +149,7 @@ export const createFakeKv = ({ latency = false }: TFakeKvOptions = {}) => {
         has: (key: string) => strings.has(key) || sets.has(key) || lists.has(key),
         list: (key: string) => (lists.get(key) ?? []).map((i) => JSON.parse(i)),
         members: (key: string) => [...(sets.get(key) ?? [])],
+        counter: (key: string) => liveCounter(key)?.n,
     }
 }
 
