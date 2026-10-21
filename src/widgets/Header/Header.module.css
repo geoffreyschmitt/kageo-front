@@ -57,9 +57,9 @@
 }
 
 .header__logoLink {
-    color: var(--h-sage);
+    color: var(--h-text);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: opacity 0.2s ease;
     display: flex;
     align-items: center;
 }
@@ -71,7 +71,7 @@
 }
 
 .header__logoLink:hover {
-    color: var(--h-sage-hover);
+    opacity: 0.8;
 }
 
 /* ── Nav ──────────────────────────────────── */
