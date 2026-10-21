@@ -1,10 +1,9 @@
+import { assertOk } from '../assertOk'
+
 export const exportData = async (): Promise<void> => {
     const res = await fetch('/api/user/export')
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     const data = await res.json()
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })

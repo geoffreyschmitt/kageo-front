@@ -1,3 +1,5 @@
+import { assertOk } from "../assertOk"
+
 export type TCancelReservationResponse = {
     id: string
     status: 'wanted'
@@ -13,10 +15,7 @@ export const cancelReservation = async (
         body: JSON.stringify({ wishId }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => "")
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TCancelReservationResponse
 }

@@ -1,3 +1,5 @@
+import { assertOk } from '../assertOk'
+
 export type TPotContributor = { name: string; amount: number; lastContributedAt?: string; isOrganiser?: boolean }
 
 export type TGetPotResponse = {
@@ -15,10 +17,7 @@ export const getPot = async (wishlistId: string): Promise<TGetPotResponse | null
 
     if (res.status === 404) return null
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TGetPotResponse
 }

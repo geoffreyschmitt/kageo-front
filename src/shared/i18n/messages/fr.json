@@ -545,7 +545,8 @@
     "deleting": "Suppression…"
   },
   "toast": {
-    "notificationsRegion": "Notifications"
+    "notificationsRegion": "Notifications",
+    "rateLimited": "Trop de tentatives, réessayez dans une minute."
   },
   "offline": {
     "title": "Vous êtes hors ligne",

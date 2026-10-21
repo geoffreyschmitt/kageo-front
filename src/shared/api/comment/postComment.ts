@@ -1,5 +1,7 @@
 import type { TComment } from '@/entities/comment'
 
+import { eventBus } from '@/shared/eventBus'
+
 import type { TCommentTarget } from './getComments'
 
 const urlFor = (target: TCommentTarget) =>
@@ -15,6 +17,7 @@ export const postComment = async (target: TCommentTarget, text: string): Promise
     })
 
     if (!res.ok) {
+        if (res.status === 429) eventBus.emit('ui:rateLimited', {})
         const data = await res.json().catch(() => ({ message: '' }))
         throw new Error(data.message || `API error ${res.status}`)
     }

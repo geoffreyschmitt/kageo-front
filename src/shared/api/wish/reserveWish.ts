@@ -1,3 +1,5 @@
+import { assertOk } from "../assertOk"
+
 export type TReserveWishResponse = {
     id: string
     status: 'reserved'
@@ -14,10 +16,7 @@ export const reserveWish = async (
         body: JSON.stringify({ wishId, userId }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => "")
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TReserveWishResponse
 }

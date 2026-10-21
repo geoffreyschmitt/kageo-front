@@ -1,3 +1,5 @@
+import { assertOk } from "../assertOk"
+
 export type TMarkPurchasedWishResponse = {
     id: string
     status: 'purchased'
@@ -14,10 +16,7 @@ export const markPurchased = async (
         body: JSON.stringify({ wishId, userId }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => "")
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TMarkPurchasedWishResponse
 }

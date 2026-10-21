@@ -545,7 +545,8 @@
     "deleting": "Deleting…"
   },
   "toast": {
-    "notificationsRegion": "Notifications"
+    "notificationsRegion": "Notifications",
+    "rateLimited": "Too many tries, please wait a minute."
   },
   "offline": {
     "title": "You're offline",

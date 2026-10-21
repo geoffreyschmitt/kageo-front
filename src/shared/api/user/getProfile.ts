@@ -1,3 +1,5 @@
+import { assertOk } from '../assertOk'
+
 export type TUserProfile = {
     id: string
     name: string
@@ -11,10 +13,7 @@ export type TUserProfile = {
 export const getProfile = async (): Promise<TUserProfile> => {
     const res = await fetch('/api/user/me')
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TUserProfile
 }

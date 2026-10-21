@@ -1,3 +1,5 @@
+import { assertOk } from '../assertOk'
+
 export type TGiftPotContributor = { name: string; amount: number; lastContributedAt?: string; isOrganiser?: boolean }
 
 export type TGiftPotView = {
@@ -17,10 +19,7 @@ export const getGiftPot = async (wishId: string): Promise<TGiftPotView | null> =
 
     if (res.status === 404) return null
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TGiftPotView
 }

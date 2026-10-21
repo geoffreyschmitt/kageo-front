@@ -1,3 +1,5 @@
+import { assertOk } from "../assertOk"
+
 export type TDeleteWishResponse = {
     id: string
     deleted: true
@@ -12,10 +14,7 @@ export const deleteWish = async (
         body: JSON.stringify({ wishId }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => "")
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TDeleteWishResponse
 }

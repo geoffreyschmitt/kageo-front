@@ -1,3 +1,5 @@
+import { eventBus } from '@/shared/eventBus'
+
 export const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
     const res = await fetch('/api/user/password', {
         method: 'POST',
@@ -6,6 +8,7 @@ export const changePassword = async (currentPassword: string, newPassword: strin
     })
 
     if (!res.ok) {
+        if (res.status === 429) eventBus.emit('ui:rateLimited', {})
         const data = await res.json().catch(() => ({ message: '' }))
         throw new Error(data.message || `API error ${res.status}`)
     }

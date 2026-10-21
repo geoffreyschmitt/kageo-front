@@ -1,3 +1,5 @@
+import { assertOk } from '../assertOk'
+
 export type TGiftContributeResponse = {
     wishId: string
     totalContributed: number
@@ -21,10 +23,7 @@ export const contributeGiftPot = async (
         body: JSON.stringify({ wishId, amount }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TGiftContributeResponse
 }
@@ -40,10 +39,7 @@ export const setGiftContribution = async (
         body: JSON.stringify({ wishId, amount }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TGiftSetContributionResponse
 }

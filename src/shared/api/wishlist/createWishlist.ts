@@ -1,5 +1,7 @@
 import {TWishlistFormData} from "@/entities/wishlist";
 
+import { assertOk } from "../assertOk"
+
 export type TCreateWishlistResponse = TWishlistFormData & { id: string }
 
 export const createWishlist = async (data: TWishlistFormData): Promise<TCreateWishlistResponse> => {
@@ -9,10 +11,7 @@ export const createWishlist = async (data: TWishlistFormData): Promise<TCreateWi
         body: JSON.stringify(data),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => "")
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     const json = (await res.json()) as TCreateWishlistResponse
     return json

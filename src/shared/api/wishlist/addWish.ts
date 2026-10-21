@@ -1,5 +1,7 @@
 import {TProposedWishFormData, TWishFormData} from "@/entities/wish";
 
+import { assertOk } from "../assertOk"
+
 export type TAddWishResponse<T extends TWishFormData | TProposedWishFormData> = T & {
     id: string
 }
@@ -14,10 +16,7 @@ export const addWish = async <T extends TWishFormData | TProposedWishFormData>(
         body: JSON.stringify({ ...data, wishlistId }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => "")
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TAddWishResponse<T>
 }

@@ -1,3 +1,5 @@
+import { assertOk } from '../assertOk'
+
 export type TCreateGiftPotResponse = {
     creatorId: string
     creatorName: string
@@ -11,10 +13,7 @@ export const createGiftPot = async (wishId: string): Promise<TCreateGiftPotRespo
         body: JSON.stringify({ wishId }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TCreateGiftPotResponse
 }

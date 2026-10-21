@@ -1,4 +1,7 @@
+import { assertOk } from '../assertOk'
+
 import { TUserProfile } from './getProfile'
+
 
 export type TUpdateProfilePayload = {
     name?: string
@@ -13,10 +16,7 @@ export const updateProfile = async (payload: TUpdateProfilePayload): Promise<TUs
         body: JSON.stringify(payload),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TUserProfile
 }

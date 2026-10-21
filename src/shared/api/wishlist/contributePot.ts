@@ -1,3 +1,5 @@
+import { assertOk } from '../assertOk'
+
 export type TWishlistContributeResponse = {
     wishlistId: string
     totalContributed: number
@@ -20,10 +22,7 @@ export const contributePot = async (
         body: JSON.stringify({ wishlistId, amount }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TWishlistContributeResponse
 }
@@ -39,10 +38,7 @@ export const setContribution = async (
         body: JSON.stringify({ wishlistId, amount }),
     })
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TWishlistSetContributionResponse
 }

@@ -63,6 +63,12 @@ export const Toaster = () => {
         })
     }, [dismiss])
 
+    useEffect(() => {
+        return eventBus.on('ui:rateLimited', () => {
+            eventBus.emit('ui:toast', { message: t('rateLimited'), type: 'warning' })
+        })
+    }, [t])
+
     if (toasts.length === 0) return null
 
     return (

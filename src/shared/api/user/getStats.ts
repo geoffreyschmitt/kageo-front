@@ -1,3 +1,5 @@
+import { assertOk } from '../assertOk'
+
 export type TUserStats = {
     wishlists: number
     wishes: number
@@ -7,10 +9,7 @@ export type TUserStats = {
 export const getStats = async (): Promise<TUserStats> => {
     const res = await fetch('/api/user/stats')
 
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`API error ${res.status}: ${text}`)
-    }
+    await assertOk(res)
 
     return (await res.json()) as TUserStats
 }
