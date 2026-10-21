@@ -59,3 +59,8 @@ public/swe-worker-*.js
 # playwright
 /test-results/
 /playwright-report/
+
+# local tooling (skill symlinks are machine-specific; recreate via the skills installer)
+.junie/
+/.claude/skills/grill-me
+/.claude/skills/grilling
