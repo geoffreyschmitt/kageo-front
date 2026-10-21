@@ -24,6 +24,14 @@ Short records of choices that are not obvious from the code. Newest first. Add o
 **Decision.** Both pot types, and guest comments, are hidden from the wishlist owner. Role-shaped payloads come from one place (`readPotForViewer`, `readGiftPotForViewer`).
 **Why.** The product is about coordinating gifts without spoiling them. Centralising the rule keeps routes and UI from re-deriving it. The CSV exports reuse the same readers so they cannot leak more than the UI shows.
 
+## Accounts are required to act (no anonymous reservation)
+**Decision.** Viewing a shared list needs no account; reserving, commenting, contributing and suggesting do. Anonymous reservation is an *Open*-phase experiment only, and would need a confirmed email, bot protection and rate limits.
+**Why.** The owner cannot see reservations (surprise), so a fake or bot reservation would make a gift look taken with nobody noticing. Some competitors (e.g. iKadoo) allow account-free reservation; we accept the extra sign-up step during Launch because the audience is family.
+
+## Auto-created lists from the date of birth need a privacy review
+**Decision.** Do not use the stored `birthdate` to create lists or send reminders until the privacy page review covers it. When built, it is explicitly opt-in with a consent line in signup and profile.
+**Why.** The date is optional and mostly hidden today; using it to trigger actions changes its purpose.
+
 ## `npm`, not `pnpm`
 `package-lock.json` is committed and `pnpm` is not on PATH in the shells used here.
 

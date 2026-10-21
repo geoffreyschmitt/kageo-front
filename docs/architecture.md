@@ -98,6 +98,12 @@ FSD layers in `src/`: `shared → entities → features → widgets → views �
 
 Local values come from `.env.local` (created by the Vercel CLI; never commit it). Project is linked via `.vercel/`; origin is `geoffreyschmitt/kageo-front` on GitHub.
 
+## Direction (see `docs/product.md` and `docs/roadmap.md`)
+
+- **Event-suite vision.** A wishlist currently stands alone (`eventDate` is a field on it). If other event modules ever ship, an "event" concept may own wishlists; avoid assumptions that make that hard (e.g. hard-coding one wishlist per occasion), but build nothing for it yet.
+- **Needs that will change the stack:** Resend (invite emails, password reset, notifications), Vercel Cron (automatic birthday/Christmas lists, reminders), Vercel Blob (cover images), a regulated payment provider such as Stripe Connect (integrated pots; Kageo never holds funds), and likely relational storage once billing and subscriptions exist. KV is fine up to a few hundred users.
+- **Abuse surface:** public-link actions (reserve, comment, contribute) and auth routes need rate limiting; owner cannot see reservations, so fake/bot reservations would go unnoticed.
+
 ## Known architectural debt
 
 - Route, page and logic tests (Vitest, in-memory KV) cover wish and wishlist CRUD, access rules, comments, share, pots, pledges, races, CSV, account routes, the account purge and the server pages; `e2e/` has Playwright flows against the in-memory KV. Lint passes clean.

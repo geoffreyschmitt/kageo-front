@@ -4,6 +4,17 @@ Guidance for Claude Code (claude.ai/code) in this repository. Deeper context liv
 [product](docs/product.md) · [architecture](docs/architecture.md) · [roadmap](docs/roadmap.md).
 Read `product.md` before making product decisions, `architecture.md` before touching data or auth.
 
+## Product in brief
+
+Kageo is a gift-first social wishlist (birthday, wedding, birth, Christmas), a side project by Kevin and Geoffrey, launching to family in France (Christmas 2026) then opening gradually; fr/en. Pitch: stops duplicate gifts and lets people chip in, without spoiling the surprise. Full detail in `docs/product.md`; phases in `docs/roadmap.md`.
+
+- **Simple above all.** A grandma must be able to view a shared list on a phone with no account. Acting (reserve, comment, contribute) needs an account.
+- **Surprise is sacred.** The owner never sees reservations, pots or guest comments.
+- **Freemium later, guests never paywalled.** Lists are unlimited; paid features are comfort only. No ads, no data selling.
+- **No payment handling** until a payment decision is made; pots only track pledges.
+- **Don't build the event-suite vision** (RSVP, tasks, Secret Santa…) and don't add features outside the current roadmap phase without asking.
+- Roadmap phases: Launch → Open → Monetise → Expand.
+
 ## Commands
 
 ```bash
