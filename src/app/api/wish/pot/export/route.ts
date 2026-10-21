@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { limitWrite } from '@/shared/lib/rateLimit'
 import { csvResponse, toCsv } from '@/shared/lib/toCsv'
 
 import { readGiftPotForViewer } from '../readGiftPot'
@@ -13,6 +14,8 @@ export async function GET(request: NextRequest) {
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     const wishId = new URL(request.url).searchParams.get('wishId')
     if (!wishId) {

@@ -16,19 +16,33 @@ vi.mock('@vercel/kv', () => ({
 vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
 vi.mock('@/shared/config/authOptions', () => ({ authOptions: {} }))
 
+import { GET as exportUser } from './user/export/route'
+import { DELETE as deleteMe, PATCH as patchMe } from './user/me/route'
+import { POST as changePassword } from './user/password/route'
 import { POST as postWishComment } from './wish/[wishId]/comments/route'
+import { PUT as putWish } from './wish/[wishId]/route'
 import { POST as cancelWish } from './wish/cancel/route'
 import { PATCH as patchWishContribute, POST as postWishContribute } from './wish/contribute/route'
+import { POST as deleteWish } from './wish/delete/route'
+import { POST as markPurchased } from './wish/mark-purchased/route'
+import { GET as exportWishPot } from './wish/pot/export/route'
+import { POST as postWishPot } from './wish/pot/route'
+import { POST as removePurchased } from './wish/remove-purchased/route'
 import { POST as reserveWish } from './wish/reserve/route'
 import { POST as postWish } from './wish/route'
 import { POST as postListComment } from './wishlist/[id]/comments/route'
+import { DELETE as deleteList, PUT as putList } from './wishlist/[id]/route'
 import { PATCH as patchListContribute, POST as postListContribute } from './wishlist/contribute/route'
+import { GET as exportListPot } from './wishlist/pot/export/route'
+import { POST as postListPot } from './wishlist/pot/route'
+import { POST as postWishlist } from './wishlist/route'
 import { POST as shareList } from './wishlist/share/route'
 
 type TCase = { name: string; group: TWriteLimit; call: () => Promise<Response> }
 
 // Calls carry junk bodies on purpose: the limiter runs before validation, so a call counts
 // whether it ends in 400, 403 or 404. Extend this table to cover more limited routes.
+const getRequest = () => new NextRequest('http://localhost/api/test')
 const wishParams = { params: Promise.resolve({ wishId: 'w1' }) }
 const listParams = { params: Promise.resolve({ id: 'l1' }) }
 
@@ -59,6 +73,21 @@ export const cases: TCase[] = [
     },
     { name: 'POST /api/wish', group: 'suggest', call: () => postWish(jsonRequest({})) },
     { name: 'POST /api/wishlist/share', group: 'invite', call: () => shareList(jsonRequest({})) },
+    { name: 'POST /api/wishlist', group: 'write', call: () => postWishlist(jsonRequest({})) },
+    { name: 'PUT /api/wishlist/[id]', group: 'write', call: () => putList(jsonRequest({}, 'PUT'), listParams) },
+    { name: 'DELETE /api/wishlist/[id]', group: 'write', call: () => deleteList(jsonRequest({}, 'DELETE'), listParams) },
+    { name: 'PUT /api/wish/[wishId]', group: 'write', call: () => putWish(jsonRequest({}, 'PUT'), wishParams) },
+    { name: 'POST /api/wish/delete', group: 'write', call: () => deleteWish(jsonRequest({})) },
+    { name: 'POST /api/wish/mark-purchased', group: 'write', call: () => markPurchased(jsonRequest({})) },
+    { name: 'POST /api/wish/remove-purchased', group: 'write', call: () => removePurchased(jsonRequest({})) },
+    { name: 'POST /api/wish/pot', group: 'write', call: () => postWishPot(jsonRequest({})) },
+    { name: 'POST /api/wishlist/pot', group: 'write', call: () => postListPot(jsonRequest({})) },
+    { name: 'PATCH /api/user/me', group: 'write', call: () => patchMe(jsonRequest({}, 'PATCH')) },
+    { name: 'DELETE /api/user/me', group: 'write', call: () => deleteMe(jsonRequest({}, 'DELETE')) },
+    { name: 'POST /api/user/password', group: 'write', call: () => changePassword(jsonRequest({})) },
+    { name: 'GET /api/user/export', group: 'write', call: () => exportUser(getRequest()) },
+    { name: 'GET /api/wish/pot/export', group: 'write', call: () => exportWishPot(getRequest()) },
+    { name: 'GET /api/wishlist/pot/export', group: 'write', call: () => exportListPot(getRequest()) },
 ]
 
 beforeEach(() => {
@@ -117,6 +146,16 @@ describe('groups', () => {
         const suggest = cases.find((c) => c.group === 'suggest')!
         for (let i = 0; i < 60; i++) expect((await suggest.call()).status).toBe(400)
         expect((await suggest.call()).status).toBe(429)
+    })
+
+    it('Tier 3 routes share one write pool per user', async () => {
+        signInAs('u1')
+        expect(getRule('write').limit).toBe(120)
+        const [first, second] = cases.filter((c) => c.group === 'write')
+        for (let i = 0; i < 60; i++) expect((await first.call()).status).not.toBe(429)
+        for (let i = 0; i < 60; i++) expect((await second.call()).status).not.toBe(429)
+        expect((await first.call()).status).toBe(429)
+        expect((await second.call()).status).toBe(429)
     })
 
     it('does not limit comment GETs', async () => {

@@ -1,3 +1,5 @@
+import { NextRequest } from 'next/server'
+
 import bcrypt from 'bcryptjs'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -152,7 +154,7 @@ describe('POST /api/user/password', () => {
 describe('GET /api/user/export', () => {
     it('401 when signed out', async () => {
         signInAs(null)
-        expect((await exportData()).status).toBe(401)
+        expect((await exportData(new NextRequest('http://localhost/api/user/export'))).status).toBe(401)
     })
 
     it('exports the profile and owned wishlists with wishes, and no password', async () => {
@@ -164,7 +166,7 @@ describe('GET /api/user/export', () => {
         await fake.set('wish:w1', { id: 'w1', wishlistId: 'L1', title: 'Book' })
         signInAs('u1')
 
-        const body = (await (await exportData()).json()) as {
+        const body = (await (await exportData(new NextRequest('http://localhost/api/user/export'))).json()) as {
             profile: Record<string, unknown>
             wishlists: { id: string; wishes: { id: string }[] }[]
         }

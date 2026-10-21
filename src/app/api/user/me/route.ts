@@ -4,6 +4,7 @@ import { kv } from '@vercel/kv'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { limitWrite } from '@/shared/lib/rateLimit'
 
 import { purgeUser } from './purgeUser'
 
@@ -61,6 +62,8 @@ export async function PATCH(request: NextRequest) {
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     const email = await kv.get<string>(`user:id:${session.user.id}`)
     if (!email) {
@@ -117,11 +120,13 @@ export async function PATCH(request: NextRequest) {
 }
 
 // DELETE /api/user/me — permanently delete the account and everything it owns
-export async function DELETE() {
+export async function DELETE(request: NextRequest) {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     const userId = session.user.id
     const email = await kv.get<string>(`user:id:${userId}`)

@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 import { v4 as uuidv4 } from 'uuid'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { limitWrite } from '@/shared/lib/rateLimit'
 
 // GET /api/wishlist — list all wishlists belonging to the authenticated user
 export async function GET() {
@@ -31,6 +32,8 @@ export async function POST(request: NextRequest) {
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     try {
         const body = await request.json()

@@ -4,6 +4,7 @@ import { kv } from '@vercel/kv'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { limitWrite } from '@/shared/lib/rateLimit'
 
 import { readPotForViewer } from './readPot'
 
@@ -49,6 +50,8 @@ export async function POST(request: NextRequest) {
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     try {
         const { wishlistId } = await request.json()

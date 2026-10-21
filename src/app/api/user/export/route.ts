@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { kv } from '@vercel/kv'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { limitWrite } from '@/shared/lib/rateLimit'
 
 type KVUser = {
     id: string
@@ -18,11 +19,13 @@ type KVUser = {
 type KVWishlist = Record<string, unknown> & { id: string; ownerId: string }
 
 // GET /api/user/export — a JSON dump of everything this account owns
-export async function GET() {
+export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     const userId = session.user.id
     const email = await kv.get<string>(`user:id:${userId}`)

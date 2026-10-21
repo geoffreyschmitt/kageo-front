@@ -8,6 +8,7 @@ import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
+import { limitWrite } from '@/shared/lib/rateLimit'
 
 type TWishKV = {
     id: string
@@ -36,6 +37,8 @@ async function innerPUT(
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     const { wishId } = await params
     const wish = await kv.get<TWishKV>(`wish:${wishId}`)

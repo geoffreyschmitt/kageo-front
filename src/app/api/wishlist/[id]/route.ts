@@ -6,6 +6,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/shared/config/authOptions'
 import { queueWishlistDeletion } from '@/shared/lib/kvCascade'
 import { LockTimeoutError, busyResponse, withLock, wishlistLock } from '@/shared/lib/kvLock'
+import { limitWrite } from '@/shared/lib/rateLimit'
 
 type TWishlistKV = {
     id: string
@@ -61,6 +62,8 @@ async function innerPUT(
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     const { id } = await params
     const wishlist = await kv.get<TWishlistKV>(`wishlist:${id}`)
@@ -110,13 +113,15 @@ type TWishKV = { id: string; status: 'wanted' | 'purchased' | 'reserved' | 'prop
 // no reserved/purchased/proposed wishes, no wishlist pot, no per-wish gift pot,
 // no comments.
 async function innerDELETE(
-    _request: NextRequest,
+    request: NextRequest,
     { params }: { params: Promise<{ id: string }> },
 ) {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     const { id } = await params
     const wishlist = await kv.get<TWishlistKV>(`wishlist:${id}`)

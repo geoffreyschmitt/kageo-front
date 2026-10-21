@@ -8,6 +8,7 @@ import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
+import { limitWrite } from '@/shared/lib/rateLimit'
 
 type TWishKV = {
     id: string
@@ -24,6 +25,8 @@ export async function POST(request: NextRequest) {
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
+    const limited = await limitWrite(request, session.user.id, 'write')
+    if (limited) return limited
 
     try {
         const { wishId } = await request.json()
