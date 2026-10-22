@@ -315,7 +315,7 @@
     "eventDateLabel": "Date de l'événement *",
     "privacyLabel": "Confidentialité",
     "privateLabel": "Privée",
-    "privateDesc": "Seulement vous pouvez voir cette wishlist",
+    "privateDesc": "Seules les personnes avec le lien ou une invitation peuvent voir cette wishlist. Elle n'apparaît pas sur votre profil.",
     "publicLabel": "Publique",
     "publicDesc": "Toute personne avec le lien peut voir",
     "coverImageLabel": "URL de l'image de couverture",
@@ -627,7 +627,7 @@
       {
         "title": "Qui voit quoi",
         "items": [
-          "Une liste publique est visible de toute personne ayant le lien. Une liste privée n’est visible que de vous et des personnes que vous invitez.",
+          "Une liste publique est visible de toute personne ayant le lien et apparaît sur votre profil public. Une liste privée est visible des personnes que vous invitez et de toute personne ayant le lien, et n’apparaît pas sur votre profil.",
           "La surprise est préservée : le propriétaire d’une liste ne voit jamais ses cagnottes ni les commentaires laissés par les invités.",
           "L’organisateur d’une cagnotte voit le nom et le montant promis de chacun. Les autres invités ne voient que le total.",
           "Si vous activez votre profil public, votre nom, votre date d’inscription et vos listes publiques sont visibles de tous. Sinon, votre profil reste privé."

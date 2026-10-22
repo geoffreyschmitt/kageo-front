@@ -66,20 +66,27 @@ test.describe('wishlists', () => {
         expect(again.status()).toBe(409)
     })
 
-    test('a private list is closed to strangers and open to an invited guest', async ({ browser }) => {
+    test('a private list is readable by link for a stranger who cannot act, and open to an invited guest', async ({ browser }) => {
         const owner = await newPerson(browser, 'Olivia')
         const guest = await newPerson(browser, 'Gus')
         const stranger = await newPerson(browser, 'Sam')
         const list = await createWishlist(owner.context.request, 'Secret', false)
-        await createWish(owner.context.request, list.id, 'Hidden gift')
+        const wish = await createWish(owner.context.request, list.id, 'Hidden gift')
 
+        // Anyone with the link can read it...
         await stranger.page.goto(`/en/wishlist/${list.id}`)
-        await expect(stranger.page).not.toHaveURL(/\/wishlist\//)
-        await expect(stranger.page.getByText('Hidden gift')).toHaveCount(0)
+        await expect(stranger.page).toHaveURL(/\/wishlist\//)
+        await expect(stranger.page.getByText('Hidden gift')).toBeVisible()
+        // ...but acting needs an invited email.
+        const refused = await stranger.context.request.post('/api/wish/reserve', { data: { wishId: wish.id } })
+        expect(refused.status()).toBe(403)
+        expect(await refused.json()).toMatchObject({ code: 'NOT_INVITED' })
 
         await api(owner.context.request, 'post', '/api/wishlist/share', { wishlistId: list.id, email: guest.user.email }, 200)
         await guest.page.goto(`/en/wishlist/${list.id}`)
         await expect(guest.page.getByText('Hidden gift')).toBeVisible()
+        const reserved = await guest.context.request.post('/api/wish/reserve', { data: { wishId: wish.id } })
+        expect(reserved.status()).toBe(200)
     })
 
     test('the owner never sees the pot a guest organises, but guests do', async ({ browser }) => {

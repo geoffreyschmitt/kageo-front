@@ -45,7 +45,7 @@ The meaning of Private and Public becomes:
 
 - **Reading** needs no account and no invitation, for both kinds. This is the only access change.
 - **Acting** (reserve, mark purchased, comment, suggest, pledge, start a pot) keeps today's rules, confirmed by the user: on a public list any signed-in account; on a private list only a signed-in account **whose email matches an invited address**. The action routes do not change.
-- Someone who opens a private list from a forwarded link with a different email can read it. When they try to act they get a clear, friendly message ("This list is private. Ask {owner} to invite {their email}.") instead of a bare error. Builder: find where the 403 reaches the UI and give it this message in fr and en.
+- Someone who opens a private list from a forwarded link with a different email can read it. When they try to act they get a clear, friendly message ("This list is private. Ask its owner to invite {their email} to take part.", or without the address when none is known) instead of a bare error. Builder: find where the 403 reaches the UI and give it this message in fr and en.
 - Invites keep their other role: the list appears under "Shared with me" for that email.
 - **Known gap, not solved here:** emails are not verified at sign-up, so anyone can register with an invited address. Email verification is already on the roadmap (Open phase); until then an invitation protects against honest mistakes, not against someone who knows the address.
 - **Surprise rules are unchanged.** The owner still never sees reservations, pots or guest comments.

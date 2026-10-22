@@ -315,7 +315,7 @@
     "eventDateLabel": "Event Date *",
     "privacyLabel": "Privacy",
     "privateLabel": "Private",
-    "privateDesc": "Only you can see this wishlist",
+    "privateDesc": "Only people with the link or an invitation can see this wishlist. It is not shown on your profile.",
     "publicLabel": "Public",
     "publicDesc": "Anyone with the link can view",
     "coverImageLabel": "Cover Image URL",
@@ -627,7 +627,7 @@
       {
         "title": "Who can see what",
         "items": [
-          "A public wishlist is visible to anyone with the link. A private wishlist is visible only to you and the people you invite.",
+          "A public wishlist is visible to anyone with the link and is shown on your public profile. A private wishlist is visible to the people you invite and to anyone who has the link, and is not shown on your profile.",
           "Surprises are kept: the owner of a wishlist never sees its pots or the comments guests leave on it.",
           "The organiser of a pot sees each person's name and pledged amount. Other guests only see the total.",
           "If you turn on your public profile, your name, the date you joined and your public wishlists are visible to everyone. Otherwise your profile is private."

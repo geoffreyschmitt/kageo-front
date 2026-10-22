@@ -28,7 +28,7 @@ API (`app/api/`):
 | `auth/[...nextauth]`, `auth/register` | NextAuth; credentials sign-up |
 | `user/me`, `user/password`, `user/stats`, `user/export` | Account info (incl. optional birthdate), `DELETE` = full account purge, password change, dashboard stats, data export |
 | `wishlist` , `wishlist/[id]` | Wishlist CRUD |
-| `wishlist/share` | Invite by email (adds invitee; email not yet sent) |
+| `wishlist/share` | Invite by email: sends the invite through Resend, then adds the invitee (nothing is saved if the email fails) |
 | `wishlist/pot`, `wishlist/contribute` | Wishlist-level pot; `PATCH` replaces the caller's pledge, `amount: 0` cancels |
 | `wishlist/pot/export`, `wish/pot/export` | Pledges as CSV; pot organiser only |
 | `wishlist/[id]/comments`, `wish/[wishId]/comments` | Comments |
@@ -45,7 +45,7 @@ Every handler resolves the caller with `getServerSession(authOptions)` (`shared/
 
 NextAuth v4, JWT sessions (no session store). Providers: Credentials (email + bcrypt) and Google. Google sign-in auto-creates a KV user on first login. `token.id` carries the user id into the session.
 
-Access to a wishlist is decided by `shared/lib/wishlistAccess.ts`: owner, public, or invited (email in `wishlist:{id}:invitees`). The owner is resolved separately from `canView` so guest-only surfaces (comments, pots) can exclude the owner.
+Access to a wishlist is decided by `shared/lib/wishlistAccess.ts`. **Reading** needs nothing: anyone with the link, signed in or not, can read a private or a public list (`canView` is always true). **Acting** (reserve, mark purchased, comment, suggest, pledge, start a pot) is `canAct`: the owner, anyone signed in on a public list, or an email in `wishlist:{id}:invitees` on a private one. A refused actor gets `403 { code: 'NOT_INVITED' }`; the client turns it into one toast (`ui:notInvited`, from `assertOk`) or, for the comments area, an inline notice. Private lists are not shown on the owner's public profile (`/u/{id}`). The owner is resolved separately from the access flags so guest-only surfaces (comments, pots) can exclude the owner.
 
 ## Data model (Vercel KV)
 
@@ -70,7 +70,7 @@ All values are JSON unless noted. IDs are UUIDs.
 | `user:{id}:safeBets` | value | `TSafeBet[]` in display order: `{id, title (max 80), description? (max 500), imageUrl? (http/https, max 2048), createdAt}`; at most 30 entries (409 beyond). Shown to guests on every wishlist the user owns |
 | `safebet:{entryId}:comments` | list | `TComment` (guest thread, hidden from the owner) |
 | `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}`, `lock:wishlist:{id}` or `lock:user:{id}:safebets` (every safe-bet write). Excluded from backups (as are `ratelimit:*` counters) |
-| `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `reserve`, `contribute`, `comment`, `suggest`, `invite`, `import` or `write`; `{subject}` is the user id (register: the client IP) |
+| `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `reserve`, `contribute`, `comment`, `suggest`, `invite`, `inviteRecipient`, `import` or `write`; `{subject}` is the user id (register: the client IP; inviteRecipient: the invited address, lower-cased) |
 | `ratelimit:ip:{ip}` | counter (TTL) | per-IP ceiling across all accounts on write routes |
 | `ratelimit:loginFailures:{email}\|{ip}` | counter (TTL) | failed password sign-ins per email and IP (`shared/lib/loginThrottle.ts`); cleared on success |
 
@@ -80,7 +80,7 @@ Deleting a wishlist, wish or account must also delete every sub-key and back-ref
 
 **Visibility rules**: pots, comments and safe-bet threads never reach the wishlist owner (surprise). Role-shaped pot payloads are built in one place, `app/api/wishlist/pot/readPot.ts`. The safe-bet list itself is visible to everyone who can view a wishlist; only its comment threads are guest-only, and the thread routes refuse the owner and require the entry to belong to the wishlist owner. A safe-bet thread belongs to the entry, not to a wishlist, so anyone who can view any of the owner's wishlists can read it.
 
-**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 20 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, import 20 / 10 min, suggest 60 / 10 min, other writes (including safe-bet edits) 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
+**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 20 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, import 20 / 10 min, invite emails per recipient address 10 / 24 h across all owners, suggest 60 / 10 min, other writes (including safe-bet edits) 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
 
 ## Wish import
 
@@ -105,7 +105,7 @@ FSD layers in `src/`: `shared → entities → features → widgets → views �
 |---|---|---|
 | Vercel KV | all persistence | `KV_REST_API_*`, `KV_URL`, `REDIS_URL` |
 | Google OAuth | sign-in | `GOOGLE_CLIENT_ID/SECRET` |
-| Resend | not used yet (planned for invite emails) | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` |
+| Resend | invite emails (`shared/lib/mail`: renderer plus an injectable transport; a console transport is used when no key is set outside production) | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` |
 | Serwist | PWA / offline | disabled in development; needs the webpack build (`npm run build` uses `--webpack`) |
 
 ## Environment
@@ -116,7 +116,7 @@ FSD layers in `src/`: `shared → entities → features → widgets → views �
 | `NEXTAUTH_URL` | yes | canonical URL |
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN`, `KV_URL`, `REDIS_URL` | yes | Vercel KV (provisioned by the integration) |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | yes | Google sign-in |
-| `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | not yet | reserved for invite emails |
+| `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | for invite emails | Resend key and a sender on a verified domain. Without a key, development and e2e log the email and production refuses to send (the owner sees "service unavailable") |
 | `NEXT_PUBLIC_APP_URL` | no | used when building share URLs |
 | `RATE_LIMIT_MULTIPLIER` | no | scales every rate-limit ceiling (default 1); the e2e config sets 1000 |
 
