@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { importWishFromUrl } from '@/shared/api/wish/importFromUrl'
 
 import { applyImport, type TImportableForm } from './applyImport'
-import { decideLinkAction } from './linkImportPolicy'
+import { decideLinkAction, shouldDismissQuestion } from './linkImportPolicy'
 
 export type TLinkImport = {
     status: 'idle' | 'loading' | 'found' | 'notFound' | 'asking'
@@ -68,6 +68,13 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
     const handleUrl = useCallback(
         (rawUrl: string) => {
             const url = rawUrl.trim()
+            if (pendingUrlRef.current && shouldDismissQuestion({ savedUrl: savedUrl ?? '', url, pendingUrl: pendingUrlRef.current })) {
+                // The field no longer holds the url being asked about.
+                pendingUrlRef.current = ''
+                lastHandledRef.current = '' // so re-entering that url asks again
+                setStatus('idle')
+                return
+            }
             const action = decideLinkAction({
                 isEdit: savedUrl !== undefined,
                 savedUrl: savedUrl ?? '',
@@ -95,6 +102,12 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
         const url = pendingUrlRef.current
         if (!url) return
         pendingUrlRef.current = ''
+        if (formRef.current.purchaseUrl.trim() !== url) {
+            // Field changed since the question: drop it rather than import a stale url.
+            lastHandledRef.current = ''
+            setStatus('idle')
+            return
+        }
         void run(url, 'replace')
     }, [run])
 
