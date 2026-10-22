@@ -73,6 +73,19 @@ export default async function WishlistPage({
 
     if (!wishlist.isPublic && !userIsOwner && !isInvited) redirect('/')
 
+    // The owner's safe-bet ideas with their comment counts. Started now so it overlaps the other
+    // reads; never started for the owner, since comments never reach them.
+    const safeBetsPromise = userIsOwner
+        ? Promise.resolve([])
+        : getSafeBets(wishlist.ownerId).then((entries) =>
+              Promise.all(
+                  entries.map(async (entry) => ({
+                      ...entry,
+                      commentCount: (await kv.llen(safeBetCommentsKey(entry.id))) ?? 0,
+                  })),
+              ),
+          )
+
     const wishIds = await kv.smembers<string[]>(`wishlist:${id}:wishes`)
     const rawWishes = wishIds?.length
         ? (await Promise.all(wishIds.map((wid) => kv.get<KVWish>(`wish:${wid}`)))).filter(Boolean) as KVWish[]
@@ -101,15 +114,7 @@ export default async function WishlistPage({
         })
     }
 
-    // The owner's safe-bet ideas with their comment counts. Owners get none: comments never reach them.
-    const safeBetEntries = userIsOwner
-        ? []
-        : await Promise.all(
-              (await getSafeBets(wishlist.ownerId)).map(async (entry) => ({
-                  ...entry,
-                  commentCount: (await kv.llen(safeBetCommentsKey(entry.id))) ?? 0,
-              })),
-          )
+    const safeBetEntries = await safeBetsPromise
 
     // Resolve reserver / purchaser ids to display names so cards never show a raw uuid.
     const actorNames = await getUserNamesByIds(
