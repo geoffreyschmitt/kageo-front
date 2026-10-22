@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeKv, type TFakeKv } from '@/test/fakeKv'
 import { bodyOf, jsonRequest, signInAs } from '@/test/route'
 
-import { getRule } from '@/shared/config/rateLimits'
 
 let fake: TFakeKv
 vi.mock('@vercel/kv', () => ({
