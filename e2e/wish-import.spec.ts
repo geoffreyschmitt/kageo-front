@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page } from '@playwright/test'
+import { expect, test, type Browser, type Page } from '@playwright/test'
 
 import { api, createWishlist, newPerson } from './helpers'
 
@@ -7,11 +7,17 @@ import { api, createWishlist, newPerson } from './helpers'
 
 const FOUND_MESSAGE = 'Found it, filled in below. Check and change anything.'
 const NOT_FOUND_MESSAGE = "Couldn't read this site, fill in by hand."
-const QUESTION = 'This link is different. Replace the current info with what the new link gives?'
+const MODE_QUESTION = 'Replace the current info, or only fill the empty fields?'
+const VERSION_QUESTION = 'We found several versions of this product, which one is yours?'
+const LOADING_MESSAGE = 'Looking for the details…'
+const GLOBE = 'http://localhost:3100/globe.svg'
+const FILE = 'http://localhost:3100/file.svg'
+const LINK = 'https://shop.example.invalid/lamp'
 
 type TFields = { name?: string; description?: string; price?: number; currency?: string; imageUrl?: string }
+type TVariant = TFields & { label: string }
 
-const found = (fields: TFields) => ({ json: { found: true, fields } })
+const found = (fields: TFields, variants?: TVariant[]) => ({ json: { found: true, fields, ...(variants ? { variants } : {}) } })
 
 const mockImport = async (page: Page, respond: (url: string) => Promise<object> | object) => {
     const requested: string[] = []
@@ -29,23 +35,9 @@ const descriptionInput = (page: Page) => page.locator('textarea[name="descriptio
 const priceInput = (page: Page) => page.locator('input[name="price"]')
 const currencySelect = (page: Page) => page.locator('select[name="currency"]')
 const imageInput = (page: Page) => page.locator('input[name="imageUrl"]')
-
-// A real paste event (what the form listens for), followed by the pasted text landing in the field.
-const pasteLink = async (input: Locator, url: string) => {
-    await input.focus()
-    await input.evaluate((el, text) => {
-        const clipboardData = new DataTransfer()
-        clipboardData.setData('text', text)
-        el.dispatchEvent(new ClipboardEvent('paste', { clipboardData, bubbles: true, cancelable: true }))
-    }, url)
-    await input.fill(url)
-}
-
-// Typing or filling then leaving the field is the other trigger.
-const enterLinkAndLeave = async (input: Locator, url: string) => {
-    await input.fill(url)
-    await input.blur()
-}
+const prioritySelect = (page: Page) => page.locator('select[name="priority"]')
+const fillButton = (page: Page) => page.getByRole('button', { name: 'Fill in for me' })
+const submitButton = (page: Page) => page.getByRole('button', { name: 'Add Item' }).last()
 
 const openAddModal = async (page: Page, listId: string) => {
     await page.goto(`/en/wishlist/${listId}`)
@@ -53,241 +45,406 @@ const openAddModal = async (page: Page, listId: string) => {
     await expect(linkInput(page)).toBeVisible()
 }
 
-test.describe('import a wish from a link', () => {
-    test('add: a pasted link fills the empty fields and keeps what was typed', async ({ browser }) => {
-        const owner = await newPerson(browser, 'Olivia')
-        const list = await createWishlist(owner.context.request, 'Birthday')
-        const requested = await mockImport(owner.page, () =>
-            found({
-                name: 'Site title that must not win',
-                description: 'A very nice lamp',
-                price: 42.5,
-                currency: '$',
-                imageUrl: 'http://localhost:3100/globe.svg',
-            }),
+const openProposeModal = async (page: Page, listId: string) => {
+    await page.goto(`/en/wishlist/${listId}`)
+    await page.getByRole('button', { name: 'Suggest a Wish' }).first().click()
+    await expect(linkInput(page)).toBeVisible()
+}
+
+const setupAdd = async (browser: Browser, respond: (url: string) => Promise<object> | object) => {
+    const owner = await newPerson(browser, 'Olivia')
+    const list = await createWishlist(owner.context.request, 'Birthday')
+    const requested = await mockImport(owner.page, respond)
+    await openAddModal(owner.page, list.id)
+    return { page: owner.page, requested }
+}
+
+// "Walnut" is not in the name or description, so choosing it adds it as a label line.
+const lampVersions = (): TVariant[] => [
+    { label: 'Walnut', name: 'Wooden base', description: 'Solid hardwood base', price: 149.99, currency: '$', imageUrl: FILE },
+    { label: 'Oak', name: 'Light base', description: 'Pale hardwood base', price: 179.99, currency: '$', imageUrl: FILE },
+]
+const lampBase: TFields = { name: 'Desk lamp', description: 'A very nice lamp', imageUrl: GLOBE }
+
+test.describe('import a wish from a link (Fill in for me)', () => {
+    test('add: typing or pasting a link asks nothing; the button fills empty fields and keeps a typed name', async ({ browser }) => {
+        const { page, requested } = await setupAdd(browser, () =>
+            found({ name: 'Site title that must not win', description: 'A very nice lamp', price: 42.5, currency: '$', imageUrl: GLOBE }),
         )
-        await openAddModal(owner.page, list.id)
 
-        await nameInput(owner.page).fill('My lamp')
-        await pasteLink(linkInput(owner.page), 'https://shop.example.invalid/lamp')
+        await nameInput(page).fill('My lamp')
+        await linkInput(page).focus()
+        await linkInput(page).evaluate((el, text) => {
+            const clipboardData = new DataTransfer()
+            clipboardData.setData('text', text)
+            el.dispatchEvent(new ClipboardEvent('paste', { clipboardData, bubbles: true, cancelable: true }))
+        }, LINK)
+        await linkInput(page).fill(LINK)
+        await linkInput(page).blur()
+        await expect(fillButton(page)).toBeEnabled()
+        expect(requested).toHaveLength(0)
 
-        await expect(owner.page.getByText(FOUND_MESSAGE)).toBeVisible()
-        await expect(descriptionInput(owner.page)).toHaveValue('A very nice lamp')
-        await expect(priceInput(owner.page)).toHaveValue('42.5')
-        await expect(currencySelect(owner.page)).toHaveValue('$')
-        await expect(imageInput(owner.page)).toHaveValue('http://localhost:3100/globe.svg')
-        await expect(nameInput(owner.page)).toHaveValue('My lamp')
-        await expect(owner.page.locator('select[name="priority"]')).toHaveValue('medium')
+        await fillButton(page).click()
+        await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+        expect(requested).toEqual([LINK])
+        await expect(descriptionInput(page)).toHaveValue('A very nice lamp')
+        await expect(priceInput(page)).toHaveValue('42.5')
+        await expect(currencySelect(page)).toHaveValue('$')
+        await expect(imageInput(page)).toHaveValue(GLOBE)
+        await expect(nameInput(page)).toHaveValue('My lamp')
+        await expect(prioritySelect(page)).toHaveValue('medium')
 
-        // The same link again (leaving the field) does not ask the site a second time.
-        await linkInput(owner.page).blur()
-        expect(requested).toEqual(['https://shop.example.invalid/lamp'])
-
-        await owner.page.getByRole('button', { name: 'Add Item' }).last().click()
-        await expect(owner.page.getByText('My lamp')).toBeVisible()
+        await submitButton(page).click()
+        await expect(page.getByText('My lamp')).toBeVisible()
     })
 
-    test('add: leaving the field with a link also imports, and a link that cannot be read is a quiet note', async ({ browser }) => {
-        const owner = await newPerson(browser, 'Olivia')
-        const list = await createWishlist(owner.context.request, 'Birthday')
-        const requested = await mockImport(owner.page, () => ({ json: { found: false, fields: {} } }))
-        await openAddModal(owner.page, list.id)
+    test('add: the button is disabled with no link and while loading, and a double press makes one request', async ({ browser }) => {
+        const { page, requested } = await setupAdd(browser, async () => {
+            await new Promise((resolve) => setTimeout(resolve, 600))
+            return found({ description: 'Slow desc' })
+        })
 
-        await enterLinkAndLeave(linkInput(owner.page), 'https://shop.example.invalid/nothing')
-        await expect(owner.page.getByText(NOT_FOUND_MESSAGE)).toBeVisible()
+        await expect(fillButton(page)).toBeDisabled()
+        await linkInput(page).fill('no link here')
+        await expect(fillButton(page)).toBeDisabled()
+
+        await linkInput(page).fill(LINK)
+        await expect(fillButton(page)).toBeEnabled()
+        // Two clicks in the same tick, before React can disable the button.
+        await fillButton(page).evaluate((el: HTMLButtonElement) => {
+            el.click()
+            el.click()
+        })
+        await expect(page.getByText(LOADING_MESSAGE)).toBeVisible()
+        await expect(fillButton(page)).toBeDisabled()
+
+        await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+        await expect(descriptionInput(page)).toHaveValue('Slow desc')
+        expect(requested).toEqual([LINK])
+        await expect(fillButton(page)).toBeEnabled()
+    })
+
+    test('add: share text in the field is replaced by the bare link and imported', async ({ browser }) => {
+        const { page, requested } = await setupAdd(browser, () => found({ description: 'Shared desc', price: 20 }))
+
+        await linkInput(page).fill(`Regarde ça : ${LINK}.`)
+        await expect(fillButton(page)).toBeEnabled()
+        await fillButton(page).click()
+
+        await expect(linkInput(page)).toHaveValue(LINK)
+        await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+        await expect(descriptionInput(page)).toHaveValue('Shared desc')
+        expect(requested).toEqual([LINK])
+    })
+
+    test('add: a link that cannot be read is a quiet note and the form submits by hand', async ({ browser }) => {
+        const { page, requested } = await setupAdd(browser, () => ({ json: { found: false, fields: {} } }))
+
+        await linkInput(page).fill('https://shop.example.invalid/nothing')
+        await fillButton(page).click()
+        await expect(page.getByText(NOT_FOUND_MESSAGE)).toBeVisible()
         expect(requested).toHaveLength(1)
 
-        // Fill in by hand and save.
-        await nameInput(owner.page).fill('Handmade gift')
-        await priceInput(owner.page).fill('15')
-        await owner.page.getByRole('button', { name: 'Add Item' }).last().click()
-        await expect(owner.page.getByText('Handmade gift')).toBeVisible()
+        await nameInput(page).fill('Handmade gift')
+        await priceInput(page).fill('15')
+        await submitButton(page).click()
+        await expect(page.getByText('Handmade gift')).toBeVisible()
     })
 
     test('propose: a guest suggesting a wish gets the same help', async ({ browser }) => {
         const owner = await newPerson(browser, 'Olivia')
         const guest = await newPerson(browser, 'Gus')
         const list = await createWishlist(owner.context.request, 'Birthday')
-        await mockImport(guest.page, () =>
-            found({ description: 'Suggested desc', price: 30, currency: '£', imageUrl: 'http://localhost:3100/globe.svg' }),
+        const requested = await mockImport(guest.page, () =>
+            found({ name: 'Ignored', description: 'Suggested desc', price: 30, currency: '£', imageUrl: GLOBE }),
         )
-
-        await guest.page.goto(`/en/wishlist/${list.id}`)
-        await guest.page.getByRole('button', { name: 'Suggest a Wish' }).first().click()
-        await expect(linkInput(guest.page)).toBeVisible()
+        await openProposeModal(guest.page, list.id)
 
         await nameInput(guest.page).fill('Gus idea')
-        await pasteLink(linkInput(guest.page), 'https://shop.example.invalid/idea')
+        await linkInput(guest.page).fill(LINK)
+        expect(requested).toHaveLength(0)
+        await fillButton(guest.page).click()
 
         await expect(guest.page.getByText(FOUND_MESSAGE)).toBeVisible()
+        expect(requested).toEqual([LINK])
         await expect(descriptionInput(guest.page)).toHaveValue('Suggested desc')
         await expect(priceInput(guest.page)).toHaveValue('30')
         await expect(currencySelect(guest.page)).toHaveValue('£')
-        await expect(imageInput(guest.page)).toHaveValue('http://localhost:3100/globe.svg')
+        await expect(imageInput(guest.page)).toHaveValue(GLOBE)
         await expect(nameInput(guest.page)).toHaveValue('Gus idea')
     })
 
-    test('a slow answer never overwrites a newer one', async ({ browser }) => {
-        const owner = await newPerson(browser, 'Olivia')
-        const list = await createWishlist(owner.context.request, 'Birthday')
-        await mockImport(owner.page, async (url) => {
-            if (url.endsWith('/first')) {
-                await new Promise((resolve) => setTimeout(resolve, 1000))
-                return found({ description: 'FIRST', price: 11 })
-            }
-            return found({ description: 'SECOND', price: 22 })
+    test('add: a rate-limit answer shows the notice and the form stays usable', async ({ browser }) => {
+        const { page } = await setupAdd(browser, () => ({ status: 429, json: { message: 'Too many requests' } }))
+
+        await linkInput(page).fill('https://shop.example.invalid/busy')
+        await fillButton(page).click()
+        await expect(page.getByText('Too many tries, please wait a minute.')).toBeVisible()
+        await expect(fillButton(page)).toBeEnabled()
+
+        await nameInput(page).fill('By hand')
+        await priceInput(page).fill('9')
+        await submitButton(page).click()
+        await expect(page.getByText('By hand')).toBeVisible()
+    })
+
+    test.describe('versions', () => {
+        test('no typed price: the question shows, nothing applies until a version is chosen', async ({ browser }) => {
+            const { page, requested } = await setupAdd(browser, () => found(lampBase, lampVersions()))
+
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+            await expect(page.getByText(VERSION_QUESTION)).toBeVisible()
+            await expect(page.getByRole('button', { name: 'Walnut · $149.99' })).toBeVisible()
+            await expect(page.getByRole('button', { name: 'Oak · $179.99' })).toBeVisible()
+            expect(requested).toHaveLength(1)
+            await expect(nameInput(page)).toHaveValue('')
+            await expect(descriptionInput(page)).toHaveValue('')
+            await expect(priceInput(page)).toHaveValue('')
+            await expect(imageInput(page)).toHaveValue('')
+
+            await page.getByRole('button', { name: 'Walnut · $149.99' }).click()
+            await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+            await expect(page.getByText(VERSION_QUESTION)).toBeHidden()
+            await expect(nameInput(page)).toHaveValue('Desk lamp Wooden base')
+            await expect(priceInput(page)).toHaveValue('149.99')
+            await expect(currencySelect(page)).toHaveValue('$')
+            await expect(descriptionInput(page)).toHaveValue('Walnut\n\nSolid hardwood base')
+            await expect(imageInput(page)).toHaveValue(FILE)
         })
-        await openAddModal(owner.page, list.id)
 
-        await pasteLink(linkInput(owner.page), 'https://shop.example.invalid/first')
-        await pasteLink(linkInput(owner.page), 'https://shop.example.invalid/second')
+        test('typed price 149 picks the 149.99 version without a question and keeps the price', async ({ browser }) => {
+            const { page } = await setupAdd(browser, () => found(lampBase, lampVersions()))
 
-        await expect(descriptionInput(owner.page)).toHaveValue('SECOND')
-        await owner.page.waitForTimeout(1500) // the first answer arrives now and must be dropped
-        await expect(descriptionInput(owner.page)).toHaveValue('SECOND')
-        await expect(priceInput(owner.page)).toHaveValue('22')
+            await priceInput(page).fill('149')
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+
+            await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+            await expect(page.getByText(VERSION_QUESTION)).toBeHidden()
+            await expect(nameInput(page)).toHaveValue('Desk lamp Wooden base')
+            await expect(descriptionInput(page)).toHaveValue('Walnut\n\nSolid hardwood base')
+            await expect(imageInput(page)).toHaveValue(FILE)
+            await expect(priceInput(page)).toHaveValue('149')
+        })
+
+        test('typed price 140 matches no version: no question, only product-level fields applied', async ({ browser }) => {
+            const { page } = await setupAdd(browser, () => found(lampBase, lampVersions()))
+
+            await priceInput(page).fill('140')
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+
+            await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+            await expect(page.getByText(VERSION_QUESTION)).toBeHidden()
+            await expect(nameInput(page)).toHaveValue('Desk lamp')
+            await expect(descriptionInput(page)).toHaveValue('A very nice lamp')
+            await expect(imageInput(page)).toHaveValue(GLOBE)
+            await expect(priceInput(page)).toHaveValue('140')
+        })
+
+        test('versions without prices: the question shows and the price stays empty', async ({ browser }) => {
+            const { page } = await setupAdd(browser, () =>
+                found(lampBase, [
+                    { label: 'Walnut', name: 'Wooden base', description: 'Solid hardwood base', imageUrl: FILE },
+                    { label: 'Oak', name: 'Light base' },
+                ]),
+            )
+
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+            await expect(page.getByText(VERSION_QUESTION)).toBeVisible()
+            await expect(page.getByRole('button', { name: 'Walnut', exact: true })).toBeVisible()
+
+            await page.getByRole('button', { name: 'Walnut', exact: true }).click()
+            await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+            await expect(nameInput(page)).toHaveValue('Desk lamp Wooden base')
+            await expect(descriptionInput(page)).toHaveValue('Walnut\n\nSolid hardwood base')
+            await expect(imageInput(page)).toHaveValue(FILE)
+            await expect(priceInput(page)).toHaveValue('')
+        })
+
+        test('typing a price while the question shows dismisses it and applies the product-level fields', async ({ browser }) => {
+            const { page } = await setupAdd(browser, () => found(lampBase, lampVersions()))
+
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+            await expect(page.getByText(VERSION_QUESTION)).toBeVisible()
+
+            await priceInput(page).fill('60')
+            await expect(page.getByText(VERSION_QUESTION)).toBeHidden()
+            await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+            await expect(nameInput(page)).toHaveValue('Desk lamp')
+            await expect(descriptionInput(page)).toHaveValue('A very nice lamp')
+            await expect(imageInput(page)).toHaveValue(GLOBE)
+            await expect(priceInput(page)).toHaveValue('60')
+        })
+
+        test('changing the link while the question shows dismisses it and applies nothing', async ({ browser }) => {
+            const { page } = await setupAdd(browser, () => found(lampBase, lampVersions()))
+
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+            await expect(page.getByText(VERSION_QUESTION)).toBeVisible()
+
+            await linkInput(page).fill('https://shop.example.invalid/other')
+            await expect(page.getByText(VERSION_QUESTION)).toBeHidden()
+            await expect(page.getByText(FOUND_MESSAGE)).toBeHidden()
+            await expect(nameInput(page)).toHaveValue('')
+            await expect(descriptionInput(page)).toHaveValue('')
+            await expect(imageInput(page)).toHaveValue('')
+            await expect(priceInput(page)).toHaveValue('')
+        })
     })
 
-    test('a rate-limit answer shows the notice and the form stays usable', async ({ browser }) => {
-        const owner = await newPerson(browser, 'Olivia')
-        const list = await createWishlist(owner.context.request, 'Birthday')
-        await mockImport(owner.page, () => ({ status: 429, json: { message: 'Too many requests' } }))
-        await openAddModal(owner.page, list.id)
+    test('after a saved add, the reopened form is clean and the same link imports again', async ({ browser }) => {
+        const { page, requested } = await setupAdd(browser, () => found({ description: 'Again desc', price: 12 }))
 
-        await pasteLink(linkInput(owner.page), 'https://shop.example.invalid/busy')
-        await expect(owner.page.getByText('Too many tries, please wait a minute.')).toBeVisible()
+        await nameInput(page).fill('First lamp')
+        await linkInput(page).fill(LINK)
+        await fillButton(page).click()
+        await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+        await submitButton(page).click()
+        await expect(page.getByText('First lamp')).toBeVisible()
+        await expect(linkInput(page)).toBeHidden()
 
-        await nameInput(owner.page).fill('By hand')
-        await priceInput(owner.page).fill('9')
-        await owner.page.getByRole('button', { name: 'Add Item' }).last().click()
-        await expect(owner.page.getByText('By hand')).toBeVisible()
+        await page.getByRole('button', { name: 'Add Item' }).first().click()
+        await expect(linkInput(page)).toBeVisible()
+        await expect(linkInput(page)).toHaveValue('')
+        await expect(page.getByText(FOUND_MESSAGE)).toBeHidden()
+        await expect(descriptionInput(page)).toHaveValue('')
+        await expect(fillButton(page)).toBeDisabled()
+
+        await linkInput(page).fill(LINK)
+        await expect(fillButton(page)).toBeEnabled()
+        await fillButton(page).click()
+        await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+        await expect(descriptionInput(page)).toHaveValue('Again desc')
+        expect(requested).toEqual([LINK, LINK])
     })
 
-    test('add: after a saved wish, the reopened form is clean and the same link imports again', async ({ browser }) => {
-        const owner = await newPerson(browser, 'Olivia')
-        const list = await createWishlist(owner.context.request, 'Birthday')
-        const requested = await mockImport(owner.page, () => found({ description: 'Again desc', price: 12 }))
-        await openAddModal(owner.page, list.id)
-
-        await nameInput(owner.page).fill('First lamp')
-        await pasteLink(linkInput(owner.page), 'https://shop.example.invalid/same')
-        await expect(owner.page.getByText(FOUND_MESSAGE)).toBeVisible()
-        await owner.page.getByRole('button', { name: 'Add Item' }).last().click()
-        await expect(owner.page.getByText('First lamp')).toBeVisible()
-        await expect(linkInput(owner.page)).toBeHidden()
-
-        await owner.page.getByRole('button', { name: 'Add Item' }).first().click()
-        await expect(linkInput(owner.page)).toBeVisible()
-        await expect(owner.page.getByText(FOUND_MESSAGE)).toBeHidden()
-        await expect(descriptionInput(owner.page)).toHaveValue('')
-
-        await pasteLink(linkInput(owner.page), 'https://shop.example.invalid/same')
-        await expect(descriptionInput(owner.page)).toHaveValue('Again desc')
-        await expect(owner.page.getByText(FOUND_MESSAGE)).toBeVisible()
-        expect(requested).toHaveLength(2)
-    })
-
-    test('propose: after a saved suggestion, the reopened form is clean and the same link imports again', async ({ browser }) => {
+    test('after a saved suggestion, the reopened form is clean and the same link imports again', async ({ browser }) => {
         const owner = await newPerson(browser, 'Olivia')
         const guest = await newPerson(browser, 'Gus')
         const list = await createWishlist(owner.context.request, 'Birthday')
         const requested = await mockImport(guest.page, () => found({ description: 'Again desc', price: 12 }))
-        await guest.page.goto(`/en/wishlist/${list.id}`)
-        await guest.page.getByRole('button', { name: 'Suggest a Wish' }).first().click()
-        await expect(linkInput(guest.page)).toBeVisible()
+        await openProposeModal(guest.page, list.id)
 
         await nameInput(guest.page).fill('First idea')
-        await pasteLink(linkInput(guest.page), 'https://shop.example.invalid/same')
+        await linkInput(guest.page).fill(LINK)
+        await fillButton(guest.page).click()
         await expect(guest.page.getByText(FOUND_MESSAGE)).toBeVisible()
-        await guest.page.getByRole('button', { name: 'Add Item' }).last().click()
+        await submitButton(guest.page).click()
         await expect(linkInput(guest.page)).toBeHidden()
 
         await guest.page.getByRole('button', { name: 'Suggest a Wish' }).first().click()
         await expect(linkInput(guest.page)).toBeVisible()
+        await expect(linkInput(guest.page)).toHaveValue('')
         await expect(guest.page.getByText(FOUND_MESSAGE)).toBeHidden()
         await expect(descriptionInput(guest.page)).toHaveValue('')
+        await expect(fillButton(guest.page)).toBeDisabled()
 
-        await pasteLink(linkInput(guest.page), 'https://shop.example.invalid/same')
+        await linkInput(guest.page).fill(LINK)
+        await fillButton(guest.page).click()
         await expect(descriptionInput(guest.page)).toHaveValue('Again desc')
-        expect(requested).toHaveLength(2)
+        expect(requested).toEqual([LINK, LINK])
     })
 
     test.describe('edit', () => {
-        const setup = async (browser: Parameters<typeof newPerson>[0], respond: () => object) => {
+        const OLD_LINK = 'https://shop.example.invalid/old'
+
+        const setup = async (
+            browser: Browser,
+            respond: () => Promise<object> | object,
+            wish: { description?: string; imageUrl?: string } = { description: 'Old description', imageUrl: FILE },
+        ) => {
             const owner = await newPerson(browser, 'Olivia')
             const list = await createWishlist(owner.context.request, 'Birthday')
             await api(owner.context.request, 'post', '/api/wish', {
                 wishlistId: list.id,
                 name: 'Old name',
-                description: 'Old description',
                 price: 50,
                 currency: '€',
-                imageUrl: 'http://localhost:3100/file.svg',
-                purchaseUrl: 'https://shop.example.invalid/old',
+                purchaseUrl: OLD_LINK,
                 priority: 'high',
+                ...wish,
             }, 201)
             const requested = await mockImport(owner.page, respond)
             await owner.page.goto(`/en/wishlist/${list.id}`)
             await owner.page.getByRole('button', { name: 'Edit', exact: true }).first().click()
-            await expect(linkInput(owner.page)).toHaveValue('https://shop.example.invalid/old')
-            return { owner, requested }
+            await expect(linkInput(owner.page)).toHaveValue(OLD_LINK)
+            return { page: owner.page, requested }
         }
 
-        test('changing the link asks first, and Keep leaves everything as it was', async ({ browser }) => {
-            const { owner, requested } = await setup(browser, () => found({ description: 'NEW', price: 99 }))
+        test('Only fill empty keeps the old values and fills just the empty ones', async ({ browser }) => {
+            const { page, requested } = await setup(
+                browser,
+                () => found({ name: 'Other name', description: 'NEW', price: 99, currency: '$', imageUrl: GLOBE }),
+                {},
+            )
 
-            await enterLinkAndLeave(linkInput(owner.page), 'https://shop.example.invalid/new')
-            await expect(owner.page.getByText(QUESTION)).toBeVisible()
-            await owner.page.waitForTimeout(500)
+            await fillButton(page).click()
+            await expect(page.getByText(MODE_QUESTION)).toBeVisible()
             expect(requested).toHaveLength(0) // nothing is fetched until the person answers
 
-            await owner.page.getByRole('button', { name: 'Keep my info' }).click()
-            await expect(owner.page.getByText(QUESTION)).toBeHidden()
-            expect(requested).toHaveLength(0)
-            await expect(descriptionInput(owner.page)).toHaveValue('Old description')
-            await expect(priceInput(owner.page)).toHaveValue('50')
-            await expect(imageInput(owner.page)).toHaveValue('http://localhost:3100/file.svg')
-            await expect(nameInput(owner.page)).toHaveValue('Old name')
+            await page.getByRole('button', { name: 'Only fill empty' }).click()
+            await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+            expect(requested).toEqual([OLD_LINK])
+            await expect(descriptionInput(page)).toHaveValue('NEW')
+            await expect(imageInput(page)).toHaveValue(GLOBE)
+            await expect(nameInput(page)).toHaveValue('Old name')
+            await expect(priceInput(page)).toHaveValue('50')
+            await expect(currencySelect(page)).toHaveValue('€')
+            await expect(prioritySelect(page)).toHaveValue('high')
         })
 
-        test('Replace overwrites only what the new link provides', async ({ browser }) => {
+        test('Replace overwrites only what the page provides', async ({ browser }) => {
             // No image in the answer: the old one must stay.
-            const { owner, requested } = await setup(browser, () => found({ description: 'NEW', price: 99, currency: '$' }))
+            const { page, requested } = await setup(browser, () => found({ description: 'NEW', price: 99, currency: '$' }))
 
-            await enterLinkAndLeave(linkInput(owner.page), 'https://shop.example.invalid/new')
-            await expect(owner.page.getByText(QUESTION)).toBeVisible()
+            await fillButton(page).click()
+            await expect(page.getByText(MODE_QUESTION)).toBeVisible()
             expect(requested).toHaveLength(0)
 
-            await owner.page.getByRole('button', { name: 'Replace', exact: true }).click()
-            await expect(owner.page.getByText(FOUND_MESSAGE)).toBeVisible()
-            expect(requested).toEqual(['https://shop.example.invalid/new'])
-            await expect(descriptionInput(owner.page)).toHaveValue('NEW')
-            await expect(priceInput(owner.page)).toHaveValue('99')
-            await expect(currencySelect(owner.page)).toHaveValue('$')
-            await expect(imageInput(owner.page)).toHaveValue('http://localhost:3100/file.svg')
-            await expect(nameInput(owner.page)).toHaveValue('Old name')
-            await expect(owner.page.locator('select[name="priority"]')).toHaveValue('high')
+            await page.getByRole('button', { name: 'Replace', exact: true }).click()
+            await expect(page.getByText(FOUND_MESSAGE)).toBeVisible()
+            expect(requested).toEqual([OLD_LINK])
+            await expect(descriptionInput(page)).toHaveValue('NEW')
+            await expect(priceInput(page)).toHaveValue('99')
+            await expect(currencySelect(page)).toHaveValue('$')
+            await expect(imageInput(page)).toHaveValue(FILE)
+            await expect(nameInput(page)).toHaveValue('Old name')
+            await expect(prioritySelect(page)).toHaveValue('high')
         })
 
-        test('changing the field back while a Replace is loading drops the late answer', async ({ browser }) => {
-            const { owner } = await setup(browser, async () => {
-                await new Promise((resolve) => setTimeout(resolve, 1000))
+        test('changing the link while the mode question shows dismisses it with no request', async ({ browser }) => {
+            const { page, requested } = await setup(browser, () => found({ description: 'NEW' }))
+
+            await fillButton(page).click()
+            await expect(page.getByText(MODE_QUESTION)).toBeVisible()
+            await linkInput(page).fill('https://shop.example.invalid/new')
+            await expect(page.getByText(MODE_QUESTION)).toBeHidden()
+            expect(requested).toHaveLength(0)
+            await expect(descriptionInput(page)).toHaveValue('Old description')
+        })
+
+        test('changing the link while a Replace is loading drops the late answer', async ({ browser }) => {
+            let answered = false
+            const { page } = await setup(browser, async () => {
+                await new Promise((resolve) => setTimeout(resolve, 800))
+                answered = true
                 return found({ description: 'NEW', price: 99 })
             })
 
-            await enterLinkAndLeave(linkInput(owner.page), 'https://shop.example.invalid/new')
-            await expect(owner.page.getByText(QUESTION)).toBeVisible()
-            await owner.page.getByRole('button', { name: 'Replace', exact: true }).click()
-            await expect(owner.page.getByText('Looking for the details…')).toBeVisible()
+            await fillButton(page).click()
+            await page.getByRole('button', { name: 'Replace', exact: true }).click()
+            await expect(page.getByText(LOADING_MESSAGE)).toBeVisible()
 
-            await enterLinkAndLeave(linkInput(owner.page), 'https://shop.example.invalid/old')
-            await expect(owner.page.getByText('Looking for the details…')).toBeHidden()
-
-            await owner.page.waitForTimeout(1500) // B's answer arrives now and must be dropped
-            await expect(owner.page.getByText(FOUND_MESSAGE)).toBeHidden()
-            await expect(linkInput(owner.page)).toHaveValue('https://shop.example.invalid/old')
-            await expect(descriptionInput(owner.page)).toHaveValue('Old description')
-            await expect(priceInput(owner.page)).toHaveValue('50')
+            await linkInput(page).fill('https://shop.example.invalid/changed')
+            await expect.poll(() => answered).toBe(true) // the late answer has been delivered, and must be dropped
+            await expect(page.getByText(FOUND_MESSAGE)).toBeHidden()
+            await expect(descriptionInput(page)).toHaveValue('Old description')
+            await expect(priceInput(page)).toHaveValue('50')
         })
     })
 })
