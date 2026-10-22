@@ -347,6 +347,14 @@
     "cancel": "Cancel",
     "adding": "Adding...",
     "addItem": "Add Item",
+    "import": {
+      "looking": "Looking for the details…",
+      "found": "Found it, filled in below. Check and change anything.",
+      "notFound": "Couldn't read this site, fill in by hand.",
+      "replaceQuestion": "This link is different. Replace the current info with what the new link gives?",
+      "replace": "Replace",
+      "keep": "Keep my info"
+    },
     "errors": {
       "nameRequired": "Name is required",
       "priceMustBePositive": "Price must be greater than 0",

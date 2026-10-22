@@ -24,6 +24,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
     isProposedWish,
     submitLabel,
     submittingLabel,
+    linkImport,
 }: T) => {
     const t = useTranslations('wishForm')
 
@@ -66,6 +67,63 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
             onSubmit={(e) => void handleSubmit(e)}
         >
             <div className={styles.wishForm__formGrid}>
+                {/* Purchase URL (first: it can fill the rest of the form) */}
+                <div className={`${styles.wishForm__field} ${styles['wishForm__field--full']}`}>
+                    <label className={styles.wishForm__field}>
+                        <span className={styles.wishForm__label}>{t('purchaseUrlLabel')}</span>
+                        <input
+                            name="purchaseUrl"
+                            value={formData.purchaseUrl}
+                            onChange={(e) => handleInputChange("purchaseUrl", e.target.value)}
+                            onPaste={linkImport
+                                ? (e) => linkImport.onLinkPaste(e.clipboardData.getData('text').trim())
+                                : undefined}
+                            onBlur={linkImport ? () => linkImport.onLinkBlur() : undefined}
+                            disabled={isSubmitting}
+                            className={styles.wishForm__input}
+                        />
+                        {errors.purchaseUrl && (
+                            <small className={styles.wishForm__error}>
+                                {errors.purchaseUrl}
+                            </small>
+                        )}
+                    </label>
+                    {linkImport && (
+                        <div role="status" aria-live="polite">
+                            {linkImport.status === 'loading' && (
+                                <p className={styles.wishForm__importNote}>{t('import.looking')}</p>
+                            )}
+                            {linkImport.status === 'found' && (
+                                <p className={styles.wishForm__importNote}>{t('import.found')}</p>
+                            )}
+                            {linkImport.status === 'notFound' && (
+                                <p className={styles.wishForm__importNote}>{t('import.notFound')}</p>
+                            )}
+                            {linkImport.status === 'asking' && (
+                                <div className={styles.wishForm__importQuestion}>
+                                    <p className={styles.wishForm__importNote}>{t('import.replaceQuestion')}</p>
+                                    <div className={styles.wishForm__importActions}>
+                                        <button
+                                            type="button"
+                                            className={`${styles.wishForm__button} ${styles['wishForm__button--primary']}`}
+                                            onClick={linkImport.onReplace}
+                                        >
+                                            {t('import.replace')}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`${styles.wishForm__button} ${styles['wishForm__button--secondary']}`}
+                                            onClick={linkImport.onKeep}
+                                        >
+                                            {t('import.keep')}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+
                 {/* Nom */}
                 <label className={styles.wishForm__field}>
                     <span className={styles.wishForm__label}>{t('nameLabel')}</span>
@@ -180,25 +238,6 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     {errors.imageUrl && (
                         <small className={styles.wishForm__error}>
                             {errors.imageUrl}
-                        </small>
-                    )}
-                </label>
-
-                {/* Purchase URL */}
-                <label
-                    className={`${styles.wishForm__field} ${styles['wishForm__field--full']}`}
-                >
-                    <span className={styles.wishForm__label}>{t('purchaseUrlLabel')}</span>
-                    <input
-                        name="purchaseUrl"
-                        value={formData.purchaseUrl}
-                        onChange={(e) => handleInputChange("purchaseUrl", e.target.value)}
-                        disabled={isSubmitting}
-                        className={styles.wishForm__input}
-                    />
-                    {errors.purchaseUrl && (
-                        <small className={styles.wishForm__error}>
-                            {errors.purchaseUrl}
                         </small>
                     )}
                 </label>

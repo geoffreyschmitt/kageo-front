@@ -441,6 +441,32 @@
     border-color: var(--border-strong);
 }
 
+/* ── Link import ──────────────────────────── */
+
+.wishForm__importNote {
+    margin: 0;
+    font-family: var(--wf2-font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--wf2-text-2);
+}
+
+.wishForm__importQuestion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--accent-tint-border);
+    border-radius: 12px;
+    background: var(--wf2-sage-light);
+}
+
+.wishForm__importActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 /* ── Mobile ───────────────────────────────── */
 
 @media (max-width: 768px) {
@@ -481,6 +507,10 @@
 
     .wishForm__button {
         width: 100%;
+    }
+
+    .wishForm__importActions {
+        flex-direction: column;
     }
 }
 

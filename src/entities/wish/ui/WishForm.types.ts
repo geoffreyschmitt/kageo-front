@@ -1,6 +1,7 @@
 import React from "react";
 
 import {TWishPriority} from "@/entities/wish/model";
+import type {TLinkImport} from "@/entities/wish/model/useLinkImport";
 
 
 export type TWishFormData = {
@@ -34,6 +35,7 @@ type TBaseWishFormProps<TData, TErrors> = {
     onCancel: () => void
     submitLabel?: string
     submittingLabel?: string
+    linkImport?: TLinkImport
 }
 
 export type TWishForm = TBaseWishFormProps<TWishFormData, TWishValidationErrors> & {

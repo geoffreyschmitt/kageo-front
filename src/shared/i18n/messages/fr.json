@@ -347,6 +347,14 @@
     "cancel": "Annuler",
     "adding": "Ajout...",
     "addItem": "Ajouter",
+    "import": {
+      "looking": "Je cherche les détails…",
+      "found": "Trouvé, rempli ci-dessous. Vérifiez et modifiez ce que vous voulez.",
+      "notFound": "Impossible de lire ce site, remplissez à la main.",
+      "replaceQuestion": "Ce lien est différent. Remplacer les informations actuelles par celles du nouveau lien ?",
+      "replace": "Remplacer",
+      "keep": "Garder mes informations"
+    },
     "errors": {
       "nameRequired": "Le nom est requis",
       "priceMustBePositive": "Le prix doit être supérieur à 0",
