@@ -63,7 +63,7 @@ test.describe('import a wish from a link', () => {
                 description: 'A very nice lamp',
                 price: 42.5,
                 currency: '$',
-                imageUrl: 'https://img.example.invalid/lamp.jpg',
+                imageUrl: 'http://localhost:3100/globe.svg',
             }),
         )
         await openAddModal(owner.page, list.id)
@@ -75,7 +75,7 @@ test.describe('import a wish from a link', () => {
         await expect(descriptionInput(owner.page)).toHaveValue('A very nice lamp')
         await expect(priceInput(owner.page)).toHaveValue('42.5')
         await expect(currencySelect(owner.page)).toHaveValue('$')
-        await expect(imageInput(owner.page)).toHaveValue('https://img.example.invalid/lamp.jpg')
+        await expect(imageInput(owner.page)).toHaveValue('http://localhost:3100/globe.svg')
         await expect(nameInput(owner.page)).toHaveValue('My lamp')
         await expect(owner.page.locator('select[name="priority"]')).toHaveValue('medium')
 
@@ -109,7 +109,7 @@ test.describe('import a wish from a link', () => {
         const guest = await newPerson(browser, 'Gus')
         const list = await createWishlist(owner.context.request, 'Birthday')
         await mockImport(guest.page, () =>
-            found({ description: 'Suggested desc', price: 30, currency: '£', imageUrl: 'https://img.example.invalid/s.jpg' }),
+            found({ description: 'Suggested desc', price: 30, currency: '£', imageUrl: 'http://localhost:3100/globe.svg' }),
         )
 
         await guest.page.goto(`/en/wishlist/${list.id}`)
@@ -123,7 +123,7 @@ test.describe('import a wish from a link', () => {
         await expect(descriptionInput(guest.page)).toHaveValue('Suggested desc')
         await expect(priceInput(guest.page)).toHaveValue('30')
         await expect(currencySelect(guest.page)).toHaveValue('£')
-        await expect(imageInput(guest.page)).toHaveValue('https://img.example.invalid/s.jpg')
+        await expect(imageInput(guest.page)).toHaveValue('http://localhost:3100/globe.svg')
         await expect(nameInput(guest.page)).toHaveValue('Gus idea')
     })
 
@@ -163,6 +163,55 @@ test.describe('import a wish from a link', () => {
         await expect(owner.page.getByText('By hand')).toBeVisible()
     })
 
+    test('add: after a saved wish, the reopened form is clean and the same link imports again', async ({ browser }) => {
+        const owner = await newPerson(browser, 'Olivia')
+        const list = await createWishlist(owner.context.request, 'Birthday')
+        const requested = await mockImport(owner.page, () => found({ description: 'Again desc', price: 12 }))
+        await openAddModal(owner.page, list.id)
+
+        await nameInput(owner.page).fill('First lamp')
+        await pasteLink(linkInput(owner.page), 'https://shop.example.invalid/same')
+        await expect(owner.page.getByText(FOUND_MESSAGE)).toBeVisible()
+        await owner.page.getByRole('button', { name: 'Add Item' }).last().click()
+        await expect(owner.page.getByText('First lamp')).toBeVisible()
+        await expect(linkInput(owner.page)).toBeHidden()
+
+        await owner.page.getByRole('button', { name: 'Add Item' }).first().click()
+        await expect(linkInput(owner.page)).toBeVisible()
+        await expect(owner.page.getByText(FOUND_MESSAGE)).toBeHidden()
+        await expect(descriptionInput(owner.page)).toHaveValue('')
+
+        await pasteLink(linkInput(owner.page), 'https://shop.example.invalid/same')
+        await expect(descriptionInput(owner.page)).toHaveValue('Again desc')
+        await expect(owner.page.getByText(FOUND_MESSAGE)).toBeVisible()
+        expect(requested).toHaveLength(2)
+    })
+
+    test('propose: after a saved suggestion, the reopened form is clean and the same link imports again', async ({ browser }) => {
+        const owner = await newPerson(browser, 'Olivia')
+        const guest = await newPerson(browser, 'Gus')
+        const list = await createWishlist(owner.context.request, 'Birthday')
+        const requested = await mockImport(guest.page, () => found({ description: 'Again desc', price: 12 }))
+        await guest.page.goto(`/en/wishlist/${list.id}`)
+        await guest.page.getByRole('button', { name: 'Suggest a Wish' }).first().click()
+        await expect(linkInput(guest.page)).toBeVisible()
+
+        await nameInput(guest.page).fill('First idea')
+        await pasteLink(linkInput(guest.page), 'https://shop.example.invalid/same')
+        await expect(guest.page.getByText(FOUND_MESSAGE)).toBeVisible()
+        await guest.page.getByRole('button', { name: 'Add Item' }).last().click()
+        await expect(linkInput(guest.page)).toBeHidden()
+
+        await guest.page.getByRole('button', { name: 'Suggest a Wish' }).first().click()
+        await expect(linkInput(guest.page)).toBeVisible()
+        await expect(guest.page.getByText(FOUND_MESSAGE)).toBeHidden()
+        await expect(descriptionInput(guest.page)).toHaveValue('')
+
+        await pasteLink(linkInput(guest.page), 'https://shop.example.invalid/same')
+        await expect(descriptionInput(guest.page)).toHaveValue('Again desc')
+        expect(requested).toHaveLength(2)
+    })
+
     test.describe('edit', () => {
         const setup = async (browser: Parameters<typeof newPerson>[0], respond: () => object) => {
             const owner = await newPerson(browser, 'Olivia')
@@ -173,7 +222,7 @@ test.describe('import a wish from a link', () => {
                 description: 'Old description',
                 price: 50,
                 currency: '€',
-                imageUrl: 'https://img.example.invalid/old.jpg',
+                imageUrl: 'http://localhost:3100/file.svg',
                 purchaseUrl: 'https://shop.example.invalid/old',
                 priority: 'high',
             }, 201)
@@ -197,7 +246,8 @@ test.describe('import a wish from a link', () => {
             expect(requested).toHaveLength(0)
             await expect(descriptionInput(owner.page)).toHaveValue('Old description')
             await expect(priceInput(owner.page)).toHaveValue('50')
-            await expect(imageInput(owner.page)).toHaveValue('https://img.example.invalid/old.jpg')
+            await expect(imageInput(owner.page)).toHaveValue('http://localhost:3100/file.svg')
+            await expect(nameInput(owner.page)).toHaveValue('Old name')
         })
 
         test('Replace overwrites only what the new link provides', async ({ browser }) => {
@@ -214,7 +264,7 @@ test.describe('import a wish from a link', () => {
             await expect(descriptionInput(owner.page)).toHaveValue('NEW')
             await expect(priceInput(owner.page)).toHaveValue('99')
             await expect(currencySelect(owner.page)).toHaveValue('$')
-            await expect(imageInput(owner.page)).toHaveValue('https://img.example.invalid/old.jpg')
+            await expect(imageInput(owner.page)).toHaveValue('http://localhost:3100/file.svg')
             await expect(nameInput(owner.page)).toHaveValue('Old name')
             await expect(owner.page.locator('select[name="priority"]')).toHaveValue('high')
         })

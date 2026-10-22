@@ -13,6 +13,7 @@ export type TLinkImport = {
     onLinkBlur: () => void
     onReplace: () => void
     onKeep: () => void
+    reset: () => void // back to a clean slate: drops any in-flight request and the question
 }
 
 type TParams<T extends TImportableForm & { purchaseUrl: string }> = {
@@ -116,6 +117,14 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
         setStatus('idle')
     }, [])
 
+    const reset = useCallback(() => {
+        controllerRef.current?.abort()
+        requestIdRef.current++ // a late answer must not touch the next form
+        lastHandledRef.current = ''
+        pendingUrlRef.current = ''
+        setStatus('idle')
+    }, [])
+
     useEffect(
         () => () => {
             requestIdRef.current++
@@ -124,5 +133,5 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
         [],
     )
 
-    return { status, onLinkPaste, onLinkBlur, onReplace, onKeep }
+    return { status, onLinkPaste, onLinkBlur, onReplace, onKeep, reset }
 }

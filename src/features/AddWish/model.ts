@@ -90,6 +90,8 @@ export const useAddWishModel = ({
         [],
     )
 
+    const { reset: resetLinkImport } = linkImport
+
     const resetForm = useCallback(() => {
         setFormData({
             name: "",
@@ -102,7 +104,8 @@ export const useAddWishModel = ({
             notes: "",
         })
         setErrors({})
-    }, [])
+        resetLinkImport()
+    }, [resetLinkImport])
 
     const handleSubmit = useCallback(
         async (e?: React.FormEvent) => {

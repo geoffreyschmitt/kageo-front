@@ -98,6 +98,7 @@ export const useProposeWishForm = ({
             showToOwner: false,
         })
         setErrors({})
+        linkImport.reset()
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
