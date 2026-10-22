@@ -639,3 +639,14 @@
         text-align: center;
     }
 }
+
+/* Mobile / touch audit: tap targets >= 44px, readable text */
+@media (max-width: 768px), (pointer: coarse) {
+    .wish-card__status,
+    .wish-card__priority { font-size: 12px; }
+    .wish-card__price { font-size: 15px; }
+    .wish-card__date,
+    .wish-card__commentsButtonLabel { font-size: 14px; }
+    .wish-card__commentsButton { min-height: 44px; }
+    .wish-card__button { font-size: 15px; min-height: 44px; }
+}

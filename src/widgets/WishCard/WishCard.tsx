@@ -83,6 +83,7 @@ export const WishCard = ({
     onDeleteError,
     onEditWish,
     userId,
+    onRequireLogin,
     giftPot,
     onGiftPotCreated,
     onContributeGiftPot,
@@ -118,7 +119,7 @@ export const WishCard = ({
     // renders as an empty bordered strip above the gift pot — a double divider.
     const hasGuestActions =
         showGuestAction &&
-        ((!giftPotActive && (status === 'wanted' || status === 'proposed') && (!!userId || !!purchaseUrl)) ||
+        ((!giftPotActive && (status === 'wanted' || status === 'proposed') && (!!userId || !!purchaseUrl || !!onRequireLogin)) ||
             (status === 'reserved' && reservedBy === userId) ||
             (status === 'purchased' && purchasedBy === userId))
     const hasActionsRow = hasGuestActions || showOwnerAction
@@ -253,6 +254,10 @@ export const WishCard = ({
                         <>
                             {!giftPotActive && (status === 'wanted' || status === 'proposed') && userId && (
                                 <ReserveButton wishId={id} userId={userId} onReserve={onReserve} onError={onReserveError}/>
+                            )}
+
+                            {!giftPotActive && (status === 'wanted' || status === 'proposed') && !userId && onRequireLogin && (
+                                <ReserveButton wishId={id} userId="" onRequireLogin={onRequireLogin}/>
                             )}
 
                             {status === 'reserved' && reservedBy === userId && (

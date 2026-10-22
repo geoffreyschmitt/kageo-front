@@ -197,6 +197,7 @@
     "potNotStarted": "No pot started yet for {ownerName}",
     "potLoginToSee": "A group pot is being organised — log in to see the details and contribute.",
     "loginToSuggest": "Log in to suggest a wish for the “{name}” wishlist by {ownerName}.",
+    "loginToReserve": "Log in to reserve a gift from {ownerName}’s list.",
     "loginToContribute": "Log in to contribute to the pot for {ownerName}.",
     "emptyTitle": "Nothing here yet",
     "emptyMessage": "Add your first wish and start building something beautiful.",
@@ -258,6 +259,8 @@
     "wishlistDeleteError": "Could not delete wishlist — please try again"
   },
   "wishCard": {
+    "reserve": "Reserve",
+    "reserving": "Reserving…",
     "youPlanningToGift": "You are planning to gift this",
     "someonePlanningToGift": "Someone is planning to gift this",
     "showMore": "Show more",

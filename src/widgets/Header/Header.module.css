@@ -709,3 +709,9 @@
         height: 26px;
     }
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+    .header__logoLink { display: inline-flex; align-items: center; min-height: 44px; }
+    .header__loginButton { font-size: 14px; min-height: 44px; }
+    .drawer__rowLabel { font-size: 14px; }
+}

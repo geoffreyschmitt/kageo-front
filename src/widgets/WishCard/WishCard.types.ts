@@ -46,6 +46,8 @@ export type TWishCard = {
   onDeleteError?: (wishId: string) => void
   onEditWish?: (wish: TWishCard) => void
   userId?: string
+  // Called when a signed-out guest taps Reserve, so the page can ask them to log in.
+  onRequireLogin?: () => void
   giftPot?: TGiftPotView | null
   onGiftPotCreated?: (wishId: string, creatorId: string, creatorName: string) => void
   onContributeGiftPot?: (wishId: string, delta: number) => void

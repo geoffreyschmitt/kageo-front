@@ -127,3 +127,7 @@
     color: var(--accent);
     font-weight: 600;
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+    .createGiftPot__trigger { font-size: 14px; min-height: 44px; }
+}

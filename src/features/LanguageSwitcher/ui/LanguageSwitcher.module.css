@@ -28,3 +28,8 @@
     color: var(--border-default);
     user-select: none;
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+    .option { font-size: 14px; display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; justify-content: center; }
+    .divider { font-size: 14px; }
+}

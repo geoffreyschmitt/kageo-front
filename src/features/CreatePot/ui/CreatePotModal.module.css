@@ -97,3 +97,7 @@
 .createPot__triggerButton:hover {
     background: var(--cp2-sage-light);
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+    .createPot__triggerButton { font-size: 15px; min-height: 44px; }
+}

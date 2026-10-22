@@ -41,3 +41,8 @@
     color: var(--error-fg);
     margin-top: 4px;
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+    .reserved-button { font-size: 15px; min-height: 44px; padding: 10px 20px; }
+    .reserved-button__error { font-size: 13px; }
+}

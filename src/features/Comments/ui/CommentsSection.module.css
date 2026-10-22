@@ -155,3 +155,9 @@
         align-self: stretch;
     }
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+    .comments__title { font-size: 15px; }
+    .comments__empty { font-size: 14px; }
+    .comments__submit { font-size: 15px; min-height: 44px; }
+}

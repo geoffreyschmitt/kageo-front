@@ -422,3 +422,7 @@
     text-align: center;
     text-decoration: underline;
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+    .potCard__bannerSub { font-size: 14px; }
+}

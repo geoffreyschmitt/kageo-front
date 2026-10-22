@@ -49,3 +49,7 @@
 .loginPrompt__button--secondary:hover {
     background: var(--surface-sunken);
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+    .loginPrompt__button { min-height: 48px; font-size: 15px; }
+}

@@ -15,9 +15,8 @@ Success test: the creators' own circle uses Kageo for one real event. No new fea
 3. **[B] Send invite emails** via Resend from `api/wishlist/share`. Today the invitee is only recorded in `wishlist:{id}:invitees`; invited people are never notified. Needs a verified Resend sender domain.
 4. **[B] Forgot / reset password by email.** Today a user who forgets their password is locked out. Uses the same Resend pipeline as item 3.
 5. **Wishlist export for people who are not online**: a print-friendly view first, then a CSV of the wishlist (wishes, status, link). Pledge CSV already exists.
-6. **Mobile and grandma audit of the public-link flow**: readability, tap targets, no account needed to view, clear sign-up when acting. Fix what it finds.
-7. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
-8. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
+6. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
+7. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
 
 ## 2. Open — beyond the family
 
@@ -56,6 +55,7 @@ No commitments; the other modules may never ship. Ideas: guest list/RSVP, shared
 
 ## Done
 
+- 2026-10-22: mobile and grandma audit of the public-link flow (375px, signed-out, touch). Found and fixed: signed-out guests saw no Reserve button at all (now shown, tapping asks them to log in); the Reserve button was hardcoded English (now fr/en); tap targets under 44px (actions, filters, sort, price inputs, comments, pot triggers, footer/logo/language links, modal close) and text under 12-14px. A Playwright test (`e2e/guest-view.spec.ts`) covers the guest view. Not audited: the signed-in action modals and a real-device pass (do one before Christmas).
 - 2026-10-22: wish import from a URL: paste a product link in the add, propose and edit forms and the name, image, price and currency are prefilled from Open Graph / schema.org data (`POST /api/wish/import`, signed-in, rate limited, SSRF-hardened fetch, nothing stored; see `docs/architecture.md`). Sites that block server fetches fall back to manual entry. Amazon-specific import stays out (see Open).
 - 2026-10-21: basic rate limiting (KV fixed-window counters): failed sign-ins per email and IP, registration, and reserve, contribute, comment, suggest, invite and other writes, plus a per-IP ceiling; 429 with `Retry-After` and a calm UI message (see `docs/architecture.md`). Password reset and bot protection come with their own items.
 - 2026-10-21: product direction defined (purpose, persona, freemium principles, phases); docs updated.

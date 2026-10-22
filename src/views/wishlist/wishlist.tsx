@@ -147,7 +147,7 @@ export default function Wishlist({
   const [isProposeItemModalOpen, setIsProposeItemModalOpen] = useState(false)
   const [isEditWishModalOpen, setIsEditWishModalOpen] = useState(false)
   const [editingWish, setEditingWish] = useState<TWishCard | null>(null)
-  const [loginPrompt, setLoginPrompt] = useState<'suggest' | 'contribute' | null>(null)
+  const [loginPrompt, setLoginPrompt] = useState<'suggest' | 'contribute' | 'reserve' | null>(null)
 
   const t = useTranslations('wishlist')
   const tComments = useTranslations('comments')
@@ -254,7 +254,7 @@ export default function Wishlist({
     setIsAddItemModalOpen(false)
   }
 
-  const requireAuth = (promptKey: 'suggest' | 'contribute', action: () => void) => () => {
+  const requireAuth = (promptKey: 'suggest' | 'contribute' | 'reserve', action: () => void) => () => {
     if (!isLoggedIn) {
       setLoginPrompt(promptKey)
       return
@@ -655,7 +655,8 @@ export default function Wishlist({
                     showOwnerAction={!isHistory && !!userIsOwner}
                     isOwner={userIsOwner}
                     isHistory={isHistory}
-                    showGuestAction={!isHistory && Boolean(isLoggedIn && !userIsOwner)}
+                    showGuestAction={!isHistory && !userIsOwner}
+                    onRequireLogin={() => setLoginPrompt('reserve')}
                     onReserve={onReserveWish}
                     onReserveError={onReserveError}
                     onCancelReservation={onCancelReservation}
@@ -709,7 +710,8 @@ export default function Wishlist({
                 showOwnerAction={!isHistory && !!userIsOwner}
                 isOwner={userIsOwner}
                 isHistory={isHistory}
-                showGuestAction={!isHistory && Boolean(isLoggedIn && !userIsOwner)}
+                showGuestAction={!isHistory && !userIsOwner}
+                    onRequireLogin={() => setLoginPrompt('reserve')}
                 onReserve={onReserveWish}
                 onReserveError={onReserveError}
                 onCancelReservation={onCancelReservation}
@@ -823,7 +825,8 @@ export default function Wishlist({
                       purchasedByName={item.purchasedByName}
                       showOwnerAction={false}
                       isOwner={userIsOwner}
-                      showGuestAction={Boolean(isLoggedIn && !userIsOwner)}
+                      showGuestAction={!userIsOwner}
+                      onRequireLogin={() => setLoginPrompt('reserve')}
                       onReserve={onReserveWish}
                       onReserveError={onReserveError}
                       onCancelReservation={onCancelReservation}
@@ -990,7 +993,13 @@ export default function Wishlist({
       <LoginPromptModal
         isOpen={loginPrompt !== null}
         onClose={() => setLoginPrompt(null)}
-        message={loginPrompt === 'contribute' ? t('loginToContribute', {ownerName}) : t('loginToSuggest', {name, ownerName})}
+        message={
+          loginPrompt === 'contribute'
+            ? t('loginToContribute', {ownerName})
+            : loginPrompt === 'reserve'
+              ? t('loginToReserve', {ownerName})
+              : t('loginToSuggest', {name, ownerName})
+        }
       />
 
       <ShareWishlistModal

@@ -1230,3 +1230,26 @@
         text-align: center;
     }
 }
+
+/* Mobile / touch audit: tap targets >= 44px, readable text >= 14px (labels >= 12px) */
+@media (max-width: 768px), (pointer: coarse) {
+    .wishlist__owner,
+    .wishlist__creationDate,
+    .wishlist__progressStat,
+    .wishlist__resultsCount { font-size: 14px; }
+    .wishlist__badge { font-size: 13px; min-height: 32px; display: inline-flex; align-items: center; }
+    .wishlist__statLabel,
+    .wishlist__controlsTitle { font-size: 12px; }
+    .wishlist__button { font-size: 15px; min-height: 48px; }
+    .wishlist__controlsToggle { min-height: 48px; font-size: 15px; }
+    .wishlist__select,
+    .wishlist__priceInput,
+    .wishlist__priceSeparator { font-size: 16px; min-height: 44px; }
+    .wishlist__sortButton { min-width: 44px; min-height: 44px; }
+    .wishlist__filterButton,
+    .wishlist__resetButton { font-size: 14px; min-height: 44px; }
+    .wishlist__suggestionsCTASub { font-size: 14px; }
+}
+@media (max-width: 768px), (pointer: coarse) {
+    .wishlist__stat--hero .wishlist__statLabel { font-size: 12px; }
+}
