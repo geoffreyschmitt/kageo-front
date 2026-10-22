@@ -69,6 +69,32 @@ describe('POST /api/wish/import', () => {
         expect(body.fields).toMatchObject({ name: 'Nice Lamp', imageUrl: 'https://shop.example/lamp.jpg' })
     })
 
+    it('passes variants through with found true', async () => {
+        signInAs('u1')
+        const offers = [
+            { '@type': 'Offer', name: 'A', price: '1', priceCurrency: 'EUR' },
+            { '@type': 'Offer', name: 'B', price: '2', priceCurrency: 'EUR' },
+        ]
+        const ld = JSON.stringify({ '@type': 'Product', offers })
+        vi.mocked(fetchHtml).mockResolvedValue({
+            html: `<html><head><script type="application/ld+json">${ld}</script></head></html>`,
+            finalUrl: 'https://shop.example/p/1',
+        })
+        const body = await bodyOf(await POST(jsonRequest({ url: 'https://shop.example/p/1' })))
+        expect(body.found).toBe(true)
+        expect(body.fields).toEqual({})
+        expect(body.variants).toEqual([
+            { label: 'A', name: 'A', price: 1, currency: '€' },
+            { label: 'B', name: 'B', price: 2, currency: '€' },
+        ])
+    })
+
+    it('omits variants for a fields-only page', async () => {
+        signInAs('u1')
+        const body = await bodyOf(await POST(jsonRequest({ url: 'https://shop.example/p/1' })))
+        expect('variants' in body).toBe(false)
+    })
+
     it('answers found false when the fetch yields nothing', async () => {
         signInAs('u1')
         vi.mocked(fetchHtml).mockResolvedValue(null)

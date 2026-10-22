@@ -297,7 +297,7 @@ const readJsonLdProduct = (blocks: string[]): TRecord | undefined => {
         try {
             const nodes: TRecord[] = []
             collectNodes(JSON.parse(block), nodes)
-            const product = nodes.find(n => types(n).includes('Product'))
+            const product = nodes.find(n => types(n).some(t => t === 'Product' || t === 'ProductGroup'))
             if (product) return product
         } catch {
             // malformed block: ignore it, other sources still apply
@@ -323,6 +323,21 @@ const ldImage = (value: unknown, pageUrl: string): string | undefined => {
 
 type TPriceSource = { price?: number; currency?: string }
 
+export type TImportedVariant = {
+    label: string
+    name?: string
+    description?: string
+    imageUrl?: string
+    price?: number
+    currency?: string
+}
+
+export type TImportResult = { fields: TImportedFields; variants?: TImportedVariant[] }
+
+const MAX_VARIANTS = 10
+// Beyond this many raw entries the page counts as "too many versions" without looking at them.
+const MAX_RAW_VERSIONS = 200
+
 const offerPrice = (offer: unknown, inherited?: string): TPriceSource | undefined => {
     if (!isRecord(offer)) return undefined
     const spec = Array.isArray(offer.priceSpecification) ? offer.priceSpecification[0] : offer.priceSpecification
@@ -332,10 +347,14 @@ const offerPrice = (offer: unknown, inherited?: string): TPriceSource | undefine
     return { price, currency }
 }
 
-type TPricedOffer = TPriceSource & { url?: string }
+type TPricedOffer = TPriceSource & { url?: string; raw?: TRecord }
 
 const withUrl = (offer: unknown, source: TPriceSource | undefined): TPricedOffer | undefined =>
-    source && { ...source, url: isRecord(offer) && typeof offer.url === 'string' ? offer.url : undefined }
+    source && {
+        ...source,
+        url: isRecord(offer) && typeof offer.url === 'string' ? offer.url : undefined,
+        raw: isRecord(offer) ? offer : undefined,
+    }
 
 const parseUrl = (value: string, pageUrl: string): URL | undefined => {
     try {
@@ -356,8 +375,7 @@ const offerIsThisPage = (offerUrl: string | undefined, pageUrl: string): boolean
     return offerVariant !== null && offerVariant === page.searchParams.get('variant')
 }
 
-const ldPrice = (product: TRecord | undefined, pageUrl: string): TPriceSource | undefined => {
-    if (!product) return undefined
+const collectOffers = (product: TRecord): (TPricedOffer | undefined)[] => {
     const offers = Array.isArray(product.offers) ? product.offers : [product.offers]
     const results: (TPricedOffer | undefined)[] = []
     for (const o of offers) {
@@ -369,6 +387,12 @@ const ldPrice = (product: TRecord | undefined, pageUrl: string): TPriceSource | 
             results.push(withUrl(o, own))
         }
     }
+    return results
+}
+
+const ldPrice = (product: TRecord | undefined, pageUrl: string): TPriceSource | undefined => {
+    if (!product) return undefined
+    const results = collectOffers(product)
     const priced = results.filter((r): r is TPricedOffer => !!r?.price)
     if (priced.length > 1) {
         // Several variants: only trust a price that belongs to the pasted page. Wrong data is worse than none.
@@ -384,10 +408,110 @@ const ldPrice = (product: TRecord | undefined, pageUrl: string): TPriceSource | 
     return single && { price: single.price, currency: single.currency }
 }
 
-const extract = (html: string, pageUrl: string): TImportedFields => {
+// ---- Product versions ----
+
+const detailText = (value: unknown): string | undefined =>
+    isRecord(value) ? ldString(value.name ?? value.value, MAX_NAME) : ldString(value, MAX_NAME)
+
+const versionLabel = (rec: TRecord): string => {
+    const name = ldString(rec.name, MAX_NAME)
+    if (name) return name
+    const details = [detailText(rec.size), detailText(rec.color)].filter((x): x is string => !!x)
+    if (details.length) return details.join(' / ').slice(0, MAX_NAME)
+    return ldString(rec.sku, MAX_NAME) ?? ''
+}
+
+const buildVariant = (rec: TRecord, source: TPriceSource | undefined, pageUrl: string): TImportedVariant => {
+    const variant: TImportedVariant = { label: versionLabel(rec) }
+    const name = ldString(rec.name, MAX_NAME)
+    const description = ldString(rec.description, MAX_DESCRIPTION)
+    const imageUrl = ldImage(rec.image, pageUrl)
+    const symbol = toSymbol(source?.currency)
+    if (name) variant.name = name
+    if (description) variant.description = description
+    if (imageUrl) variant.imageUrl = imageUrl
+    if (source?.price !== undefined && symbol) {
+        variant.price = source.price
+        variant.currency = symbol
+    }
+    return variant
+}
+
+type TVersions =
+    | { kind: 'list'; variants: TImportedVariant[] }
+    | { kind: 'tooMany' }
+    // Boils down to one product: used like a plain Product.
+    | { kind: 'single'; record: TRecord }
+
+// De-duplicate by (label, price, currency), then apply the cap.
+const settle = (entries: { variant: TImportedVariant; record: TRecord }[]): TVersions | undefined => {
+    const seen = new Set<string>()
+    const distinct = entries.filter(({ variant: v }) => {
+        const key = JSON.stringify([v.label, v.price ?? null, v.currency ?? null])
+        if (seen.has(key)) return false
+        seen.add(key)
+        return true
+    })
+    if (distinct.length > MAX_VARIANTS) return { kind: 'tooMany' }
+    if (distinct.length < 2) return distinct[0] ? { kind: 'single', record: distinct[0].record } : undefined
+    return { kind: 'list', variants: distinct.map(d => d.variant) }
+}
+
+// Offers of a Product that the pasted url cannot single out.
+const offerVersions = (product: TRecord, pageUrl: string): TVersions | undefined => {
+    const results = collectOffers(product).filter((r): r is TPricedOffer & { raw: TRecord } => !!r?.raw)
+    if (results.length < 2) return undefined
+    const priced = results.filter(r => !!r.price)
+    if (priced.length === 1) return undefined
+    if (priced.length > 1) {
+        if (priced.some(r => offerIsThisPage(r.url, pageUrl))) return undefined
+        const [first] = priced
+        if (priced.every(r => r.price === first.price && r.currency === first.currency)) return undefined
+    }
+    if (results.length > MAX_RAW_VERSIONS) return { kind: 'tooMany' }
+    const settled = settle(results.map(r => ({ variant: buildVariant(r.raw, r, pageUrl), record: r.raw })))
+    // One distinct version is just the product as today.
+    return settled?.kind === 'single' ? undefined : settled
+}
+
+const groupVersions = (group: TRecord, pageUrl: string): TVersions | undefined => {
+    const members = (group.hasVariant as unknown[]).filter(isRecord)
+    if (members.length === 0) return undefined
+    const matching = members.find(m => typeof m.url === 'string' && offerIsThisPage(m.url, pageUrl))
+    if (matching) return { kind: 'single', record: matching }
+    if (members.length > MAX_RAW_VERSIONS) return { kind: 'tooMany' }
+    return settle(members.map(m => ({ variant: buildVariant(m, ldPrice(m, pageUrl), pageUrl), record: m })))
+}
+
+const extract = (html: string, pageUrl: string): TImportResult => {
     const scan = scanHtml(html)
     const meta = scan.metas
-    const product = readJsonLdProduct(scan.ld)
+    let product = readJsonLdProduct(scan.ld)
+
+    let variants: TImportedVariant[] | undefined
+    let versioned = false
+    if (product) {
+        const versions = Array.isArray(product.hasVariant) ? groupVersions(product, pageUrl) : offerVersions(product, pageUrl)
+        if (versions?.kind === 'list') {
+            variants = versions.variants
+            versioned = true
+        } else if (versions?.kind === 'tooMany') {
+            versioned = true
+        } else if (versions?.kind === 'single') {
+            // The group's own data stays as the fallback for what the one version lacks.
+            const rec = versions.record
+            product = {
+                ...product,
+                name: rec.name ?? product.name,
+                description: rec.description ?? product.description,
+                image: rec.image ?? product.image,
+                offers: rec.offers,
+                hasVariant: undefined,
+            }
+        } else if (Array.isArray(product.hasVariant)) {
+            product = { ...product, hasVariant: undefined }
+        }
+    }
 
     const name = ldString(product?.name, MAX_NAME) ?? clean(meta.get('og:title'), MAX_NAME) ?? clean(scan.title, MAX_NAME)
     const description =
@@ -396,34 +520,39 @@ const extract = (html: string, pageUrl: string): TImportedFields => {
         ldString(product?.description, MAX_DESCRIPTION)
     const imageUrl = resolveHttpUrl(meta.get('og:image'), pageUrl) ?? ldImage(product?.image, pageUrl)
 
-    const sources: TPriceSource[] = [
-        ldPrice(product, pageUrl) ?? {},
-        {
-            price: parsePrice(meta.get('product:price:amount') ?? meta.get('og:price:amount')),
-            currency: rawCurrency(meta.get('product:price:currency') ?? meta.get('og:price:currency')),
-        },
-        { price: parsePrice(scan.itemprops.get('price')), currency: rawCurrency(scan.itemprops.get('pricecurrency')) },
-    ]
+    // With several versions the backup tags usually describe only the default one: never use them.
+    const sources: TPriceSource[] = versioned
+        ? []
+        : [
+              ldPrice(product, pageUrl) ?? {},
+              {
+                  price: parsePrice(meta.get('product:price:amount') ?? meta.get('og:price:amount')),
+                  currency: rawCurrency(meta.get('product:price:currency') ?? meta.get('og:price:currency')),
+              },
+              { price: parsePrice(scan.itemprops.get('price')), currency: rawCurrency(scan.itemprops.get('pricecurrency')) },
+          ]
     const chosen = sources.find(s => s.price !== undefined)
     // A source may carry the price but not the currency (or vice versa): borrow it from the next one.
     const currencyRaw = chosen?.currency ?? sources.find(s => s.currency)?.currency
     const symbol = toSymbol(currencyRaw)
 
-    const result: TImportedFields = {}
-    if (name) result.name = name
-    if (description) result.description = description
-    if (imageUrl) result.imageUrl = imageUrl
+    const fields: TImportedFields = {}
+    if (name) fields.name = name
+    if (description) fields.description = description
+    if (imageUrl) fields.imageUrl = imageUrl
     if (chosen?.price !== undefined && symbol) {
-        result.price = chosen.price
-        result.currency = symbol
+        fields.price = chosen.price
+        fields.currency = symbol
     }
-    return result
+    return variants?.length ? { fields, variants } : { fields }
 }
 
-export const extractWishFields = (html: string, pageUrl: string): TImportedFields => {
+export const extractWishData = (html: string, pageUrl: string): TImportResult => {
     try {
         return extract(html, pageUrl)
     } catch {
-        return {}
+        return { fields: {} }
     }
 }
+
+export const extractWishFields = (html: string, pageUrl: string): TImportedFields => extractWishData(html, pageUrl).fields

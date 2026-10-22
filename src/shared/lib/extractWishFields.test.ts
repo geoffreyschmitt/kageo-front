@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { extractWishFields, ISO_TO_SYMBOL } from './extractWishFields'
+import { extractWishData, extractWishFields, ISO_TO_SYMBOL } from './extractWishFields'
 
 const URL = 'https://shop.example.com/products/lamp'
 
@@ -299,6 +299,170 @@ describe('extractWishFields', () => {
             expect(extractWishFields(page(og('og:image', long)), URL)).not.toHaveProperty('imageUrl')
             const ok = 'https://a.com/' + 'x'.repeat(1900)
             expect(extractWishFields(page(og('og:image', ok)), URL).imageUrl).toBe(ok)
+        })
+    })
+
+    describe('product versions', () => {
+        const PHONE = 'https://shop.example.com/products/phone'
+        const offer = (extra: Record<string, unknown>) => ({ '@type': 'Offer', priceCurrency: 'EUR', ...extra })
+        const data = (html: string, pageUrl = PHONE) => extractWishData(html, pageUrl)
+        const twoOffers = [offer({ name: '128 GB', price: '799', sku: 'a' }), offer({ sku: 'SKU-256', price: '899' })]
+
+        it('returns one version per offer when offers cannot be matched and prices differ', () => {
+            const r = data(page(ld(product({ image: 'https://a.com/p.jpg', offers: twoOffers }))))
+            expect(r.variants).toEqual([
+                { label: '128 GB', name: '128 GB', price: 799, currency: '€' },
+                { label: 'SKU-256', price: 899, currency: '€' },
+            ])
+            expect(r.fields).toEqual({ name: 'Lamp', imageUrl: 'https://a.com/p.jpg' })
+        })
+
+        it('ignores the backup price tags when versions are detected', () => {
+            const html = page(
+                ld(product({ offers: twoOffers })) + og('og:price:amount', '5') + og('og:price:currency', 'EUR'),
+            ).replace('<body>', '<body><span itemprop="price">7</span><span itemprop="priceCurrency">EUR</span>')
+            const r = data(html)
+            expect(r.variants).toHaveLength(2)
+            expect(r.fields.price).toBeUndefined()
+            expect(r.fields.currency).toBeUndefined()
+        })
+
+        it('keeps offers without a price as unpriced versions', () => {
+            const r = data(page(ld(product({ offers: [offer({ name: 'Small' }), offer({ name: 'Large' })] }))))
+            expect(r.variants).toEqual([
+                { label: 'Small', name: 'Small' },
+                { label: 'Large', name: 'Large' },
+            ])
+            expect(r.fields.price).toBeUndefined()
+        })
+
+        it('keeps unpriced offers next to priced ones', () => {
+            const r = data(page(ld(product({ offers: [...twoOffers, offer({ name: 'Mini' })] }))))
+            expect(r.variants).toHaveLength(3)
+            expect(r.variants?.[2]).toEqual({ label: 'Mini', name: 'Mini' })
+        })
+
+        it('keeps a price only with a mapped currency', () => {
+            const offers = [offer({ name: 'A', price: '5', priceCurrency: 'CHF' }), offer({ name: 'B', price: '6' })]
+            const r = data(page(ld(product({ offers }))))
+            expect(r.variants?.[0]).toEqual({ label: 'A', name: 'A' })
+            expect(r.variants?.[1]).toMatchObject({ price: 6, currency: '€' })
+        })
+
+        it('collapses duplicate versions', () => {
+            const r = data(page(ld(product({ offers: [...twoOffers, ...twoOffers] }))))
+            expect(r.variants).toHaveLength(2)
+        })
+
+        it('treats a single remaining version as a normal product', () => {
+            const r = data(page(ld(product({ offers: [offer({ name: 'A' }), offer({ name: 'A' })] }))))
+            expect(r.variants).toBeUndefined()
+        })
+
+        it('gives no variants and no price for more than 10 versions, even with backup tags', () => {
+            const many = Array.from({ length: 11 }, (_, i) => offer({ name: `V${i}`, price: String(100 + i) }))
+            const r = data(page(ld(product({ offers: many })) + og('og:price:amount', '5') + og('og:price:currency', 'EUR')))
+            expect(r.variants).toBeUndefined()
+            expect(r.fields).toEqual({ name: 'Lamp' })
+        })
+
+        it('allows exactly 10 versions', () => {
+            const ten = Array.from({ length: 10 }, (_, i) => offer({ name: `V${i}`, price: String(100 + i) }))
+            expect(data(page(ld(product({ offers: ten })))).variants).toHaveLength(10)
+        })
+
+        it('behaves as before for a url match, equal prices and a single priced offer', () => {
+            const matched = [offer({ url: `${PHONE}?variant=1`, price: '1' }), offer({ url: `${PHONE}?variant=2`, price: '2' })]
+            const r = data(page(ld(product({ offers: matched }))), `${PHONE}?variant=2`)
+            expect(r.variants).toBeUndefined()
+            expect(r.fields).toMatchObject({ price: 2, currency: '€' })
+            const same = data(page(ld(product({ offers: [offer({ name: 'A', price: '3' }), offer({ name: 'B', price: '3' })] }))))
+            expect(same.variants).toBeUndefined()
+            expect(same.fields.price).toBe(3)
+            const single = data(page(ld(product({ offers: offer({ name: 'A', price: '4' }) }))))
+            expect(single.variants).toBeUndefined()
+            expect(single.fields.price).toBe(4)
+        })
+
+        const group = (variants: unknown[]) => ({
+            '@type': 'ProductGroup',
+            name: 'Shirt',
+            description: 'A shirt',
+            hasVariant: variants,
+        })
+
+        it('reads ProductGroup hasVariant entries', () => {
+            const r = data(
+                page(
+                    ld(
+                        group([
+                            {
+                                '@type': 'Product',
+                                name: 'Shirt S red',
+                                size: 'S',
+                                color: 'red',
+                                image: '/s.jpg',
+                                description: 'Small',
+                                offers: offer({ price: '20' }),
+                            },
+                            { '@type': 'Product', size: 'M', color: 'blue', offers: offer({ price: '22' }) },
+                            { '@type': 'Product', sku: 'L-1', offers: offer({ price: '24' }) },
+                        ]),
+                    ),
+                ),
+            )
+            expect(r.fields).toEqual({ name: 'Shirt', description: 'A shirt' })
+            expect(r.variants).toEqual([
+                {
+                    label: 'Shirt S red',
+                    name: 'Shirt S red',
+                    description: 'Small',
+                    imageUrl: 'https://shop.example.com/s.jpg',
+                    price: 20,
+                    currency: '€',
+                },
+                { label: 'M / blue', price: 22, currency: '€' },
+                { label: 'L-1', price: 24, currency: '€' },
+            ])
+        })
+
+        it('treats a ProductGroup with one distinct version, or a url match, as a normal product', () => {
+            const v = { '@type': 'Product', name: 'Shirt S', offers: offer({ price: '20' }) }
+            const one = data(page(ld(group([v, v]))))
+            expect(one.variants).toBeUndefined()
+            expect(one.fields).toMatchObject({ name: 'Shirt S', price: 20 })
+            const two = group([
+                { ...v, url: `${PHONE}?v=1` },
+                { '@type': 'Product', name: 'Shirt M', url: `${PHONE}?v=2`, offers: offer({ price: '22' }) },
+            ])
+            const m = data(page(ld(two)), `${PHONE}?v=2`)
+            expect(m.variants).toBeUndefined()
+            expect(m.fields).toMatchObject({ name: 'Shirt M', price: 22 })
+        })
+
+        it('applies the length limits and the http(s) image rule to variants', () => {
+            const offers = [
+                offer({ name: 'n'.repeat(500), description: 'd'.repeat(9000), image: 'javascript:alert(1)', price: '1' }),
+                offer({ name: 'b', image: 'https://a.com/b.jpg', price: '2' }),
+            ]
+            const [a, b] = data(page(ld(product({ offers })))).variants ?? []
+            expect(a.name).toHaveLength(200)
+            expect(a.label).toHaveLength(200)
+            expect(a.description).toHaveLength(5000)
+            expect(a.imageUrl).toBeUndefined()
+            expect(b.imageUrl).toBe('https://a.com/b.jpg')
+        })
+
+        it('keeps extractWishFields returning only the fields', () => {
+            expect(extractWishFields(page(ld(product({ offers: twoOffers }))), PHONE)).toEqual({ name: 'Lamp' })
+        })
+
+        it('stays fast with thousands of offers', () => {
+            const many = Array.from({ length: 5000 }, (_, i) => offer({ name: `V${i}`, price: String(i + 1) }))
+            const t = performance.now()
+            const r = data(page(ld(product({ offers: many }))))
+            expect(performance.now() - t).toBeLessThan(1500)
+            expect(r.variants).toBeUndefined()
         })
     })
 

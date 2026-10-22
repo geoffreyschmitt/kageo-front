@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
-import { extractWishFields, type TImportedFields } from '@/shared/lib/extractWishFields'
+import { extractWishData, type TImportedFields } from '@/shared/lib/extractWishFields'
 import { fetchHtml } from '@/shared/lib/fetchHtml'
 import { limitWrite } from '@/shared/lib/rateLimit'
 
@@ -43,9 +43,9 @@ export async function POST(request: NextRequest) {
     try {
         const page = await fetchHtml(url)
         if (!page) return notFound()
-        const fields = extractWishFields(page.html, page.finalUrl)
-        if (Object.keys(fields).length === 0) return notFound()
-        return NextResponse.json({ found: true, fields })
+        const { fields, variants } = extractWishData(page.html, page.finalUrl)
+        if (Object.keys(fields).length === 0 && !variants?.length) return notFound()
+        return NextResponse.json(variants?.length ? { found: true, fields, variants } : { found: true, fields })
     } catch {
         return notFound()
     }
