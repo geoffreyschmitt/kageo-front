@@ -572,6 +572,15 @@
     "notInvited": "Cette liste est privée. Demandez à son propriétaire d'inviter {email} pour participer.",
     "notInvitedNoEmail": "Cette liste est privée. Demandez à son propriétaire de vous inviter pour participer."
   },
+  "email": {
+    "subject": "Vous êtes invité·e à une wishlist sur Kageo : {listName}",
+    "heading": "{ownerName} vous invite à une wishlist",
+    "event": "Événement : {date}",
+    "wishCount": "{count, plural, one {# souhait} other {# souhaits}}",
+    "button": "Ouvrir la wishlist",
+    "linkFallback": "Ou copiez ce lien :",
+    "footer": "Vous recevez cet e-mail car {ownerName} a invité {email} sur Kageo. Si vous ne le connaissez pas, ignorez-le."
+  },
   "offline": {
     "title": "Vous êtes hors ligne",
     "description": "Vérifiez votre connexion internet et réessayez.",

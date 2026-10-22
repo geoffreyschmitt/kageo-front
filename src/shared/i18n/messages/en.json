@@ -572,6 +572,15 @@
     "notInvited": "This list is private. Ask its owner to invite {email} to take part.",
     "notInvitedNoEmail": "This list is private. Ask its owner to invite you to take part."
   },
+  "email": {
+    "subject": "You've been invited to a wishlist on Kageo: {listName}",
+    "heading": "{ownerName} invited you to a wishlist",
+    "event": "Event: {date}",
+    "wishCount": "{count, plural, one {# wish} other {# wishes}}",
+    "button": "Open the wishlist",
+    "linkFallback": "Or copy this link:",
+    "footer": "You received this email because {ownerName} invited {email} on Kageo. If you don't know them, you can ignore it."
+  },
   "offline": {
     "title": "You're offline",
     "description": "Check your internet connection and try again.",
