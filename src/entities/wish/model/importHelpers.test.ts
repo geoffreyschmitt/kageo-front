@@ -13,6 +13,7 @@ describe('extractFirstUrl', () => {
         expect(extractFirstUrl('Regarde ça : https://shop.fr/p/12?x=1.')).toBe('https://shop.fr/p/12?x=1')
         expect(extractFirstUrl('(https://a.com/x)')).toBe('https://a.com/x')
         expect(extractFirstUrl('wow https://a.com/x!?')).toBe('https://a.com/x')
+        expect(extractFirstUrl('https://ex.com/p?q=1…')).toBe('https://ex.com/p?q=1')
     })
     it('returns the first of two links', () => {
         expect(extractFirstUrl('http://a.com/1 puis https://b.com/2')).toBe('http://a.com/1')

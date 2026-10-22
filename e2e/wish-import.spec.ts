@@ -280,6 +280,60 @@ test.describe('import a wish from a link (Fill in for me)', () => {
             await expect(priceInput(page)).toHaveValue('60')
         })
 
+        test('a version with neither label nor price still gets a readable button', async ({ browser }) => {
+            const { page } = await setupAdd(browser, () => found(lampBase, [{ label: '' }, { label: 'Oak', price: 179.99, currency: '$' }]))
+
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+            await expect(page.getByRole('button', { name: 'Version 1', exact: true })).toBeVisible()
+            await expect(page.getByRole('button', { name: 'Oak · $179.99' })).toBeVisible()
+        })
+
+        test('Cancel while the question shows drops it: the reopened form has a fresh import state', async ({ browser }) => {
+            const { page } = await setupAdd(browser, () => found(lampBase, lampVersions()))
+
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+            await expect(page.getByText(VERSION_QUESTION)).toBeVisible()
+
+            await page.getByRole('button', { name: 'Cancel' }).click()
+            await expect(linkInput(page)).toBeHidden()
+            await page.getByRole('button', { name: 'Add Item' }).first().click()
+            await expect(linkInput(page)).toBeVisible()
+            await expect(page.getByText(VERSION_QUESTION)).toBeHidden()
+            await expect(page.getByText(FOUND_MESSAGE)).toBeHidden()
+            await expect(page.getByText(LOADING_MESSAGE)).toBeHidden()
+            await expect(nameInput(page)).toHaveValue('')
+            await expect(descriptionInput(page)).toHaveValue('')
+        })
+
+        test('Cancel while the answer is loading: the late answer never fills the reopened form', async ({ browser }) => {
+            let answered = false
+            const { page } = await setupAdd(browser, async () => {
+                await new Promise((resolve) => setTimeout(resolve, 800))
+                answered = true
+                return found({ name: 'Late name', description: 'Late desc', price: 77, currency: '$', imageUrl: GLOBE })
+            })
+
+            await linkInput(page).fill(LINK)
+            await fillButton(page).click()
+            await expect(page.getByText(LOADING_MESSAGE)).toBeVisible()
+
+            await page.getByRole('button', { name: 'Cancel' }).click()
+            await expect(linkInput(page)).toBeHidden()
+            await page.getByRole('button', { name: 'Add Item' }).first().click()
+            await expect(linkInput(page)).toBeVisible()
+            await expect(page.getByText(LOADING_MESSAGE)).toBeHidden()
+
+            await expect.poll(() => answered).toBe(true) // delivered while the form is reopened
+            await expect(page.getByText(FOUND_MESSAGE)).toBeHidden()
+            await expect(nameInput(page)).toHaveValue('')
+            await expect(descriptionInput(page)).toHaveValue('')
+            await expect(priceInput(page)).toHaveValue('')
+            await expect(imageInput(page)).toHaveValue('')
+            await expect(fillButton(page)).toBeEnabled()
+        })
+
         test('changing the link while the question shows dismisses it and applies nothing', async ({ browser }) => {
             const { page } = await setupAdd(browser, () => found(lampBase, lampVersions()))
 

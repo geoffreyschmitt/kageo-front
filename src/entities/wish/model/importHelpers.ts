@@ -4,7 +4,7 @@ import { applyImport, type TFormPatch, type TImportableForm } from './applyImpor
 
 const MAX_SCANNED_TEXT = 10_000
 const MAX_URL_LENGTH = 2048
-const STRIP_TRAILING = '.,!?;:'
+const STRIP_TRAILING = '.,!?;:…'
 const URL_STOPPERS = '<>"\'»”’›'
 const PICTOGRAPH = /\p{Extended_Pictographic}/u
 

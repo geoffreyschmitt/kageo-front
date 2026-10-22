@@ -2,9 +2,9 @@ import React from "react"
 
 import Image from "next/image";
 
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 
-import type {TVersionChoice} from "@/entities/wish/model/importFlow";
+import {formatVersionPrice, type TVersionChoice} from "@/entities/wish/model/importFlow";
 import {TProposedWishForm, TProposedWishFormData, TWishForm} from "@/entities/wish/ui/WishForm.types";
 
 import {isValidUrl} from "@/shared/lib/isValidUrl";
@@ -12,14 +12,19 @@ import {isValidUrl} from "@/shared/lib/isValidUrl";
 import styles from "./WishForm.module.css"
 
 
-// Version button text: its label, then its price with the currency symbol when known.
-// A version without a label shows only its price.
-const formatVersion = (version: TVersionChoice): string => {
+// Version button text: its label, then its price in the reader's locale. A version without a
+// label shows only its price; one with neither shows "Version {n}" (fallback).
+const formatVersion = (
+    version: TVersionChoice,
+    index: number,
+    locale: string,
+    fallback: (n: number) => string,
+): string => {
     const label = version.label.trim()
     const price = version.price !== undefined && Number.isFinite(version.price)
-        ? `${version.currency ?? ""}${version.price.toFixed(2)}`
+        ? formatVersionPrice(version.price, version.currency, locale)
         : ""
-    return [label, price].filter(Boolean).join(" · ")
+    return [label, price].filter(Boolean).join(" · ") || fallback(index + 1)
 }
 
 export const WishForm = <T extends TWishForm | TProposedWishForm>({
@@ -37,6 +42,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
     linkImport,
 }: T) => {
     const t = useTranslations('wishForm')
+    const locale = useLocale()
 
     const [imgError, setImgError] = React.useState(false)
     React.useEffect(() => setImgError(false), [formData.imageUrl])
@@ -149,7 +155,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                                                     onClick={() => linkImport.onChooseVersion(index)}
                                                     disabled={isSubmitting}
                                                 >
-                                                    {formatVersion(version)}
+                                                    {formatVersion(version, index, locale, (n) => t('import.versionFallback', { n }))}
                                                 </button>
                                             ))}
                                         </div>

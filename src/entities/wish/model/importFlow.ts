@@ -66,6 +66,19 @@ export const decideDismissal = (input: {
     return 'none'
 }
 
+const CURRENCY_CODES: Record<string, string> = { '€': 'EUR', $: 'USD', '£': 'GBP', '¥': 'JPY' }
+
+// A version's price in the reader's locale ("149,99 €" in French), from the form's currency symbol.
+export const formatVersionPrice = (price: number, symbol: string | undefined, locale: string): string => {
+    const code = symbol ? CURRENCY_CODES[symbol] : undefined
+    if (!code) return `${symbol ?? ''}${price.toFixed(2)}`
+    try {
+        return new Intl.NumberFormat(locale, { style: 'currency', currency: code }).format(price)
+    } catch {
+        return `${symbol}${price.toFixed(2)}`
+    }
+}
+
 export const toVersionChoices = (variants: TImportedVariant[]): TVersionChoice[] =>
     variants.map(({ label, price, currency }) => {
         const choice: TVersionChoice = { label }
@@ -75,4 +88,4 @@ export const toVersionChoices = (variants: TImportedVariant[]): TVersionChoice[]
     })
 
 export const isRateLimitError = (error: unknown): boolean =>
-    error instanceof Error && error.message.includes('429')
+    error instanceof Error && /^API error 429/.test(error.message)

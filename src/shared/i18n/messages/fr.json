@@ -352,13 +352,14 @@
     "addItem": "Ajouter",
     "import": {
       "fill": "Remplir pour moi",
-      "looking":"Je cherche les détails…",
+      "looking": "Je cherche les détails…",
       "found": "Trouvé, rempli ci-dessous. Vérifiez et modifiez ce que vous voulez.",
       "notFound": "Impossible de lire ce site, remplissez à la main.",
       "modeQuestion": "Remplacer les informations actuelles, ou remplir seulement les champs vides ?",
       "replace": "Remplacer",
       "fillEmpty": "Remplir les champs vides",
-      "versionQuestion": "Nous avons trouvé plusieurs versions de ce produit, laquelle est la vôtre ?"
+      "versionQuestion": "Nous avons trouvé plusieurs versions de ce produit, laquelle est la vôtre ?",
+      "versionFallback": "Version {n}"
     },
     "errors": {
       "nameRequired": "Le nom est requis",

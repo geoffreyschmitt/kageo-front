@@ -101,6 +101,12 @@ export const useProposeWishForm = ({
         linkImport.reset()
     }
 
+    // Cancel, Escape and backdrop: the question and any in-flight import go away with the dialog.
+    const handleClose = (): void => {
+        linkImport.reset()
+        onClose()
+    }
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault()
         if (!validateForm()) return
@@ -127,6 +133,7 @@ export const useProposeWishForm = ({
         handleCheckboxChange,
         handleSubmit,
         resetForm,
+        handleClose,
         linkImport,
     }
 }

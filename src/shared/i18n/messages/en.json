@@ -358,7 +358,8 @@
       "modeQuestion": "Replace the current info, or only fill the empty fields?",
       "replace": "Replace",
       "fillEmpty": "Only fill empty",
-      "versionQuestion": "We found several versions of this product, which one is yours?"
+      "versionQuestion": "We found several versions of this product, which one is yours?",
+      "versionFallback": "Version {n}"
     },
     "errors": {
       "nameRequired": "Name is required",

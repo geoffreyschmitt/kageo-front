@@ -285,9 +285,13 @@ describe('extractWishFields', () => {
         it.each([['10 - 20'], ['10–20'], ['10-20 €']])('rejects range %j', raw => {
             expect(priceOf(raw)).toBeUndefined()
         })
-        it('keeps AggregateOffer lowPrice', () => {
-            const html = page(ld(product({ offers: { '@type': 'AggregateOffer', lowPrice: '10', highPrice: '20', priceCurrency: 'EUR' } })))
-            expect(extractWishFields(html, URL).price).toBe(10)
+        it('uses AggregateOffer lowPrice only when there is no different highPrice', () => {
+            const agg = (extra: Record<string, unknown>) =>
+                extractWishFields(page(ld(product({ offers: { '@type': 'AggregateOffer', priceCurrency: 'EUR', ...extra } }))), URL)
+            expect(agg({ lowPrice: '10' }).price).toBe(10)
+            expect(agg({ lowPrice: 10, highPrice: '10' }).price).toBe(10)
+            expect(agg({ lowPrice: '10', highPrice: '20' }).price).toBeUndefined()
+            expect(agg({ lowPrice: 799, highPrice: 1099 }).price).toBeUndefined()
         })
         it('caps at 10,000,000', () => {
             expect(priceOf('9999999')).toBe(9999999)
@@ -438,6 +442,55 @@ describe('extractWishFields', () => {
             const m = data(page(ld(two)), `${PHONE}?v=2`)
             expect(m.variants).toBeUndefined()
             expect(m.fields).toMatchObject({ name: 'Shirt M', price: 22 })
+        })
+
+        it('prefers a ProductGroup over a variant Product listed before it', () => {
+            const variant = { '@type': 'Product', name: 'Shirt S', offers: offer({ price: '20' }) }
+            const g = group([
+                { '@type': 'Product', name: 'Shirt S', offers: offer({ price: '20' }) },
+                { '@type': 'Product', name: 'Shirt M', offers: offer({ price: '22' }) },
+            ])
+            const r = data(page(ld({ '@graph': [variant, g] })))
+            expect(r.variants).toHaveLength(2)
+            expect(r.fields.price).toBeUndefined()
+        })
+
+        describe('@id references and unusable members', () => {
+            const refs = [{ '@id': 'https://shop.example.com/#a' }, { '@id': 'https://shop.example.com/#b' }]
+            const nodes = [
+                { '@type': 'Product', '@id': 'https://shop.example.com/#a', name: 'Coat S', offers: offer({ price: '39.99' }) },
+                { '@type': 'Product', '@id': 'https://shop.example.com/#b', name: 'Coat L', offers: offer({ price: '59.99' }) },
+            ]
+            const backup = og('og:price:amount', '39.99') + og('og:price:currency', 'EUR')
+
+            it('resolves hasVariant references to the nodes of the same graph', () => {
+                const r = data(page(ld({ '@graph': [{ ...group(refs), name: 'Coat' }, ...nodes] }) + backup))
+                expect(r.variants).toEqual([
+                    { label: 'Coat S', name: 'Coat S', price: 39.99, currency: '€' },
+                    { label: 'Coat L', name: 'Coat L', price: 59.99, currency: '€' },
+                ])
+                expect(r.fields.price).toBeUndefined()
+            })
+
+            it('gives no price, no variants and ignores backup tags when references cannot be resolved', () => {
+                const r = data(page(ld({ '@graph': [{ ...group(refs), name: 'Coat' }] }) + backup))
+                expect(r.variants).toBeUndefined()
+                expect(r.fields).toEqual({ name: 'Coat', description: 'A shirt' })
+            })
+
+            it('drops members with neither label nor price, and does not guess when one real version is left', () => {
+                const full = { '@type': 'Product', name: 'Small green coat', offers: offer({ price: '39.99' }) }
+                const urlOnly = (n: number) => ({ '@type': 'Product', url: `${PHONE}?v=${n}` })
+                const r = data(page(ld(group([full, urlOnly(1), urlOnly(2)])) + backup), `${PHONE}?utm_source=x`)
+                expect(r.variants).toBeUndefined()
+                expect(r.fields.price).toBeUndefined()
+            })
+
+            it('lists only the usable members when at least two remain', () => {
+                const mk = (name: string, price: string) => ({ '@type': 'Product', name, offers: offer({ price }) })
+                const r = data(page(ld(group([mk('A', '1'), { '@type': 'Product' }, mk('B', '2')]))))
+                expect(r.variants?.map(v => v.label)).toEqual(['A', 'B'])
+            })
         })
 
         it('applies the length limits and the http(s) image rule to variants', () => {

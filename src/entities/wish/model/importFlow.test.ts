@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { TImportedVariant } from '@/shared/lib/extractWishFields'
 
-import { decideDismissal, decideFillStart, decideImportOutcome, isRateLimitError, toVersionChoices } from './importFlow'
+import { decideDismissal, formatVersionPrice, decideFillStart, decideImportOutcome, isRateLimitError, toVersionChoices } from './importFlow'
 
 const v = (label: string, price?: number): TImportedVariant => ({
     label,
@@ -133,8 +133,28 @@ describe('toVersionChoices', () => {
 
 describe('isRateLimitError', () => {
     it('detects a 429 error', () => {
-        expect(isRateLimitError(new Error('Request failed: 429'))).toBe(true)
-        expect(isRateLimitError(new Error('500'))).toBe(false)
+        expect(isRateLimitError(new Error('API error 429: rate limited'))).toBe(true)
+        expect(isRateLimitError(new Error('API error 500: id 4290'))).toBe(false)
+        expect(isRateLimitError(new Error('Request failed: 429'))).toBe(false)
         expect(isRateLimitError('429')).toBe(false)
+    })
+})
+
+describe('formatVersionPrice', () => {
+    const plain = (text: string) => text.replace(/[  ]/g, ' ')
+    it('formats in the reader locale', () => {
+        expect(plain(formatVersionPrice(149.99, '€', 'fr'))).toBe('149,99 €')
+        expect(plain(formatVersionPrice(149.99, '€', 'en'))).toBe('€149.99')
+    })
+    it('maps $ and £', () => {
+        expect(plain(formatVersionPrice(10, '$', 'en'))).toBe('$10.00')
+        expect(plain(formatVersionPrice(10, '£', 'en'))).toBe('£10.00')
+    })
+    it('shows no decimals for yen', () => {
+        expect(plain(formatVersionPrice(1500, '¥', 'en'))).toMatch(/1,500$/)
+    })
+    it('falls back to symbol and two decimals for an unknown symbol', () => {
+        expect(formatVersionPrice(5, 'CHF', 'fr')).toBe('CHF5.00')
+        expect(formatVersionPrice(5, undefined, 'fr')).toBe('5.00')
     })
 })

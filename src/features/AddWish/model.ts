@@ -107,6 +107,12 @@ export const useAddWishModel = ({
         resetLinkImport()
     }, [resetLinkImport])
 
+    // Cancel, Escape and backdrop: the question and any in-flight import go away with the dialog.
+    const handleClose = useCallback(() => {
+        resetLinkImport()
+        onClose()
+    }, [resetLinkImport, onClose])
+
     const handleSubmit = useCallback(
         async (e?: React.FormEvent) => {
             if (e) e.preventDefault()
@@ -137,6 +143,7 @@ export const useAddWishModel = ({
         handleCheckboxChange,
         handleSubmit,
         resetForm,
+        handleClose,
         validateForm,
         linkImport,
     }

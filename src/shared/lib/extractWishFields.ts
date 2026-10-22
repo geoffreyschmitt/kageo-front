@@ -292,13 +292,24 @@ const scanHtml = (html: string): TScan => {
     return out
 }
 
-const readJsonLdProduct = (blocks: string[]): TRecord | undefined => {
+type TLdProduct = { product: TRecord; byId: Map<string, TRecord> }
+
+const readJsonLdProduct = (blocks: string[]): TLdProduct | undefined => {
     for (const block of blocks) {
         try {
             const nodes: TRecord[] = []
             collectNodes(JSON.parse(block), nodes)
-            const product = nodes.find(n => types(n).some(t => t === 'Product' || t === 'ProductGroup'))
-            if (product) return product
+            // A group describes the whole product; a variant Product listed before it must not win.
+            const product =
+                nodes.find(n => types(n).includes('ProductGroup')) ?? nodes.find(n => types(n).includes('Product'))
+            if (product) {
+                const byId = new Map<string, TRecord>()
+                for (const n of nodes) {
+                    const id = n['@id']
+                    if (typeof id === 'string' && !byId.has(id)) byId.set(id, n)
+                }
+                return { product, byId }
+            }
         } catch {
             // malformed block: ignore it, other sources still apply
         }
@@ -342,7 +353,10 @@ const offerPrice = (offer: unknown, inherited?: string): TPriceSource | undefine
     if (!isRecord(offer)) return undefined
     const spec = Array.isArray(offer.priceSpecification) ? offer.priceSpecification[0] : offer.priceSpecification
     const specRec = isRecord(spec) ? spec : {}
-    const price = parsePrice(offer.price) ?? parsePrice(offer.lowPrice) ?? parsePrice(specRec.price)
+    // A price range (low differs from high) is not a price: only a degenerate range counts.
+    const low = parsePrice(offer.lowPrice)
+    const lowPrice = offer.highPrice == null || parsePrice(offer.highPrice) === low ? low : undefined
+    const price = parsePrice(offer.price) ?? lowPrice ?? parsePrice(specRec.price)
     const currency = rawCurrency(offer.priceCurrency) ?? rawCurrency(specRec.priceCurrency) ?? inherited
     return { price, currency }
 }
@@ -439,20 +453,29 @@ const buildVariant = (rec: TRecord, source: TPriceSource | undefined, pageUrl: s
 
 type TVersions =
     | { kind: 'list'; variants: TImportedVariant[] }
-    | { kind: 'tooMany' }
+    // Versions exist but cannot be listed (too many, or none usable): no price, no question.
+    | { kind: 'noList' }
     // Boils down to one product: used like a plain Product.
     | { kind: 'single'; record: TRecord }
 
-// De-duplicate by (label, price, currency), then apply the cap.
-const settle = (entries: { variant: TImportedVariant; record: TRecord }[]): TVersions | undefined => {
+// Drop versions with neither label nor price, de-duplicate by (label, price, currency), then
+// apply the cap. `strict`: entries were dropped and fewer than 2 distinct ones remain, so the
+// page has versions we cannot tell apart.
+const settle = (
+    entries: { variant: TImportedVariant; record: TRecord }[],
+    strict = false,
+): TVersions | undefined => {
+    const usable = entries.filter(({ variant: v }) => v.label !== '' || v.price !== undefined)
+    const dropped = usable.length < entries.length
     const seen = new Set<string>()
-    const distinct = entries.filter(({ variant: v }) => {
+    const distinct = usable.filter(({ variant: v }) => {
         const key = JSON.stringify([v.label, v.price ?? null, v.currency ?? null])
         if (seen.has(key)) return false
         seen.add(key)
         return true
     })
-    if (distinct.length > MAX_VARIANTS) return { kind: 'tooMany' }
+    if (distinct.length > MAX_VARIANTS) return { kind: 'noList' }
+    if (strict && dropped && distinct.length < 2) return { kind: 'noList' }
     if (distinct.length < 2) return distinct[0] ? { kind: 'single', record: distinct[0].record } : undefined
     return { kind: 'list', variants: distinct.map(d => d.variant) }
 }
@@ -468,34 +491,47 @@ const offerVersions = (product: TRecord, pageUrl: string): TVersions | undefined
         const [first] = priced
         if (priced.every(r => r.price === first.price && r.currency === first.currency)) return undefined
     }
-    if (results.length > MAX_RAW_VERSIONS) return { kind: 'tooMany' }
+    if (results.length > MAX_RAW_VERSIONS) return { kind: 'noList' }
     const settled = settle(results.map(r => ({ variant: buildVariant(r.raw, r, pageUrl), record: r.raw })))
     // One distinct version is just the product as today.
     return settled?.kind === 'single' ? undefined : settled
 }
 
-const groupVersions = (group: TRecord, pageUrl: string): TVersions | undefined => {
+// A member given as `{ "@id": … }` is the node of that id elsewhere in the same JSON-LD (what it
+// states itself wins). Unresolvable references stay as they are and are dropped by `settle`.
+const resolveMember = (member: TRecord, byId: Map<string, TRecord>): TRecord => {
+    const id = member['@id']
+    const target = typeof id === 'string' ? byId.get(id) : undefined
+    return target ? { ...target, ...member } : member
+}
+
+const groupVersions = (group: TRecord, pageUrl: string, byId: Map<string, TRecord>): TVersions | undefined => {
     const members = (group.hasVariant as unknown[]).filter(isRecord)
     if (members.length === 0) return undefined
-    const matching = members.find(m => typeof m.url === 'string' && offerIsThisPage(m.url, pageUrl))
+    if (members.length > MAX_RAW_VERSIONS) return { kind: 'noList' }
+    const resolved = members.map(m => resolveMember(m, byId))
+    const matching = resolved.find(m => typeof m.url === 'string' && offerIsThisPage(m.url, pageUrl))
     if (matching) return { kind: 'single', record: matching }
-    if (members.length > MAX_RAW_VERSIONS) return { kind: 'tooMany' }
-    return settle(members.map(m => ({ variant: buildVariant(m, ldPrice(m, pageUrl), pageUrl), record: m })))
+    return settle(
+        resolved.map(m => ({ variant: buildVariant(m, ldPrice(m, pageUrl), pageUrl), record: m })),
+        resolved.length >= 2,
+    )
 }
 
 const extract = (html: string, pageUrl: string): TImportResult => {
     const scan = scanHtml(html)
     const meta = scan.metas
-    let product = readJsonLdProduct(scan.ld)
+    const ldFound = readJsonLdProduct(scan.ld)
+    let product = ldFound?.product
 
     let variants: TImportedVariant[] | undefined
     let versioned = false
     if (product) {
-        const versions = Array.isArray(product.hasVariant) ? groupVersions(product, pageUrl) : offerVersions(product, pageUrl)
+        const versions = Array.isArray(product.hasVariant) ? groupVersions(product, pageUrl, ldFound?.byId ?? new Map()) : offerVersions(product, pageUrl)
         if (versions?.kind === 'list') {
             variants = versions.variants
             versioned = true
-        } else if (versions?.kind === 'tooMany') {
+        } else if (versions?.kind === 'noList') {
             versioned = true
         } else if (versions?.kind === 'single') {
             // The group's own data stays as the fallback for what the one version lacks.
