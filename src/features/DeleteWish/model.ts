@@ -2,6 +2,8 @@
 
 import {useCallback, useState} from "react"
 
+import {useTranslations} from "next-intl"
+
 import {deleteWish} from "@/shared/api/wish/deleteWish";
 
 type TUseDeleteWishModelParams = {
@@ -17,6 +19,7 @@ export const useDeleteWishModel = ({
     onDelete,
     onError,
 }: TUseDeleteWishModelParams) => {
+    const t = useTranslations("wishlistToast")
     const [isDeleting, setIsDeleting] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
@@ -45,7 +48,7 @@ export const useDeleteWishModel = ({
             // Backend sync
             await deleteWish(wishId)
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to delete wish")
+            setError(err instanceof Error ? err.message : t("deleteError"))
             // Revert optimistic update
             if (onError) {
                 onError(wishId)
@@ -53,7 +56,7 @@ export const useDeleteWishModel = ({
         } finally {
             setIsDeleting(false)
         }
-    }, [wishId, onDelete, onError])
+    }, [wishId, onDelete, onError, t])
 
     return {
         isDeleting,

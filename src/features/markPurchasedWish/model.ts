@@ -2,6 +2,8 @@
 
 import {useCallback, useState} from "react"
 
+import {useTranslations} from "next-intl"
+
 import {markPurchased} from "@/shared/api/wish/markPurchased";
 
 type TUseMarkPurchasedWishModelParams = {
@@ -17,6 +19,7 @@ export const useMarkPurchasedWishModel = ({
     onMarkPurchased,
     onError,
 }: TUseMarkPurchasedWishModelParams) => {
+    const t = useTranslations("wishlistToast")
     const [isMarking, setIsMarking] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -33,7 +36,7 @@ export const useMarkPurchasedWishModel = ({
             // Backend sync
             await markPurchased(wishId, userId)
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to mark wish as purchased")
+            setError(err instanceof Error ? err.message : t("markPurchasedError"))
             // Revert optimistic update
             if (onError) {
                 onError(wishId)
@@ -41,7 +44,7 @@ export const useMarkPurchasedWishModel = ({
         } finally {
             setIsMarking(false)
         }
-    }, [wishId, userId, onMarkPurchased, onError])
+    }, [wishId, userId, onMarkPurchased, onError, t])
 
     return {
         isMarking,

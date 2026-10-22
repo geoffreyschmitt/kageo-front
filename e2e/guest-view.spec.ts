@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { createUser, createWish, createWishlist } from './helpers'
+import { createUser, createWish, createWishlist, newPerson } from './helpers'
 
 // A signed-out guest on a phone: the shared list is readable, nothing overflows sideways, and
 // Reserve is visible and asks them to log in rather than doing nothing.
@@ -54,4 +54,33 @@ test('a guest who logs in from the shared list can reserve straight away', async
     await page.getByRole('button', { name: 'Reserve', exact: true }).click()
     await expect(page.getByText('Reserved by you')).toBeVisible()
     await context.close()
+})
+
+test('the placeholder image is served', async ({ request }) => {
+    const res = await request.get('/placeholder.svg')
+    expect(res.status()).toBe(200)
+    expect(res.headers()['content-type']).toContain('image/svg+xml')
+})
+
+// Wish actions were hardcoded English; in French they must read French for guest and owner alike.
+test('wish action buttons are translated in French', async ({ browser, request }) => {
+    await createUser(request, 'Owner')
+    const list = await createWishlist(request, 'Liste française')
+    await createWish(request, list.id, 'Bouilloire', 45)
+
+    const guest = await newPerson(browser, 'Gus')
+    await guest.page.goto(`/fr/wishlist/${list.id}`)
+    await guest.page.getByRole('button', { name: 'Réserver', exact: true }).click()
+    await expect(guest.page.getByRole('button', { name: 'Annuler la réservation' })).toBeVisible()
+    await expect(guest.page.getByRole('button', { name: 'Marquer comme acheté' })).toBeVisible()
+    await expect(guest.page.getByRole('button', { name: /Cancel Reservation|Mark Purchased/ })).toHaveCount(0)
+    await guest.context.close()
+
+    // The owner's request context is the default page's, so open the list as that same person.
+    const owner = await browser.newContext({ storageState: await request.storageState() })
+    const ownerPage = await owner.newPage()
+    await ownerPage.goto(`/fr/wishlist/${list.id}`)
+    await expect(ownerPage.getByRole('button', { name: 'Supprimer', exact: true })).toBeVisible()
+    await expect(ownerPage.getByRole('button', { name: 'Remove', exact: true })).toHaveCount(0)
+    await owner.close()
 })

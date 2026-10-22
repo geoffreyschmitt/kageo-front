@@ -230,7 +230,7 @@ No test runner in this repo. **Gate: `npm run build`** (lint is broken — see
 3. Contribute; collapsed view shows bar + %.
 4. Contributions cross the price → badge "Financé", status `funded`, no buy
    buttons; second contribution still accepted (overfunding).
-5. Reduce own pledge below the goal → back to `wanted`, `Réserver` returns.
+5. Reduce own pledge below the goal → back to `wanted`; `Réserver` stays hidden while the pot is open (see Wish card, `giftPotActive`).
 6. Organiser on a funded pot → *Marquer comme acheté* → status `purchased`,
    pot panel still shows "Objectif atteint".
 7. Owner: never sees the pot, the `funded`/`purchased` badge, or a funded

@@ -38,7 +38,7 @@ export const WishlistList = ({
           <div className={styles.wishlistList__emptyIllustration} aria-hidden="true">
             <svg viewBox="0 0 160 130" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="28" y="26" width="104" height="88" rx="6" fill="#f2ede5" stroke="#d6cec4" strokeWidth="1.5"/>
-              <rect x="28" y="26" width="16" height="88" rx="6 0 0 6" fill="#ebe5da" stroke="#d6cec4" strokeWidth="1.5"/>
+              <path d="M44 26H34a6 6 0 0 0-6 6V108a6 6 0 0 0 6 6H44Z" fill="#ebe5da" stroke="#d6cec4" strokeWidth="1.5"/>
               <circle cx="36" cy="46" r="4" fill="none" stroke="#b8b0a8" strokeWidth="1.5"/>
               <circle cx="36" cy="66" r="4" fill="none" stroke="#b8b0a8" strokeWidth="1.5"/>
               <circle cx="36" cy="86" r="4" fill="none" stroke="#b8b0a8" strokeWidth="1.5"/>

@@ -1,5 +1,7 @@
 "use client"
 
+import {useTranslations} from "next-intl"
+
 import {useDeleteWishModel} from "../model"
 
 import styles from "./DeleteWishButton.module.css"
@@ -8,6 +10,7 @@ import {DeleteWishConfirmationModal} from "./DeleteWishConfirmationModal"
 
 
 export const DeleteWishButton = ({wishId, wishName, onDelete, onError}: TDeleteWishButton) => {
+    const t = useTranslations("wishCard")
     const {isDeleting, error, handleDelete, isConfirmOpen, openConfirm, closeConfirm, wishName: modelWishName} = useDeleteWishModel({
         wishId,
         wishName,
@@ -22,7 +25,7 @@ export const DeleteWishButton = ({wishId, wishName, onDelete, onError}: TDeleteW
                 onClick={openConfirm}
                 disabled={isDeleting}
             >
-                {isDeleting ? "Deleting..." : "Remove"}
+                {isDeleting ? t("removingWish") : t("removeWish")}
             </button>
             {error && (
                 <span className={styles['delete-button__error']}>{error}</span>
@@ -31,7 +34,7 @@ export const DeleteWishButton = ({wishId, wishName, onDelete, onError}: TDeleteW
                 isOpen={isConfirmOpen}
                 onClose={closeConfirm}
                 onConfirm={handleDelete}
-                wishName={modelWishName || wishName || "this wish"}
+                wishName={modelWishName || wishName || t("thisWish")}
             />
         </>
     )

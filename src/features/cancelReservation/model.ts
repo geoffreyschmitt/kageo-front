@@ -2,6 +2,8 @@
 
 import {useCallback, useState} from "react"
 
+import {useTranslations} from "next-intl"
+
 import {cancelReservation} from "@/shared/api/wish/cancelReservation";
 
 type TUseCancelReservationModelParams = {
@@ -15,6 +17,7 @@ export const useCancelReservationModel = ({
     onCancel,
     onError,
 }: TUseCancelReservationModelParams) => {
+    const t = useTranslations("wishlistToast")
     const [isCancelling, setIsCancelling] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -31,7 +34,7 @@ export const useCancelReservationModel = ({
             // Backend sync
             await cancelReservation(wishId)
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to cancel reservation")
+            setError(err instanceof Error ? err.message : t("cancelError"))
             // Revert optimistic update
             if (onError) {
                 onError(wishId)
@@ -39,7 +42,7 @@ export const useCancelReservationModel = ({
         } finally {
             setIsCancelling(false)
         }
-    }, [wishId, onCancel, onError])
+    }, [wishId, onCancel, onError, t])
 
     return {
         isCancelling,
