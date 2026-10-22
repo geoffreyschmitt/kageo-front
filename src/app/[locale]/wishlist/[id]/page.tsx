@@ -85,8 +85,11 @@ export default async function WishlistPage({
                   })),
               ),
           )
+    // Marks a failure as handled so an early rejection is not reported as unhandled; the later
+    // `await safeBetsPromise` still throws.
+    safeBetsPromise.catch(() => {})
 
-    const wishIds = await kv.smembers<string[]>(`wishlist:${id}:wishes`)
+    const wishIds =await kv.smembers<string[]>(`wishlist:${id}:wishes`)
     const rawWishes = wishIds?.length
         ? (await Promise.all(wishIds.map((wid) => kv.get<KVWish>(`wish:${wid}`)))).filter(Boolean) as KVWish[]
         : []

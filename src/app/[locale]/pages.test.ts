@@ -157,6 +157,31 @@ describe('wishlist page: the pot is a surprise for the owner', () => {
     })
 })
 
+describe('wishlist page: safe bets are a surprise for the owner', () => {
+    const SECRET = 'distinctive-safebet-comment'
+
+    beforeEach(async () => {
+        await list('L', 'owner')
+        await fake.set('user:owner:safeBets', [{ id: 'sb1', title: 'Chocolates', createdAt: PAST }])
+        await fake.rpush('safebet:sb1:comments', JSON.stringify({ id: 'c', authorId: 'guest', authorName: 'Gus', text: SECRET }))
+    })
+
+    it('gives the owner no safe bets and none of their comments', async () => {
+        signInAs('owner')
+        const props = propsOf(await wishlistPage('L'))
+
+        expect(props.safeBets).toEqual([])
+        expect(JSON.stringify(props)).not.toContain(SECRET)
+    })
+
+    it('gives a guest the safe bets with their comment count', async () => {
+        signInAs('guest')
+        const props = propsOf(await wishlistPage('L'))
+
+        expect((props.safeBets as TProps[])[0]).toMatchObject({ id: 'sb1', commentCount: 1 })
+    })
+})
+
 describe('wishlist page: details', () => {
     it('resolves reserver and purchaser ids to names, never raw ids', async () => {
         await list('L', 'owner')

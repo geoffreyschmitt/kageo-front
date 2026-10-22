@@ -1,5 +1,7 @@
 import { kv } from '@vercel/kv'
 
+import { safeBetCommentsKey } from '@/shared/lib/safeBets'
+
 // A MULTI/EXEC transaction: every queued command is applied together or not at all.
 export type KvTx = ReturnType<typeof kv.multi>
 
@@ -57,4 +59,4 @@ export const scanKeys = async (match: string): Promise<string[]> => {
 }
 
 // Every key that hangs off a safe-bet entry.
-export const safeBetKeys = (entryId: string): string[] => [`safebet:${entryId}:comments`]
+export const safeBetKeys = (entryId: string): string[] => [safeBetCommentsKey(entryId)]

@@ -167,9 +167,9 @@ describe('concurrency', () => {
             Array.from({ length: 10 }, (_, i) => runAs('owner', () => POST(jsonRequest({ title: `t${i}` })))),
         )
         const created = res.filter((r) => r.status === 201)
-        for (const r of res) expect([201, 503]).toContain(r.status)
+        expect(res.map((r) => r.status)).toEqual(Array(10).fill(201))
         const ids = new Set((await stored('owner')).map((e) => e.id))
-        expect(ids.size).toBe(created.length)
+        expect(ids.size).toBe(10)
         for (const r of created) expect(ids.has(((await bodyOf(r)) as unknown as TSafeBet).id)).toBe(true)
     })
 
@@ -178,10 +178,10 @@ describe('concurrency', () => {
             Array.from({ length: 35 }, (_, i) => runAs('owner', () => POST(jsonRequest({ title: `t${i}` })))),
         )
         const created = res.filter((r) => r.status === 201)
-        for (const r of res) expect([201, 409, 503]).toContain(r.status)
+        expect(created).toHaveLength(30)
+        expect(res.filter((r) => r.status === 409)).toHaveLength(5)
         const entries = await stored('owner')
-        expect(entries.length).toBeLessThanOrEqual(30)
-        expect(entries.length).toBe(created.length)
+        expect(entries).toHaveLength(30)
         const ids = new Set(entries.map((e) => e.id))
         for (const r of created) expect(ids.has(((await bodyOf(r)) as unknown as TSafeBet).id)).toBe(true)
     })

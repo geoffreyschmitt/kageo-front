@@ -115,7 +115,15 @@ const SafeBetForm = ({ initial, submitLabel, onSubmit, onCancel }: TFormProps) =
     )
 }
 
-const toDraft = (e: TSafeBet): TDraft => ({
+// A dead image URL hides the thumbnail instead of showing a broken-image icon.
+const SafeBetThumb = ({ src }: { src: string }) => {
+    const [failed, setFailed] = useState(false)
+    if (failed) return null
+    // eslint-disable-next-line @next/next/no-img-element -- arbitrary remote host
+    return <img src={src} alt="" className={s.thumb} loading="lazy" onError={() => setFailed(true)} />
+}
+
+const toDraft =(e: TSafeBet): TDraft => ({
     title: e.title,
     description: e.description ?? '',
     imageUrl: e.imageUrl ?? '',
@@ -176,10 +184,7 @@ export const ManageSafeBets = () => {
                                     ) : (
                                         <>
                                             <div className={s.itemMain}>
-                                                {entry.imageUrl && (
-                                                    // eslint-disable-next-line @next/next/no-img-element -- arbitrary remote host
-                                                    <img src={entry.imageUrl} alt="" className={s.thumb} loading="lazy" />
-                                                )}
+                                                {entry.imageUrl && <SafeBetThumb key={entry.imageUrl} src={entry.imageUrl} />}
                                                 <div className={s.itemText}>
                                                     <p className={s.itemTitle}>{entry.title}</p>
                                                     {entry.description && <p className={s.itemDesc}>{entry.description}</p>}

@@ -730,7 +730,7 @@
   },
   "safeBets": {
     "title": "Valeurs sûres",
-    "subtitle": "Des idées qui plaisent presque toujours, proposées sous chacune de vos listes.",
+    "subtitle": "Des idées qui plaisent presque toujours. Vos invités les voient sous chacune de vos listes.",
     "guestTitle": "Des idées qui leur feraient plaisir",
     "hint": "Vos proches verront ces idées sur chacune de vos listes partagées, pour s'inspirer. Vous ne voyez jamais les commentaires qu'ils y laissent.",
     "loading": "Chargement…",
