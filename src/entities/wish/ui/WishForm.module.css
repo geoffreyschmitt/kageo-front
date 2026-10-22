@@ -443,6 +443,34 @@
 
 /* ── Link import ──────────────────────────── */
 
+.wishForm__import {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.wishForm__import > [role="status"] {
+    align-self: stretch;
+}
+
+/* Every button in the import area is a comfortable touch target. */
+.wishForm__import button {
+    min-height: 44px;
+    max-width: 100%;
+}
+
+.wishForm__fillButton {
+    color: var(--wf2-sage);
+    border-color: var(--accent-tint-border);
+}
+
+.wishForm__versionButton {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: left;
+}
+
 .wishForm__importNote {
     margin: 0;
     font-family: var(--wf2-font-sans);
@@ -465,10 +493,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-}
-
-.wishForm__importActions button {
-    min-height: 44px;
 }
 
 /* ── Mobile ───────────────────────────────── */

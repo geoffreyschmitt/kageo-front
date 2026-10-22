@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { useTranslations } from "next-intl"
 
+import type {TVersionChoice} from "@/entities/wish/model/importFlow";
 import {TProposedWishForm, TProposedWishFormData, TWishForm} from "@/entities/wish/ui/WishForm.types";
 
 import {isValidUrl} from "@/shared/lib/isValidUrl";
@@ -11,6 +12,15 @@ import {isValidUrl} from "@/shared/lib/isValidUrl";
 import styles from "./WishForm.module.css"
 
 
+// Version button text: its label, then its price with the currency symbol when known.
+// A version without a label shows only its price.
+const formatVersion = (version: TVersionChoice): string => {
+    const label = version.label.trim()
+    const price = version.price !== undefined && Number.isFinite(version.price)
+        ? `${version.currency ?? ""}${version.price.toFixed(2)}`
+        : ""
+    return [label, price].filter(Boolean).join(" · ")
+}
 
 export const WishForm = <T extends TWishForm | TProposedWishForm>({
     formData,
@@ -75,10 +85,6 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                             name="purchaseUrl"
                             value={formData.purchaseUrl}
                             onChange={(e) => handleInputChange("purchaseUrl", e.target.value)}
-                            onPaste={linkImport
-                                ? (e) => linkImport.onLinkPaste(e.clipboardData.getData('text').trim())
-                                : undefined}
-                            onBlur={linkImport ? () => linkImport.onLinkBlur() : undefined}
                             disabled={isSubmitting}
                             className={styles.wishForm__input}
                         />
@@ -89,39 +95,67 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                         )}
                     </label>
                     {linkImport && (
-                        <div role="status" aria-live="polite">
-                            {linkImport.status === 'loading' && (
-                                <p className={styles.wishForm__importNote}>{t('import.looking')}</p>
-                            )}
-                            {linkImport.status === 'found' && (
-                                <p className={styles.wishForm__importNote}>{t('import.found')}</p>
-                            )}
-                            {linkImport.status === 'notFound' && (
-                                <p className={styles.wishForm__importNote}>{t('import.notFound')}</p>
-                            )}
-                            {linkImport.status === 'asking' && (
-                                <div className={styles.wishForm__importQuestion}>
-                                    <p className={styles.wishForm__importNote}>{t('import.replaceQuestion')}</p>
-                                    <div className={styles.wishForm__importActions}>
-                                        <button
-                                            type="button"
-                                            className={`${styles.wishForm__button} ${styles['wishForm__button--primary']}`}
-                                            onClick={linkImport.onReplace}
-                                            disabled={isSubmitting}
-                                        >
-                                            {t('import.replace')}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={`${styles.wishForm__button} ${styles['wishForm__button--secondary']}`}
-                                            onClick={linkImport.onKeep}
-                                            disabled={isSubmitting}
-                                        >
-                                            {t('import.keep')}
-                                        </button>
+                        <div className={styles.wishForm__import}>
+                            <button
+                                type="button"
+                                className={`${styles.wishForm__button} ${styles['wishForm__button--secondary']} ${styles.wishForm__fillButton}`}
+                                onClick={linkImport.onFill}
+                                disabled={!linkImport.canFill || linkImport.status === 'loading' || isSubmitting}
+                            >
+                                {t('import.fill')}
+                            </button>
+                            <div role="status" aria-live="polite">
+                                {linkImport.status === 'loading' && (
+                                    <p className={styles.wishForm__importNote}>{t('import.looking')}</p>
+                                )}
+                                {linkImport.status === 'found' && (
+                                    <p className={styles.wishForm__importNote}>{t('import.found')}</p>
+                                )}
+                                {linkImport.status === 'notFound' && (
+                                    <p className={styles.wishForm__importNote}>{t('import.notFound')}</p>
+                                )}
+                                {linkImport.status === 'chooseMode' && (
+                                    <div className={styles.wishForm__importQuestion}>
+                                        <p className={styles.wishForm__importNote}>{t('import.modeQuestion')}</p>
+                                        <div className={styles.wishForm__importActions}>
+                                            <button
+                                                type="button"
+                                                className={`${styles.wishForm__button} ${styles['wishForm__button--primary']}`}
+                                                onClick={() => linkImport.onChooseMode('replace')}
+                                                disabled={isSubmitting}
+                                            >
+                                                {t('import.replace')}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`${styles.wishForm__button} ${styles['wishForm__button--secondary']}`}
+                                                onClick={() => linkImport.onChooseMode('fillEmpty')}
+                                                disabled={isSubmitting}
+                                            >
+                                                {t('import.fillEmpty')}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
+                                {linkImport.status === 'chooseVersion' && (
+                                    <div className={styles.wishForm__importQuestion}>
+                                        <p className={styles.wishForm__importNote}>{t('import.versionQuestion')}</p>
+                                        <div className={styles.wishForm__importActions}>
+                                            {linkImport.versions.map((version, index) => (
+                                                <button
+                                                    key={`${index}-${version.label}`}
+                                                    type="button"
+                                                    className={`${styles.wishForm__button} ${styles['wishForm__button--secondary']} ${styles.wishForm__versionButton}`}
+                                                    onClick={() => linkImport.onChooseVersion(index)}
+                                                    disabled={isSubmitting}
+                                                >
+                                                    {formatVersion(version)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>

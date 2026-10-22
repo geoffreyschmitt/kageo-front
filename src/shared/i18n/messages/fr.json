@@ -351,12 +351,14 @@
     "adding": "Ajout...",
     "addItem": "Ajouter",
     "import": {
-      "looking": "Je cherche les détails…",
+      "fill": "Remplir pour moi",
+      "looking":"Je cherche les détails…",
       "found": "Trouvé, rempli ci-dessous. Vérifiez et modifiez ce que vous voulez.",
       "notFound": "Impossible de lire ce site, remplissez à la main.",
-      "replaceQuestion": "Ce lien est différent. Remplacer les informations actuelles par celles du nouveau lien ?",
+      "modeQuestion": "Remplacer les informations actuelles, ou remplir seulement les champs vides ?",
       "replace": "Remplacer",
-      "keep": "Garder mes informations"
+      "fillEmpty": "Remplir les champs vides",
+      "versionQuestion": "Nous avons trouvé plusieurs versions de ce produit, laquelle est la vôtre ?"
     },
     "errors": {
       "nameRequired": "Le nom est requis",
