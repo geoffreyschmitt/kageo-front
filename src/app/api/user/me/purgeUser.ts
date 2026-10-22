@@ -3,8 +3,9 @@ import { kv } from '@vercel/kv'
 import { reconcileFundedStatus } from '@/app/api/wish/pot/reconcileFundedStatus'
 import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 
-import { queueListReplace, queueWishlistDeletion, scanKeys } from '@/shared/lib/kvCascade'
+import { queueListReplace, queueWishlistDeletion, safeBetKeys, scanKeys } from '@/shared/lib/kvCascade'
 import { withLock, wishLock, wishlistLock } from '@/shared/lib/kvLock'
+import { getSafeBets, safeBetsKey } from '@/shared/lib/safeBets'
 
 type TWishKV = {
     id: string
@@ -17,7 +18,7 @@ type TWishKV = {
 }
 type TWishlistKV = { id: string; ownerId?: string; totalContributed?: number }
 type TPotKV = { creatorId: string; creatorName?: string }
-type TOwned = { wishlists: Set<string>; wishes: Set<string> }
+type TOwned = { wishlists: Set<string>; wishes: Set<string>; safeBets: Set<string> }
 
 // `wish:{id}:suffix` / `wishlist:{id}:suffix` -> id
 const idOf = (key: string): string => key.split(':')[1]
@@ -169,9 +170,13 @@ const dropPledges = async (userId: string, owned: TOwned) => {
 }
 
 const dropComments = async (userId: string, owned: TOwned) => {
-    const keys = [...(await scanKeys('wishlist:*:comments')), ...(await scanKeys('wish:*:comments'))]
+    const keys = [
+        ...(await scanKeys('wishlist:*:comments')),
+        ...(await scanKeys('wish:*:comments')),
+        ...(await scanKeys('safebet:*:comments')),
+    ]
     for (const key of keys) {
-        const parent = key.startsWith('wishlist:') ? owned.wishlists : owned.wishes
+        const parent = key.startsWith('wishlist:') ? owned.wishlists : key.startsWith('safebet:') ? owned.safeBets : owned.wishes
         if (parent.has(idOf(key))) continue
 
         const entries = (await kv.lrange<unknown>(key, 0, -1)) ?? []
@@ -227,7 +232,9 @@ export const purgeUser = async (userId: string, email: string) => {
             invitees: (await kv.smembers<string[]>(`wishlist:${wishlistId}:invitees`)) ?? [],
         })),
     )
+    const safeBetIds = (await getSafeBets(userId)).map((bet) => bet.id)
     const owned: TOwned = {
+        safeBets: new Set(safeBetIds),
         wishlists: new Set(wishlistIds),
         wishes: new Set(plans.flatMap((p) => p.wishIds)),
     }
@@ -247,6 +254,7 @@ export const purgeUser = async (userId: string, email: string) => {
     const invitedTo = (await kv.smembers<string[]>(`email:${email}:invitedWishlists`)) ?? []
     const tx = kv.multi()
     for (const wishlistId of invitedTo) tx.srem(`wishlist:${wishlistId}:invitees`, email)
+    tx.del(safeBetsKey(userId), ...safeBetIds.flatMap(safeBetKeys))
     tx.del(`email:${email}:invitedWishlists`, `user:${userId}:wishlists`, `user:${email}`, `user:id:${userId}`)
     await tx.exec()
 }

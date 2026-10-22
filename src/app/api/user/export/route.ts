@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { limitWrite } from '@/shared/lib/rateLimit'
+import { getSafeBets } from '@/shared/lib/safeBets'
 
 type KVUser = {
     id: string
@@ -58,5 +59,6 @@ export async function GET(request: NextRequest) {
             ? { id: user.id, name: user.name, email: user.email, createdAt: user.createdAt, birthdate: user.birthdate ?? null }
             : null,
         wishlists: wishlistsWithWishes,
+        safeBets: await getSafeBets(userId),
     })
 }

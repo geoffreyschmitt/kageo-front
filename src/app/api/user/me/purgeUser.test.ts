@@ -111,6 +111,24 @@ describe('purgeUser', () => {
         expect(fake.list('wishlist:B:comments').map((c) => c.authorId)).toEqual(['carol'])
     })
 
+    it('deletes the user\'s safe-bet entries and their threads', async () => {
+        await fake.set('user:alice:safeBets', [{ id: 's1', title: 'Socks' }, { id: 's2', title: 'Tea' }])
+        await fake.rpush('safebet:s1:comments', comment('bob', 'one'))
+        await fake.rpush('safebet:s2:comments', comment('carol', 'two'))
+        await purgeUser('alice', 'alice@x.io')
+        for (const key of ['user:alice:safeBets', 'safebet:s1:comments', 'safebet:s2:comments']) {
+            expect(fake.has(key), key).toBe(false)
+        }
+    })
+
+    it('strips only the user\'s comments from other people\'s safe-bet threads', async () => {
+        await fake.set('user:bob:safeBets', [{ id: 'sb', title: 'Book' }])
+        await fake.rpush('safebet:sb:comments', comment('alice', 'mine'), comment('carol', 'theirs'))
+        await purgeUser('alice', 'alice@x.io')
+        expect(fake.list('safebet:sb:comments').map((c) => c.authorId)).toEqual(['carol'])
+        expect(fake.has('user:bob:safeBets')).toBe(true)
+    })
+
     it('releases reservations (restoring the pre-reservation status) and purchases', async () => {
         await purgeUser('alice', 'alice@x.io')
         const w1 = (await fake.get('wish:w1')) as Record<string, unknown>

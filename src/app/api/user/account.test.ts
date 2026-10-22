@@ -164,16 +164,31 @@ describe('GET /api/user/export', () => {
         await fake.sadd('user:u1:wishlists', 'L1', 'L2')
         await fake.sadd('wishlist:L1:wishes', 'w1')
         await fake.set('wish:w1', { id: 'w1', wishlistId: 'L1', title: 'Book' })
+        await fake.set('user:u1:safeBets', [{ id: 's1', title: 'Socks' }])
+        await fake.rpush('safebet:s1:comments', JSON.stringify({ id: 'c', authorId: 'x', text: 'secret' }))
         signInAs('u1')
 
-        const body = (await (await exportData(new NextRequest('http://localhost/api/user/export'))).json()) as {
+        const res = await exportData(new NextRequest('http://localhost/api/user/export'))
+        const body = (await res.json()) as {
             profile: Record<string, unknown>
             wishlists: { id: string; wishes: { id: string }[] }[]
+            safeBets: { id: string }[]
         }
+        expect(body.safeBets.map((s) => s.id)).toEqual(['s1'])
+        expect(JSON.stringify(body)).not.toContain('secret')
         expect(body.profile).toMatchObject({ id: 'u1', email: 'u1@x.io', birthdate: '1990-05-17' })
         expect(body.profile).not.toHaveProperty('password')
         expect(body.wishlists.map((w) => w.id)).toEqual(['L1'])
         expect(body.wishlists[0].wishes.map((w) => w.id)).toEqual(['w1'])
+    })
+})
+
+describe('GET /api/user/export safeBets', () => {
+    it('exports an empty safeBets array when there are none', async () => {
+        await seedUser({})
+        signInAs('u1')
+        const body = (await (await exportData(new NextRequest('http://localhost/api/user/export'))).json()) as { safeBets: unknown[] }
+        expect(body.safeBets).toEqual([])
     })
 })
 
