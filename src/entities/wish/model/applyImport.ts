@@ -10,7 +10,7 @@ export type TImportableForm = {
 
 export type TFormPatch = Partial<TImportableForm & { purchaseUrl: string }>
 
-const isBlank =(value: string): boolean => value.trim() === ''
+const isBlank = (value: string): boolean => value.trim() === ''
 const isEmptyPrice = (price: number): boolean => Number.isNaN(price) || price <= 0
 const hasText = (value: string | undefined): value is string => value !== undefined && !isBlank(value)
 

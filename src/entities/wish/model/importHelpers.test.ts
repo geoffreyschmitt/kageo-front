@@ -123,3 +123,55 @@ describe('applyVersion', () => {
         expect(patch).not.toHaveProperty('currency')
     })
 })
+
+describe('extractFirstUrl hardening', () => {
+    const fast = (text: string): string | null => {
+        const start = performance.now()
+        const out = extractFirstUrl(text)
+        expect(performance.now() - start).toBeLessThan(100)
+        return out
+    }
+    it('stays linear on hostile input', () => {
+        fast('.'.repeat(300_000))
+        fast('http://a' + '.'.repeat(300_000) + 'a')
+        fast('http://'.repeat(150_000))
+        fast('a'.repeat(1_000_000))
+        fast('()'.repeat(150_000))
+        fast('http://a' + '('.repeat(150_000) + ')'.repeat(150_000))
+    })
+    it('treats over-long links as no link', () => {
+        expect(extractFirstUrl('https://a.com/' + 'x'.repeat(3000))).toBeNull()
+    })
+    it('keeps balanced parentheses', () => {
+        expect(extractFirstUrl('https://en.wikipedia.org/wiki/Foo_(bar)')).toBe('https://en.wikipedia.org/wiki/Foo_(bar)')
+        expect(extractFirstUrl('https://en.wikipedia.org/wiki/Foo_(bar).')).toBe('https://en.wikipedia.org/wiki/Foo_(bar)')
+        expect(extractFirstUrl('https://a.com/x) and more')).toBe('https://a.com/x')
+        expect(extractFirstUrl('(https://a.com/x)')).toBe('https://a.com/x')
+    })
+    it('stops at closing quotes and emoji', () => {
+        expect(extractFirstUrl('«https://a.com/x»')).toBe('https://a.com/x')
+        expect(extractFirstUrl('“https://a.com/x”')).toBe('https://a.com/x')
+        expect(extractFirstUrl('https://a.com/x\u{1F44D}')).toBe('https://a.com/x')
+        expect(extractFirstUrl('"https://a.com/x"')).toBe('https://a.com/x')
+    })
+    it('keeps an uppercase scheme as typed and rejects bare www', () => {
+        expect(extractFirstUrl('HTTPS://A.COM/X')).toBe('HTTPS://A.COM/X')
+        expect(extractFirstUrl('www.shop.com/x')).toBeNull()
+    })
+})
+
+describe('findVersionByPrice edges', () => {
+    it('tolerance is inclusive', () => {
+        expect(findVersionByPrice([v('A', 1010)], 1000)).toBe(0)
+        expect(findVersionByPrice([v('A', 1011)], 1000)).toBeNull()
+    })
+    it('rejects infinite, negative and empty', () => {
+        expect(findVersionByPrice([v('A', 10)], Infinity)).toBeNull()
+        expect(findVersionByPrice([v('A', 10)], -10)).toBeNull()
+        expect(findVersionByPrice([], 10)).toBeNull()
+    })
+    it('ignores non-finite or non-positive version prices', () => {
+        expect(findVersionByPrice([v('A', Number.NaN), v('B', 0), v('C', 5)], 5)).toBe(2)
+        expect(findVersionByPrice([v('A', 0)], 0.5)).toBeNull()
+    })
+})

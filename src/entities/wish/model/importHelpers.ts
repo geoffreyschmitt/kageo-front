@@ -2,13 +2,44 @@ import type { TImportedFields, TImportedVariant } from '@/shared/lib/extractWish
 
 import { applyImport, type TFormPatch, type TImportableForm } from './applyImport'
 
-const TRAILING = /[.,)!?;:]+$/
+const MAX_SCANNED_TEXT = 10_000
+const MAX_URL_LENGTH = 2048
+const STRIP_TRAILING = '.,!?;:'
+const URL_STOPPERS = '<>"\'»”’›'
+const PICTOGRAPH = /\p{Extended_Pictographic}/u
 
-// First http(s) link found in pasted text (phone share text), or null.
+// First http(s) link found in pasted text (phone share text), or null. Linear time: the
+// text is capped and scanned character by character, never with a backtracking pattern.
 export const extractFirstUrl = (text: string): string | null => {
-    const match = /https?:\/\/[^\s<>"']+/i.exec(text)
-    if (!match) return null
-    const url = match[0].replace(TRAILING, '')
+    const head = text.slice(0, MAX_SCANNED_TEXT)
+    const start = head.search(/https?:\/\//i)
+    if (start === -1) return null
+
+    let end = start
+    for (const char of head.slice(start)) {
+        if (/\s/.test(char) || URL_STOPPERS.includes(char) || PICTOGRAPH.test(char)) break
+        end += char.length
+        if (end - start > MAX_URL_LENGTH) return null
+    }
+
+    let url = head.slice(start, end)
+    let opens = 0
+    let closes = 0
+    for (const char of url) {
+        if (char === '(') opens++
+        else if (char === ')') closes++
+    }
+    while (url.length > 0) {
+        const last = url[url.length - 1]
+        if (STRIP_TRAILING.includes(last)) {
+            url = url.slice(0, -1)
+        } else if (last === ')' && closes > opens) {
+            url = url.slice(0, -1)
+            closes--
+        } else {
+            break
+        }
+    }
     return /^https?:\/\/./i.test(url) ? url : null
 }
 
@@ -17,7 +48,10 @@ export const findVersionByPrice = (variants: TImportedVariant[], typedPrice: num
     if (!Number.isFinite(typedPrice) || typedPrice <= 0) return null
     const priced = variants
         .map((variant, index) => ({ index, price: variant.price }))
-        .filter((entry): entry is { index: number; price: number } => typeof entry.price === 'number')
+        .filter(
+            (entry): entry is { index: number; price: number } =>
+                typeof entry.price === 'number' && Number.isFinite(entry.price) && entry.price > 0,
+        )
         .map(entry => ({ index: entry.index, diff: Math.abs(entry.price - typedPrice) }))
         .sort((a, b) => a.diff - b.diff)
     const best = priced[0]
