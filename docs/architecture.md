@@ -35,6 +35,7 @@ API (`app/api/`):
 | `wish`, `wish/[wishId]` | Wish create / read / update |
 | `wish/reserve`, `cancel`, `mark-purchased`, `remove-purchased`, `delete` | Wish state transitions |
 | `wish/pot`, `wish/contribute` | Per-wish gift pot |
+| `wish/import` | `POST {url}`: fetches a public page and returns prefill fields for the wish form (see Wish import) |
 
 Every handler resolves the caller with `getServerSession(authOptions)` (`shared/config/authOptions.ts`).
 
@@ -65,7 +66,7 @@ All values are JSON unless noted. IDs are UUIDs.
 | `wish:{id}:contributions` | list | pledge entries |
 | `wish:{id}:comments` | list | `TComment` |
 | `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}` or `lock:wishlist:{id}`. Excluded from backups (as are `ratelimit:*` counters) |
-| `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `reserve`, `contribute`, `comment`, `suggest`, `invite` or `write`; `{subject}` is the user id (register: the client IP) |
+| `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `reserve`, `contribute`, `comment`, `suggest`, `invite`, `import` or `write`; `{subject}` is the user id (register: the client IP) |
 | `ratelimit:ip:{ip}` | counter (TTL) | per-IP ceiling across all accounts on write routes |
 | `ratelimit:loginFailures:{email}\|{ip}` | counter (TTL) | failed password sign-ins per email and IP (`shared/lib/loginThrottle.ts`); cleared on success |
 
@@ -75,7 +76,16 @@ Deleting a wishlist, wish or account must also delete every sub-key and back-ref
 
 **Visibility rules**: pots and comments never reach the wishlist owner (surprise). Role-shaped pot payloads are built in one place, `app/api/wishlist/pot/readPot.ts`.
 
-**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 20 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, suggest 60 / 10 min, other writes 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
+**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 20 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, import 20 / 10 min, suggest 60 / 10 min, other writes 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
+
+## Wish import
+
+`POST /api/wish/import` with `{url}` prefills the wish form from a product page's Open Graph / schema.org data. Nothing is stored or cached: the page is fetched, read and dropped.
+
+- **Auth and limits:** needs a session (`401` otherwise). Rate group `import`: 20 per 600 s per account plus the per-IP ceiling; every call counts, including failed ones. A missing, non-string or over-2048-character `url`, or one that is not `http:`/`https:`, answers `400`.
+- **Response:** always `200 {found, fields}`. `fields` holds any of `name`, `description`, `imageUrl`, `price` (number), `currency` (ISO code). Any failure (refused address, network error, timeout, oversize, not HTML, nothing extractable) is `{found: false, fields: {}}` with no detail, so nothing about the target leaks.
+- **Fetch safety** (`shared/lib/fetchHtml.ts`, `shared/lib/netGuard.ts`): `http`/`https` only, ports 80/443 only, no credentials in the URL. Every address the host resolves to must be public (loopback, private, link-local, CGNAT, multicast and other reserved IPv4/IPv6 ranges, `localhost` names refused), and the connection is pinned to the validated address (no second DNS lookup) while TLS is verified against the hostname. At most 3 redirects, each re-checked from scratch. 5 s total timeout, 1 MB body cap (larger is refused, never truncated), `text/html` or `application/xhtml+xml` only, no cookies, no pooled sockets, user agent `Kageo-LinkPreview/1.0`.
+- **Extraction** (`shared/lib/extractWishFields.ts`): a linear-time scanner with caps (tags, JSON-LD blocks and size, itemprops, wasted-scan budget, field lengths, price range) so hostile pages cannot burn CPU; JSON-LD `Product` wins over Open Graph, then `<meta>`/`<title>`. `node-html-parser` (server-only dependency) is used only to decode HTML entities in extracted text.
 
 ## Frontend structure
 
