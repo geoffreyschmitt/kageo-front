@@ -52,14 +52,14 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
         setStatus('loading')
 
         try {
-            const fields = await importWishFromUrl(url, controller.signal)
+            const result = await importWishFromUrl(url, controller.signal)
             if (requestId !== requestIdRef.current) return // a newer request owns the state
             inFlightUrlRef.current = ''
-            if (!fields) {
+            if (!result) {
                 setStatus('notFound')
                 return
             }
-            const patch = applyImport(formRef.current, fields, mode)
+            const patch = applyImport(formRef.current, result.fields, mode)
             if (Object.keys(patch).length > 0) applyRef.current(patch)
             setStatus('found')
         } catch (error) {
