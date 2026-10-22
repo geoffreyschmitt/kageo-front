@@ -35,6 +35,8 @@ API (`app/api/`):
 | `wish`, `wish/[wishId]` | Wish create / read / update |
 | `wish/reserve`, `cancel`, `mark-purchased`, `remove-purchased`, `delete` | Wish state transitions |
 | `wish/pot`, `wish/contribute` | Per-wish gift pot |
+| `safe-bets`, `safe-bets/[entryId]`, `safe-bets/reorder` | Owner's safe-bet gifts: `GET` list, `POST` create, `PATCH`/`DELETE` one entry, `PUT reorder` (`{ids}` must be a permutation of the current entries). Owner only, writes use the `write` rate rule |
+| `wishlist/[id]/safe-bets/[entryId]/comments` | Guest thread on a safe bet (`GET`/`POST`); never reaches the wishlist owner (403), rate rule `comment` |
 | `wish/import` | `POST {url}`: fetches a public page and returns prefill fields for the wish form (see Wish import) |
 
 Every handler resolves the caller with `getServerSession(authOptions)` (`shared/config/authOptions.ts`).
@@ -65,18 +67,20 @@ All values are JSON unless noted. IDs are UUIDs.
 | `wish:{id}:pot` | value | per-wish gift pot (goal is the wish's price, never stored) |
 | `wish:{id}:contributions` | list | pledge entries |
 | `wish:{id}:comments` | list | `TComment` |
-| `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}` or `lock:wishlist:{id}`. Excluded from backups (as are `ratelimit:*` counters) |
+| `user:{id}:safeBets` | value | `TSafeBet[]` in display order: `{id, title (max 80), description? (max 500), imageUrl? (http/https, max 2048), createdAt}`; at most 30 entries (409 beyond). Shown to guests on every wishlist the user owns |
+| `safebet:{entryId}:comments` | list | `TComment` (guest thread, hidden from the owner) |
+| `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}`, `lock:wishlist:{id}` or `lock:user:{id}:safebets` (every safe-bet write). Excluded from backups (as are `ratelimit:*` counters) |
 | `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `reserve`, `contribute`, `comment`, `suggest`, `invite`, `import` or `write`; `{subject}` is the user id (register: the client IP) |
 | `ratelimit:ip:{ip}` | counter (TTL) | per-IP ceiling across all accounts on write routes |
 | `ratelimit:loginFailures:{email}\|{ip}` | counter (TTL) | failed password sign-ins per email and IP (`shared/lib/loginThrottle.ts`); cleared on success |
 
 Wish status: `wanted` · `reserved` · `purchased` · `proposed` · `funded`. `funded` is set by `reconcileFundedStatus` on every contribution write; the organiser may override to `purchased`. Priority: `low` · `medium` · `high`.
 
-Deleting a wishlist, wish or account must also delete every sub-key and back-reference. This is centralised in `shared/lib/kvCascade.ts` (`wishKeys`, `wishlistKeys`, `queueWishlistDeletion`) and runs inside `kv.multi()` transactions; account deletion is `app/api/user/me/purgeUser.ts`. When you add a key under `wish:{id}` or `wishlist:{id}`, add it to those lists.
+Deleting a wishlist, wish or account must also delete every sub-key and back-reference. This is centralised in `shared/lib/kvCascade.ts` (`wishKeys`, `wishlistKeys`, `queueWishlistDeletion`) and runs inside `kv.multi()` transactions; account deletion is `app/api/user/me/purgeUser.ts`. When you add a key under `wish:{id}` or `wishlist:{id}`, add it to those lists. Safe bets follow the same rule: `safeBetKeys` covers an entry's thread (deleted with the entry); the purge removes `user:{id}:safeBets` and every owned thread, and also strips the user's comments from other people's safe-bet threads. The data export includes `safeBets`.
 
-**Visibility rules**: pots and comments never reach the wishlist owner (surprise). Role-shaped pot payloads are built in one place, `app/api/wishlist/pot/readPot.ts`.
+**Visibility rules**: pots, comments and safe-bet threads never reach the wishlist owner (surprise). Role-shaped pot payloads are built in one place, `app/api/wishlist/pot/readPot.ts`. The safe-bet list itself is visible to everyone who can view a wishlist; only its comment threads are guest-only, and the thread routes refuse the owner and require the entry to belong to the wishlist owner.
 
-**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 20 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, import 20 / 10 min, suggest 60 / 10 min, other writes 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
+**Rate limiting**: rules (limit per window) live in `shared/config/rateLimits.ts`: login failures 10 / 15 min, register 20 / hour per IP, reserve, contribute, comment and invite 30 / 10 min, import 20 / 10 min, suggest 60 / 10 min, other writes (including safe-bet edits) 120 / 10 min per account, and a 600 / 10 min per-IP ceiling. Counters are fixed windows (`INCR`, then `EXPIRE` on the first hit). A refused API request answers `429` with `{message}` and a `Retry-After` header (seconds); the client shows a calm toast via `assertOk`. A blocked sign-in makes `authorize` throw `RATE_LIMITED`, which NextAuth returns as the sign-in `error`. The limiter fails open: if KV errors, the request goes through.
 
 ## Wish import
 
