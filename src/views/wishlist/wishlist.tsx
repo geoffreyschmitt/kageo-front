@@ -298,9 +298,7 @@ export default function Wishlist({
     setEditingWish(null)
   }
 
-  const handleSendShareEmail: (email: string, url: string) => Promise<void> = async (email) => {
-    return shareWishlist(id, email)
-  }
+  const handleSendShareEmail = async (email: string) => shareWishlist(id, email, locale)
 
   const resetFilters = () => {
     setSortBy('date')

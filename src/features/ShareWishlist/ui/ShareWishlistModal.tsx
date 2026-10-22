@@ -17,6 +17,7 @@ export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName,
         emailError,
         isSending,
         sendSuccess,
+        alreadyInvited,
         copySuccess,
         handleEmailChange,
         handleSendEmail,
@@ -73,6 +74,9 @@ export const ShareWishlistModal = ({ isOpen, onClose, wishlistUrl, wishlistName,
                         )}
                         {sendSuccess && (
                             <span className={styles.shareWishlistModal__success}>{t('emailSent')}</span>
+                        )}
+                        {alreadyInvited && (
+                            <span className={styles.shareWishlistModal__success}>{t('alreadyInvited')}</span>
                         )}
                         <button
                             type="submit"

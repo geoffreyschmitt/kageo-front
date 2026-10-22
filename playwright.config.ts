@@ -34,6 +34,9 @@ export default defineConfig({
             REDIS_URL: 'redis://127.0.0.1:9',
             NEXTAUTH_URL: baseURL,
             NEXTAUTH_SECRET: 'e2e-only-secret',
+            // Empty beats .env.local: e2e must never reach Resend (invites use the console transport).
+            RESEND_API_KEY: '',
+            RESEND_FROM_EMAIL: '',
             GOOGLE_CLIENT_ID: 'e2e',
             GOOGLE_CLIENT_SECRET: 'e2e',
             // Every e2e request shares the IP 'unknown'; keep the rate-limit ceilings out of the way.

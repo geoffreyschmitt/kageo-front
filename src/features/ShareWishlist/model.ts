@@ -1,10 +1,15 @@
 import { useState } from "react"
 
+import { useTranslations } from "next-intl"
+
+import { RateLimitedError } from "@/shared/api/assertOk"
+import { ShareWishlistError, type TShareWishlistResponse } from "@/shared/api/wishlist/shareWishlist"
+
 type TUseShareWishlistModelParams = {
     isOpen: boolean
     onClose: () => void
     wishlistUrl: string
-    onSendEmail: (email: string, url: string) => Promise<void>
+    onSendEmail: (email: string, url: string) => Promise<TShareWishlistResponse>
 }
 
 export const useShareWishlistModel = ({
@@ -12,35 +17,51 @@ export const useShareWishlistModel = ({
     wishlistUrl,
     onSendEmail,
 }: TUseShareWishlistModelParams) => {
+    const t = useTranslations("shareWishlistModal")
     const [email, setEmail] = useState("")
     const [emailError, setEmailError] = useState("")
     const [isSending, setIsSending] = useState(false)
     const [sendSuccess, setSendSuccess] = useState(false)
+    const [alreadyInvited, setAlreadyInvited] = useState(false)
     const [copySuccess, setCopySuccess] = useState(false)
 
     const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value)
+    const clearFeedback = () => {
         setEmailError("")
         setSendSuccess(false)
+        setAlreadyInvited(false)
+    }
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value)
+        clearFeedback()
+    }
+
+    const errorMessageFor = (err: unknown) => {
+        if (err instanceof ShareWishlistError) {
+            return err.code === "EMAIL_REJECTED" ? t("errorRejected") : t("errorUnavailable")
+        }
+        // A 429 already raised its own app-wide notice.
+        if (err instanceof RateLimitedError) return ""
+        return t("errorGeneric")
     }
 
     const handleSendEmail = async (e: React.FormEvent) => {
         e.preventDefault()
-        setEmailError("")
-        setSendSuccess(false)
+        clearFeedback()
 
-        if (!email.trim()) return setEmailError("Email address is required.")
-        if (!isValidEmail(email)) return setEmailError("Please enter a valid email address.")
+        if (!email.trim()) return setEmailError(t("emailRequired"))
+        if (!isValidEmail(email.trim())) return setEmailError(t("emailInvalid"))
 
         setIsSending(true)
         try {
-            await onSendEmail(email, wishlistUrl)
-            setSendSuccess(true)
+            const result = await onSendEmail(email.trim(), wishlistUrl)
+            if (result.alreadyInvited) setAlreadyInvited(true)
+            else setSendSuccess(true)
             setEmail("")
-        } catch {
-            setEmailError("Failed to send email. Please try again.")
+        } catch (err) {
+            setEmailError(errorMessageFor(err))
         } finally {
             setIsSending(false)
         }
@@ -54,9 +75,8 @@ export const useShareWishlistModel = ({
 
     const handleClose = () => {
         setEmail("")
-        setEmailError("")
+        clearFeedback()
         setIsSending(false)
-        setSendSuccess(false)
         setCopySuccess(false)
         onClose()
     }
@@ -66,6 +86,7 @@ export const useShareWishlistModel = ({
         emailError,
         isSending,
         sendSuccess,
+        alreadyInvited,
         copySuccess,
         handleEmailChange,
         handleSendEmail,

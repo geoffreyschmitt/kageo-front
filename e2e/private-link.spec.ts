@@ -50,3 +50,39 @@ test.describe('a private list opened from its link', () => {
         await guest.context.close()
     })
 })
+
+test.describe('inviting by email from the Share dialog', () => {
+    const openShare = async (path: string, listName: string, request: Parameters<typeof createWishlist>[0]) => {
+        const list = await createWishlist(request, listName, false)
+        return { list, path: `${path}/wishlist/${list.id}` }
+    }
+
+    test('the owner invites an address and sees the success message, then "already invited"', async ({ browser }) => {
+        const owner = await newPerson(browser, 'Owner')
+        const { path } = await openShare('/en', 'Share dialog list', owner.context.request)
+        await owner.page.goto(path)
+
+        await owner.page.getByRole('button', { name: 'Share', exact: true }).click()
+        await owner.page.getByPlaceholder("Enter recipient's email address").fill('new-friend@e2e.test')
+        await owner.page.getByRole('button', { name: 'Send Email' }).click()
+        await expect(owner.page.getByText('Email sent successfully!')).toBeVisible()
+
+        await owner.page.getByPlaceholder("Enter recipient's email address").fill('new-friend@e2e.test')
+        await owner.page.getByRole('button', { name: 'Send Email' }).click()
+        await expect(owner.page.getByText('This person is already invited.')).toBeVisible()
+        await owner.context.close()
+    })
+
+    test('a malformed address shows the French validation message on the French page', async ({ browser }) => {
+        const owner = await newPerson(browser, 'Owner')
+        const { path } = await openShare('/fr', 'Liste à partager', owner.context.request)
+        await owner.page.goto(path)
+
+        await owner.page.getByRole('button', { name: 'Partager', exact: true }).click()
+        // "a@b" passes the browser's own email check but not ours (no dot in the domain).
+        await owner.page.getByPlaceholder("Entrez l'adresse e-mail du destinataire").fill('a@b')
+        await owner.page.getByRole('button', { name: 'Envoyer', exact: true }).click()
+        await expect(owner.page.getByText('Veuillez saisir une adresse e-mail valide.')).toBeVisible()
+        await owner.context.close()
+    })
+})

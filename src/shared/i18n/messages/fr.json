@@ -398,12 +398,18 @@
     "copyLinkTitle": "Copier le lien",
     "copyLink": "Copier le lien",
     "copied": "Copié !",
-    "linkNote": "Toute personne avec ce lien peut voir votre wishlist.",
+    "linkNote": "Toute personne avec ce lien peut voir cette wishlist. Pour y participer, il faut avoir été invité·e avec l'adresse e-mail utilisée pour se connecter.",
     "sendEmailTitle": "Envoyer par e-mail",
     "emailPlaceholder": "Entrez l'adresse e-mail du destinataire",
     "sending": "Envoi...",
     "sendEmail": "Envoyer",
-    "emailSent": "E-mail envoyé avec succès !"
+    "emailSent": "E-mail envoyé avec succès !",
+    "alreadyInvited": "Cette personne est déjà invitée.",
+    "emailRequired": "L'adresse e-mail est obligatoire.",
+    "emailInvalid": "Veuillez saisir une adresse e-mail valide.",
+    "errorRejected": "Cette adresse ne semble pas correcte. Vérifiez-la et réessayez.",
+    "errorUnavailable": "Nous n'avons pas pu envoyer l'e-mail pour le moment. Réessayez dans un instant, ou copiez le lien et envoyez-le vous-même.",
+    "errorGeneric": "L'envoi a échoué. Veuillez réessayer."
   },
   "deleteWishModal": {
     "title": "Supprimer le souhait",

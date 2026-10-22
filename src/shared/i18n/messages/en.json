@@ -398,12 +398,18 @@
     "copyLinkTitle": "Copy Link",
     "copyLink": "Copy Link",
     "copied": "Copied!",
-    "linkNote": "Anyone with this link can view your wishlist.",
+    "linkNote": "Anyone with this link can see this wishlist. To take part, a person must be invited with the email they sign in with.",
     "sendEmailTitle": "Send via Email",
     "emailPlaceholder": "Enter recipient's email address",
     "sending": "Sending...",
     "sendEmail": "Send Email",
-    "emailSent": "Email sent successfully!"
+    "emailSent": "Email sent successfully!",
+    "alreadyInvited": "This person is already invited.",
+    "emailRequired": "Email address is required.",
+    "emailInvalid": "Please enter a valid email address.",
+    "errorRejected": "This address doesn't look right. Check it and try again.",
+    "errorUnavailable": "We couldn't send the email right now. Try again in a moment, or copy the link and send it yourself.",
+    "errorGeneric": "Failed to send email. Please try again."
   },
   "deleteWishModal": {
     "title": "Delete Wish",
