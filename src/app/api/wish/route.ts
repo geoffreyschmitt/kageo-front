@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { limitWrite } from '@/shared/lib/rateLimit'
-import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
+import { getWishlistAccess, notInvitedResponse } from '@/shared/lib/wishlistAccess'
 
 type TWishlistKV = {
     id: string
@@ -52,10 +52,13 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
         }
 
-        const { isOwner, canView } = await getWishlistAccess(wishlist, session.user)
-        // Suggestions come from people who can see the list, and only if the owner allows them
+        const { isOwner, canAct } = await getWishlistAccess(wishlist, session.user)
+        // Suggestions come from people who may act on the list, and only if the owner allows them
         // (lists created before the flag existed count as open, like the page does).
-        if (!isOwner && (!canView || wishlist.allowSuggestions === false)) {
+        if (!isOwner && !canAct) {
+            return notInvitedResponse()
+        }
+        if (!isOwner && wishlist.allowSuggestions === false) {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
         const isProposed = !isOwner

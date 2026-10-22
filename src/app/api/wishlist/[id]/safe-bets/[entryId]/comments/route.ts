@@ -9,7 +9,7 @@ import type { TComment } from '@/entities/comment'
 import { authOptions } from '@/shared/config/authOptions'
 import { limitWrite } from '@/shared/lib/rateLimit'
 import { getSafeBets, safeBetCommentsKey } from '@/shared/lib/safeBets'
-import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
+import { getWishlistAccess, notInvitedResponse } from '@/shared/lib/wishlistAccess'
 
 type TWishlistKV = { id: string; ownerId: string; isPublic: boolean }
 type TParams = { params: Promise<{ id: string; entryId: string }> }
@@ -24,9 +24,12 @@ export async function GET(_request: NextRequest, { params }: TParams) {
         return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
     }
 
-    const { isOwner, canView } = await getWishlistAccess(wishlist, session?.user)
-    if (isOwner || !canView) {
+    const { isOwner, canAct } = await getWishlistAccess(wishlist, session?.user)
+    if (isOwner) {
         return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    if (!canAct) {
+        return notInvitedResponse()
     }
 
     const entries = await getSafeBets(wishlist.ownerId)
@@ -55,9 +58,12 @@ export async function POST(request: NextRequest, { params }: TParams) {
         return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
     }
 
-    const { isOwner, canView } = await getWishlistAccess(wishlist, session.user)
-    if (isOwner || !canView) {
+    const { isOwner, canAct } = await getWishlistAccess(wishlist, session.user)
+    if (isOwner) {
         return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    if (!canAct) {
+        return notInvitedResponse()
     }
 
     const entries = await getSafeBets(wishlist.ownerId)

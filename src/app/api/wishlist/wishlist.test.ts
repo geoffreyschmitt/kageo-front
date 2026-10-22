@@ -68,9 +68,13 @@ describe('read, update, delete', () => {
         await fake.sadd('email:invited@x.io:invitedWishlists', 'L')
     })
 
-    it('GET hides a private list from strangers but shows it to the owner and invitees', async () => {
+    it('GET shows a private list to anyone with the link, signed in or not', async () => {
+        signInAs(null)
+        const anonymous = await getOne(plain, params('L'))
+        expect(anonymous.status).toBe(200)
+        expect((await bodyOf(anonymous)).wishes as unknown[]).toHaveLength(1)
         signInAs('stranger')
-        expect((await getOne(plain, params('L'))).status).toBe(403)
+        expect((await getOne(plain, params('L'))).status).toBe(200)
         signInAs('invited', { email: 'invited@x.io' })
         expect((await getOne(plain, params('L'))).status).toBe(200)
         signInAs('owner')

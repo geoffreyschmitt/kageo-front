@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/shared/config/authOptions'
 import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
 import { limitWrite } from '@/shared/lib/rateLimit'
-import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
+import { getWishlistAccess, notInvitedResponse } from '@/shared/lib/wishlistAccess'
 
 type TWishKV = { id: string; status: string; wishlistId: string }
 type TWishlistKV = { id?: string; isPublic: boolean; ownerId: string }
@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
             const access = wishlist
                 ? await getWishlistAccess({ ...wishlist, id: wish.wishlistId }, session.user)
                 : null
-            if (!access?.canView) {
-                return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+            if (!access?.canAct) {
+                return notInvitedResponse()
             }
 
             if (wish.status === 'purchased') {

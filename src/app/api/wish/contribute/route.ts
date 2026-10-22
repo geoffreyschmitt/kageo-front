@@ -10,7 +10,7 @@ import { authOptions } from '@/shared/config/authOptions'
 import { queueListReplace } from '@/shared/lib/kvCascade'
 import { LockTimeoutError, busyResponse, withLock, wishLock } from '@/shared/lib/kvLock'
 import { limitWrite } from '@/shared/lib/rateLimit'
-import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
+import { getWishlistAccess, notInvitedResponse } from '@/shared/lib/wishlistAccess'
 
 type TWishKV = { id: string; wishlistId: string; price: number; status: string }
 type TWishlistKV = { id: string; ownerId: string; isPublic: boolean }
@@ -66,9 +66,9 @@ const loadContext = async (
         return { error: NextResponse.json({ message: 'No pot has been started for this wish' }, { status: 409 }) }
     }
     // Anyone on a public list, or a guest invited to a private one.
-    const { canView } = await getWishlistAccess(wishlist, session.user)
-    if (!canView) {
-        return { error: NextResponse.json({ message: 'Forbidden' }, { status: 403 }) }
+    const { canAct } = await getWishlistAccess(wishlist, session.user)
+    if (!canAct) {
+        return { error: notInvitedResponse() }
     }
     return { ctx: { userId: session.user.id, wishId, amount: parsedAmount, wish } }
 }

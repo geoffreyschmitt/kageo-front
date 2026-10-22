@@ -30,8 +30,12 @@ beforeEach(async () => {
 describe('guests of a private wishlist', () => {
     it('an invited guest can reserve and mark purchased; a stranger cannot', async () => {
         signInAs('stranger')
-        expect((await reserve(jsonRequest({ wishId: 'priv' }))).status).toBe(403)
-        expect((await markPurchased(jsonRequest({ wishId: 'priv' }))).status).toBe(403)
+        const refused = await reserve(jsonRequest({ wishId: 'priv' }))
+        expect(refused.status).toBe(403)
+        expect(await bodyOf(refused)).toEqual({ message: 'Forbidden', code: 'NOT_INVITED' })
+        const refusedPurchase = await markPurchased(jsonRequest({ wishId: 'priv' }))
+        expect(refusedPurchase.status).toBe(403)
+        expect(await bodyOf(refusedPurchase)).toEqual({ message: 'Forbidden', code: 'NOT_INVITED' })
 
         signInAs('invited', { email: 'Invited@x.io' })
         expect((await reserve(jsonRequest({ wishId: 'priv' }))).status).toBe(200)
@@ -43,7 +47,9 @@ describe('guests of a private wishlist', () => {
         await fake.set('wish:priv:pot', { creatorId: 'org' })
 
         signInAs('stranger')
-        expect((await contributeToWish(jsonRequest({ wishId: 'priv', amount: 10 }))).status).toBe(403)
+        const refused = await contributeToWish(jsonRequest({ wishId: 'priv', amount: 10 }))
+        expect(refused.status).toBe(403)
+        expect(await bodyOf(refused)).toEqual({ message: 'Forbidden', code: 'NOT_INVITED' })
 
         signInAs('invited', { email: 'invited@x.io' })
         expect((await contributeToWish(jsonRequest({ wishId: 'priv', amount: 10 }))).status).toBe(200)

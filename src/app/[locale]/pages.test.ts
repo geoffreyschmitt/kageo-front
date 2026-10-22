@@ -81,14 +81,14 @@ describe('wishlist page: access', () => {
         await expect(wishlistPage('nope')).rejects.toThrow('NEXT_NOT_FOUND')
     })
 
-    it('sends strangers away from a private list but lets the owner and invited guests in', async () => {
+    it('lets anyone with the link read a private list, and marks only invited guests as invited', async () => {
         await list('P', 'owner', { isPublic: false })
         await fake.sadd('wishlist:P:invitees', 'guest@x.io')
 
         signInAs(null)
-        await expect(wishlistPage('P')).rejects.toThrow('NEXT_REDIRECT:/')
+        expect(propsOf(await wishlistPage('P'))).toMatchObject({ userIsOwner: false, isInvited: false, isLoggedIn: false })
         signInAs('bob')
-        await expect(wishlistPage('P')).rejects.toThrow('NEXT_REDIRECT:/')
+        expect(propsOf(await wishlistPage('P'))).toMatchObject({ userIsOwner: false, isInvited: false, isLoggedIn: true })
 
         signInAs('guest')
         expect(propsOf(await wishlistPage('P'))).toMatchObject({ userIsOwner: false, isInvited: true })

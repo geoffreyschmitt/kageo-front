@@ -7,7 +7,7 @@ import { authOptions } from '@/shared/config/authOptions'
 import { queueListReplace } from '@/shared/lib/kvCascade'
 import { LockTimeoutError, busyResponse, withLock, wishlistLock } from '@/shared/lib/kvLock'
 import { limitWrite } from '@/shared/lib/rateLimit'
-import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
+import { getWishlistAccess, notInvitedResponse } from '@/shared/lib/wishlistAccess'
 
 import { parseContributions } from '../pot/readPot'
 
@@ -75,9 +75,9 @@ const loadContext = async (
     }
 
     // Anyone on a public list, or a guest invited to a private one.
-    const { canView } = await getWishlistAccess(wishlist, session.user)
-    if (!canView) {
-        return { error: NextResponse.json({ message: 'Forbidden' }, { status: 403 }) }
+    const { canAct } = await getWishlistAccess(wishlist, session.user)
+    if (!canAct) {
+        return { error: notInvitedResponse() }
     }
 
     return { ctx: { userId: session.user.id, wishlistId, amount: parsedAmount, wishlist } }

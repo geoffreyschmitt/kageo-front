@@ -8,7 +8,7 @@ import type { TComment } from '@/entities/comment'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { limitWrite } from '@/shared/lib/rateLimit'
-import { getWishlistAccess } from '@/shared/lib/wishlistAccess'
+import { getWishlistAccess, notInvitedResponse } from '@/shared/lib/wishlistAccess'
 
 type TWishlistKV = { id: string; ownerId: string; isPublic: boolean }
 
@@ -25,9 +25,12 @@ export async function GET(
         return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
     }
 
-    const { isOwner, canView } = await getWishlistAccess(wishlist, session?.user)
-    if (isOwner || !canView) {
+    const { isOwner, canAct } = await getWishlistAccess(wishlist, session?.user)
+    if (isOwner) {
         return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    if (!canAct) {
+        return notInvitedResponse()
     }
 
     const raw = (await kv.lrange<string>(`wishlist:${id}:comments`, 0, -1)) ?? []
@@ -54,9 +57,12 @@ export async function POST(
         return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
     }
 
-    const { isOwner, canView } = await getWishlistAccess(wishlist, session.user)
-    if (isOwner || !canView) {
+    const { isOwner, canAct } = await getWishlistAccess(wishlist, session.user)
+    if (isOwner) {
         return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    if (!canAct) {
+        return notInvitedResponse()
     }
 
     try {

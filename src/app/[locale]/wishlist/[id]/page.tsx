@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
 import { kv } from '@vercel/kv'
 import { getServerSession } from 'next-auth'
@@ -73,7 +73,7 @@ export default async function WishlistPage({
             ? Boolean(await kv.sismember(`wishlist:${id}:invitees`, session.user.email.toLowerCase()))
             : false
 
-    if (!wishlist.isPublic && !userIsOwner && !isInvited) redirect('/')
+    // Anyone with the link can read the list, private or public; acting is gated per route.
 
     // The owner's safe-bet ideas with their comment counts. Started now so it overlaps the other
     // reads; never started for the owner, since comments never reach them.

@@ -26,7 +26,6 @@ export async function GET(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> },
 ) {
-    const session = await getServerSession(authOptions)
     const { id } = await params
 
     const wishlist = await kv.get<TWishlistKV>(`wishlist:${id}`)
@@ -34,17 +33,7 @@ export async function GET(
         return NextResponse.json({ message: 'Wishlist not found' }, { status: 404 })
     }
 
-    // Only the owner and invited guests can see private wishlists
-    if (!wishlist.isPublic && wishlist.ownerId !== session?.user?.id) {
-        const isInvited = session?.user?.email
-            ? Boolean(await kv.sismember(`wishlist:${id}:invitees`, session.user.email.toLowerCase()))
-            : false
-
-        if (!isInvited) {
-            return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
-        }
-    }
-
+    // Anyone with the link can read a list, private or public; acting is gated elsewhere.
     const wishIds = await kv.smembers<string[]>(`wishlist:${id}:wishes`)
     const wishes = wishIds?.length
         ? (await Promise.all(wishIds.map((wid) => kv.get(`wish:${wid}`)))).filter(Boolean)
