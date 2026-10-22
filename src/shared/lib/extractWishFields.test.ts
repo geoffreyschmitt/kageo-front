@@ -204,4 +204,100 @@ describe('extractWishFields', () => {
     it('does not throw on an invalid page URL', () => {
         expect(extractWishFields(page(og('og:image', '/a.jpg')), 'not a url')).toEqual({})
     })
+
+    it('uses genuinely different Unicode spaces in the thousands variants', () => {
+        const nbsp = '1 299,90'
+        const narrow = '1 299,90'
+        expect(nbsp).not.toBe(narrow)
+        expect(nbsp.charCodeAt(1)).toBe(0xa0)
+        expect(narrow.charCodeAt(1)).toBe(0x202f)
+    })
+
+    it('enforces the exact name and description boundaries', () => {
+        const at = (n: number, d: number) =>
+            extractWishFields(page(og('og:title', 'n'.repeat(n)) + og('og:description', 'd'.repeat(d))), URL)
+        expect(at(200, 5000).name).toHaveLength(200)
+        expect(at(200, 5000).description).toHaveLength(5000)
+        expect(at(201, 5001).name).toHaveLength(200)
+        expect(at(201, 5001).description).toHaveLength(5000)
+    })
+
+    describe('price hardening', () => {
+        const priceOf = (raw: unknown) =>
+            extractWishFields(page(ld(product({ offers: { price: raw, priceCurrency: 'EUR' } }))), URL).price
+
+        it.each([['1.299'], ['1.299 €'], ['12.345']])('rejects ambiguous string %j', raw => {
+            expect(priceOf(raw)).toBeUndefined()
+        })
+        it('keeps a JS number with three decimals', () => {
+            expect(priceOf(1.299)).toBe(1.299)
+        })
+        it.each([['1e21'], ['1E3'], ['2e5 €']])('rejects exponent %j', raw => {
+            expect(priceOf(raw)).toBeUndefined()
+        })
+        it.each([['€-5'], ['-5 €'], ['€ -5']])('rejects negative %j', raw => {
+            expect(priceOf(raw)).toBeUndefined()
+        })
+        it.each([['10 - 20'], ['10–20'], ['10-20 €']])('rejects range %j', raw => {
+            expect(priceOf(raw)).toBeUndefined()
+        })
+        it('keeps AggregateOffer lowPrice', () => {
+            const html = page(ld(product({ offers: { '@type': 'AggregateOffer', lowPrice: '10', highPrice: '20', priceCurrency: 'EUR' } })))
+            expect(extractWishFields(html, URL).price).toBe(10)
+        })
+        it('caps at 10,000,000', () => {
+            expect(priceOf('9999999')).toBe(9999999)
+            expect(priceOf('10000000')).toBeUndefined()
+            expect(priceOf(10_000_000)).toBeUndefined()
+        })
+        it('drops images longer than 2000 characters', () => {
+            const long = 'https://a.com/' + 'x'.repeat(2000)
+            expect(extractWishFields(page(og('og:image', long)), URL)).not.toHaveProperty('imageUrl')
+            const ok = 'https://a.com/' + 'x'.repeat(1900)
+            expect(extractWishFields(page(og('og:image', ok)), URL).imageUrl).toBe(ok)
+        })
+    })
+
+    describe('hostile pages', () => {
+        const head = page(og('og:title', 'Safe title') + og('og:description', 'Safe desc')).replace('</head>', '')
+        const timed = (html: string) => {
+            const t = performance.now()
+            const r = extractWishFields(html, URL)
+            return { r, ms: performance.now() - t }
+        }
+
+        it('handles 180k unclosed divs', () => {
+            const { r, ms } = timed(head + '<div>'.repeat(180_000))
+            expect(ms).toBeLessThan(1500)
+            expect(r.name).toBe('Safe title')
+        })
+        it('handles 40k meta tags', () => {
+            const { r, ms } = timed(head + '<meta name="x" content="y">'.repeat(40_000))
+            expect(ms).toBeLessThan(1500)
+            expect(r.name).toBe('Safe title')
+        })
+        it('handles 1 MB of "<"', () => {
+            const { r, ms } = timed(head + '<'.repeat(1_000_000))
+            expect(ms).toBeLessThan(1500)
+            expect(r.description).toBe('Safe desc')
+        })
+        it('handles 1 MB of unterminated tags', () => {
+            const { ms } = timed(head + '<meta a="'.repeat(110_000))
+            expect(ms).toBeLessThan(1500)
+        })
+        it('handles an unterminated 1 MB ld+json script', () => {
+            const { r, ms } = timed(head + '<script type="application/ld+json">' + '{"a":'.repeat(200_000))
+            expect(ms).toBeLessThan(1500)
+            expect(r.name).toBe('Safe title')
+        })
+        it('handles 20k malformed ld+json blocks', () => {
+            const { r, ms } = timed(head + '<script type="application/ld+json">{x</script>'.repeat(20_000))
+            expect(ms).toBeLessThan(1500)
+            expect(r.name).toBe('Safe title')
+        })
+        it('handles many itemprop elements', () => {
+            const { ms } = timed(head + '<span itemprop="price">x</span>'.repeat(40_000))
+            expect(ms).toBeLessThan(1500)
+        })
+    })
 })
