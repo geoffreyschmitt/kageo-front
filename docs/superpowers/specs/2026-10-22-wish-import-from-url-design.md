@@ -138,3 +138,32 @@ Behaviour (owners' decision):
 - **While the question is pending.** The form shows only the question (no "Found it" note, no "couldn't read" note), nothing from the import is applied, and a person who ignores it simply fills the form by hand; on Edit the old values stay. Choosing a version afterwards fills the fields that are still empty (Edit after Replace: overwrites what the version provides).
 - **Share-text paste replaces the whole field.** The link field always holds one link, so pasting text that contains a link sets the field to the extracted link, replacing anything that was in it, whatever the cursor position. On Edit the normal "this link is different" question then follows. Only paste events are covered, not typing, autofill or drag-and-drop.
 - **Version naming.** Button label: the version's own `name`; otherwise its size and colour joined with " / "; otherwise its SKU; otherwise just the price. The price is always shown on the button. Filled name: the version's name if it already contains the product name (case-insensitive), otherwise "<product name> <version name>". Filled description: the version's own description if it has one, otherwise the product's, and when the version label is not already contained in the filled name or description it is put on a first line followed by a blank line (for example "128 GB", blank line, then the description). These texts come from the page and are not translated.
+
+## Revision 2 (2026-10-22): a button instead of automatic import
+
+Decided with the owners after the final review, to avoid surprising behaviour. **This section supersedes** the earlier parts of this document that describe importing automatically on paste or on leaving the field ("What the person sees", the Add/Propose/Edit triggers, "Calls made while writing this" about duplicate triggers and stale responses), and the addendum's rules about pasting and about the question disappearing when the link changes. Everything about the server route, the safety rules, the extraction, the rate limit and the field limits is unchanged, except where this section says otherwise.
+
+### The button
+
+- Under the link field there is a **"Fill in for me"** button (fr: "Remplir pour moi"). Nothing is fetched until it is pressed. There is no import on paste, on typing, or on leaving the field.
+- The button is disabled while an import is running (so requests never overlap) and while the link field contains no http(s) link.
+- Pressing it takes the **first http(s) link found in the field's text** (trailing `. , ) ! ?` removed), puts exactly that link in the field if the text held anything else (this is how phone share text "some words https://…" is handled: no special paste behaviour), then imports.
+- Add and Propose fill only the fields that are still empty, as before. Priority and notes are never touched.
+
+### Edit
+
+- When the gift already has a saved link, pressing the button first asks: "Replace the current info, or only fill the empty fields?" with two answers, **Replace** and **Only fill empty** (fr: "Remplacer" and "Remplir les champs vides"). Nothing is fetched before the answer. Replace overwrites every field the page provides and leaves the others as they were; Only fill empty behaves like Add.
+- A gift without a saved link behaves like Add (no question).
+- The old "this link is different, Replace / Keep my info" question no longer exists.
+
+### Several versions of a product
+
+- The server returns `variants` as described in the addendum, with these changes: versions **without a readable price or currency are kept** in the list (they fill name, description and image and leave the price for the person to type), the list is de-duplicated by (label, price, currency), and **more than 10 versions means no question and no price** (the person fills it by hand). The "drop versions without a price" call in the addendum no longer applies.
+- After the import, if `variants` is present:
+  - **A price is already typed** (Add/Propose, "Only fill empty"): Kageo picks the version whose price is **closest to the typed price** and, if that choice is confident, fills the rest from that version (name, description, image) without touching the typed price. Typed prices are often rounded, so 149 or 150 both match a version priced 149.99. Confident means: the closest priced version is within the larger of 1.00 or 1% of the typed price, and strictly closer than every other version. If it is not confident, only the product-level name, description and image are applied to the empty fields and no question is asked.
+  - **No price typed, or Replace:** the question "We found several versions of this product, which one is yours?" (fr: "Nous avons trouvé plusieurs versions de ce produit, laquelle est la vôtre ?") appears with one button per version (label and price when it has one). Nothing is applied until one is chosen. Choosing fills all the data that version has (name, price and currency, description, image) over the product-level data, following the earlier naming rules, and applies it like the mode in use (empty fields only, or Replace).
+- The question is dismissed, applying product-level name, description and image to the empty fields, when the person types a price themselves; it is dismissed without applying anything when the link field changes, or the form is saved or cancelled.
+
+### Rules that stay
+
+Failure or nothing found: one quiet note, form works by hand. A throttled import (429): the calm toast, the form stays usable. After a saved add or propose, the import state resets. The status line is announced politely to screen readers. All new strings in fr and en. Buttons at least 44 px tall.
