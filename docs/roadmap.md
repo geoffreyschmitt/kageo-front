@@ -10,11 +10,11 @@ Phases: **Launch** (family, Christmas 2026) → **Open** (friends and friends of
 
 Success test: the creators' own circle uses Kageo for one real event. No new features beyond this list before launch. Most items need something outside the repo. Ordered, top to bottom:
 
-1. **[P] Separate dev KV from production.** Provision a dedicated development KV database (and one for Vercel's Preview environment), so `.env.local` and the scripts in `scripts/` never touch production data. Prerequisite for the QA below.
+1. ~~**[P] Separate dev KV from production.**~~ Done 2026-10-22: `kageo-dev` serves Preview and Development; see `docs/runbook.md`.
 2. **[B] Browser QA of the per-wish gift pot and the new account purge.** The gift pot merged 2026-08-29 without live QA (checklist: `docs/superpowers/specs/2026-08-28-gift-pot-per-wish-design.md`, Testing section). The purge and the CSV exports are covered by unit tests against an in-memory KV, never against a real one: run it once on a development database, with a throwaway account that has pledges, comments and a reservation on someone else's list. **Do not point this at production data.**
 3. **[B] Send invite emails** via Resend from `api/wishlist/share`. Today the invitee is only recorded in `wishlist:{id}:invitees`; invited people are never notified. Needs a verified Resend sender domain.
 4. **[B] Forgot / reset password by email.** Today a user who forgets their password is locked out. Uses the same Resend pipeline as item 3.
-5. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
+5. **[P] Production environment check.** Create the production KV database (none exists yet; the old one was archived), connected to Production only. Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
 6. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
 
 ## 2. Open — beyond the family
