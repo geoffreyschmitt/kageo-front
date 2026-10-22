@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server'
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createFakeKv, type TFakeKv } from '@/test/fakeKv'
 import { bodyOf, jsonRequest, signInAs } from '@/test/route'
+
+import { MailRejectedError, MailUnavailableError, setMailTransportForTests, type TMail } from '@/shared/lib/mail'
 
 let fake: TFakeKv
 vi.mock('@vercel/kv', () => ({
@@ -120,9 +122,30 @@ describe('read, update, delete', () => {
 })
 
 describe('POST /api/wishlist/share', () => {
+    let sent: TMail[]
+
+    const seedList = async (id: string, ownerId = 'owner', extra: Record<string, unknown> = {}) => {
+        await fake.set(`wishlist:${id}`, {
+            id, ownerId, name: `List ${id}`, description: 'Come celebrate', eventDate: '2026-12-24', isPublic: false, ...extra,
+        })
+    }
+
     beforeEach(async () => {
         fake = createFakeKv()
-        await fake.set('wishlist:L', { id: 'L', ownerId: 'owner', isPublic: false })
+        sent = []
+        setMailTransportForTests({ send: async (mail) => { sent.push(mail) } })
+        vi.stubEnv('NEXT_PUBLIC_APP_URL', 'https://kageo.test')
+        await seedList('L')
+        await fake.sadd('wishlist:L:wishes', 'a', 'b', 'c')
+        await fake.set('wish:a', { id: 'a', status: 'wanted' })
+        await fake.set('wish:b', { id: 'b', status: 'reserved', reservedBy: 'secretguest' })
+        await fake.set('wish:c', { id: 'c', status: 'proposed' })
+        await fake.set('wishlist:L:pot', { creatorId: 'x', creatorName: 'SecretPotter' })
+    })
+
+    afterEach(() => {
+        setMailTransportForTests(null)
+        vi.unstubAllEnvs()
     })
 
     it('is owner-only and validates the email', async () => {
@@ -132,14 +155,114 @@ describe('POST /api/wishlist/share', () => {
         expect((await share(jsonRequest({ wishlistId: 'L', email: 'not-an-email' }))).status).toBe(400)
         expect((await share(jsonRequest({ email: 'a@b.co' }))).status).toBe(400)
         expect((await share(jsonRequest({ wishlistId: 'nope', email: 'a@b.co' }))).status).toBe(404)
+        expect(sent).toHaveLength(0)
     })
 
-    it('records the lower-cased invitee on both sides of the index, idempotently', async () => {
-        signInAs('owner')
-        for (let i = 0; i < 2; i++) {
-            expect((await share(jsonRequest({ wishlistId: 'L', email: 'Friend@X.io' }))).status).toBe(200)
-        }
+    it('sends one email with the subject, the link and the recap, then records the invitee', async () => {
+        signInAs('owner', { name: 'Olivia' })
+        const res = await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io', locale: 'en' }))
+
+        expect(res.status).toBe(200)
+        expect(await bodyOf(res)).toEqual({ ok: true, alreadyInvited: false })
+        expect(sent).toHaveLength(1)
+        expect(sent[0]).toMatchObject({ to: 'friend@x.io', subject: "You've been invited to a wishlist on Kageo: List L" })
+        expect(sent[0].html).toContain('href="https://kageo.test/en/wishlist/L"')
+        expect(sent[0].html).toContain('Olivia invited you to a wishlist')
+        expect(sent[0].html).toContain('2 wishes')
         expect(fake.members('wishlist:L:invitees')).toEqual(['friend@x.io'])
         expect(fake.members('email:friend@x.io:invitedWishlists')).toEqual(['L'])
+    })
+
+    it('never puts reservation or pot data in the email', async () => {
+        signInAs('owner')
+        await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io', locale: 'en' }))
+
+        for (const part of [sent[0].html, sent[0].text, sent[0].subject]) {
+            expect(part).not.toContain('secretguest')
+            expect(part).not.toContain('SecretPotter')
+        }
+    })
+
+    it('treats " Friend@X.io " as friend@x.io for the invitee and the recipient', async () => {
+        signInAs('owner')
+        expect((await share(jsonRequest({ wishlistId: 'L', email: ' Friend@X.io ' }))).status).toBe(200)
+
+        expect(sent[0].to).toBe('friend@x.io')
+        expect(fake.members('wishlist:L:invitees')).toEqual(['friend@x.io'])
+        expect(fake.members('email:friend@x.io:invitedWishlists')).toEqual(['L'])
+    })
+
+    it('answers alreadyInvited and sends no second email', async () => {
+        signInAs('owner')
+        await share(jsonRequest({ wishlistId: 'L', email: 'Friend@X.io' }))
+        const again = await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' }))
+
+        expect(again.status).toBe(200)
+        expect(await bodyOf(again)).toEqual({ ok: true, alreadyInvited: true })
+        expect(sent).toHaveLength(1)
+    })
+
+    it('saves nothing and answers 422 EMAIL_REJECTED when the address is refused', async () => {
+        setMailTransportForTests({ send: async () => { throw new MailRejectedError() } })
+        signInAs('owner')
+        const res = await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' }))
+
+        expect(res.status).toBe(422)
+        expect(await bodyOf(res)).toMatchObject({ code: 'EMAIL_REJECTED' })
+        expect(fake.members('wishlist:L:invitees')).toEqual([])
+        expect(fake.members('email:friend@x.io:invitedWishlists')).toEqual([])
+    })
+
+    it('saves nothing and answers 503 EMAIL_UNAVAILABLE when the service is down', async () => {
+        setMailTransportForTests({ send: async () => { throw new MailUnavailableError() } })
+        signInAs('owner')
+        const res = await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' }))
+
+        expect(res.status).toBe(503)
+        expect(await bodyOf(res)).toMatchObject({ code: 'EMAIL_UNAVAILABLE' })
+        expect(fake.members('wishlist:L:invitees')).toEqual([])
+    })
+
+    it('stops after 10 invite emails to one address in a day, across owners and letter case', async () => {
+        for (let i = 0; i < 11; i++) {
+            await seedList(`C${i}`, `o${i % 2}`)
+            signInAs(`o${i % 2}`)
+            const res = await share(jsonRequest({ wishlistId: `C${i}`, email: i % 2 ? 'Pat@X.io' : 'pat@x.io' }))
+            expect(res.status).toBe(i < 10 ? 200 : 429)
+        }
+        expect(sent).toHaveLength(10)
+        expect(fake.members('wishlist:C10:invitees')).toEqual([])
+    })
+
+    it('sends exactly one email when the same address is invited twice at once', async () => {
+        setMailTransportForTests({
+            send: async (mail) => {
+                await new Promise((resolve) => setTimeout(resolve, 30))
+                sent.push(mail)
+            },
+        })
+        signInAs('owner')
+        const [a, b] = await Promise.all([
+            share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' })),
+            share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' })),
+        ])
+
+        expect(sent).toHaveLength(1)
+        expect([a.status, b.status]).toEqual([200, 200])
+        const bodies = [await bodyOf(a), await bodyOf(b)]
+        expect(bodies.filter((body) => body.alreadyInvited === true)).toHaveLength(1)
+    })
+
+    it.each([
+        ['en', 'en'],
+        ['fr', 'fr'],
+        ['de', 'fr'],
+        [undefined, 'fr'],
+    ])('locale %s gives a %s email', async (locale, expected) => {
+        signInAs('owner')
+        await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io', locale }))
+
+        expect(sent[0].html).toContain(`href="https://kageo.test/${expected}/wishlist/L"`)
+        expect(sent[0].subject.startsWith(expected === 'en' ? "You've been invited" : 'Vous êtes invité')).toBe(true)
     })
 })
