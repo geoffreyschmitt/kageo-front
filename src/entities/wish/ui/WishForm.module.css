@@ -467,6 +467,10 @@
     gap: 10px;
 }
 
+.wishForm__importActions button {
+    min-height: 44px;
+}
+
 /* ── Mobile ───────────────────────────────── */
 
 @media (max-width: 768px) {

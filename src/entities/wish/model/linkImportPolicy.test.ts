@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { decideLinkAction, shouldDismissQuestion } from './linkImportPolicy'
+import { decideLinkAction, shouldCancelInFlight, shouldDismissQuestion } from './linkImportPolicy'
 
 const base = { isEdit: false, savedUrl: '', url: 'https://shop.test/p', lastHandledUrl: '' }
 
@@ -67,5 +67,21 @@ describe('shouldDismissQuestion', () => {
     })
     it('does not dismiss for a different valid url (re-ask)', () => {
         expect(shouldDismissQuestion({ ...q, url: 'https://other.test/z' })).toBe(false)
+    })
+})
+
+describe('shouldCancelInFlight', () => {
+    it('does nothing when no request is running', () => {
+        expect(shouldCancelInFlight({ inFlightUrl: '', url: 'https://a.test/x' })).toBe(false)
+    })
+
+    it('keeps a request whose url is still in the field', () => {
+        expect(shouldCancelInFlight({ inFlightUrl: 'https://a.test/x', url: ' https://a.test/x ' })).toBe(false)
+    })
+
+    it('cancels when the field holds anything else, including empty', () => {
+        expect(shouldCancelInFlight({ inFlightUrl: 'https://a.test/x', url: 'https://a.test/old' })).toBe(true)
+        expect(shouldCancelInFlight({ inFlightUrl: 'https://a.test/x', url: '' })).toBe(true)
+        expect(shouldCancelInFlight({ inFlightUrl: 'https://a.test/x', url: 'https://a.test/y' })).toBe(true)
     })
 })

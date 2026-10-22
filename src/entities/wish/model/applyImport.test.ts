@@ -61,7 +61,7 @@ describe('applyImport replace', () => {
         expect(applyImport(current, { name: '', description: '  ', imageUrl: '' }, 'replace')).toEqual({})
     })
 
-    it('does not replace price without a currency or with a non-positive price', () => {
+    it('ignores a non-positive price, and replaces a price that comes without a currency (keeping the old currency)', () => {
         expect(applyImport(current, { price: 0, currency: '$' }, 'replace')).toEqual({})
         expect(applyImport(current, { price: 7 }, 'replace')).toEqual({ price: 7 })
     })

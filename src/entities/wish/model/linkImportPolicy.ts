@@ -32,3 +32,7 @@ export const shouldDismissQuestion = (input: { savedUrl: string; url: string; pe
     if (url === input.pendingUrl.trim()) return false
     return !isHttpUrl(url) || url === input.savedUrl.trim()
 }
+
+// True when a request is running for a url the field no longer holds: its answer must not be applied.
+export const shouldCancelInFlight = (input: { inFlightUrl: string; url: string }): boolean =>
+    input.inFlightUrl !== '' && input.url.trim() !== input.inFlightUrl

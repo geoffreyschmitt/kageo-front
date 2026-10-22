@@ -268,5 +268,26 @@ test.describe('import a wish from a link', () => {
             await expect(nameInput(owner.page)).toHaveValue('Old name')
             await expect(owner.page.locator('select[name="priority"]')).toHaveValue('high')
         })
+
+        test('changing the field back while a Replace is loading drops the late answer', async ({ browser }) => {
+            const { owner } = await setup(browser, async () => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+                return found({ description: 'NEW', price: 99 })
+            })
+
+            await enterLinkAndLeave(linkInput(owner.page), 'https://shop.example.invalid/new')
+            await expect(owner.page.getByText(QUESTION)).toBeVisible()
+            await owner.page.getByRole('button', { name: 'Replace', exact: true }).click()
+            await expect(owner.page.getByText('Looking for the details…')).toBeVisible()
+
+            await enterLinkAndLeave(linkInput(owner.page), 'https://shop.example.invalid/old')
+            await expect(owner.page.getByText('Looking for the details…')).toBeHidden()
+
+            await owner.page.waitForTimeout(1500) // B's answer arrives now and must be dropped
+            await expect(owner.page.getByText(FOUND_MESSAGE)).toBeHidden()
+            await expect(linkInput(owner.page)).toHaveValue('https://shop.example.invalid/old')
+            await expect(descriptionInput(owner.page)).toHaveValue('Old description')
+            await expect(priceInput(owner.page)).toHaveValue('50')
+        })
     })
 })

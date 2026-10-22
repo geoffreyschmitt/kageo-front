@@ -107,6 +107,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                                             type="button"
                                             className={`${styles.wishForm__button} ${styles['wishForm__button--primary']}`}
                                             onClick={linkImport.onReplace}
+                                            disabled={isSubmitting}
                                         >
                                             {t('import.replace')}
                                         </button>
@@ -114,6 +115,7 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                                             type="button"
                                             className={`${styles.wishForm__button} ${styles['wishForm__button--secondary']}`}
                                             onClick={linkImport.onKeep}
+                                            disabled={isSubmitting}
                                         >
                                             {t('import.keep')}
                                         </button>

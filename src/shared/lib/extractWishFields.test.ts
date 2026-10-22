@@ -85,13 +85,57 @@ describe('extractWishFields', () => {
     it('handles offers as object, array and AggregateOffer', () => {
         const priced = (offers: unknown) => extractWishFields(page(ld(product({ offers }))), URL)
         expect(priced({ price: 10, priceCurrency: 'USD' })).toMatchObject({ price: 10, currency: '$' })
-        expect(priced([{ price: '12.5', priceCurrency: 'GBP' }, { price: 20, priceCurrency: 'GBP' }])).toMatchObject({
+        expect(priced([{ price: '12.5', priceCurrency: 'GBP' }, { price: 12.5, priceCurrency: 'GBP' }])).toMatchObject({
             price: 12.5,
             currency: '£',
         })
         expect(priced({ '@type': 'AggregateOffer', lowPrice: '49', priceCurrency: 'JPY' })).toMatchObject({
             price: 49,
             currency: '¥',
+        })
+    })
+
+    describe('several priced offers (variants)', () => {
+        const VARIANT_URL = 'https://shop.example.com/products/phone?variant=222'
+        const variants = [
+            { '@type': 'Offer', url: 'https://shop.example.com/products/phone?variant=111', price: '799', priceCurrency: 'EUR' },
+            { '@type': 'Offer', url: 'https://shop.example.com/products/phone?variant=222', price: '899', priceCurrency: 'EUR' },
+        ]
+        const run = (offers: unknown, pageUrl: string) => extractWishFields(page(ld(product({ offers }))), pageUrl)
+
+        it('uses the offer whose url equals the pasted url', () => {
+            expect(run(variants, VARIANT_URL)).toMatchObject({ price: 899, currency: '€' })
+            expect(run(variants, `${VARIANT_URL}#reviews`)).toMatchObject({ price: 899, currency: '€' })
+        })
+
+        it('matches by the variant parameter when other query parameters differ', () => {
+            const offers = [
+                { url: '/products/phone?variant=111', price: '799', priceCurrency: 'EUR' },
+                { url: '/products/phone?variant=222', price: '899', priceCurrency: 'EUR' },
+            ]
+            expect(run(offers, 'https://shop.example.com/products/phone?utm_source=x&variant=222')).toMatchObject({
+                price: 899,
+                currency: '€',
+            })
+        })
+
+        it('omits price and currency when no offer matches and prices differ', () => {
+            const r = run(variants, 'https://shop.example.com/products/phone')
+            expect(r.price).toBeUndefined()
+            expect(r.currency).toBeUndefined()
+            expect(r.name).toBe('Lamp')
+        })
+
+        it('uses the price when every offer has the same price', () => {
+            const same = variants.map(v => ({ ...v, price: '799' }))
+            expect(run(same, 'https://shop.example.com/products/phone')).toMatchObject({ price: 799, currency: '€' })
+        })
+
+        it('a single priced offer is used as is', () => {
+            expect(run([{ price: '15', priceCurrency: 'EUR', url: 'https://elsewhere.test/x' }, { name: 'no price' }], URL)).toMatchObject({
+                price: 15,
+                currency: '€',
+            })
         })
     })
 

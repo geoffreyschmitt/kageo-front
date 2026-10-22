@@ -332,18 +332,56 @@ const offerPrice = (offer: unknown, inherited?: string): TPriceSource | undefine
     return { price, currency }
 }
 
-const ldPrice = (product: TRecord | undefined): TPriceSource | undefined => {
+type TPricedOffer = TPriceSource & { url?: string }
+
+const withUrl = (offer: unknown, source: TPriceSource | undefined): TPricedOffer | undefined =>
+    source && { ...source, url: isRecord(offer) && typeof offer.url === 'string' ? offer.url : undefined }
+
+const parseUrl = (value: string, pageUrl: string): URL | undefined => {
+    try {
+        return new URL(value, pageUrl)
+    } catch {
+        return undefined
+    }
+}
+
+// Does this offer's own url point at the page that was pasted (variant pages list one offer each)?
+const offerIsThisPage = (offerUrl: string | undefined, pageUrl: string): boolean => {
+    if (!offerUrl) return false
+    const offer = parseUrl(offerUrl, pageUrl)
+    const page = parseUrl(pageUrl, pageUrl)
+    if (!offer || !page || offer.origin !== page.origin || offer.pathname !== page.pathname) return false
+    if (offer.search === page.search) return true
+    const offerVariant = offer.searchParams.get('variant')
+    return offerVariant !== null && offerVariant === page.searchParams.get('variant')
+}
+
+const ldPrice = (product: TRecord | undefined, pageUrl: string): TPriceSource | undefined => {
     if (!product) return undefined
     const offers = Array.isArray(product.offers) ? product.offers : [product.offers]
-    const results = offers.map(o => {
+    const results: (TPricedOffer | undefined)[] = []
+    for (const o of offers) {
         const own = offerPrice(o)
         if (isRecord(o) && Array.isArray(o.offers) && !own?.price) {
             const parent = rawCurrency(o.priceCurrency)
-            return o.offers.map(n => offerPrice(n, parent)).find(r => r?.price)
+            for (const n of o.offers) results.push(withUrl(n, offerPrice(n, parent)))
+        } else {
+            results.push(withUrl(o, own))
         }
-        return own
-    })
-    return results.find(r => r?.price) ?? results.find(r => r?.currency)
+    }
+    const priced = results.filter((r): r is TPricedOffer => !!r?.price)
+    if (priced.length > 1) {
+        // Several variants: only trust a price that belongs to the pasted page. Wrong data is worse than none.
+        const mine = priced.find(r => offerIsThisPage(r.url, pageUrl))
+        if (mine) return { price: mine.price, currency: mine.currency }
+        const [first] = priced
+        if (priced.every(r => r.price === first.price && r.currency === first.currency)) {
+            return { price: first.price, currency: first.currency }
+        }
+        return undefined
+    }
+    const single = priced[0] ?? results.find(r => r?.currency)
+    return single && { price: single.price, currency: single.currency }
 }
 
 const extract = (html: string, pageUrl: string): TImportedFields => {
@@ -359,7 +397,7 @@ const extract = (html: string, pageUrl: string): TImportedFields => {
     const imageUrl = resolveHttpUrl(meta.get('og:image'), pageUrl) ?? ldImage(product?.image, pageUrl)
 
     const sources: TPriceSource[] = [
-        ldPrice(product) ?? {},
+        ldPrice(product, pageUrl) ?? {},
         {
             price: parsePrice(meta.get('product:price:amount') ?? meta.get('og:price:amount')),
             currency: rawCurrency(meta.get('product:price:currency') ?? meta.get('og:price:currency')),

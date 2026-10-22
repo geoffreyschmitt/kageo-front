@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { importWishFromUrl } from '@/shared/api/wish/importFromUrl'
 
 import { applyImport, type TImportableForm } from './applyImport'
-import { decideLinkAction, shouldDismissQuestion } from './linkImportPolicy'
+import { decideLinkAction, shouldCancelInFlight, shouldDismissQuestion } from './linkImportPolicy'
 
 export type TLinkImport = {
     status: 'idle' | 'loading' | 'found' | 'notFound' | 'asking'
@@ -41,17 +41,20 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
     const pendingUrlRef = useRef('')
     const requestIdRef = useRef(0)
     const controllerRef = useRef<AbortController | null>(null)
+    const inFlightUrlRef = useRef('') // url of the running request, '' when none
 
     const run = useCallback(async (url: string, mode: 'fillEmpty' | 'replace') => {
         controllerRef.current?.abort()
         const controller = new AbortController()
         controllerRef.current = controller
         const requestId = ++requestIdRef.current
+        inFlightUrlRef.current = url
         setStatus('loading')
 
         try {
             const fields = await importWishFromUrl(url, controller.signal)
             if (requestId !== requestIdRef.current) return // a newer request owns the state
+            inFlightUrlRef.current = ''
             if (!fields) {
                 setStatus('notFound')
                 return
@@ -61,6 +64,7 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
             setStatus('found')
         } catch (error) {
             if (requestId !== requestIdRef.current || controller.signal.aborted) return // silent
+            inFlightUrlRef.current = ''
             const rateLimited = error instanceof Error && error.message.includes('429')
             setStatus(rateLimited ? 'idle' : 'notFound') // 429: the toast already shows
         }
@@ -69,6 +73,14 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
     const handleUrl = useCallback(
         (rawUrl: string) => {
             const url = rawUrl.trim()
+            if (shouldCancelInFlight({ inFlightUrl: inFlightUrlRef.current, url })) {
+                // The field moved on from the url being imported: drop that answer.
+                controllerRef.current?.abort()
+                requestIdRef.current++
+                inFlightUrlRef.current = ''
+                lastHandledRef.current = '' // so re-entering that url imports again
+                setStatus('idle')
+            }
             if (pendingUrlRef.current && shouldDismissQuestion({ savedUrl: savedUrl ?? '', url, pendingUrl: pendingUrlRef.current })) {
                 // The field no longer holds the url being asked about.
                 pendingUrlRef.current = ''
@@ -120,6 +132,7 @@ export const useLinkImport = <T extends TImportableForm & { purchaseUrl: string 
     const reset = useCallback(() => {
         controllerRef.current?.abort()
         requestIdRef.current++ // a late answer must not touch the next form
+        inFlightUrlRef.current = ''
         lastHandledRef.current = ''
         pendingUrlRef.current = ''
         setStatus('idle')
