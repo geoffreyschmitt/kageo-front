@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeKv, type TFakeKv } from '@/test/fakeKv'
 import { bodyOf, jsonRequest, signInAs } from '@/test/route'
 
-
 let fake: TFakeKv
 vi.mock('@vercel/kv', () => ({
     get kv() {
@@ -14,6 +13,7 @@ vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
 vi.mock('@/shared/config/authOptions', () => ({ authOptions: {} }))
 vi.mock('@/shared/lib/fetchHtml', () => ({ fetchHtml: vi.fn() }))
 
+import { getRule } from '@/shared/config/rateLimits'
 import { fetchHtml } from '@/shared/lib/fetchHtml'
 
 import { POST } from './route'
