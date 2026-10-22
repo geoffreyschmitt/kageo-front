@@ -153,15 +153,28 @@ const indexOfCI = (html: string, needle: string, from: number): number => {
 }
 
 // Index of the '>' closing the tag opened at `start`, honouring quotes; -1 if absent or too long.
-const findTagEnd = (html: string, start: number): number => {
+type TBudget = { wasted: number; noQuote: Set<string> }
+
+const findTagEnd = (html: string, start: number, budget: TBudget): number => {
     const limit = Math.min(html.length, start + MAX_TAG_LENGTH)
     let i = start + 1
     while (i < limit) {
         const c = html.charCodeAt(i)
         if (c === 62) return i
         if (c === 34 || c === 39) {
-            const close = html.indexOf(html[i], i + 1)
-            if (close < 0 || close >= limit) return -1
+            const q = html[i]
+            // A quote that is missing from here on is missing for every later tag too.
+            if (budget.noQuote.has(q)) return -1
+            const close = html.indexOf(q, i + 1)
+            if (close < 0) {
+                budget.noQuote.add(q)
+                budget.wasted += html.length - i
+                return -1
+            }
+            if (close >= limit) {
+                budget.wasted += close - i
+                return -1
+            }
             i = close + 1
         } else i++
     }
@@ -205,7 +218,8 @@ const parseAttrs = (tag: string, nameEnd: number): Map<string, string> => {
 const scanHtml = (html: string): TScan => {
     const out: TScan = { metas: new Map(), ld: [], itemprops: new Map() }
     let metaCount = 0
-    let wasted = 0
+    const budget: TBudget = { wasted: 0, noQuote: new Set() }
+    let titleMissing = false
     const len = html.length
     let i = html.indexOf('<')
     while (i >= 0 && i < len - 1) {
@@ -221,10 +235,10 @@ const scanHtml = (html: string): TScan => {
             i = html.indexOf('<', i + 1)
             continue
         }
-        const end = findTagEnd(html, i)
+        const end = findTagEnd(html, i, budget)
         if (end < 0) {
-            wasted += Math.min(MAX_TAG_LENGTH, len - i)
-            if (wasted > MAX_WASTED_SCAN) break
+            budget.wasted += Math.min(MAX_TAG_LENGTH, len - i)
+            if (budget.wasted > MAX_WASTED_SCAN) break
             i = html.indexOf('<', i + 1)
             continue
         }
@@ -243,9 +257,10 @@ const scanHtml = (html: string): TScan => {
             }
             next = close + 1
         } else if (tagName === 'title') {
-            if (out.title === undefined) {
+            if (out.title === undefined && !titleMissing) {
                 const close = indexOfCI(html, '</title', end + 1)
-                if (close >= 0) {
+                if (close < 0) titleMissing = true
+                else {
                     out.title = decodeEntities(html.slice(end + 1, Math.min(close, end + 1 + MAX_TITLE)))
                     next = close + 1
                 }

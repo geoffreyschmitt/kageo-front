@@ -295,6 +295,25 @@ describe('extractWishFields', () => {
             expect(ms).toBeLessThan(1500)
             expect(r.name).toBe('Safe title')
         })
+        const ogHead = page(og('og:title', 'Early title') + '<title>Early</title>').replace('</head>', '')
+        const bombs: [string, string][] = [
+            ['unclosed titles', '<title>'.repeat(143_000)],
+            ['unclosed scripts', '<script>'.repeat(125_000)],
+            ['unclosed styles', '<style>'.repeat(140_000)],
+            ['unclosed comments', '<!--'.repeat(250_000)],
+            ['CDATA openers', '<![CDATA['.repeat(110_000)],
+            ['unterminated meta quotes', '<meta content="'.repeat(65_000)],
+            ['unclosed ld+json scripts', '<script type="application/ld+json">'.repeat(30_000)],
+            ['unterminated single quotes', "<a b='".repeat(160_000)],
+        ]
+        it.each(bombs)('is fast on %s', (_label, bomb) => {
+            const alone = timed(bomb)
+            expect(alone.ms).toBeLessThan(1500)
+            const early = timed(ogHead + bomb)
+            expect(early.ms).toBeLessThan(1500)
+            expect(early.r.name).toBe('Early title')
+        })
+
         it('handles many itemprop elements', () => {
             const { ms } = timed(head + '<span itemprop="price">x</span>'.repeat(40_000))
             expect(ms).toBeLessThan(1500)
