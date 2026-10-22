@@ -148,7 +148,7 @@ export const ManageSafeBets = () => {
 
             {error && (
                 <p className={s.errorBanner} role="alert">
-                    {error}
+                    {t(error === 'load' ? 'errors.load' : 'errors.generic')}
                 </p>
             )}
 

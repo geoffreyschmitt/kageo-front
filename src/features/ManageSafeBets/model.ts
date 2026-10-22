@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import type { TSafeBet } from '@/entities/safeBet'
 
+import { RateLimitedError } from '@/shared/api/assertOk'
 import {
     createSafeBet,
     deleteSafeBet,
@@ -26,7 +27,8 @@ export const moveId = (ids: string[], id: string, dir: -1 | 1): string[] => {
 export const useManageSafeBetsModel = () => {
     const [entries, setEntries] = useState<TSafeBet[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    // A code, not text: the UI translates it. A 429 sets nothing (the toast covers it).
+    const [error, setError] = useState<'load' | 'save' | null>(null)
 
     useEffect(() => {
         let cancelled = false
@@ -35,7 +37,7 @@ export const useManageSafeBetsModel = () => {
                 if (!cancelled) setEntries(data)
             })
             .catch((err) => {
-                if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load')
+                if (!cancelled && !(err instanceof RateLimitedError)) setError('load')
             })
             .finally(() => {
                 if (!cancelled) setIsLoading(false)
@@ -51,7 +53,7 @@ export const useManageSafeBetsModel = () => {
         try {
             await fn()
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Something went wrong')
+            if (!(err instanceof RateLimitedError)) setError('save')
             throw err
         }
     }, [])

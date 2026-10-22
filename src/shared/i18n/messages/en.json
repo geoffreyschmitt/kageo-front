@@ -754,7 +754,9 @@
     "errors": {
       "title": "A title is required (80 characters max).",
       "description": "The description is too long (500 characters max).",
-      "imageUrl": "Enter a valid http(s) link."
+      "imageUrl": "Enter a valid http(s) link.",
+      "load": "Could not load your ideas.",
+      "generic": "Something went wrong. Please try again."
     }
   }
 }
