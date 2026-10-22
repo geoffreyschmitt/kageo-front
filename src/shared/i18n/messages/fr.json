@@ -231,7 +231,8 @@
     "suggestionsAllMeta": "{count, plural, one {# idée proposée par vos amis} other {# idées proposées par vos amis}}",
     "suggestionsCtaTitle": "Une idée en tête ?",
     "suggestionsCtaSub": "Donnez une longueur d'avance aux autres — proposez quoi acheter pour {ownerName}",
-    "suggestionsEmpty": "Aucune suggestion pour l'instant.",    "resultsCount": "Affichage de {shown} sur {total} articles"
+    "suggestionsEmpty": "Aucune suggestion pour l'instant.",
+    "resultsCount": "Affichage de {shown} sur {total} articles"
   },
   "wishlistToast": {
     "potStarted": "La cagnotte a démarré — vos amis peuvent maintenant y contribuer",
@@ -726,5 +727,34 @@
     "markPurchasedHint": "Visible uniquement par vous.",
     "purchasedNote": "Cadeau acheté par l'organisateur·rice.",
     "pledgeReminder": "Une promesse, pas un paiement — remettez votre part à {creatorName}."
+  },
+  "safeBets": {
+    "title": "Valeurs sûres",
+    "subtitle": "Des idées qui plaisent presque toujours, proposées sous chacune de vos listes.",
+    "hint": "Vos proches verront ces idées sur chacune de vos listes partagées, pour s'inspirer. Vous ne voyez jamais les commentaires qu'ils y laissent.",
+    "loading": "Chargement…",
+    "empty": "Aucune idée pour l'instant. Ajoutez ce que vous aimez à coup sûr : un parfum, un livre, une bougie…",
+    "addIdea": "Ajouter une idée",
+    "add": "Ajouter",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer cette idée ?",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "limitReached": "Vous avez atteint le maximum de {max} idées.",
+    "titleLabel": "Titre",
+    "titlePlaceholder": "Ex. : Bougie parfumée",
+    "descriptionLabel": "Description (facultatif)",
+    "imageLabel": "Lien d'une image (facultatif)",
+    "imageLoadError": "Impossible de charger cette image.",
+    "previewAlt": "Aperçu de l'image",
+    "errors": {
+      "title": "Le titre est requis (80 caractères maximum).",
+      "description": "La description est trop longue (500 caractères maximum).",
+      "imageUrl": "Entrez un lien http(s) valide."
+    }
   }
 }

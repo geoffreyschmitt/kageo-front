@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 
 import { useManageAccountModel } from '@/features/ManageAccount'
+import { ManageSafeBets } from '@/features/ManageSafeBets'
 import { ThemeToggle } from '@/features/ThemeToggle'
 
 import { Modal, Panel } from '@/shared/ui'
@@ -311,6 +312,9 @@ export default function ProfilePage() {
                         </label>
                     </div>
                 </Panel>
+
+                {/* Safe bets */}
+                <ManageSafeBets />
 
                 {/* Danger zone */}
                 <Panel title={t('dangerZoneTitle')} subtitle={t('dangerZoneSubtitle')} variant="danger">

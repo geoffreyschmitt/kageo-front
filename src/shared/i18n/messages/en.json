@@ -231,7 +231,8 @@
     "suggestionsAllMeta": "{count, plural, one {# idea proposed by friends} other {# ideas proposed by friends}}",
     "suggestionsCtaTitle": "Have something in mind?",
     "suggestionsCtaSub": "Give other gifters a head start — propose what to buy for {ownerName}",
-    "suggestionsEmpty": "No suggestions yet.",    "resultsCount": "Showing {shown} of {total} items"
+    "suggestionsEmpty": "No suggestions yet.",
+    "resultsCount": "Showing {shown} of {total} items"
   },
   "wishlistToast": {
     "potStarted": "Pot started — friends can now chip in",
@@ -726,5 +727,34 @@
     "markPurchasedHint": "Visible to you only.",
     "purchasedNote": "Bought by the organiser.",
     "pledgeReminder": "A pledge, not a payment — hand your share to {creatorName}."
+  },
+  "safeBets": {
+    "title": "Safe bets",
+    "subtitle": "Ideas you almost always love, shown beneath each of your lists.",
+    "hint": "Your loved ones will see these ideas on every list you share, for inspiration. You never see the comments they leave on them.",
+    "loading": "Loading…",
+    "empty": "No ideas yet. Add things you'd always enjoy: a perfume, a book, a candle…",
+    "addIdea": "Add an idea",
+    "add": "Add",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Delete this idea?",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "limitReached": "You have reached the maximum of {max} ideas.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. Scented candle",
+    "descriptionLabel": "Description (optional)",
+    "imageLabel": "Image link (optional)",
+    "imageLoadError": "This image could not be loaded.",
+    "previewAlt": "Image preview",
+    "errors": {
+      "title": "A title is required (80 characters max).",
+      "description": "The description is too long (500 characters max).",
+      "imageUrl": "Enter a valid http(s) link."
+    }
   }
 }

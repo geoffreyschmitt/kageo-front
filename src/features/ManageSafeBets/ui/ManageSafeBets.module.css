@@ -1,0 +1,228 @@
+.hint {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    background: var(--accent-tint-bg);
+    border: 1px solid var(--accent-tint-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 0 0 16px;
+}
+
+.muted {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    margin: 0 0 16px;
+}
+
+.errorBanner {
+    font-size: 13px;
+    color: var(--error-fg);
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 0 0 16px;
+}
+
+.list {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: var(--surface-sunken);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+}
+
+.itemMain {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background: var(--surface-sunken-2);
+}
+
+.itemText {
+    min-width: 0;
+}
+
+.itemTitle {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+}
+
+.itemDesc {
+    margin: 4px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.confirmText {
+    font-size: 13px;
+    color: var(--text-secondary);
+    flex: 1 1 100%;
+}
+
+.btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 18px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 100px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btnPrimary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
+}
+
+.btnPrimary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.btnGhost,
+.btnIcon {
+    background: transparent;
+    border-color: var(--border-default);
+    color: var(--text-primary);
+}
+
+.btnGhost:hover:not(:disabled),
+.btnIcon:hover:not(:disabled) {
+    background: var(--surface-sunken-2);
+}
+
+.btnIcon {
+    padding: 0;
+    font-size: 16px;
+}
+
+.btnDanger {
+    background: var(--error-bg);
+    border-color: var(--error-border);
+    color: var(--error-fg);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border-default);
+    border-radius: 10px;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    color: var(--text-primary);
+    background: var(--surface-input);
+    box-sizing: border-box;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.input[aria-invalid='true'] {
+    border-color: var(--error-fg);
+}
+
+.textarea {
+    resize: vertical;
+}
+
+.error {
+    font-size: 12px;
+    color: var(--error-fg);
+}
+
+.preview {
+    display: flex;
+}
+
+.previewImg {
+    max-width: 100%;
+    max-height: 160px;
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+}
+
+.formActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+@media (min-width: 640px) {
+    .item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .item:has(form) {
+        display: block;
+    }
+
+    .confirmText {
+        flex: 0 1 auto;
+    }
+}
