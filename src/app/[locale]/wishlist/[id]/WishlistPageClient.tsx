@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 
 import Wishlist from '@/views/wishlist/wishlist'
 
+import { SafeBetsSection, type TSafeBetEntry } from '@/widgets/SafeBetsSection'
 import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 
 import { TWishFormData, TProposedWishFormData } from '@/entities/wish'
@@ -35,6 +36,7 @@ type Props = {
     isInvited: boolean
     initialItems: TWishCard[]
     initialPot: TGetPotResponse | null
+    safeBets: TSafeBetEntry[]
 }
 
 const toast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') =>
@@ -60,6 +62,7 @@ export default function WishlistPageClient({
     isInvited,
     initialItems,
     initialPot,
+    safeBets,
 }: Props) {
     const t = useTranslations('wishlistToast')
     const router = useRouter()
@@ -442,6 +445,7 @@ export default function WishlistPageClient({
                 onGiftPotRefreshed={handleGiftPotRefreshed}
                 eventName={wishlistMeta.name}
             />
+            <SafeBetsSection wishlistId={id} entries={safeBets} isLoggedIn={isLoggedIn} />
         </main>
     )
 }

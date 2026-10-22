@@ -731,6 +731,7 @@
   "safeBets": {
     "title": "Safe bets",
     "subtitle": "Ideas you almost always love, shown beneath each of your lists.",
+    "guestTitle": "Ideas they'd be happy to receive",
     "hint": "Your loved ones will see these ideas on every list you share, for inspiration. You never see the comments they leave on them.",
     "loading": "Loading…",
     "empty": "No ideas yet. Add things you'd always enjoy: a perfume, a book, a candle…",

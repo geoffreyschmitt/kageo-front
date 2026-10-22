@@ -10,6 +10,7 @@ import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 
 import { authOptions } from '@/shared/config/authOptions'
 import { getUserNamesByIds } from '@/shared/lib/getUserNameById'
+import { getSafeBets, safeBetCommentsKey } from '@/shared/lib/safeBets'
 
 import WishlistPageClient from './WishlistPageClient'
 
@@ -100,6 +101,16 @@ export default async function WishlistPage({
         })
     }
 
+    // The owner's safe-bet ideas with their comment counts. Owners get none: comments never reach them.
+    const safeBetEntries = userIsOwner
+        ? []
+        : await Promise.all(
+              (await getSafeBets(wishlist.ownerId)).map(async (entry) => ({
+                  ...entry,
+                  commentCount: (await kv.llen(safeBetCommentsKey(entry.id))) ?? 0,
+              })),
+          )
+
     // Resolve reserver / purchaser ids to display names so cards never show a raw uuid.
     const actorNames = await getUserNamesByIds(
         rawWishes.flatMap((w) => [w.reservedBy, w.purchasedBy].filter((v): v is string => !!v)),
@@ -182,6 +193,7 @@ export default async function WishlistPage({
             isInvited={isInvited}
             initialItems={items}
             initialPot={potView}
+            safeBets={safeBetEntries}
         />
     )
 }
