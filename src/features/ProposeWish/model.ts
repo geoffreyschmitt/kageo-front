@@ -2,6 +2,7 @@
 
 import {useCallback, useState} from "react"
 
+import { useLinkImport } from "@/entities/wish"
 import type { TProposedWishFormData, TProposedWishValidationErrors } from "@/entities/wish"
 
 import {addWish as addWishService} from "@/shared/api/wishlist/addWish";
@@ -28,6 +29,11 @@ export const useProposeWishForm = ({
         purchaseUrl: "",
         notes: "",
         showToOwner: false,
+    })
+
+    const linkImport = useLinkImport({
+        formData,
+        applyPatch: (patch) => setFormData(prev => ({ ...prev, ...patch })),
     })
 
     const [errors, setErrors] = useState<TProposedWishValidationErrors>({})
@@ -120,5 +126,6 @@ export const useProposeWishForm = ({
         handleCheckboxChange,
         handleSubmit,
         resetForm,
+        linkImport,
     }
 }

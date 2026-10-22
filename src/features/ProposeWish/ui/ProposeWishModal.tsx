@@ -16,7 +16,7 @@ import type {TProposeWishModal} from "./ProposeWishModal.types"
 
 export const ProposeWishModal = ({isOpen, onClose, onSubmit, wishlistId}: TProposeWishModal) => {
     const t = useTranslations('proposeWishModal')
-    const {formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit} =
+    const {formData, errors, isSubmitting, handleInputChange, handleCheckboxChange, handleSubmit, linkImport} =
         useProposeWishForm({onSubmit, onClose, wishlistId})
 
     const handleSelectChange = (
@@ -43,6 +43,7 @@ export const ProposeWishModal = ({isOpen, onClose, onSubmit, wishlistId}: TPropo
                 handleSubmit={handleSubmit}
                 onCancel={onClose}
                 isProposedWish
+                linkImport={linkImport}
             />
         </Modal>
     )

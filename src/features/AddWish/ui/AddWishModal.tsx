@@ -31,6 +31,7 @@ export const AddWishModal = ({
         handleInputChange,
         handleCheckboxChange,
         handleSubmit,
+        linkImport,
     } = useAddWishModel({
         onSubmit,
         onClose,
@@ -61,6 +62,7 @@ export const AddWishModal = ({
                     handleSubmit={handleSubmit}
                     onCancel={onClose}
                     priority={formData.priority}
+                    linkImport={linkImport}
                 />
         </Modal>
     );

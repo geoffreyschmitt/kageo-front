@@ -3,6 +3,7 @@ import { useState, useCallback  } from "react"
 
 import { useTranslations } from "next-intl"
 
+import { useLinkImport } from "@/entities/wish"
 import type { TWishFormData, TWishValidationErrors, TWishPriority} from "@/entities/wish"
 
 import { addWish as addWishService } from "@/shared/api/wishlist/addWish"
@@ -35,6 +36,11 @@ export const useAddWishModel = ({
     const [errors, setErrors] = useState<TWishValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
     const t = useTranslations('wishForm')
+
+    const linkImport = useLinkImport({
+        formData,
+        applyPatch: (patch) => setFormData(prev => ({ ...prev, ...patch })),
+    })
 
     const validateForm = useCallback((): boolean => {
         const newErrors: TWishValidationErrors = {}
@@ -129,5 +135,6 @@ export const useAddWishModel = ({
         handleSubmit,
         resetForm,
         validateForm,
+        linkImport,
     }
 }

@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react"
 
 import { useTranslations } from "next-intl"
 
+import { useLinkImport } from "@/entities/wish"
 import type { TWishFormData, TWishValidationErrors, TWishPriority} from "@/entities/wish"
 
 import { editWish as editWishService } from "@/shared/api/wish/editWish"
@@ -52,6 +53,12 @@ export const useEditWishModel = ({
     }, [initialData])
 
     const t = useTranslations('wishForm')
+
+    const linkImport = useLinkImport({
+        formData,
+        applyPatch: (patch) => setFormData(prev => ({ ...prev, ...patch })),
+        savedUrl: initialData.purchaseUrl || "",
+    })
 
     const validateForm = useCallback((): boolean => {
         const newErrors: TWishValidationErrors = {}
@@ -146,5 +153,6 @@ export const useEditWishModel = ({
         handleSubmit,
         resetForm,
         validateForm,
+        linkImport,
     }
 }

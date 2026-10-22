@@ -32,6 +32,7 @@ export const EditWishModal = ({
         handleInputChange,
         handleCheckboxChange,
         handleSubmit,
+        linkImport,
     } = useEditWishModel({
         wishId,
         initialData,
@@ -63,6 +64,7 @@ export const EditWishModal = ({
                 handleSubmit={handleSubmit}
                 onCancel={onClose}
                 priority={formData.priority}
+                linkImport={linkImport}
                 submitLabel={t('submit')}
                 submittingLabel={t('submitting')}
             />
