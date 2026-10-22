@@ -14,9 +14,8 @@ Success test: the creators' own circle uses Kageo for one real event. No new fea
 2. **[B] Browser QA of the per-wish gift pot and the new account purge.** The gift pot merged 2026-08-29 without live QA (checklist: `docs/superpowers/specs/2026-08-28-gift-pot-per-wish-design.md`, Testing section). The purge and the CSV exports are covered by unit tests against an in-memory KV, never against a real one: run it once on a development database, with a throwaway account that has pledges, comments and a reservation on someone else's list. **Do not point this at production data.**
 3. **[B] Send invite emails** via Resend from `api/wishlist/share`. Today the invitee is only recorded in `wishlist:{id}:invitees`; invited people are never notified. Needs a verified Resend sender domain.
 4. **[B] Forgot / reset password by email.** Today a user who forgets their password is locked out. Uses the same Resend pipeline as item 3.
-5. **Wishlist export for people who are not online**: a print-friendly view first, then a CSV of the wishlist (wishes, status, link). Pledge CSV already exists.
-6. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
-7. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
+5. **[P] Production environment check.** Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
+6. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
 
 ## 2. Open — beyond the family
 
@@ -29,6 +28,7 @@ Exit criteria from Launch to Open:
 - Email verification (invites match by email, so addresses should be proven).
 
 Features and debt:
+- **Wishlist export for people who are not online** (moved from Launch 2026-10-22): a print-friendly view first, then a CSV of the wishlist (wishes, status, link). Pledge CSV already exists. Never include reservations or pots in what the owner can print or export (surprise).
 - **Magic-link sign-in** (passwordless) as a simplicity experiment, alongside Google and password.
 - **Amazon-specific wish import** (the generic URL import shipped 2026-10-22; Amazon often blocks server fetches). *Considered, not planned:* the official Product Advertising API needs an Associates account with qualifying sales and has usage terms; scraping breaks Amazon's terms. Affiliate links conflict with the no-ads principle and would need disclosure.
 - **Cover images**: upload + storage (e.g. Vercel Blob); the `coverImage` field already exists on `TWishlist`.
