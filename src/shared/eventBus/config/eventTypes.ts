@@ -7,6 +7,7 @@ type UIEvents = {
   'ui:themeChanged': 'light' | 'dark';
   'ui:languageChanged': 'en' | 'fr';
   'ui:rateLimited': NoPayload;
+  'ui:notInvited': NoPayload;
   'ui:toast': { message: string; type?: 'success' | 'error' | 'info' | 'warning'; duration?: number };
 };
 

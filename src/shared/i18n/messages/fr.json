@@ -568,7 +568,9 @@
   },
   "toast": {
     "notificationsRegion": "Notifications",
-    "rateLimited": "Trop de tentatives, réessayez dans une minute."
+    "rateLimited": "Trop de tentatives, réessayez dans une minute.",
+    "notInvited": "Cette liste est privée. Demandez à son propriétaire d'inviter {email} pour participer.",
+    "notInvitedNoEmail": "Cette liste est privée. Demandez à son propriétaire de vous inviter pour participer."
   },
   "offline": {
     "title": "Vous êtes hors ligne",
@@ -679,6 +681,7 @@
     "posting": "Envoi…",
     "postComment": "Publier",
     "loginToView": "Connectez-vous pour voir et publier des commentaires.",
+    "notInvited": "Cette liste est privée. Demandez à son propriétaire de vous inviter pour participer.",
     "loginToPost": "Connectez-vous pour publier un commentaire sur cette wishlist.",
     "count": "{count, plural, one {# commentaire} other {# commentaires}}",
     "addCta": "Commenter",

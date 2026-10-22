@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import type { TComment } from '@/entities/comment'
 
+import { NotInvitedError } from '@/shared/api/assertOk'
 import { getComments, postComment, TCommentTarget } from '@/shared/api/comment'
 
 type TUseCommentsModelParams = {
@@ -21,6 +22,8 @@ export const useCommentsModel = ({ target, enabled, autoLoad = true, onPosted }:
     const [isLoading, setIsLoading] = useState(false)
     const [loadError, setLoadError] = useState<string | null>(null)
     const [hasLoaded, setHasLoaded] = useState(false)
+    // A signed-in viewer of a private list whose email was not invited: nothing to load or post.
+    const [notInvited, setNotInvited] = useState(false)
 
     const [text, setText] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -33,12 +36,14 @@ export const useCommentsModel = ({ target, enabled, autoLoad = true, onPosted }:
         if (!enabled) return
         setIsLoading(true)
         setLoadError(null)
+        setNotInvited(false)
         try {
             const data = await getComments(target)
             setComments(data)
             setHasLoaded(true)
         } catch (err) {
-            setLoadError(err instanceof Error ? err.message : 'Could not load comments')
+            if (err instanceof NotInvitedError) setNotInvited(true)
+            else setLoadError(err instanceof Error ? err.message : 'Could not load comments')
         } finally {
             setIsLoading(false)
         }
@@ -75,6 +80,7 @@ export const useCommentsModel = ({ target, enabled, autoLoad = true, onPosted }:
         comments,
         isLoading,
         loadError,
+        notInvited,
         hasLoaded,
         load,
         text,

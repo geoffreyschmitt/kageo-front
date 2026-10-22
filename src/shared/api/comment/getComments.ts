@@ -21,7 +21,8 @@ export const urlFor = (target: TCommentTarget) => {
 export const getComments = async (target: TCommentTarget): Promise<TComment[]> => {
     const res = await fetch(urlFor(target))
 
-    await assertOk(res)
+    // Loaded on page open: a non-invited viewer gets the notice in the comments area, not a toast.
+    await assertOk(res, { notifyNotInvited: false })
 
     return (await res.json()) as TComment[]
 }

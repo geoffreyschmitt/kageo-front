@@ -568,7 +568,9 @@
   },
   "toast": {
     "notificationsRegion": "Notifications",
-    "rateLimited": "Too many tries, please wait a minute."
+    "rateLimited": "Too many tries, please wait a minute.",
+    "notInvited": "This list is private. Ask its owner to invite {email} to take part.",
+    "notInvitedNoEmail": "This list is private. Ask its owner to invite you to take part."
   },
   "offline": {
     "title": "You're offline",
@@ -679,6 +681,7 @@
     "posting": "Posting…",
     "postComment": "Post comment",
     "loginToView": "Log in to see and post comments.",
+    "notInvited": "This list is private. Ask its owner to invite you to take part.",
     "loginToPost": "Log in to post a comment on this wishlist.",
     "count": "{count, plural, one {# comment} other {# comments}}",
     "addCta": "Comment",

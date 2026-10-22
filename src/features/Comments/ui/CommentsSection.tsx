@@ -53,6 +53,7 @@ export const CommentsSection = ({
         comments,
         isLoading,
         loadError,
+        notInvited,
         text,
         setText,
         isSubmitting,
@@ -72,8 +73,9 @@ export const CommentsSection = ({
 
             {isLoggedIn && isLoading && <p className={styles.comments__status}>{t('loading')}</p>}
             {isLoggedIn && loadError && <p className={styles.comments__error}>{loadError}</p>}
+            {isLoggedIn && notInvited && <p className={styles.comments__empty}>{t('notInvited')}</p>}
 
-            {isLoggedIn && !isLoading && !loadError && comments.length === 0 && (
+            {isLoggedIn && !isLoading && !loadError && !notInvited && comments.length === 0 && (
                 <p className={styles.comments__empty}>{resolvedEmptyMessage}</p>
             )}
 
@@ -91,7 +93,7 @@ export const CommentsSection = ({
                 </ul>
             )}
 
-            <form
+            {!notInvited && <form
                 className={styles.comments__form}
                 onSubmit={(e) => {
                     e.preventDefault()
@@ -118,7 +120,7 @@ export const CommentsSection = ({
                 >
                     {isSubmitting ? t('posting') : t('postComment')}
                 </button>
-            </form>
+            </form>}
 
             <LoginPromptModal
                 isOpen={showLoginPrompt}

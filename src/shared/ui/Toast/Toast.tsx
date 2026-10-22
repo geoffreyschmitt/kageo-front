@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
+import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 
 import { eventBus } from '@/shared/eventBus'
@@ -41,6 +42,8 @@ const ICONS = {
 
 export const Toaster = () => {
     const t = useTranslations('toast')
+    const { data: session } = useSession()
+    const email = session?.user?.email
     const [toasts, setToasts] = useState<ToastItem[]>([])
 
     const dismiss = useCallback((id: string) => {
@@ -68,6 +71,13 @@ export const Toaster = () => {
             eventBus.emit('ui:toast', { message: t('rateLimited'), type: 'warning' })
         })
     }, [t])
+
+    useEffect(() => {
+        return eventBus.on('ui:notInvited', () => {
+            const message = email ? t('notInvited', { email }) : t('notInvitedNoEmail')
+            eventBus.emit('ui:toast', { message, type: 'info', duration: 7000 })
+        })
+    }, [t, email])
 
     if (toasts.length === 0) return null
 
