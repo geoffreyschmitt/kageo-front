@@ -21,11 +21,18 @@ type TWishlistKV = {
     updatedAt: string
 }
 
+const maskForOwner = (wish: unknown) => {
+    const { reservedBy: _reservedBy, purchasedBy: _purchasedBy, ...rest } = wish as Record<string, unknown>
+    const hidden = rest.status === 'reserved' || rest.status === 'purchased' || rest.status === 'funded'
+    return { ...rest, status: hidden ? 'wanted' : rest.status }
+}
+
 // GET /api/wishlist/[id] — get a wishlist with its wishes
 export async function GET(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> },
 ) {
+    const session = await getServerSession(authOptions)
     const { id } = await params
 
     const wishlist = await kv.get<TWishlistKV>(`wishlist:${id}`)
@@ -39,7 +46,12 @@ export async function GET(
         ? (await Promise.all(wishIds.map((wid) => kv.get(`wish:${wid}`)))).filter(Boolean)
         : []
 
-    return NextResponse.json({ ...wishlist, wishes })
+    // The owner never learns who reserved or bought what (nor that a pot is full): same masking
+    // as the wishlist page.
+    const isOwner = !!session?.user?.id && session.user.id === wishlist.ownerId
+    const visibleWishes = isOwner ? wishes.map(maskForOwner) : wishes
+
+    return NextResponse.json({ ...wishlist, wishes: visibleWishes })
 }
 
 // PUT /api/wishlist/[id] — update wishlist metadata

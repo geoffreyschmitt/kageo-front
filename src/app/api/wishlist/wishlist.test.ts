@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeKv, type TFakeKv } from '@/test/fakeKv'
 import { bodyOf, jsonRequest, signInAs } from '@/test/route'
 
+import { withLock, wishlistLock } from '@/shared/lib/kvLock'
 import { MailRejectedError, MailUnavailableError, setMailTransportForTests, type TMail } from '@/shared/lib/mail'
 
 let fake: TFakeKv
@@ -83,6 +84,24 @@ describe('read, update, delete', () => {
         const body = await bodyOf(await getOne(plain, params('L')))
         expect((body.wishes as unknown[]).length).toBe(1)
         expect((await getOne(plain, params('nope'))).status).toBe(404)
+    })
+
+    it('GET shows the owner every wish as wanted with nobody named, and guests the real state', async () => {
+        await fake.sadd('wishlist:L:wishes', 'w2', 'w3')
+        await fake.set('wish:w2', { id: 'w2', wishlistId: 'L', status: 'reserved', reservedBy: 'secretguest' })
+        await fake.set('wish:w3', { id: 'w3', wishlistId: 'L', status: 'purchased', purchasedBy: 'secretbuyer' })
+
+        signInAs('owner')
+        const ownerBody = await bodyOf(await getOne(plain, params('L')))
+        const ownerWishes = ownerBody.wishes as Array<Record<string, unknown>>
+        expect(ownerWishes.map((w) => w.status)).toEqual(['wanted', 'wanted', 'wanted'])
+        expect(JSON.stringify(ownerBody)).not.toContain('secretguest')
+        expect(JSON.stringify(ownerBody)).not.toContain('secretbuyer')
+
+        signInAs('invited', { email: 'invited@x.io' })
+        const guestBody = await bodyOf(await getOne(plain, params('L')))
+        const statuses = (guestBody.wishes as Array<Record<string, unknown>>).map((w) => w.status).sort()
+        expect(statuses).toEqual(['purchased', 'reserved', 'wanted'])
     })
 
     it('PUT is owner-only and validates', async () => {
@@ -251,6 +270,71 @@ describe('POST /api/wishlist/share', () => {
         expect([a.status, b.status]).toEqual([200, 200])
         const bodies = [await bodyOf(a), await bodyOf(b)]
         expect(bodies.filter((body) => body.alreadyInvited === true)).toHaveLength(1)
+    })
+
+    it.each([
+        '"1"<victim@x.io>',
+        'victim@x.io,',
+        'victim@x.io;other@x.io',
+        'a<b>@x.io',
+        'a b@x.io',
+    ])('rejects the composite or malformed address %j and sends nothing', async (email) => {
+        signInAs('owner')
+        expect((await share(jsonRequest({ wishlistId: 'L', email }))).status).toBe(400)
+        expect(sent).toHaveLength(0)
+        expect(fake.members('wishlist:L:invitees')).toEqual([])
+    })
+
+    it('counts +tag and Gmail dot variants of one mailbox against the same recipient cap', async () => {
+        const variants = ['victim@gmail.com', 'v.ictim@gmail.com', 'victim+promo@gmail.com', 'VICTIM@googlemail.com']
+        for (let i = 0; i < 11; i++) {
+            await seedList(`G${i}`, `o${i % 2}`)
+            signInAs(`o${i % 2}`)
+            const res = await share(jsonRequest({ wishlistId: `G${i}`, email: variants[i % variants.length] }))
+            expect(res.status).toBe(i < 10 ? 200 : 429)
+        }
+        expect(sent).toHaveLength(10)
+    })
+
+    it('stops one owner after 50 invite emails in a day', async () => {
+        for (let i = 0; i < 50; i++) await fake.incr('ratelimit:inviteDaily:owner')
+        await fake.expire('ratelimit:inviteDaily:owner', 86400)
+        signInAs('owner')
+        const res = await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' }))
+
+        expect(res.status).toBe(429)
+        expect(sent).toHaveLength(0)
+        expect(fake.members('wishlist:L:invitees')).toEqual([])
+    })
+
+    it('does not count an already-invited address against the daily cap', async () => {
+        signInAs('owner')
+        await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' }))
+        const before = await fake.get('ratelimit:inviteDaily:owner')
+        await share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' }))
+
+        expect(await fake.get('ratelimit:inviteDaily:owner')).toEqual(before)
+    })
+
+    it('cuts a hung send off after 8 seconds and never blocks the wishlist lock meanwhile', async () => {
+        vi.useFakeTimers()
+        try {
+            setMailTransportForTests({ send: () => new Promise<void>(() => {}) })
+            signInAs('owner')
+            const pending = share(jsonRequest({ wishlistId: 'L', email: 'friend@x.io' }))
+            await vi.advanceTimersByTimeAsync(100)
+
+            // Pledges and edits take this lock; a slow email must not make them wait.
+            await expect(withLock(wishlistLock('L'), async () => 'free')).resolves.toBe('free')
+
+            await vi.advanceTimersByTimeAsync(8000)
+            const res = await pending
+            expect(res.status).toBe(503)
+            expect(await bodyOf(res)).toMatchObject({ code: 'EMAIL_UNAVAILABLE' })
+            expect(fake.members('wishlist:L:invitees')).toEqual([])
+        } finally {
+            vi.useRealTimers()
+        }
     })
 
     it.each([

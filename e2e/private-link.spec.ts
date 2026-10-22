@@ -29,8 +29,12 @@ test.describe('a private list opened from its link', () => {
         await stranger.page.goto(`/en/wishlist/${list.id}`)
         await expect(stranger.page.getByRole('heading', { name: 'Private stranger list' })).toBeVisible()
 
-        await stranger.page.getByRole('button', { name: 'Reserve', exact: true }).click()
-        await expect(stranger.page.getByText(/This list is private/)).toBeVisible()
+        // Retried as a whole: in dev a click can land before React has hydrated the page, and each
+        // attempt is harmless (the answer is the same 403).
+        await expect(async () => {
+            await stranger.page.getByRole('button', { name: 'Reserve', exact: true }).click()
+            await expect(stranger.page.getByText(/This list is private/)).toBeVisible({ timeout: 2500 })
+        }).toPass({ timeout: 15000 })
         // No raw API error in the comments area or anywhere else.
         await expect(stranger.page.getByText(/API error/)).toHaveCount(0)
         await stranger.context.close()

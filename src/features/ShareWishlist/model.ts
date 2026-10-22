@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl"
 
 import { RateLimitedError } from "@/shared/api/assertOk"
 import { ShareWishlistError, type TShareWishlistResponse } from "@/shared/api/wishlist/shareWishlist"
+import { isValidEmailAddress } from "@/shared/lib/emailAddress"
 
 type TUseShareWishlistModelParams = {
     isOpen: boolean
@@ -24,8 +25,6 @@ export const useShareWishlistModel = ({
     const [sendSuccess, setSendSuccess] = useState(false)
     const [alreadyInvited, setAlreadyInvited] = useState(false)
     const [copySuccess, setCopySuccess] = useState(false)
-
-    const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
     const clearFeedback = () => {
         setEmailError("")
@@ -52,7 +51,7 @@ export const useShareWishlistModel = ({
         clearFeedback()
 
         if (!email.trim()) return setEmailError(t("emailRequired"))
-        if (!isValidEmail(email.trim())) return setEmailError(t("emailInvalid"))
+        if (!isValidEmailAddress(email.trim())) return setEmailError(t("emailInvalid"))
 
         setIsSending(true)
         try {

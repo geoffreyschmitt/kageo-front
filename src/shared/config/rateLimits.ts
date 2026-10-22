@@ -9,6 +9,7 @@ export type TRateLimitName =
     | 'suggest'
     | 'invite'
     | 'inviteRecipient'
+    | 'inviteDaily'
     | 'import'
     | 'write'
     | 'ipCeiling'
@@ -29,6 +30,8 @@ const RULES: Record<TRateLimitName, TRateRule> = {
     invite: { limit: 30, windowSeconds: 600 },
     // Invite emails one address may receive per day, across all owners (keyed by the address).
     inviteRecipient: { limit: 10, windowSeconds: 86400 },
+    // Invite emails one account may send per day (only counted when an email really goes out).
+    inviteDaily: { limit: 50, windowSeconds: 86400 },
     import: { limit: 20, windowSeconds: 600 },
     write: { limit: 120, windowSeconds: 600 },
     ipCeiling: { limit: 600, windowSeconds: 600 },
