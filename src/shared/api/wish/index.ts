@@ -16,3 +16,5 @@ export type { TRemovePurchasedWishResponse } from './removePurchased'
 export { reserveWish } from './reserveWish'
 export type { TReserveWishResponse } from './reserveWish'
 
+
+export { importWishFromUrl } from './importFromUrl'
