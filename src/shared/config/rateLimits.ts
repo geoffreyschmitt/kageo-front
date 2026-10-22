@@ -8,10 +8,11 @@ export type TRateLimitName =
     | 'comment'
     | 'suggest'
     | 'invite'
+    | 'import'
     | 'write'
     | 'ipCeiling'
 
-export type TWriteLimit = 'reserve' | 'contribute' | 'comment' | 'suggest' | 'invite' | 'write'
+export type TWriteLimit = 'reserve' | 'contribute' | 'comment' | 'suggest' | 'invite' | 'import' | 'write'
 
 export type TRateRule = { limit: number; windowSeconds: number }
 
@@ -25,6 +26,7 @@ const RULES: Record<TRateLimitName, TRateRule> = {
     comment: { limit: 30, windowSeconds: 600 },
     suggest: { limit: 60, windowSeconds: 600 },
     invite: { limit: 30, windowSeconds: 600 },
+    import: { limit: 20, windowSeconds: 600 },
     write: { limit: 120, windowSeconds: 600 },
     ipCeiling: { limit: 600, windowSeconds: 600 },
 }

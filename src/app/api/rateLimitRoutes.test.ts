@@ -24,6 +24,7 @@ import { PUT as putWish } from './wish/[wishId]/route'
 import { POST as cancelWish } from './wish/cancel/route'
 import { PATCH as patchWishContribute, POST as postWishContribute } from './wish/contribute/route'
 import { POST as deleteWish } from './wish/delete/route'
+import { POST as importWish } from './wish/import/route'
 import { POST as markPurchased } from './wish/mark-purchased/route'
 import { GET as exportWishPot } from './wish/pot/export/route'
 import { POST as postWishPot } from './wish/pot/route'
@@ -72,6 +73,7 @@ export const cases: TCase[] = [
         call: () => postListComment(jsonRequest({ text: 'hi' }), listParams),
     },
     { name: 'POST /api/wish', group: 'suggest', call: () => postWish(jsonRequest({})) },
+    { name: 'POST /api/wish/import', group: 'import', call: () => importWish(jsonRequest({})) },
     { name: 'POST /api/wishlist/share', group: 'invite', call: () => shareList(jsonRequest({})) },
     { name: 'POST /api/wishlist', group: 'write', call: () => postWishlist(jsonRequest({})) },
     { name: 'PUT /api/wishlist/[id]', group: 'write', call: () => putList(jsonRequest({}, 'PUT'), listParams) },
