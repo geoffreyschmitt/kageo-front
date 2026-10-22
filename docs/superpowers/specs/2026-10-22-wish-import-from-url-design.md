@@ -98,3 +98,35 @@ A new authenticated route handler takes a URL and returns the extracted fields a
 - Exact wording of the notes and of the Replace/Keep question (fr and en), as long as the meaning above is kept.
 - Which currency symbols the select offers today and the ISO-to-symbol table.
 - Debounce details for the paste/blur trigger.
+
+## Addendum (2026-10-22, after the final review): product versions and phone share text
+
+Decided with the owners after the final whole-branch review. It replaces the "leave the price empty" rule for pages with several versions, and adds link extraction for pasted share text.
+
+### Several product versions: ask which one
+
+Problem: a page can list several versions of a product (for example a phone in 128 GB and 256 GB, or sizes and colours), each with its own price. When the pasted link does not identify one of them, any single price may be the wrong version, and a wrong price silently prefilled is the worst outcome.
+
+Behaviour (owners' decisions):
+- The question is about **versions**, not bare prices: "We found several versions of this product, which one is yours?" (fr: "Nous avons trouvé plusieurs versions de ce produit, laquelle est la vôtre ?").
+- One button per version, labelled with the version's own name when the page gives one (offer name, variant name, or size/colour/SKU details such as "128 GB"), always with its price. A version without any name is labelled by its price.
+- **Choosing a version fills all the data that version has**: name, price and currency, description (including the version details, for example "128 GB") and image. Fields the version does not provide come from the product-level data of the page; fields the person already typed are never overwritten (Add/Propose fill only empty fields; on Edit, Replace overwrites provided fields as before).
+- Until a version is chosen **nothing from the import is applied** (no name, price, description or image), so the later choice cannot fight with values the import itself filled.
+- The question disappears, without applying anything, when the person types a price themselves, edits or pastes a different link, or saves/cancels the form. It also appears after **Replace** on Edit, in the same way.
+- The pasted link stays as the purchase link (our call): a version's own link is not substituted.
+
+Our calls:
+- **Where versions come from:** JSON-LD Product `offers` with more than one priced offer that cannot be matched to the pasted URL by the existing rules (URL match, same price), and schema.org `ProductGroup` with `hasVariant` entries (each a Product with its own `name`, `image`, `description`, size/colour and `offers`). A single version, a URL match, or all-equal prices behave exactly as today.
+- **Backup price tags** (`og:price`, `product:price:*`, `itemprop`) are NOT used when versions were detected, because on such pages they usually describe only the default version. They are not offered as a choice either.
+- **Limits:** at most 10 versions are offered, distinct by (label, price, currency); more than 10, or versions without a readable price, leave the price empty and ask nothing (the person fills it by hand).
+- **Response shape:** `POST /api/wish/import` returns `{ found, fields, variants? }`. When `variants` is present, `fields` holds only product-level name, description and image, and no price or currency. Each variant is `{ label, name?, description?, imageUrl?, price, currency }`, with the same field limits and http(s) image rule as `fields`.
+- **Status:** the form shows the question in the same place as the Replace/Keep question; the buttons are at least 44 px tall.
+
+### Phone share text: extract the link
+
+Shop apps share "some words https://shop.example/item/123". Pasting that currently puts the whole sentence into the link field, which is not a link, so nothing imports and saving fails with "invalid URL".
+
+Behaviour (owners' decision):
+- When pasted text contains an `http(s)` link and the text is not exactly that link, the field receives only the first link found (trailing punctuation such as `.` `,` `)` `!` `?` removed), the paste is not inserted as typed, and the import runs for it exactly as for a plain pasted link.
+- A paste that is exactly a link, or that contains no link, behaves as today.
+- The same extraction applies on all three forms (Add, Propose, Edit).
