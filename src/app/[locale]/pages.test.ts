@@ -102,6 +102,20 @@ describe('wishlist page: access', () => {
         expect(propsOf(await wishlistPage('L'))).toMatchObject({ isLoggedIn: false, userIsOwner: false, userId: '' })
     })
 
+    it('remounts the client when the signed-in user changes, so logging in from the page refreshes its state', async () => {
+        await list('L', 'owner')
+        signInAs(null)
+        const anonymous = (await wishlistPage('L')) as ReactElement
+        signInAs('guest')
+        const signedIn = (await wishlistPage('L')) as ReactElement
+        signInAs('bob')
+        const other = (await wishlistPage('L')) as ReactElement
+
+        expect(anonymous.key).not.toBe(signedIn.key)
+        expect(signedIn.key).not.toBe(other.key)
+        expect(signedIn.key).toBe(((await (signInAs('guest'), wishlistPage('L'))) as ReactElement).key)
+    })
+
     it('flags history mode only for ?mode=history', async () => {
         await list('L', 'owner')
         signInAs('guest')
@@ -154,6 +168,78 @@ describe('wishlist page: the pot is a surprise for the owner', () => {
         await wish('x', 'Q')
         signInAs('owner')
         expect(propsOf(await wishlistPage('Q')).hasActivity).toBe(false)
+    })
+})
+
+describe('wishlist page: reservations and purchases are a surprise for the owner', () => {
+    const seed = async (listId: string, eventDate: string) => {
+        await list(listId, 'owner', { eventDate })
+        await wish(`${listId}-wanted`, listId)
+        await wish(`${listId}-reserved`, listId, { status: 'reserved', reservedBy: 'guest' })
+        await wish(`${listId}-bought`, listId, { status: 'purchased', purchasedBy: 'bob' })
+    }
+    const statuses = (props: TProps) =>
+        Object.fromEntries((props.initialItems as TProps[]).map((i) => [i.id, i.status]))
+
+    it('shows the owner every wish as wanted, with nobody named', async () => {
+        await seed('L', FUTURE)
+        signInAs('owner')
+        const props = propsOf(await wishlistPage('L'))
+
+        expect(statuses(props)).toEqual({ 'L-wanted': 'wanted', 'L-reserved': 'wanted', 'L-bought': 'wanted' })
+        const payload = JSON.stringify(props)
+        expect(payload).not.toContain('Gus')
+        expect(payload).not.toContain('Bob')
+        expect(payload).not.toContain('reservedBy')
+        expect(payload).not.toContain('purchasedBy')
+    })
+
+    it('still tells the owner the list has activity, so it cannot be deleted', async () => {
+        await seed('L', FUTURE)
+        signInAs('owner')
+        expect(propsOf(await wishlistPage('L')).hasActivity).toBe(true)
+    })
+
+    it('shows a guest the real statuses and who did what', async () => {
+        await seed('L', FUTURE)
+        signInAs('guest')
+        const props = propsOf(await wishlistPage('L'))
+
+        expect(statuses(props)).toEqual({ 'L-wanted': 'wanted', 'L-reserved': 'reserved', 'L-bought': 'purchased' })
+        expect(JSON.stringify(props)).toContain('Bob')
+    })
+
+    it('does not let the owner unmask a live list with ?mode=history', async () => {
+        await seed('L', FUTURE)
+        signInAs('owner')
+        const props = propsOf(await wishlistPage('L', 'history'))
+
+        expect(statuses(props)).toEqual({ 'L-wanted': 'wanted', 'L-reserved': 'wanted', 'L-bought': 'wanted' })
+        expect(JSON.stringify(props)).not.toContain('Bob')
+    })
+
+    it('reveals who gave what once the event is over and the owner opens it from history', async () => {
+        await seed('H', PAST)
+        signInAs('owner')
+        const props = propsOf(await wishlistPage('H', 'history'))
+
+        expect(statuses(props)).toEqual({ 'H-wanted': 'wanted', 'H-reserved': 'reserved', 'H-bought': 'purchased' })
+        expect(JSON.stringify(props)).toContain('Bob')
+    })
+
+    it('keeps a finished list masked unless it is opened from history', async () => {
+        await seed('H', PAST)
+        signInAs('owner')
+        expect(statuses(propsOf(await wishlistPage('H')))).toEqual({
+            'H-wanted': 'wanted', 'H-reserved': 'wanted', 'H-bought': 'wanted',
+        })
+    })
+
+    it('keeps the pot hidden from the owner even in history', async () => {
+        await list('H', 'owner', { eventDate: PAST })
+        await wish('H-funded', 'H', { status: 'funded' })
+        signInAs('owner')
+        expect(statuses(propsOf(await wishlistPage('H', 'history')))).toEqual({ 'H-funded': 'wanted' })
     })
 })
 

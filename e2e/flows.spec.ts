@@ -15,10 +15,10 @@ test.describe('accounts', () => {
         await page.getByLabel('Email').fill(email)
         await page.getByLabel('Password').fill('e2e-password-1')
         await page.getByRole('button', { name: 'Sign Up' }).click()
-        await expect(page.getByText('Hello, Una')).toBeVisible()
+        await expect(page.getByRole('banner').getByText('Hello, Una')).toBeVisible()
 
         await page.getByRole('button', { name: 'Logout' }).click()
-        await expect(page.getByText('Hello, Una')).toBeHidden()
+        await expect(page.getByRole('banner').getByText('Hello, Una')).toBeHidden()
 
         await page.getByRole('button', { name: 'Login' }).first().click()
         await page.getByLabel('Email').fill(email)
@@ -28,7 +28,7 @@ test.describe('accounts', () => {
 
         await page.getByLabel('Password').fill('e2e-password-1')
         await page.getByRole('button', { name: 'Login' }).last().click()
-        await expect(page.getByText('Hello, Una')).toBeVisible()
+        await expect(page.getByRole('banner').getByText('Hello, Una')).toBeVisible()
     })
 
     test('deleting the account ends the session and the credentials stop working', async ({ request }) => {

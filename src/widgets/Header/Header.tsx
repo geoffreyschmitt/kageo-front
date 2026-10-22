@@ -8,7 +8,7 @@ import {LanguageSwitcher} from '@/features/LanguageSwitcher'
 
 import {RATE_LIMITED_ERROR} from '@/shared/config/rateLimits'
 import {eventBus} from '@/shared/eventBus'
-import {Link, usePathname} from '@/shared/i18n/navigation'
+import {Link, usePathname, useRouter} from '@/shared/i18n/navigation'
 import {Logo} from '@/shared/ui/Logo'
 
 import styles from './Header.module.css'
@@ -18,6 +18,7 @@ export const Header = () => {
   const t = useTranslations('auth')
   const tNav = useTranslations('nav')
   const pathname = usePathname()
+  const router = useRouter()
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
@@ -79,6 +80,8 @@ export const Header = () => {
       } else {
         setShowAuthModal(false)
         setFormData({email: '', password: '', name: ''})
+        // The open page was rendered on the server for a signed-out visitor; fetch it again.
+        router.refresh()
       }
     } else {
       try {
@@ -98,6 +101,7 @@ export const Header = () => {
           if (!result?.error) {
             setShowAuthModal(false)
             setFormData({email: '', password: '', name: ''})
+            router.refresh()
           }
         } else if (res.status === 429) {
           setError(t('rateLimited'))

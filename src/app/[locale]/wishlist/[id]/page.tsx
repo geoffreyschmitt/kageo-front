@@ -47,6 +47,8 @@ type KVWish = {
     showToOwner?: boolean
 }
 
+const hasPassed = (isoDate: string) => new Date(isoDate).getTime() < Date.now()
+
 export default async function WishlistPage({
     params,
     searchParams,
@@ -124,6 +126,12 @@ export default async function WishlistPage({
         rawWishes.flatMap((w) => [w.reservedBy, w.purchasedBy].filter((v): v is string => !!v)),
     )
 
+    // Who reserved or bought what is a surprise for the owner. It is only shown once the event is
+    // over and they open the list from history; ?mode=history alone never unmasks a live list.
+    // A funded pot stays hidden either way.
+    const ownerSeesGifts = userIsOwner && isHistory && hasPassed(wishlist.eventDate)
+    const maskForOwner = userIsOwner && !ownerSeesGifts
+
     const items: TWishCard[] = rawWishes.map((w) => ({
         id: w.id,
         name: w.name,
@@ -132,15 +140,18 @@ export default async function WishlistPage({
         currency: w.currency,
         imageUrl: w.imageUrl,
         priority: w.priority,
-        status: userIsOwner && w.status === 'funded' ? 'wanted' : w.status,
+        status:
+            userIsOwner && (w.status === 'funded' || (maskForOwner && (w.status === 'reserved' || w.status === 'purchased')))
+                ? 'wanted'
+                : w.status,
         purchaseUrl: w.purchaseUrl,
         notes: w.notes,
         addedDate: new Date(w.createdAt).toLocaleDateString(),
         commentCount: userIsOwner ? undefined : (commentCounts[w.id] ?? 0),
-        reservedBy: w.reservedBy,
-        purchasedBy: w.purchasedBy,
-        reservedByName: w.reservedBy ? actorNames.get(w.reservedBy) : undefined,
-        purchasedByName: w.purchasedBy ? actorNames.get(w.purchasedBy) : undefined,
+        reservedBy: maskForOwner ? undefined : w.reservedBy,
+        purchasedBy: maskForOwner ? undefined : w.purchasedBy,
+        reservedByName: !maskForOwner && w.reservedBy ? actorNames.get(w.reservedBy) : undefined,
+        purchasedByName: !maskForOwner && w.purchasedBy ? actorNames.get(w.purchasedBy) : undefined,
         isProposed: w.status === 'proposed',
         showToOwner: w.showToOwner ?? false,
         giftPot: userIsOwner ? undefined : (giftPotViews.get(w.id) ?? null),
@@ -181,7 +192,10 @@ export default async function WishlistPage({
         rawWishes.some((w) => w.status !== 'wanted') || potExists || anyGiftPot || commentsCount > 0
 
     return (
+        // Keyed by who is signed in: the client seeds its state from these props once, so a login
+        // from the header (followed by router.refresh) must remount it with the new viewer's data.
         <WishlistPageClient
+            key={session?.user?.id ?? 'anonymous'}
             id={wishlist.id}
             name={wishlist.name}
             description={wishlist.description}

@@ -18,7 +18,8 @@ const useFakeKv = process.env.E2E_FAKE_KV === "1";
 if (useFakeKv && process.env.VERCEL) throw new Error("E2E_FAKE_KV must not be set on Vercel");
 
 const nextConfig: NextConfig = {
-    ...(useFakeKv ? { turbopack: { resolveAlias: { "@vercel/kv": "./src/test/e2eKv.ts" } } } : {}),
+    // Its own build directory, so e2e can run beside a dev server (Next locks `.next/dev`).
+    ...(useFakeKv ? { distDir: ".next-e2e", turbopack: { resolveAlias: { "@vercel/kv": "./src/test/e2eKv.ts" } } } : {}),
     transpilePackages: ['next-intl'],
     experimental: {
         globalNotFound: true,
