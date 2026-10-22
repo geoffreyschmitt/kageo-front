@@ -31,6 +31,7 @@ Exit criteria from Launch to Open:
 Features and debt:
 - **Magic-link sign-in** (passwordless) as a simplicity experiment, alongside Google and password.
 - **Amazon-specific wish import** (the generic URL import shipped 2026-10-22; Amazon often blocks server fetches). *Considered, not planned:* the official Product Advertising API needs an Associates account with qualifying sales and has usage terms; scraping breaks Amazon's terms. Affiliate links conflict with the no-ads principle and would need disclosure.
+- **Safe-bet gifts** ("recurring gifts"): a standing list on the owner's profile, shown on every wishlist they share, of things they would always be happy to receive (wine, books, MTG boosters). For owners who buy what they need themselves and end up with near-empty wishlists. Each entry has a title, an optional description (price or link can go there), an optional image URL and an owner-hidden comment thread; no reserving, givers coordinate in comments. Spec: `docs/superpowers/specs/2026-10-22-safe-bet-gifts-design.md`.
 - **Cover images**: upload + storage (e.g. Vercel Blob); the `coverImage` field already exists on `TWishlist`.
 - **Notifications (essential, free)**: pot funded, "you are now organiser of a pot", new suggestion. Never tell the owner about reservations (surprise).
 - **"Create your own list" prompt** on public lists, the main growth loop. No marketing before then; word of mouth.
