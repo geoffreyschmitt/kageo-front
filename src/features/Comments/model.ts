@@ -26,7 +26,8 @@ export const useCommentsModel = ({ target, enabled, autoLoad = true, onPosted }:
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string | null>(null)
 
-    const targetKey = target.type === 'wishlist' ? target.wishlistId : target.wishId
+    const targetKey =
+        target.type === 'wishlist' ? target.wishlistId : target.type === 'wish' ? target.wishId : target.entryId
 
     const load = useCallback(async () => {
         if (!enabled) return

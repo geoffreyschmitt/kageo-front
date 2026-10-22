@@ -2,12 +2,7 @@ import type { TComment } from '@/entities/comment'
 
 import { eventBus } from '@/shared/eventBus'
 
-import type { TCommentTarget } from './getComments'
-
-const urlFor = (target: TCommentTarget) =>
-    target.type === 'wishlist'
-        ? `/api/wishlist/${target.wishlistId}/comments`
-        : `/api/wish/${target.wishId}/comments`
+import { type TCommentTarget, urlFor } from './getComments'
 
 export const postComment = async (target: TCommentTarget, text: string): Promise<TComment> => {
     const res = await fetch(urlFor(target), {
