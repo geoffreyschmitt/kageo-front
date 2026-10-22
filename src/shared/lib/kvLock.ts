@@ -43,5 +43,6 @@ export const withLock = async <T>(
 // edit and a pledge on the same wish queue up instead of overwriting each other.
 export const wishLock = (wishId: string) => `wish:${wishId}`
 export const wishlistLock = (wishlistId: string) => `wishlist:${wishlistId}`
+export const safeBetsLock = (userId: string) => `user:${userId}:safebets`
 
 export const busyResponse = () => NextResponse.json({ message: 'Resource is busy, try again' }, { status: 503 })

@@ -55,3 +55,6 @@ export const scanKeys = async (match: string): Promise<string[]> => {
     } while (String(cursor) !== '0')
     return Array.from(found)
 }
+
+// Every key that hangs off a safe-bet entry.
+export const safeBetKeys = (entryId: string): string[] => [`safebet:${entryId}:comments`]
