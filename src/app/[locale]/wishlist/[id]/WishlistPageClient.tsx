@@ -11,6 +11,7 @@ import { TWishCard } from '@/widgets/WishCard/WishCard.types'
 import { TWishFormData, TProposedWishFormData } from '@/entities/wish'
 import { TWishlistFormData } from '@/entities/wishlist'
 
+import { editWish } from '@/shared/api/wish/editWish'
 import type { TGiftPotView } from '@/shared/api/wish/getGiftPot'
 import type { TGetPotResponse } from '@/shared/api/wishlist/getPot'
 import { eventBus } from '@/shared/eventBus'
@@ -318,6 +319,30 @@ export default function WishlistPageClient({
         ))
     }
 
+    // The heart on a card pins a wish as a favourite (priority 'high') or sets it back to normal.
+    // The card flips at once; a failed save puts it back.
+    const handleToggleFavorite = async (wishId: string, favorite: boolean) => {
+        const wish = items.find((item) => item.id === wishId)
+        if (!wish) return
+        const priority = favorite ? 'high' : 'medium'
+        setItems((prev) => prev.map((item) => (item.id === wishId ? { ...item, priority } : item)))
+        try {
+            await editWish(wishId, {
+                name: wish.name,
+                description: wish.description,
+                price: wish.price,
+                currency: wish.currency,
+                imageUrl: wish.imageUrl,
+                priority,
+                purchaseUrl: wish.purchaseUrl ?? '',
+                notes: wish.notes ?? '',
+            })
+        } catch {
+            setItems((prev) => prev.map((item) => (item.id === wishId ? { ...item, priority: wish.priority } : item)))
+            toast(t('updateError'), 'error')
+        }
+    }
+
     // Note: a client-added wish gets no `giftPots` entry, so its card renders with
     // `giftPot === undefined` (no gift-pot UI) until a reload. That is fine today — owner-added
     // wishes have the pot subtree gated behind `!isOwner`, and proposed wishes never get a pot.
@@ -335,6 +360,7 @@ export default function WishlistPageClient({
             purchaseUrl: wish.purchaseUrl,
             notes: wish.notes,
             addedDate: 'just now',
+            createdAt: new Date().toISOString(),
         }
         setItems((prev) => [...prev, newWishCard])
     }
@@ -354,6 +380,7 @@ export default function WishlistPageClient({
             purchaseUrl: wish.purchaseUrl,
             notes: wish.notes,
             addedDate: 'just now',
+            createdAt: new Date().toISOString(),
         }
         setItems((prev) => [...prev, newWishCard])
     }
@@ -424,6 +451,7 @@ export default function WishlistPageClient({
                 onDeleteWish={handleDeleteWish}
                 onDeleteError={handleDeleteError}
                 onUpdateWish={handleUpdateWish}
+                onToggleFavorite={handleToggleFavorite}
                 onAddWish={handleAddWish}
                 onProposeWish={handleProposeWish}
                 onUpdateWishlistMeta={handleUpdateWishlistMeta}

@@ -147,6 +147,7 @@ export default async function WishlistPage({
         purchaseUrl: w.purchaseUrl,
         notes: w.notes,
         addedDate: new Date(w.createdAt).toLocaleDateString(),
+        createdAt: w.createdAt,
         commentCount: userIsOwner ? undefined : (commentCounts[w.id] ?? 0),
         reservedBy: maskForOwner ? undefined : w.reservedBy,
         purchasedBy: maskForOwner ? undefined : w.purchasedBy,

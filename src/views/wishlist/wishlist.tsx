@@ -56,6 +56,7 @@ type TWishlistPageProps = {
   onDeleteWish?: (wishId: string) => void
   onDeleteError?: (wishId: string) => void
   onEditWish?: (wish: TWishCard) => void
+  onToggleFavorite?: (wishId: string, favorite: boolean) => void
   onUpdateWish?: (wishId: string, updatedWish: TWishFormData & { id: string }) => void
   onAddWish?: (wish: TWishFormData & { id: string }) => void
   onProposeWish?: (wish: TProposedWishFormData & { id: string }) => void
@@ -85,8 +86,8 @@ type TWishlistPageProps = {
   onDeleteWishlistError?: (wishlistId: string) => void
 }
 
-// `addedDate` is a relative label such as "1 week ago" / "yesterday".
-const ageInDays = (addedDate: string) => (addedDate.includes('week') ? 7 : 1)
+// `addedDate` is a display label, so date sorting reads the ISO `createdAt` instead.
+const addedAt = (item: TWishCard) => Date.parse(item.createdAt ?? '') || 0
 
 export default function Wishlist({
   id,
@@ -110,6 +111,7 @@ export default function Wishlist({
   onDeleteWish,
   onDeleteError,
   onEditWish,
+  onToggleFavorite,
   onUpdateWish,
   currency = '€',
   onAddWish,
@@ -137,10 +139,10 @@ export default function Wishlist({
   onDeleteWishlist,
   onDeleteWishlistError,
 }: TWishlistPageProps) {
-  const [sortBy, setSortBy] = useState<'name' | 'price' | 'date' | 'priority'>('date')
+  const [sortBy, setSortBy] = useState<'name' | 'price' | 'date'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed' | 'funded')[]>(['all'])
-  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({min: 0, max: 1000})
+  const [priceRange, setPriceRange] = useState<{ min: number | null; max: number | null }>({min: null, max: null})
   const [isControlsOpen, setIsControlsOpen] = useState(false)
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
@@ -164,9 +166,12 @@ export default function Wishlist({
   const canDeleteWishlist = userIsOwner && isHistory && !hasActivity
   const showLockedNotice = userIsOwner && isHistory && hasActivity
 
-  const itemPrices = items.map((item) => item.price)
-  const minPrice = Math.min(...itemPrices, 0)
-  const maxPrice = Math.max(...itemPrices, 1000)
+  // An empty bound means "no limit", so a wish above any fixed ceiling is never hidden by default.
+  const isOutsidePriceRange = useCallback(
+    (price: number) =>
+      (priceRange.min !== null && price < priceRange.min) || (priceRange.max !== null && price > priceRange.max),
+    [priceRange],
+  )
 
   const compareItems = useCallback((a: TWishCard, b: TWishCard) => {
     let comparison = 0
@@ -178,14 +183,8 @@ export default function Wishlist({
         comparison = a.price - b.price
         break
       case 'date':
-        // `addedDate` is a relative label ("1 week ago"); rank by its age in days.
-        comparison = ageInDays(b.addedDate) - ageInDays(a.addedDate)
+        comparison = addedAt(a) - addedAt(b)
         break
-      case 'priority': {
-        const priorityOrder = { high: 3, medium: 2, low: 1 }
-        comparison = (priorityOrder[a.priority] ?? 2) - (priorityOrder[b.priority] ?? 2)
-        break
-      }
     }
     return sortOrder === 'asc' ? comparison : -comparison
   }, [sortBy, sortOrder])
@@ -205,7 +204,7 @@ export default function Wishlist({
         return false
       }
 
-      if (item.price < priceRange.min || item.price > priceRange.max) {
+      if (isOutsidePriceRange(item.price)) {
         return false
       }
 
@@ -215,7 +214,7 @@ export default function Wishlist({
     filtered.sort(compareItems)
 
     return filtered
-  }, [items, compareItems, statusFilter, priceRange])
+  }, [items, compareItems, statusFilter, isOutsidePriceRange])
 
   const { mostWantedItems, regularItems } = useMemo(() => {
     const mostWanted = filteredAndSortedItems.filter(
@@ -231,20 +230,22 @@ export default function Wishlist({
   // Funded wishes still count as wanted — the pot is full but nobody has bought the gift yet.
   const wantedItems = items.filter((item) => item.status === 'wanted' || item.status === 'funded')
   const reservedItems = items.filter((item) => item.status === 'reserved')
+  // Guests pick one view: everything, what is still open to give, or what is already taken.
+  const isAllFilter = statusFilter.includes('all')
+  const isOpenFilter = statusFilter.length === 1 && statusFilter[0] === 'wanted'
+  const isTakenFilter = statusFilter.includes('reserved') && statusFilter.includes('purchased')
   const allProposedItems = items.filter((item) => item.isProposed || item.status === 'proposed')
   const proposedItems = useMemo(() => {
-    const filtered = allProposedItems.filter((item) => item.price >= priceRange.min && item.price <= priceRange.max)
+    const filtered = allProposedItems.filter((item) => !isOutsidePriceRange(item.price))
     filtered.sort(compareItems)
     return filtered
-  }, [allProposedItems, compareItems, priceRange])
+  }, [allProposedItems, compareItems, isOutsidePriceRange])
 
   // Suggestions a guest explicitly chose to share with the owner.
   const ownerVisibleSuggestions = useMemo(
     () => allProposedItems.filter((item) => item.showToOwner),
     [allProposedItems],
   )
-
-  const completionPercentage = items.length > 0 ? (purchasedItems.length / items.length) * 100 : 0
 
   const handleAddWish = (wish: TWishFormData & { id: string }) => {
     // Call parent callback to update state
@@ -304,30 +305,58 @@ export default function Wishlist({
     setSortBy('date')
     setSortOrder('desc')
     setStatusFilter(['all'])
-    setPriceRange({min: minPrice, max: maxPrice})
+    setPriceRange({min: null, max: null})
   }
+
+  const potCard = !userIsOwner && !isHistory ? (
+    <PotCard
+          wishlistId={id}
+          eventName={name}
+          ownerName={ownerName}
+          currency={currency}
+          isLoggedIn={isLoggedIn}
+          isInvited={isInvited}
+          pot={pot}
+          onContribute={onContribute}
+          onContributeError={onContributeError}
+          onContributeRemoved={onContributeRemoved}
+          onPotCreated={onPotCreated}
+          onPotRefreshed={onPotRefreshed}
+          onRequireLogin={() => setLoginPrompt('contribute')}
+        />
+  ) : null
 
   return (
     <div className={styles.wishlist}>
-      <div className={styles.wishlist__header}>
-        <div className={styles.wishlist__headerContent}>
-          <div className={styles.wishlist__titleSection}>
-            <h1 className={styles.wishlist__title}>{name}</h1>
-            {ownerName && (
-              <p className={styles.wishlist__owner}>
-                {t('ownedByPrefix')}{' '}
-                {ownerProfileUrl ? (
-                  <a href={ownerProfileUrl} className={styles.wishlist__ownerLink} target="_blank" rel="noopener noreferrer">
-                    {ownerName}
-                  </a>
-                ) : (
-                  ownerName
-                )}
-              </p>
-            )}
-            {eventDate && (
-              <p className={styles.wishlist__creationDate}>{t('eventOn', {date: formatDate(eventDate, locale)})}</p>
-            )}
+      <div className={styles.wishlist__layout}>
+        <header className={styles.wishlist__intro}>
+          <h1 className={styles.wishlist__title}>{name}</h1>
+          {(ownerName || eventDate) && (
+            <p className={styles.wishlist__byline}>
+              {ownerName && (
+                <>
+                  {t('ownedByPrefix')}{' '}
+                  {ownerProfileUrl ? (
+                    <a href={ownerProfileUrl} className={styles.wishlist__ownerLink} target="_blank" rel="noopener noreferrer">
+                      {ownerName}
+                    </a>
+                  ) : (
+                    ownerName
+                  )}
+                </>
+              )}
+              {ownerName && eventDate && ' · '}
+              {eventDate && t('eventOn', {date: formatDate(eventDate, locale)})}
+            </p>
+          )}
+          {description && <p className={styles.wishlist__description}>{description}</p>}
+          {!userIsOwner && items.length > 0 && (
+            <p className={styles.wishlist__lead}>
+              <strong>{t('leadAvailable', {count: wantedItems.length})}</strong>{' '}
+              {t('leadSurprise', {ownerName})}
+            </p>
+          )}
+          {userIsOwner && (
             <div className={styles.wishlist__badges}>
               <span
                 className={`${styles.wishlist__badge} ${isPublic ? styles['wishlist__badge--public'] : styles['wishlist__badge--private']}`}
@@ -336,9 +365,15 @@ export default function Wishlist({
               </span>
               <span className={styles.wishlist__badge}>{t('items', {count: items.length})}</span>
             </div>
-          </div>
+          )}
 
           <div className={styles.wishlist__actions}>
+            {userIsOwner && !isHistory && (
+              <button className={`${styles.wishlist__button} ${styles['wishlist__button--primary']}`}
+                      onClick={() => setIsAddItemModalOpen(true)}>
+                {t('addItem')}
+              </button>
+            )}
             {canEditWishlist && (
               <button
                 className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
@@ -356,6 +391,12 @@ export default function Wishlist({
                 {t('editWishlist')}
               </button>
             )}
+            <button
+              className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
+              onClick={() => setIsShareModalOpen(true)}
+            >
+              {t('share')}
+            </button>
             {canDeleteWishlist && (
               <DeleteWishlistButton
                 wishlistId={id}
@@ -367,85 +408,15 @@ export default function Wishlist({
                 {t('deleteWishlist')}
               </DeleteWishlistButton>
             )}
-            <button
-              className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
-              onClick={() => setIsShareModalOpen(true)}
-            >
-              {t('share')}
-            </button>
-            {userIsOwner && !isHistory && (
-              <button className={`${styles.wishlist__button} ${styles['wishlist__button--primary']}`}
-                      onClick={() => setIsAddItemModalOpen(true)}>
-                {t('addItem')}
-              </button>
-            )}
-            {!userIsOwner && !isHistory && (
-              <button
-                className={`${styles.wishlist__button} ${styles['wishlist__button--amber']}`}
-                onClick={requireAuth('suggest', () => setIsProposeItemModalOpen(true))}
-              >
-                {t('suggestWish')}
-              </button>
-            )}
           </div>
           {showLockedNotice && (
             <p className={styles.wishlist__lockedNotice}>{t('cannotEditNotice')}</p>
           )}
-        </div>
+        </header>
 
-        {description && <p className={styles.wishlist__description}>{description}</p>}
-
-        <div className={styles.wishlist__stats}>
-          {/* Completion — hero stat, visually dominant */}
-          <div className={`${styles.wishlist__stat} ${styles['wishlist__stat--hero']}`}>
-            <span className={styles.wishlist__statValue}>{completionPercentage.toFixed(0)}%</span>
-            <span className={styles.wishlist__statLabel}>{t('complete')}</span>
-          </div>
-          {/* Supporting stats */}
-          <div className={styles.wishlist__stat}>
-            <span className={styles.wishlist__statLabel}>{t('wanted')}</span>
-            <span className={styles.wishlist__statValue}>{wantedItems.length}</span>
-          </div>
-          <div className={styles.wishlist__stat}>
-            <span className={styles.wishlist__statLabel}>{t('purchased')}</span>
-            <span className={styles.wishlist__statValue}>{purchasedItems.length}</span>
-          </div>
-        </div>
-
-        <div className={styles.wishlist__progress}>
-          <div className={styles.wishlist__progressBar}>
-            <div className={styles.wishlist__progressFill} style={{width: `${completionPercentage}%`}}/>
-          </div>
-          <div className={styles.wishlist__progressStats}>
-            <span className={styles.wishlist__progressStat}>{t('purchasedCount', {count: purchasedItems.length})}</span>
-            <span className={styles.wishlist__progressStat}>{t('reservedCount', {count: reservedItems.length})}</span>
-            <span className={styles.wishlist__progressStat}>{t('wantedCount', {count: wantedItems.length})}</span>
-            {!userIsOwner && proposedItems.length > 0 && (
-              <span className={styles.wishlist__progressStat}>{t('proposedCount', {count: proposedItems.length})}</span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {!userIsOwner && !isHistory && (
-        <PotCard
-          wishlistId={id}
-          eventName={name}
-          ownerName={ownerName}
-          currency={currency}
-          isLoggedIn={isLoggedIn}
-          isInvited={isInvited}
-          pot={pot}
-          onContribute={onContribute}
-          onContributeError={onContributeError}
-          onContributeRemoved={onContributeRemoved}
-          onPotCreated={onPotCreated}
-          onPotRefreshed={onPotRefreshed}
-          onRequireLogin={() => setLoginPrompt('contribute')}
-        />
-      )}
-
+        <div className={styles.wishlist__main}>
       {items.length === 0 ? (
+<>
         <div className={styles.wishlist__empty}>
           <div className={styles.wishlist__emptyIllustration} aria-hidden="true">
             <svg viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -492,7 +463,9 @@ export default function Wishlist({
               {t('suggestWish')}
             </button>
           )}
-        </div>
+            </div>
+            {potCard}
+          </>
       ) : (
         <div className={styles.wishlist__items}>
           <div className={styles.wishlist__controls}>
@@ -517,18 +490,21 @@ export default function Wishlist({
                 <select
                   className={styles.wishlist__select}
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'name' | 'price' | 'date' | 'priority')}
+                  onChange={(e) => setSortBy(e.target.value as 'name' | 'price' | 'date')}
                 >
                   <option value="date">{t('sortDateAdded')}</option>
                   <option value="name">{t('sortName')}</option>
                   <option value="price">{t('sortPrice')}</option>
-                  <option value="priority">{t('sortPriority')}</option>
                 </select>
                 <button
                   className={`${styles.wishlist__sortButton} ${sortOrder === 'asc' ? styles['wishlist__sortButton--active'] : ''}`}
                   onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                  aria-label={sortOrder === 'asc' ? t('sortAscending') : t('sortDescending')}
                 >
-                  {sortOrder === 'asc' ? '↑' : '↓'}
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"
+                       style={{transform: sortOrder === 'asc' ? 'rotate(180deg)' : undefined}}>
+                    <path d="M7 2.5v9M3.5 8L7 11.5 10.5 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -538,46 +514,25 @@ export default function Wishlist({
                 <h4 className={styles.wishlist__controlsTitle}>{t('filterByStatus')}</h4>
                 <div className={styles.wishlist__filterButtons}>
                   <button
-                    className={`${styles.wishlist__filterButton} ${statusFilter.includes('all') ? styles['wishlist__filterButton--active'] : ''}`}
+                    className={`${styles.wishlist__filterButton} ${isAllFilter ? styles['wishlist__filterButton--active'] : ''}`}
+                    aria-pressed={isAllFilter}
                     onClick={() => setStatusFilter(['all'])}
                   >
                     {t('filterAll', {count: items.filter(i => i.status !== 'proposed').length})}
                   </button>
                   <button
-                    className={`${styles.wishlist__filterButton} ${statusFilter.includes('wanted') ? styles['wishlist__filterButton--active'] : ''}`}
-                    onClick={() => {
-                      if (statusFilter.includes('wanted')) {
-                        setStatusFilter(statusFilter.filter(s => s !== 'wanted'))
-                      } else {
-                        setStatusFilter(prev => prev.includes('all') ? ['wanted'] : [...prev.filter(s => s !== 'all'), 'wanted'])
-                      }
-                    }}
+                    className={`${styles.wishlist__filterButton} ${isOpenFilter ? styles['wishlist__filterButton--active'] : ''}`}
+                    aria-pressed={isOpenFilter}
+                    onClick={() => setStatusFilter(['wanted'])}
                   >
                     {t('filterOpenToBuy', {count: wantedItems.length})}
                   </button>
                   <button
-                    className={`${styles.wishlist__filterButton} ${statusFilter.includes('purchased') ? styles['wishlist__filterButton--active'] : ''}`}
-                    onClick={() => {
-                      if (statusFilter.includes('purchased')) {
-                        setStatusFilter(statusFilter.filter(s => s !== 'purchased'))
-                      } else {
-                        setStatusFilter(prev => prev.includes('all') ? ['purchased'] : [...prev.filter(s => s !== 'all'), 'purchased'])
-                      }
-                    }}
+                    className={`${styles.wishlist__filterButton} ${isTakenFilter ? styles['wishlist__filterButton--active'] : ''}`}
+                    aria-pressed={isTakenFilter}
+                    onClick={() => setStatusFilter(['reserved', 'purchased'])}
                   >
-                    {t('filterPurchased', {count: purchasedItems.length})}
-                  </button>
-                  <button
-                    className={`${styles.wishlist__filterButton} ${statusFilter.includes('reserved') ? styles['wishlist__filterButton--active'] : ''}`}
-                    onClick={() => {
-                      if (statusFilter.includes('reserved')) {
-                        setStatusFilter(statusFilter.filter(s => s !== 'reserved'))
-                      } else {
-                        setStatusFilter(prev => prev.includes('all') ? ['reserved'] : [...prev.filter(s => s !== 'all'), 'reserved'])
-                      }
-                    }}
-                  >
-                    {t('filterReserved', {count: reservedItems.length})}
+                    {t('filterTaken', {count: reservedItems.length + purchasedItems.length})}
                   </button>
                 </div>
               </div>
@@ -591,22 +546,24 @@ export default function Wishlist({
                   <input
                     type="number"
                     className={styles.wishlist__priceInput}
+                    aria-label={t('priceMinLabel')}
                     placeholder={t('priceMinPlaceholder')}
-                    value={priceRange.min}
-                    onChange={(e) => setPriceRange((prev) => ({...prev, min: Number(e.target.value) || 0}))}
+                    value={priceRange.min ?? ''}
+                    onChange={(e) => setPriceRange((prev) => ({...prev, min: e.target.value === '' ? null : Number(e.target.value)}))}
                   />
                   <span className={styles.wishlist__priceSeparator}>-</span>
                   <input
                     type="number"
                     className={styles.wishlist__priceInput}
+                    aria-label={t('priceMaxLabel')}
                     placeholder={t('priceMaxPlaceholder')}
-                    value={priceRange.max}
-                    onChange={(e) => setPriceRange((prev) => ({...prev, max: Number(e.target.value) || 1000}))}
+                    value={priceRange.max ?? ''}
+                    onChange={(e) => setPriceRange((prev) => ({...prev, max: e.target.value === '' ? null : Number(e.target.value)}))}
                   />
                 </div>
                 <button
                   className={styles.wishlist__resetButton}
-                  onClick={() => setPriceRange({min: minPrice, max: maxPrice})}
+                  onClick={() => setPriceRange({min: null, max: null})}
                 >
                   {t('resetButton')}
                 </button>
@@ -616,13 +573,19 @@ export default function Wishlist({
             </div>{/* wishlist__controlsBody */}
           </div>
 
+          {filteredAndSortedItems.length !== items.filter(i => i.status !== 'proposed').length && (
+            <p className={styles.wishlist__resultsCount} aria-live="polite">
+              {t('resultsCount', {shown: filteredAndSortedItems.length, total: items.filter(i => i.status !== 'proposed').length})}
+            </p>
+          )}
+
           {mostWantedItems.length > 0 && (
             <div className={styles.wishlist__mostWantedSection}>
               <div className={styles.wishlist__mostWantedPanel}>
               <div className={styles.wishlist__mostWantedHeaderWrap}>
                 <h2 className={styles.wishlist__mostWantedTitle}>
-                  <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                    <path d="M8 0l2.35 4.76 5.25.77-3.8 3.7.9 5.24L8 12.18l-4.7 2.29.9-5.24-3.8-3.7 5.25-.77z"/>
+                  <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
                   </svg>
                   {t('mostWantedTitle')}
                 </h2>
@@ -666,6 +629,7 @@ export default function Wishlist({
                     onDeleteWish={onDeleteWish}
                     onDeleteError={onDeleteError}
                     onEditWish={handleEditWish}
+                    onToggleFavorite={onToggleFavorite}
                     giftPot={giftPots[item.id]}
                     onGiftPotCreated={onGiftPotCreated}
                     onContributeGiftPot={onContributeGiftPot}
@@ -683,6 +647,11 @@ export default function Wishlist({
               </div>
             </div>
           )}
+
+          {mostWantedItems.length > 0 && regularItems.length > 0 && (
+            <h2 className={styles.wishlist__allTitle}>{t('allIdeas')}</h2>
+          )}
+
 
 
           <div className={styles.wishlist__itemsGrid}>
@@ -721,6 +690,7 @@ export default function Wishlist({
                 onDeleteWish={onDeleteWish}
                 onDeleteError={onDeleteError}
                 onEditWish={handleEditWish}
+                onToggleFavorite={onToggleFavorite}
                 giftPot={giftPots[item.id]}
                 onGiftPotCreated={onGiftPotCreated}
                 onContributeGiftPot={onContributeGiftPot}
@@ -738,7 +708,7 @@ export default function Wishlist({
 
           {mostWantedItems.length === 0 && regularItems.length === 0 && items.filter(i => i.status !== 'proposed').length > 0 && (
             <div className={styles.wishlist__noResults}>
-              <div className={styles.wishlist__noResultsIcon}>🔍</div>
+              <div className={styles.wishlist__noResultsIcon} aria-hidden="true">🔍</div>
               <h3 className={styles.wishlist__noResultsTitle}>{t('noResultsTitle')}</h3>
               <p className={styles.wishlist__noResultsMessage}>
                 {t('noResultsMessage')}
@@ -753,6 +723,8 @@ export default function Wishlist({
               </button>
             </div>
           )}
+
+          {potCard}
 
           {/* ── Suggestions Section (non-owners only, not in history) ── */}
           {!userIsOwner && !isHistory && (
@@ -793,7 +765,7 @@ export default function Wishlist({
                   </p>
                 </div>
                 <button
-                  className={`${styles.wishlist__button} ${styles['wishlist__button--amber']}`}
+                  className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
                   onClick={requireAuth('suggest', () => setIsProposeItemModalOpen(true))}
                 >
                   {t('suggestWish')}
@@ -925,14 +897,10 @@ export default function Wishlist({
           )}
         </div>
       )}
-
-      {!userIsOwner && <CommentsDrawer isLoggedIn={isLoggedIn} />}
-
-      <div className={styles.wishlist__controlsSection}>
-        <div className={styles.wishlist__resultsCount}>
-          {t('resultsCount', {shown: filteredAndSortedItems.length, total: items.filter(i => i.status !== 'proposed').length})}
         </div>
       </div>
+
+      {!userIsOwner && <CommentsDrawer isLoggedIn={isLoggedIn} />}
 
       {canEditWishlist && (
         <UpdateWishlistModal
