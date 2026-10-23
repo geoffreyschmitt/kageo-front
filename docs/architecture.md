@@ -70,7 +70,9 @@ All values are JSON unless noted. IDs are UUIDs.
 | `user:{id}:safeBets` | value | `TSafeBet[]` in display order: `{id, title (max 80), description? (max 500), imageUrl? (http/https, max 2048), createdAt}`; at most 30 entries (409 beyond). Shown to guests on every wishlist the user owns |
 | `safebet:{entryId}:comments` | list | `TComment` (guest thread, hidden from the owner) |
 | `lock:{key}` | value | short-lived (10 s TTL) mutex held by `withLock` (`shared/lib/kvLock.ts`) around any read-modify-write of a record; `lock:wish:{id}`, `lock:wishlist:{id}` or `lock:user:{id}:safebets` (every safe-bet write). Excluded from backups (as are `ratelimit:*` counters) |
-| `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `reserve`, `contribute`, `comment`, `suggest`, `invite`, `inviteRecipient`, `import` or `write`; `{subject}` is the user id (register: the client IP; inviteRecipient: the invited address, lower-cased) |
+| `ratelimit:{rule}:{subject}` | counter (TTL) | fixed-window rate-limit counter (`shared/lib/rateLimit.ts`); `{rule}` is `register`, `passwordResetIp`, `passwordResetEmail` (the mailbox), `passwordResetAttempt`, `reserve`, `contribute`, `comment`, `suggest`, `invite`, `inviteRecipient`, `import` or `write`; `{subject}` is the user id (register: the client IP; inviteRecipient: the invited address, lower-cased) |
+| `pwreset:{sha256(token)}` | value (TTL 1 h) | email a password-reset link was issued to. Only the hash of the token is stored; the token exists only in the email. Deleted when used and by the account purge; excluded from backups |
+| `pwreset:user:{email}` | value (TTL 1 h) | hash of the account's one live reset token (a new request deletes the previous token) |
 | `ratelimit:ip:{ip}` | counter (TTL) | per-IP ceiling across all accounts on write routes |
 | `ratelimit:loginFailures:{email}\|{ip}` | counter (TTL) | failed password sign-ins per email and IP (`shared/lib/loginThrottle.ts`); cleared on success |
 

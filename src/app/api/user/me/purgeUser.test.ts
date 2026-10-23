@@ -88,6 +88,14 @@ describe('purgeUser', () => {
         }
     })
 
+    it('drops a pending password-reset link', async () => {
+        await fake.set('pwreset:somehash', 'alice@x.io')
+        await fake.set('pwreset:user:alice@x.io', 'somehash')
+        await purgeUser('alice', 'alice@x.io')
+        expect(fake.has('pwreset:somehash')).toBe(false)
+        expect(fake.has('pwreset:user:alice@x.io')).toBe(false)
+    })
+
     it('cleans the reverse invite index other users hold for the deleted wishlist', async () => {
         await purgeUser('alice', 'alice@x.io')
         expect(fake.has('email:bob@x.io:invitedWishlists')).toBe(false)

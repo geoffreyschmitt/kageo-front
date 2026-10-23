@@ -33,7 +33,8 @@
     "logout": "Déconnexion",
     "or": "ou",
     "acceptTerms": "J’accepte les <terms>conditions d’utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
-    "googleNotice": "En continuant avec Google, vous acceptez les <terms>conditions d’utilisation</terms> et la <privacy>politique de confidentialité</privacy>."
+    "googleNotice": "En continuant avec Google, vous acceptez les <terms>conditions d’utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
+    "forgotPassword": "Mot de passe oublié ?"
   },
   "landing": {
     "heroTitle": "Chacun reçoit un cadeau qui lui plaît vraiment.",
@@ -633,7 +634,7 @@
         "items": [
           "Nous ne gérons aucun paiement. Une cagnotte enregistre seulement des promesses de participation ; l’argent circule en dehors de Kageo.",
           "Nous n’utilisons ni publicité, ni outil d’analyse, ni cookie de suivi, et nous ne vendons ni ne partageons vos données à des fins commerciales.",
-          "Nous n’envoyons aucun e-mail promotionnel. Kageo n’envoie un e-mail à quelqu’un que lorsque vous l’invitez à une liste : il reçoit un seul message à ce sujet, envoyé en votre nom."
+          "Nous n’envoyons aucun e-mail promotionnel. Kageo n’envoie un e-mail que pour une action demandée : une invitation que vous envoyez (la personne reçoit un seul message à propos de cette liste, envoyé en votre nom) ou un lien de réinitialisation de mot de passe que vous demandez."
         ]
       },
       {
@@ -659,7 +660,7 @@
       {
         "title": "Prestataires",
         "paragraphs": [
-          "Vos données sont traitées par les services qui font fonctionner Kageo : Vercel (hébergement), Upstash (la base de données compatible Redis qui stocke l’ensemble, fournie via Vercel), Resend (envoi des e-mails d’invitation ; il reçoit l’adresse du destinataire et le message) et, si vous le choisissez, Google (connexion). Lorsque vous ajoutez le lien d’une image à une envie, le navigateur des visiteurs charge cette image depuis son propre site.",
+          "Vos données sont traitées par les services qui font fonctionner Kageo : Vercel (hébergement), Upstash (la base de données compatible Redis qui stocke l’ensemble, fournie via Vercel), Resend (envoi des e-mails d’invitation et de réinitialisation de mot de passe ; il reçoit l’adresse du destinataire et le message) et, si vous le choisissez, Google (connexion). Lorsque vous ajoutez le lien d’une image à une envie, le navigateur des visiteurs charge cette image depuis son propre site.",
           "Certains de ces prestataires sont établis ou opèrent hors de l’Union européenne, notamment aux États-Unis. Dans ce cas, le transfert s’appuie sur les garanties prévues par la loi (comme le cadre de protection des données UE–États-Unis ou les clauses contractuelles types)."
         ]
       },
@@ -947,5 +948,35 @@
     "hostText": "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis (vercel.com).",
     "dataTitle": "Données personnelles",
     "dataText": "Consultez la politique de confidentialité pour savoir ce que nous collectons, pourquoi, et comment exercer vos droits."
+  },
+  "resetEmail": {
+    "subject": "Réinitialisez votre mot de passe Kageo",
+    "heading": "Réinitialisez votre mot de passe",
+    "intro": "Quelqu’un a demandé la réinitialisation du mot de passe de votre compte Kageo. Utilisez le bouton pour en choisir un nouveau. Le lien ne fonctionne qu’une fois et expire dans une heure.",
+    "button": "Choisir un nouveau mot de passe",
+    "linkFallback": "Ou copiez ce lien :",
+    "ignore": "Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail : votre mot de passe ne change pas."
+  },
+  "passwordReset": {
+    "email": "E-mail",
+    "sending": "Patientez...",
+    "backHome": "Retour à Kageo",
+    "rateLimited": "Trop d’essais, patientez un instant.",
+    "forgotTitle": "Mot de passe oublié ?",
+    "forgotIntro": "Saisissez l’e-mail avec lequel vous vous êtes inscrit : nous vous enverrons un lien pour choisir un nouveau mot de passe.",
+    "forgotSubmit": "Envoyer le lien",
+    "forgotSent": "Si un compte avec un mot de passe existe pour cette adresse, un lien est en route. Il ne fonctionne qu’une fois et expire dans une heure. Regardez aussi vos courriers indésirables. Si vous vous connectez avec Google, utilisez plutôt le bouton Google.",
+    "forgotFailed": "Impossible de l’envoyer pour le moment. Réessayez.",
+    "resetTitle": "Choisir un nouveau mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmez le mot de passe",
+    "tooShort": "Le mot de passe doit faire au moins {min} caractères.",
+    "mismatch": "Les deux mots de passe ne correspondent pas.",
+    "resetSubmit": "Enregistrer le mot de passe",
+    "resetFailed": "Impossible de l’enregistrer pour le moment. Réessayez.",
+    "resetDone": "Votre mot de passe est changé. Vous pouvez maintenant vous connecter.",
+    "goLogin": "Aller sur Kageo pour se connecter",
+    "linkInvalid": "Ce lien est invalide, déjà utilisé ou expiré.",
+    "askAgain": "Demander un nouveau lien"
   }
 }

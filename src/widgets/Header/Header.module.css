@@ -648,6 +648,15 @@
     cursor: not-allowed;
 }
 
+.forgot__link {
+    align-self: flex-end;
+    margin-top: -6px;
+    padding: 6px 0;
+    font-family: var(--h-font-sans);
+    font-size: 13px;
+    color: var(--h-sage);
+}
+
 .terms__check {
     display: flex;
     align-items: flex-start;

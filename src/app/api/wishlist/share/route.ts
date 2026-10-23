@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/shared/config/authOptions'
 import { isValidEmailAddress, mailboxKey } from '@/shared/lib/emailAddress'
 import { LockTimeoutError, busyResponse, withLock } from '@/shared/lib/kvLock'
-import { getMailTransport, MailRejectedError, MailUnavailableError, renderInviteEmail, type TMail } from '@/shared/lib/mail'
+import { appUrl, MailRejectedError, renderInviteEmail, sendWithTimeout } from '@/shared/lib/mail'
 import { hit, limitWrite, rateLimitResponse } from '@/shared/lib/rateLimit'
 
 type TWishlistKV = {
@@ -16,29 +16,12 @@ type TWishlistKV = {
     eventDate: string
 }
 
-// Shorter than the invite lock's 10 s lifetime, so a hung send cannot outlive the lock.
-const SEND_TIMEOUT_MS = 8000
-
-const appUrl = () => (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/+$/, '')
-
 // Wishes the owner would count as theirs: suggestions from guests are not part of the recap.
 const countWishes = async (wishlistId: string): Promise<number> => {
     const ids = (await kv.smembers<string[]>(`wishlist:${wishlistId}:wishes`)) ?? []
     if (ids.length === 0) return 0
     const wishes = await kv.mget<Array<{ status?: string } | null>>(...ids.map((id) => `wish:${id}`))
     return wishes.filter((wish) => wish && wish.status !== 'proposed').length
-}
-
-const sendWithTimeout = async (mail: TMail): Promise<void> => {
-    let timer: ReturnType<typeof setTimeout> | undefined
-    const timeout = new Promise<never>((_, reject) => {
-        timer = setTimeout(() => reject(new MailUnavailableError('Mail send timed out')), SEND_TIMEOUT_MS)
-    })
-    try {
-        await Promise.race([getMailTransport().send(mail), timeout])
-    } finally {
-        clearTimeout(timer)
-    }
 }
 
 // POST /api/wishlist/share — email an invitation, then record the invitee. The email goes first:

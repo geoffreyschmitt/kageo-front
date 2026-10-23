@@ -60,6 +60,29 @@ test.describe('accounts', () => {
         }
     })
 
+    test('forgot password: link from the login modal, calm confirmation, dead reset links', async ({ page }) => {
+        await page.goto('/en')
+        await page.getByRole('button', { name: 'Login' }).first().click()
+        await page.getByRole('link', { name: 'Forgot your password?' }).click()
+        await expect(page.getByRole('heading', { level: 1, name: 'Forgot your password?' })).toBeVisible()
+
+        // Same answer for an address that has no account: the form must not reveal who is registered.
+        await page.getByLabel('Email').fill(`nobody-${Date.now()}@e2e.test`)
+        await page.getByRole('button', { name: 'Send the link' }).click()
+        await expect(page.getByRole('status')).toContainText('If an account with a password exists')
+
+        await page.goto('/en/reset-password')
+        await expect(page.getByText('This link is invalid, already used, or expired.')).toBeVisible()
+
+        await page.goto(`/en/reset-password?token=${'a'.repeat(43)}`)
+        await page.getByLabel('New password').fill('e2e-password-2')
+        await page.getByLabel('Confirm the password').fill('e2e-password-2')
+        await page.getByRole('button', { name: 'Save the new password' }).click()
+        await expect(page.getByText('This link is invalid, already used, or expired.')).toBeVisible()
+        await page.getByRole('link', { name: 'Ask for a new link' }).click()
+        await expect(page).toHaveURL(/\/en\/forgot-password$/)
+    })
+
     test('deleting the account ends the session and the credentials stop working', async ({ request }) => {
         const user = await createUser(request, 'Gone')
         expect((await request.delete('/api/user/me')).status()).toBe(200)

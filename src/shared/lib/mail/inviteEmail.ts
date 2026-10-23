@@ -3,6 +3,7 @@ import { createTranslator } from 'next-intl'
 import en from '@/shared/i18n/messages/en.json'
 import fr from '@/shared/i18n/messages/fr.json'
 
+import { escapeHtml } from './escapeHtml'
 import type { TMail } from './transport'
 
 export type TInviteEmailInput = {
@@ -18,14 +19,6 @@ export type TInviteEmailInput = {
 
 const MESSAGES = { en, fr }
 const MAX_DESCRIPTION = 160
-
-const escapeHtml = (value: string) =>
-    value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
 
 // A list or owner name must never be able to add a header or a second line to the subject.
 const singleLine = (value: string) => value.replace(/\s*[\r\n]+\s*/g, ' ').trim()

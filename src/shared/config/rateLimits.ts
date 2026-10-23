@@ -10,6 +10,9 @@ export type TRateLimitName =
     | 'invite'
     | 'inviteRecipient'
     | 'inviteDaily'
+    | 'passwordResetIp'
+    | 'passwordResetEmail'
+    | 'passwordResetAttempt'
     | 'import'
     | 'write'
     | 'ipCeiling'
@@ -32,6 +35,11 @@ const RULES: Record<TRateLimitName, TRateRule> = {
     inviteRecipient: { limit: 10, windowSeconds: 86400 },
     // Invite emails one account may send per day (only counted when an email really goes out).
     inviteDaily: { limit: 50, windowSeconds: 86400 },
+    // Reset emails requested from one IP, and sent to one mailbox, per hour; and reset-link
+    // submissions (guessing a token) per IP.
+    passwordResetIp: { limit: 5, windowSeconds: 3600 },
+    passwordResetEmail: { limit: 3, windowSeconds: 3600 },
+    passwordResetAttempt: { limit: 20, windowSeconds: 900 },
     import: { limit: 20, windowSeconds: 600 },
     write: { limit: 120, windowSeconds: 600 },
     ipCeiling: { limit: 600, windowSeconds: 600 },

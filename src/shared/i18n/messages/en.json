@@ -33,7 +33,8 @@
     "logout": "Logout",
     "or": "or",
     "acceptTerms": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
-    "googleNotice": "By continuing with Google you accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>."
+    "googleNotice": "By continuing with Google you accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
+    "forgotPassword": "Forgot your password?"
   },
   "landing": {
     "heroTitle": "Everyone gets a gift they'll love.",
@@ -633,7 +634,7 @@
         "items": [
           "We do not handle payments. A pot only records pledges; the money moves outside Kageo.",
           "We use no advertising, no analytics and no tracking cookies, and we do not sell or share your data for marketing.",
-          "We send no marketing email. Kageo only emails someone when you invite them to a list: they get one message about that list, sent in your name."
+          "We send no marketing email. Kageo only emails you for something you asked for: an invitation you send to someone (they get one message about that list, sent in your name) or a password-reset link you request."
         ]
       },
       {
@@ -659,7 +660,7 @@
       {
         "title": "Service providers",
         "paragraphs": [
-          "Your data is processed by the services that run Kageo: Vercel (hosting), Upstash (the Redis-compatible database that stores everything, provided through Vercel), Resend (sending the invitation emails; it receives the recipient’s address and the message) and, if you choose it, Google (sign-in). When you add an image link to a wish, visitors’ browsers load that image from its own website.",
+          "Your data is processed by the services that run Kageo: Vercel (hosting), Upstash (the Redis-compatible database that stores everything, provided through Vercel), Resend (sending the invitation and password-reset emails; it receives the recipient’s address and the message) and, if you choose it, Google (sign-in). When you add an image link to a wish, visitors’ browsers load that image from its own website.",
           "Some of these providers are based in or operate from outside the European Union, notably in the United States. Where that is the case, the transfer relies on the safeguards the law provides (such as the EU–US Data Privacy Framework or standard contractual clauses)."
         ]
       },
@@ -947,5 +948,35 @@
     "hostText": "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, United States (vercel.com).",
     "dataTitle": "Personal data",
     "dataText": "See the privacy policy for what we collect, why, and how to exercise your rights."
+  },
+  "resetEmail": {
+    "subject": "Reset your Kageo password",
+    "heading": "Reset your password",
+    "intro": "Someone asked to reset the password of your Kageo account. Use the button to choose a new one. The link works once and expires in one hour.",
+    "button": "Choose a new password",
+    "linkFallback": "Or copy this link:",
+    "ignore": "If you did not ask for this, you can ignore this email: your password stays the same."
+  },
+  "passwordReset": {
+    "email": "Email",
+    "sending": "Please wait...",
+    "backHome": "Back to Kageo",
+    "rateLimited": "Too many tries, please wait a bit.",
+    "forgotTitle": "Forgot your password?",
+    "forgotIntro": "Enter the email you signed up with and we will send you a link to choose a new password.",
+    "forgotSubmit": "Send the link",
+    "forgotSent": "If an account with a password exists for this address, a link is on its way. It works once and expires in one hour. Check your spam folder too. If you sign in with Google, use the Google button instead.",
+    "forgotFailed": "We could not send that right now. Please try again.",
+    "resetTitle": "Choose a new password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm the password",
+    "tooShort": "The password needs at least {min} characters.",
+    "mismatch": "The two passwords do not match.",
+    "resetSubmit": "Save the new password",
+    "resetFailed": "We could not save it right now. Please try again.",
+    "resetDone": "Your password is changed. You can log in with it now.",
+    "goLogin": "Go to Kageo to log in",
+    "linkInvalid": "This link is invalid, already used, or expired.",
+    "askAgain": "Ask for a new link"
   }
 }

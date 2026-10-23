@@ -5,6 +5,7 @@ import { parseContributions } from '@/app/api/wishlist/pot/readPot'
 
 import { queueListReplace, queueWishlistDeletion, safeBetKeys, scanKeys } from '@/shared/lib/kvCascade'
 import { withLock, wishLock, wishlistLock } from '@/shared/lib/kvLock'
+import { resetTokenKey, resetUserKey } from '@/shared/lib/passwordReset'
 import { getSafeBets, safeBetsKey } from '@/shared/lib/safeBets'
 
 type TWishKV = {
@@ -252,7 +253,10 @@ export const purgeUser = async (userId: string, email: string) => {
 
     // Invitations the user received, then the account itself.
     const invitedTo = (await kv.smembers<string[]>(`email:${email}:invitedWishlists`)) ?? []
+    const resetHash = await kv.get<string>(resetUserKey(email))
     const tx = kv.multi()
+    if (resetHash) tx.del(resetTokenKey(resetHash))
+    tx.del(resetUserKey(email))
     for (const wishlistId of invitedTo) tx.srem(`wishlist:${wishlistId}:invitees`, email)
     tx.del(safeBetsKey(userId), ...safeBetIds.flatMap(safeBetKeys))
     tx.del(`email:${email}:invitedWishlists`, `user:${userId}:wishlists`, `user:${email}`, `user:id:${userId}`)

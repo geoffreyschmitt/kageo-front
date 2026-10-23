@@ -337,6 +337,16 @@ export const Header = () => {
                 />
               </div>
 
+              {isLogin && (
+                <Link
+                  href="/forgot-password"
+                  className={styles.forgot__link}
+                  onClick={() => setShowAuthModal(false)}
+                >
+                  {t('forgotPassword')}
+                </Link>
+              )}
+
               {!isLogin && (
                 <label className={styles.terms__check}>
                   <input
