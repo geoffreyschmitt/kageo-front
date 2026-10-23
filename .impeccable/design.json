@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-23T17:13:36.478Z",
+  "title": "Design System: Kageo",
+  "extensions": {
+    "colorMeta": {
+      "sage": {
+        "role": "primary",
+        "displayName": "Sage Ribbon",
+        "canonical": "#3f6845",
+        "tonalRamp": [
+          "#14100c",
+          "#20291c",
+          "#2d422d",
+          "#395b3d",
+          "#577b5c",
+          "#87a089",
+          "#b7c5b6",
+          "#e7eae3"
+        ]
+      },
+      "sage-deep": {
+        "role": "primary",
+        "displayName": "Deep Sage",
+        "canonical": "#2e5033",
+        "tonalRamp": [
+          "#14100c",
+          "#1b2217",
+          "#233522",
+          "#2a472d",
+          "#48664c",
+          "#7d917d",
+          "#b1bcaf",
+          "#e6e7e1"
+        ]
+      },
+      "sage-tint": {
+        "role": "primary",
+        "displayName": "Sage Mist",
+        "canonical": "#eaf2eb",
+        "tonalRamp": [
+          "#14100c",
+          "#51514c",
+          "#8e918b",
+          "#cbd2cb",
+          "#ecf3ec",
+          "#f0f4ee",
+          "#f4f6f1",
+          "#f8f7f3"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "#f7f4ef",
+        "tonalRamp": [
+          "#14100c",
+          "#55514d",
+          "#96928e",
+          "#d7d3cf",
+          "#f7f5f0",
+          "#f8f6f1",
+          "#f9f7f2",
+          "#faf8f4"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Warm Ink",
+        "canonical": "#1e1a16",
+        "tonalRamp": [
+          "#14100c",
+          "#17130f",
+          "#1a1612",
+          "#1d1915",
+          "#3a3733",
+          "#73706c",
+          "#aba9a5",
+          "#e4e2de"
+        ]
+      },
+      "amber": {
+        "role": "secondary",
+        "displayName": "Burnt Amber",
+        "canonical": "#6e3c0c",
+        "tonalRamp": [
+          "#14100c",
+          "#2e1d0c",
+          "#47290c",
+          "#61360c",
+          "#80542a",
+          "#a48565",
+          "#c8b5a1",
+          "#ece5dd"
+        ]
+      },
+      "status-reserved": {
+        "role": "tertiary",
+        "displayName": "Reserved Plum",
+        "canonical": "#4e3278",
+        "tonalRamp": [
+          "#14100c",
+          "#251a2b",
+          "#35234a",
+          "#462d69",
+          "#644b88",
+          "#907ea8",
+          "#bdb1c8",
+          "#e9e4e8"
+        ]
+      },
+      "status-wanted": {
+        "role": "tertiary",
+        "displayName": "Wanted Blue",
+        "canonical": "#1a5491",
+        "tonalRamp": [
+          "#14100c",
+          "#162332",
+          "#173758",
+          "#194a7e",
+          "#37699e",
+          "#7093b7",
+          "#aabdd1",
+          "#e4e8ea"
+        ]
+      },
+      "alert": {
+        "role": "tertiary",
+        "displayName": "Alert Brick",
+        "canonical": "#8a2318",
+        "tonalRamp": [
+          "#14100c",
+          "#36150f",
+          "#571b13",
+          "#792016",
+          "#983e34",
+          "#b5756d",
+          "#d2aca5",
+          "#efe3de"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero and landing headlines in Fraunces."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Panel and section titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles and wish names."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions and form text in DM Sans."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, tabs, chips."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 2px 12px rgba(60,45,25,0.08)",
+        "purpose": "Resting cards and panels."
+      },
+      {
+        "name": "hover",
+        "value": "0 8px 28px rgba(60,45,25,0.13)",
+        "purpose": "Hovered cards, with a 4px lift."
+      },
+      {
+        "name": "modal",
+        "value": "0 24px 64px rgba(60,45,25,0.18)",
+        "purpose": "Dialogs over a blurred scrim."
+      },
+      {
+        "name": "button-lift",
+        "value": "0 4px 14px rgba(63,104,69,0.3)",
+        "purpose": "Primary and outline button hover."
+      }
+    ],
+    "motion": [
+      {
+        "name": "fast",
+        "value": "0.2s ease",
+        "purpose": "Hover and colour transitions."
+      },
+      {
+        "name": "base",
+        "value": "0.3s ease",
+        "purpose": "Card lift and border changes."
+      },
+      {
+        "name": "entrance",
+        "value": "0.45s cubic-bezier(0.16,1,0.3,1)",
+        "purpose": "Panels and cards entering."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action; sage pill.",
+      "html": "<button class=\"ds-btn ds-primary\">Reserve</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 22px;font:500 13px/1 'DM Sans',system-ui,sans-serif;border-radius:100px;cursor:pointer;letter-spacing:.1px;transition:all .2s ease;white-space:nowrap}.ds-btn:focus-visible{outline:2px solid #3f6845;outline-offset:2px}.ds-primary{background:#3f6845;color:#fff;border:none}.ds-primary:hover{background:#2e5033;transform:translateY(-1px);box-shadow:0 4px 14px rgba(63,104,69,.3)}.ds-primary:active{transform:none;box-shadow:none}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Quiet alternative with hairline border.",
+      "html": "<button class=\"ds-btn ds-secondary\">Cancel</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 22px;font:500 13px/1 'DM Sans',system-ui,sans-serif;border-radius:100px;cursor:pointer;letter-spacing:.1px;transition:all .2s ease;white-space:nowrap}.ds-btn:focus-visible{outline:2px solid #3f6845;outline-offset:2px}.ds-secondary{background:transparent;color:#4e443c;border:1.5px solid #d6cec4}.ds-secondary:hover{background:#f2ede5;border-color:#a8a099;transform:translateY(-1px)}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Sage outline that fills on hover.",
+      "html": "<button class=\"ds-btn ds-outline\">Share</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 22px;font:500 13px/1 'DM Sans',system-ui,sans-serif;border-radius:100px;cursor:pointer;letter-spacing:.1px;transition:all .2s ease;white-space:nowrap}.ds-btn:focus-visible{outline:2px solid #3f6845;outline-offset:2px}.ds-outline{background:transparent;color:#3f6845;border:1.5px solid #3f6845}.ds-outline:hover{background:#3f6845;color:#fff;transform:translateY(-1px)}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Low-emphasis text action.",
+      "html": "<button class=\"ds-btn ds-ghost\">Edit</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 22px;font:500 13px/1 'DM Sans',system-ui,sans-serif;border-radius:100px;cursor:pointer;letter-spacing:.1px;transition:all .2s ease;white-space:nowrap}.ds-btn:focus-visible{outline:2px solid #3f6845;outline-offset:2px}.ds-ghost{background:transparent;color:#3f6845;border:none}.ds-ghost:hover{background:#eaf2eb;transform:translateY(-1px)}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Paper-toned field with sage focus ring.",
+      "html": "<input class=\"ds-input\" placeholder=\"Wish name\" />",
+      "css": ".ds-input{width:240px;box-sizing:border-box;padding:10px 14px;border:1.5px solid #d6cec4;border-radius:10px;font:14px 'DM Sans',system-ui,sans-serif;color:#1e1a16;background:#faf8f4;transition:border-color .2s,box-shadow .2s}.ds-input:focus{outline:none;border-color:#3f6845;box-shadow:0 0 0 3px rgba(63,104,69,.2);background:#fff}"
+    },
+    {
+      "name": "Tabs",
+      "kind": "nav",
+      "refersTo": "tabs",
+      "description": "Pill track with a sage-tint active tab.",
+      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab ds-on\">Wishes</button><button class=\"ds-tab\">Pot</button><button class=\"ds-tab\">Comments</button></div>",
+      "css": ".ds-tabs{display:inline-flex;gap:6px;padding:5px;background:#fff;border:1px solid #d6cec4;border-radius:100px}.ds-tab{padding:9px 22px;font:500 13px 'DM Sans',system-ui,sans-serif;color:#6b6258;background:transparent;border:none;border-radius:100px;cursor:pointer;transition:all .2s ease}.ds-tab:hover{color:#1e1a16}.ds-tab:focus-visible{outline:2px solid #3f6845;outline-offset:2px}.ds-on{background:#eaf2eb;color:#3f6845}"
+    },
+    {
+      "name": "Status Chip",
+      "kind": "chip",
+      "refersTo": "status-reserved",
+      "description": "Foreground on tint, always with a label.",
+      "html": "<span class=\"ds-chip\">Reserved</span>",
+      "css": ".ds-chip{display:inline-block;padding:4px 12px;border-radius:100px;background:#f0ebf8;color:#4e3278;font:600 12px 'DM Sans',system-ui,sans-serif}"
+    },
+    {
+      "name": "Wish Card",
+      "kind": "card",
+      "refersTo": "wish-card",
+      "description": "Raised card with image, serif title, and lift on hover.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-img\"></div><div class=\"ds-body\"><h3>Linen throw blanket</h3><p>Oatmeal, 130 x 170 cm</p></div></article>",
+      "css": ".ds-card{width:260px;background:#fff;border:1px solid #d6cec4;border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(60,45,25,.08);transition:border-color .3s ease,box-shadow .3s ease,transform .3s cubic-bezier(.16,1,.3,1)}.ds-card:hover{border-color:#a8a099;box-shadow:0 8px 28px rgba(60,45,25,.13);transform:translateY(-4px)}.ds-img{height:120px;background:#ebe5da}.ds-body{padding:16px 20px}.ds-body h3{margin:0 0 4px;font:500 18px/1.3 Fraunces,Georgia,serif;color:#1e1a16}.ds-body p{margin:0;font:14px/1.6 'DM Sans',system-ui,sans-serif;color:#4e443c}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Wrapped Gift",
+    "overview": "Kageo looks like something carefully wrapped: a calm paper ground, one ribbon of sage green, and a serif voice that feels hand-lettered rather than corporate. The interface is discreet by design, because the product's promise is a surprise kept intact.",
+    "keyCharacteristics": [
+      "Paper-warm neutrals with a single sage accent, used for action and \"done\".",
+      "Fraunces for display voice, DM Sans for everything functional.",
+      "Pill-shaped controls inside softly rounded cards.",
+      "Warm, brown-tinted shadows; cards lift on hover.",
+      "Status carried by tinted chips with paired foreground/background colors, never colour alone."
+    ],
+    "rules": [
+      {
+        "name": "The One Ribbon Rule",
+        "body": "Sage is the only chromatic accent for action. Status colours label state; they never decorate or act as buttons.",
+        "section": "colors"
+      },
+      {
+        "name": "The Warm Neutral Rule",
+        "body": "Every neutral leans brown (hue ~60-80). No cool greys, no pure black text, no pure black shadows in light mode.",
+        "section": "colors"
+      },
+      {
+        "name": "The Paired Status Rule",
+        "body": "A status colour is always a foreground on its own tint, with an icon or label. Colour never carries meaning alone.",
+        "section": "colors"
+      },
+      {
+        "name": "The Serif Is a Voice Rule",
+        "body": "Fraunces is for names, titles and moments of warmth. Forms, buttons, metadata and tables are always DM Sans.",
+        "section": "typography"
+      },
+      {
+        "name": "The Cormorant Is Dead Rule",
+        "body": "Never reintroduce Cormorant Garamond; the CSS variable name is historical only.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lift-On-Interest Rule",
+        "body": "Elevation increases only in response to hover or focus; at rest everything stays calm.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Use Sage Ribbon (#3f6845) as the only action colour.",
+      "Read colours through the semantic tokens in theme.css so light and dark both resolve.",
+      "Make every control a pill and every container softly rounded (10 / 16 / 20px).",
+      "Keep the shared list readable on a phone with no account.",
+      "Pair status colours with an icon or label."
+    ],
+    "donts": [
+      "Don't reintroduce Cormorant Garamond or use Fraunces for form controls.",
+      "Don't use cool greys, pure black text or neutral black shadows in light mode.",
+      "Don't hard-code hex values in components; use the theme tokens.",
+      "Don't show reservations, pots or guest comments in any owner view.",
+      "Don't signal state by colour alone."
+    ]
+  }
+}
