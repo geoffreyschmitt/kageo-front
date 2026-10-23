@@ -35,7 +35,8 @@ const descriptionInput = (page: Page) => page.locator('textarea[name="descriptio
 const priceInput = (page: Page) => page.locator('input[name="price"]')
 const currencySelect = (page: Page) => page.locator('select[name="currency"]')
 const imageInput = (page: Page) => page.locator('input[name="imageUrl"]')
-const prioritySelect = (page: Page) => page.locator('select[name="priority"]')
+// The form's priority is a single "top pick" checkbox: checked = 'high', unchecked = 'medium'.
+const favoriteCheckbox = (page: Page) => page.locator('input[name="priority"]')
 const fillButton = (page: Page) => page.getByRole('button', { name: 'Fill in for me' })
 const submitButton = (page: Page) => page.getByRole('button', { name: 'Add Item' }).last()
 
@@ -92,7 +93,7 @@ test.describe('import a wish from a link (Fill in for me)', () => {
         await expect(currencySelect(page)).toHaveValue('$')
         await expect(imageInput(page)).toHaveValue(GLOBE)
         await expect(nameInput(page)).toHaveValue('My lamp')
-        await expect(prioritySelect(page)).toHaveValue('medium')
+        await expect(favoriteCheckbox(page)).not.toBeChecked()
 
         await submitButton(page).click()
         await expect(page.getByText('My lamp')).toBeVisible()
@@ -449,7 +450,7 @@ test.describe('import a wish from a link (Fill in for me)', () => {
             await expect(nameInput(page)).toHaveValue('Old name')
             await expect(priceInput(page)).toHaveValue('50')
             await expect(currencySelect(page)).toHaveValue('€')
-            await expect(prioritySelect(page)).toHaveValue('high')
+            await expect(favoriteCheckbox(page)).toBeChecked()
         })
 
         test('Replace overwrites only what the page provides', async ({ browser }) => {
@@ -468,7 +469,7 @@ test.describe('import a wish from a link (Fill in for me)', () => {
             await expect(currencySelect(page)).toHaveValue('$')
             await expect(imageInput(page)).toHaveValue(FILE)
             await expect(nameInput(page)).toHaveValue('Old name')
-            await expect(prioritySelect(page)).toHaveValue('high')
+            await expect(favoriteCheckbox(page)).toBeChecked()
         })
 
         test('changing the link while the mode question shows dismisses it with no request', async ({ browser }) => {

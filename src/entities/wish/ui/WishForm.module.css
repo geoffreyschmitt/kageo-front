@@ -61,6 +61,43 @@
 }
 
 .wishForm__input,
+.wishForm__favorite {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--border-default);
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.wishForm__favorite input {
+    accent-color: var(--accent);
+}
+
+.wishForm__favorite svg {
+    color: var(--text-tertiary);
+}
+
+.wishForm__favorite:has(input:checked) {
+    background: var(--note-bg);
+    border-color: var(--note-accent);
+    color: var(--text-primary);
+}
+
+.wishForm__favorite:has(input:checked) svg {
+    color: var(--note-accent);
+}
+
+.wishForm__favorite:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
 .wishForm__select,
 .wishForm__textarea {
     padding: 10px 14px;

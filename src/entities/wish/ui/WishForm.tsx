@@ -185,21 +185,20 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                     )}
                 </label>
 
-                {/* Priorité */}
+                {/* Favourite: a wish is either normal or a favourite (priority 'high') */}
                 {!isProposedWish && (
-                    <label className={styles.wishForm__field}>
-                        <span className={styles.wishForm__label}>{t('priorityLabel')}</span>
-                        <select
+                    <label className={styles.wishForm__favorite}>
+                        <input
+                            type="checkbox"
                             name="priority"
-                            value={formData.priority}
-                            onChange={(e) => handleSelectChange("priority", e.target.value)}
+                            checked={formData.priority === 'high'}
+                            onChange={(e) => handleSelectChange("priority", e.target.checked ? 'high' : 'medium')}
                             disabled={isSubmitting}
-                            className={styles.wishForm__select}
-                        >
-                            <option value="low">{t('priorityLow')}</option>
-                            <option value="medium">{t('priorityMedium')}</option>
-                            <option value="high">{t('priorityHigh')}</option>
-                        </select>
+                        />
+                        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
+                        </svg>
+                        <span>{t('favoriteLabel')}</span>
                     </label>
                 )}
 
@@ -346,13 +345,11 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                             ? formData.price.toFixed(2)
                             : "0.00"}
                     </span>
-                                {!isProposedWish && (
+                                {!isProposedWish && formData.priority === 'high' && (
                     <span
-                        className={`${styles.wishForm__previewPriority} ${
-                            styles[`wishForm__previewPriority--${formData.priority}`]
-                        }`}
+                        className={`${styles.wishForm__previewPriority} ${styles['wishForm__previewPriority--high']}`}
                     >
-                      {t(`priority${formData.priority.charAt(0).toUpperCase()}${formData.priority.slice(1)}`)}
+                      {t('priorityHighBadge')}
                     </span>
                                 )}
                             </div>
