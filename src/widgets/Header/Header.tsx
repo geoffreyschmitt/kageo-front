@@ -1,5 +1,5 @@
 'use client';
-import {useEffect, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 
 import {signIn, signOut, useSession} from 'next-auth/react'
 import {useTranslations} from 'next-intl'
@@ -26,6 +26,9 @@ export const Header = () => {
   const router = useRouter()
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuToggleRef = useRef<HTMLButtonElement>(null)
+  const drawerRef = useRef<HTMLElement>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
   const [isLogin, setIsLogin] = useState(true)
   const [formData, setFormData] = useState({
     email: '',
@@ -48,19 +51,55 @@ export const Header = () => {
     setMenuOpen(false)
   }
 
-  // Lock body scroll and close on Escape while the drawer is open.
+  // While the drawer is open: lock body scroll, close on Escape, keep Tab inside it, and hand
+  // focus back to the menu button when it closes.
   useEffect(() => {
     if (!menuOpen) return
+    const toggle = menuToggleRef.current
+    const drawer = drawerRef.current
+    const focusable = () =>
+      Array.from(drawer?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? [])
+    focusable()[0]?.focus()
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMenuOpen(false)
+      if (e.key === 'Escape') {
+        setMenuOpen(false)
+        return
+      }
+      if (e.key !== 'Tab') return
+      const items = focusable()
+      if (items.length === 0) return
+      const first = items[0]
+      const last = items[items.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
     document.body.style.overflow = 'hidden'
     document.addEventListener('keydown', onKeyDown)
     return () => {
       document.body.style.overflow = ''
       document.removeEventListener('keydown', onKeyDown)
+      toggle?.focus()
     }
   }, [menuOpen])
+
+  // The sign-in dialog is a native modal <dialog>: the browser traps focus, makes the page behind
+  // inert and reports Escape through onCancel (see below).
+  useEffect(() => {
+    if (!showAuthModal) return
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (!dialog.open) dialog.showModal()
+    dialog.querySelector<HTMLInputElement>('input:not([type="checkbox"])')?.focus()
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [showAuthModal])
 
   const handleInputChange = (e) => {
     setFormData({
@@ -131,8 +170,10 @@ export const Header = () => {
     signOut()
   }
 
-  const openLoginModal = () => {
+  const openAuthModal = (mode: 'login' | 'signUp') => {
     setMenuOpen(false)
+    setIsLogin(mode === 'login')
+    setError('')
     setShowAuthModal(true)
   }
 
@@ -141,6 +182,8 @@ export const Header = () => {
     setError('')
     setFormData({email: '', password: '', name: ''})
   }
+
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
 
   const navItems = [
     {href: '/wishlists', label: tNav('wishlists')},
@@ -153,6 +196,7 @@ export const Header = () => {
 
   return (
     <>
+      <a href="#main-content" className={styles.skip}>{tNav('skip')}</a>
       <header className={styles.header}>
         <div className={styles.header__container}>
           <div className={styles.header__logo}>
@@ -161,11 +205,15 @@ export const Header = () => {
             </Link>
           </div>
           {session?.user && (
-            <nav className={styles.header__nav}>
+            <nav className={styles.header__nav} aria-label={tNav('main')}>
               <ul className={styles.header__navList}>
                 {navItems.map((item) => (
                   <li key={item.href} className={styles.header__navItem}>
-                    <Link href={item.href} className={styles.header__navLink}>
+                    <Link
+                      href={item.href}
+                      className={`${styles.header__navLink} ${isActive(item.href) ? styles['header__navLink--active'] : ''}`}
+                      aria-current={isActive(item.href) ? 'page' : undefined}
+                    >
                       {item.label}
                     </Link>
                   </li>
@@ -174,12 +222,17 @@ export const Header = () => {
             </nav>
           )}
           <div className={styles.header__actions}>
-            <LanguageSwitcher />
+            <div className={styles.header__lang}>
+              <LanguageSwitcher />
+            </div>
             {isLoading ? (
-              <div className={styles.header__loading}>{t('loading')}</div>
+              <div className={styles.header__loading} role="status">
+                <span className={styles.srOnly}>{t('loading')}</span>
+              </div>
             ) : session?.user ? (
               <div className={styles.header__userMenu}>
                 <Link href="/profile" className={styles.header__userName}>
+                  <span className={styles.header__avatar} aria-hidden="true">{avatarInitial}</span>
                   {t('hello', {name: displayName})}
                 </Link>
                 <button
@@ -190,24 +243,35 @@ export const Header = () => {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => setShowAuthModal(true)}
-                className={styles.header__loginButton}
-              >
-                {t('login')}
-              </button>
+              <>
+                <button
+                  onClick={() => openAuthModal('login')}
+                  className={styles.header__loginButton}
+                >
+                  {t('login')}
+                </button>
+                <button
+                  onClick={() => openAuthModal('signUp')}
+                  className={styles.header__createButton}
+                >
+                  {t('createList')}
+                </button>
+              </>
             )}
           </div>
           <button
+            ref={menuToggleRef}
             type="button"
             className={styles.header__menuToggle}
             aria-label={tNav('openMenu')}
             aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
             onClick={() => setMenuOpen(true)}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>
+            <span className={styles.header__menuLabel} aria-hidden="true">{tNav('menu')}</span>
           </button>
         </div>
       </header>
@@ -218,8 +282,14 @@ export const Header = () => {
         aria-hidden="true"
       />
       <aside
+        ref={drawerRef}
+        id="mobile-menu"
         className={`${styles.drawer} ${menuOpen ? styles['drawer--open'] : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={tNav('menuPanel')}
         aria-hidden={!menuOpen}
+        inert={!menuOpen}
       >
         <div className={styles.drawer__head}>
           <button
@@ -234,11 +304,33 @@ export const Header = () => {
           </button>
         </div>
 
+        {!isLoading && !session?.user && (
+          <div className={styles.drawer__welcome}>
+            <button
+              onClick={() => openAuthModal('signUp')}
+              className={styles.drawer__create}
+            >
+              {t('createList')}
+            </button>
+            <button
+              onClick={() => openAuthModal('login')}
+              className={styles.drawer__login}
+            >
+              {t('login')}
+            </button>
+          </div>
+        )}
+
         {session?.user && (
           <>
-            <nav className={styles.drawer__nav}>
+            <nav className={styles.drawer__nav} aria-label={tNav('main')}>
               {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className={styles.drawer__navLink}>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`${styles.drawer__navLink} ${isActive(item.href) ? styles['drawer__navLink--active'] : ''}`}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                >
                   {item.label}
                 </Link>
               ))}
@@ -255,7 +347,7 @@ export const Header = () => {
 
         <div className={styles.drawer__spacer} />
 
-        {isLoading ? null : session?.user ? (
+        {session?.user && (
           <>
             <div className={styles.drawer__divider} />
             <Link href="/profile" className={styles.drawer__profile}>
@@ -272,26 +364,34 @@ export const Header = () => {
               {t('logout')}
             </button>
           </>
-        ) : (
-          <button
-            onClick={openLoginModal}
-            className={styles.drawer__login}
-          >
-            {t('login')}
-          </button>
         )}
       </aside>
 
       {showAuthModal && (
-        <div className={styles.modal__overlay} onClick={closeModal}>
-          <div className={styles.modal__content} onClick={(e) => e.stopPropagation()}>
+        <dialog
+          ref={dialogRef}
+          className={styles.modal__content}
+          aria-labelledby="auth-title"
+          onCancel={(e) => {
+            e.preventDefault()
+            closeModal()
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal()
+          }}
+        >
+          <div className={styles.modal__body}>
             <div className={styles.modal__header}>
-              <h2>{isLogin ? t('login') : t('signUp')}</h2>
+              <h2 id="auth-title">{isLogin ? t('login') : t('signUp')}</h2>
               <button
+                type="button"
                 className={styles.modal__close}
                 onClick={closeModal}
+                aria-label={t('close')}
               >
-                ×
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
               </button>
             </div>
 
@@ -359,7 +459,7 @@ export const Header = () => {
                 </label>
               )}
 
-              {error && <div className={styles.error__message}>{error}</div>}
+              {error && <div className={styles.error__message} role="alert">{error}</div>}
 
               <button
                 type="submit"
@@ -409,7 +509,7 @@ export const Header = () => {
               </button>
             </div>
           </div>
-        </div>
+        </dialog>
       )}
     </>
   )

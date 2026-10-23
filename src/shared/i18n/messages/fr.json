@@ -10,7 +10,11 @@
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "language": "Langue",
-    "viewProfile": "Voir le profil"
+    "viewProfile": "Voir le profil",
+    "menu": "Menu",
+    "main": "Navigation principale",
+    "menuPanel": "Menu",
+    "skip": "Aller au contenu"
   },
   "auth": {
     "login": "Connexion",
@@ -34,7 +38,9 @@
     "or": "ou",
     "acceptTerms": "J’accepte les <terms>conditions d’utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
     "googleNotice": "En continuant avec Google, vous acceptez les <terms>conditions d’utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
-    "forgotPassword": "Mot de passe oublié ?"
+    "forgotPassword": "Mot de passe oublié ?",
+    "close": "Fermer",
+    "createList": "Créer une wishlist"
   },
   "landing": {
     "heroTitle": "Chacun reçoit un cadeau qui lui plaît vraiment.",
@@ -698,7 +704,10 @@
     "privacy": "Confidentialité",
     "terms": "Conditions",
     "cookies": "Cookies",
-    "legalNotice": "Mentions légales"
+    "legalNotice": "Mentions légales",
+    "navLabel": "Informations légales",
+    "tagline": "Imaginé par Kevin et Geoffrey, pour des cadeaux qui font vraiment plaisir.",
+    "copyright": "© {year} Kageo"
   },
   "installPrompt": {
     "title": "Installer Kageo",

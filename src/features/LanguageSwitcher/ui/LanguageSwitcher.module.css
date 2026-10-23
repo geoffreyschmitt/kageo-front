@@ -1,22 +1,33 @@
 .switcher {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.75rem;
+    gap: 2px;
+    font-size: 0.8125rem;
     font-weight: 500;
     letter-spacing: 0.04em;
 }
 
 .option {
-    color: var(--text-tertiary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    min-height: 32px;
+    color: var(--text-secondary);
     text-decoration: none;
-    padding: 2px 4px;
-    border-radius: 3px;
-    transition: color 0.15s;
+    padding: 0 8px;
+    border-radius: 100px;
+    transition: color 0.15s, background 0.15s;
 }
 
 .option:hover {
     color: var(--text-primary);
+    background: var(--surface-sunken);
+}
+
+.option:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .option--active {
@@ -30,6 +41,6 @@
 }
 
 @media (max-width: 768px), (pointer: coarse) {
-    .option { font-size: 14px; display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; justify-content: center; }
+    .option { font-size: 14px; min-width: 44px; min-height: 44px; }
     .divider { font-size: 14px; }
 }

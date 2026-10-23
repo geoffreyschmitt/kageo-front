@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
 import { Link } from '@/shared/i18n/navigation'
+import { Logo } from '@/shared/ui/Logo'
 
 import styles from './Footer.module.css'
 
@@ -16,11 +17,24 @@ export const Footer = async () => {
 
     return (
         <footer className={styles.footer}>
-            {LINKS.map(({ href, key }) => (
-                <Link key={key} href={href} className={styles.link}>
-                    {t(key)}
-                </Link>
-            ))}
+            <div className={styles.inner}>
+                <div className={styles.brand}>
+                    <Logo variant="symbol" className={styles.mark} aria-hidden="true" />
+                    <p className={styles.tagline}>{t('tagline')}</p>
+                </div>
+                <nav aria-label={t('navLabel')}>
+                    <ul className={styles.links}>
+                        {LINKS.map(({ href, key }) => (
+                            <li key={key}>
+                                <Link href={href} className={styles.link}>
+                                    {t(key)}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            </div>
+            <p className={styles.copyright}>{t('copyright', { year: new Date().getFullYear() })}</p>
         </footer>
     )
 }

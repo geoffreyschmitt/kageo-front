@@ -10,7 +10,11 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "language": "Language",
-    "viewProfile": "View profile"
+    "viewProfile": "View profile",
+    "menu": "Menu",
+    "main": "Main navigation",
+    "menuPanel": "Menu",
+    "skip": "Skip to content"
   },
   "auth": {
     "login": "Login",
@@ -34,7 +38,9 @@
     "or": "or",
     "acceptTerms": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
     "googleNotice": "By continuing with Google you accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
-    "forgotPassword": "Forgot your password?"
+    "forgotPassword": "Forgot your password?",
+    "close": "Close",
+    "createList": "Start a wishlist"
   },
   "landing": {
     "heroTitle": "Everyone gets a gift they'll love.",
@@ -698,7 +704,10 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "cookies": "Cookies",
-    "legalNotice": "Legal notice"
+    "legalNotice": "Legal notice",
+    "navLabel": "Legal",
+    "tagline": "Made by Kevin and Geoffrey, for gifts people actually want.",
+    "copyright": "© {year} Kageo"
   },
   "installPrompt": {
     "title": "Install Kageo",

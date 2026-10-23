@@ -114,6 +114,7 @@ export default async function LocaleLayout({
                     <NextIntlClientProvider messages={messages}>
                         <AuthProvider>
                             <Header />
+                            <div id="main-content" tabIndex={-1} />
                             {children}
                             <Footer />
                             <Toaster />

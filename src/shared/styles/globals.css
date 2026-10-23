@@ -1,4 +1,5 @@
 body {
+    margin: 0;
     font-family: var(--font-sans);
     background: var(--surface-page);
     color: var(--text-primary);

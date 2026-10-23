@@ -1,49 +1,69 @@
 /* ============================================
-   HEADER + AUTH MODAL — Garden Party
+   HEADER + MOBILE DRAWER + AUTH DIALOG — Garden Party
    ============================================ */
 
-.header {
-    --h-bg:          var(--surface-raised);
-    --h-border:      var(--border-soft);
-    --h-text:        var(--text-primary);
-    --h-text-2:      var(--text-secondary);
-    --h-text-3:      var(--text-tertiary);
-    --h-sage:        var(--accent);
-    --h-sage-hover:  var(--accent-hover);
-    --h-sage-light:  var(--accent-tint-bg);
-    --h-surface-2:   var(--surface-page);
-    --h-shadow:      var(--shadow-card);
-    --h-font-serif:  var(--font-serif);
-    --h-font-sans:   var(--font-sans);
-    --h-font-mono:   var(--font-mono);
+/* ── Shared bits ──────────────────────────── */
+
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
 }
 
-.modal__overlay, .modal__content {
-    --h-text: var(--text-primary);
-    --h-text-2: var(--text-secondary);
-    --h-text-3: var(--text-tertiary);
-    --h-sage: var(--accent);
-    --h-sage-hover: var(--accent-hover);
-    --h-surface-2: var(--surface-page);
-    --h-font-serif: var(--font-serif);
-    --h-font-sans: var(--font-sans);
+.skip {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 1100;
+    padding: 12px 20px;
+    border-radius: 100px;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transform: translateY(-200%);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skip:focus-visible {
+    transform: translateY(0);
+}
+
+/* One focus ring for every control in the header, the drawer and the dialog. */
+.header a:focus-visible,
+.header button:focus-visible,
+.drawer a:focus-visible,
+.drawer button:focus-visible,
+.modal__content a:focus-visible,
+.modal__content button:focus-visible,
+.skip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 /* ── Header bar ───────────────────────────── */
 
 .header {
-    background: var(--h-bg);
-    box-shadow: var(--h-shadow);
     position: sticky;
     top: 0;
     z-index: 100;
+    background: var(--surface-page);
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .header__container {
     max-width: 1300px;
     margin: 0 auto;
     padding: 0 32px;
-    height: 60px;
+    height: 64px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -57,16 +77,17 @@
 }
 
 .header__logoLink {
-    color: var(--h-text);
-    text-decoration: none;
-    transition: opacity 0.2s ease;
     display: flex;
     align-items: center;
+    border-radius: 8px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
 }
 
 .header__logoImage {
     display: block;
-    height: 30px;
+    height: 32px;
     width: auto;
 }
 
@@ -95,20 +116,25 @@
 }
 
 .header__navLink {
-    font-family: var(--h-font-sans);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--h-text-2);
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 100px;
-    transition: all 0.2s ease;
     display: block;
+    padding: 9px 16px;
+    border-radius: 100px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease, background 0.2s ease;
 }
 
 .header__navLink:hover {
-    color: var(--h-sage);
-    background: var(--h-sage-light);
+    color: var(--accent);
+    background: var(--accent-tint-bg);
+}
+
+.header__navLink--active {
+    color: var(--accent);
+    background: var(--accent-tint-bg);
 }
 
 /* ── Actions ──────────────────────────────── */
@@ -117,56 +143,82 @@
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
+}
+
+.header__lang {
+    margin-right: 8px;
+}
+
+.header__loginButton,
+.header__createButton {
+    min-height: 40px;
+    padding: 0 18px;
+    border-radius: 100px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .header__loginButton {
-    font-family: var(--h-font-sans);
-    font-size: 13px;
-    font-weight: 500;
     background: transparent;
-    color: var(--h-sage);
-    border: 1.5px solid var(--h-sage);
-    padding: 6.5px 18.5px;
-    border-radius: 100px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    letter-spacing: 0.1px;
+    color: var(--text-primary);
+    border: 1.5px solid transparent;
 }
 
 .header__loginButton:hover {
-    background: var(--h-sage-light);
-    border-color: var(--h-sage-hover);
-    color: var(--h-sage-hover);
+    background: var(--surface-sunken);
 }
 
+.header__createButton {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border: 1.5px solid var(--accent);
+}
+
+.header__createButton:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+/* Reserves the width of the signed-out buttons so nothing jumps once the session is known. */
 .header__loading {
-    font-family: var(--h-font-sans);
-    font-size: 13px;
-    color: var(--h-text-3);
+    width: 168px;
+    height: 40px;
+    border-radius: 100px;
+    background: var(--surface-sunken);
 }
 
 /* ── Mobile menu toggle ───────────────────── */
 
 .header__menuToggle {
     display: none;
-    width: 44px;
-    height: 44px;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    margin-right: -8px;
-    background: transparent;
+    gap: 8px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 14px;
+    margin-right: -4px;
+    background: var(--surface-sunken);
     border: none;
     border-radius: 100px;
-    color: var(--h-text-2);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .header__menuToggle:hover {
-    background: var(--h-sage-light);
-    color: var(--h-sage);
+    background: var(--accent-tint-bg);
+    color: var(--accent);
 }
 
 /* ── User menu ────────────────────────────── */
@@ -174,57 +226,63 @@
 .header__userMenu {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .header__userName {
-    font-family: var(--h-font-sans);
-    font-size: 13px;
-    color: var(--h-text-2);
-    letter-spacing: 0.1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 12px 4px 4px;
+    border-radius: 100px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-secondary);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, background 0.2s ease;
 }
 
 .header__userName:hover {
-    color: var(--h-sage);
+    color: var(--accent);
+    background: var(--accent-tint-bg);
+}
+
+.header__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 100px;
+    background: var(--accent-tint-bg);
+    color: var(--accent);
+    font-family: var(--font-serif);
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .header__logoutButton {
-    font-family: var(--h-font-sans);
-    font-size: 12px;
-    font-weight: 500;
+    min-height: 36px;
+    padding: 0 14px;
     background: transparent;
-    color: var(--h-text-3);
-    border: 1px solid var(--h-border);
-    padding: 6px 14px;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
     border-radius: 100px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .header__logoutButton:hover {
-    background: var(--h-surface-2);
-    color: var(--h-text-2);
+    background: var(--surface-sunken);
+    color: var(--text-primary);
     border-color: var(--border-strong);
 }
 
 /* ── Mobile drawer ────────────────────────── */
-
-.drawer,
-.drawer__overlay {
-    --h-bg:          var(--surface-raised);
-    --h-border:      var(--border-soft);
-    --h-text:        var(--text-primary);
-    --h-text-2:      var(--text-secondary);
-    --h-text-3:      var(--text-tertiary);
-    --h-sage:        var(--accent);
-    --h-sage-hover:  var(--accent-hover);
-    --h-sage-light:  var(--accent-tint-bg);
-    --h-surface-2:   var(--surface-page);
-    --h-font-serif:  var(--font-serif);
-    --h-font-sans:   var(--font-sans);
-}
 
 .drawer__overlay {
     display: none;
@@ -251,12 +309,14 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: 314px;
-    max-width: 86vw;
-    padding: 12px 16px 26px;
-    background: var(--h-bg);
+    width: 330px;
+    max-width: 88vw;
+    padding: 12px 16px 24px;
+    background: var(--surface-raised);
+    color: var(--text-primary);
     box-shadow: var(--shadow-modal);
     z-index: 201;
+    overflow-y: auto;
     transform: translateX(100%);
     visibility: hidden;
     transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
@@ -265,6 +325,7 @@
 .drawer--open {
     transform: translateX(0);
     visibility: visible;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
 }
 
 .drawer__head {
@@ -279,18 +340,60 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    margin-right: -8px;
+    margin-right: -4px;
     background: transparent;
     border: none;
     border-radius: 100px;
-    color: var(--h-text-2);
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .drawer__close:hover {
-    background: var(--h-sage-light);
-    color: var(--h-sage);
+    background: var(--accent-tint-bg);
+    color: var(--accent);
+}
+
+.drawer__welcome {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 8px 0 24px;
+}
+
+.drawer__create,
+.drawer__login {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 100px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.drawer__create {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border: 1.5px solid var(--accent);
+}
+
+.drawer__create:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+.drawer__login {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1.5px solid var(--border-default);
+}
+
+.drawer__login:hover {
+    background: var(--surface-sunken);
+    border-color: var(--border-strong);
 }
 
 .drawer__nav {
@@ -301,24 +404,25 @@
 }
 
 .drawer__navLink {
-    font-family: var(--h-font-sans);
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--h-text-2);
-    text-decoration: none;
-    padding: 13px 14px;
+    padding: 14px 14px;
     border-radius: 12px;
-    transition: all 0.2s ease;
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
-.drawer__navLink:hover {
-    background: var(--h-sage-light);
-    color: var(--h-sage);
+.drawer__navLink:hover,
+.drawer__navLink--active {
+    background: var(--accent-tint-bg);
+    color: var(--accent);
 }
 
 .drawer__divider {
     height: 1px;
-    background: var(--h-border);
+    background: var(--border-soft);
     margin: 16px 6px;
 }
 
@@ -326,14 +430,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 14px;
+    padding: 0 14px;
 }
 
 .drawer__rowLabel {
-    font-family: var(--h-font-sans);
-    font-size: 13px;
+    font-family: var(--font-sans);
+    font-size: 14px;
     font-weight: 500;
-    color: var(--h-text-3);
+    color: var(--text-secondary);
 }
 
 .drawer__spacer {
@@ -353,7 +457,7 @@
 }
 
 .drawer__profile:hover {
-    background: var(--h-surface-2);
+    background: var(--surface-page);
 }
 
 .drawer__avatar {
@@ -361,84 +465,82 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     border-radius: 100px;
-    background: var(--h-sage-light);
-    color: var(--h-sage);
-    font-family: var(--h-font-serif);
-    font-size: 17px;
+    background: var(--accent-tint-bg);
+    color: var(--accent);
+    font-family: var(--font-serif);
+    font-size: 18px;
     font-weight: 600;
 }
 
 .drawer__profileText {
     display: flex;
     flex-direction: column;
+    min-width: 0;
     line-height: 1.3;
 }
 
 .drawer__profileName {
-    font-family: var(--h-font-sans);
-    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-sans);
+    font-size: 15px;
     font-weight: 500;
-    color: var(--h-text);
+    color: var(--text-primary);
 }
 
 .drawer__profileLink {
-    font-family: var(--h-font-sans);
-    font-size: 12px;
-    color: var(--h-text-3);
-}
-
-.drawer__login {
-    width: 100%;
-    padding: 13px;
-    background: var(--h-sage);
-    color: var(--accent-contrast);
-    border: none;
-    border-radius: 100px;
-    font-family: var(--h-font-sans);
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.1px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.drawer__login:hover {
-    background: var(--h-sage-hover);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--text-tertiary);
 }
 
 .drawer__logout {
     width: 100%;
-    padding: 11px;
+    min-height: 44px;
     background: transparent;
-    color: var(--h-text-3);
-    border: 1px solid var(--h-border);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
     border-radius: 100px;
-    font-family: var(--h-font-sans);
-    font-size: 13px;
+    font-family: var(--font-sans);
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .drawer__logout:hover {
-    background: var(--h-surface-2);
-    color: var(--h-text-2);
+    background: var(--surface-page);
+    color: var(--text-primary);
     border-color: var(--border-strong);
 }
 
-/* ── Auth Modal Overlay ───────────────────── */
+/* ── Auth dialog ──────────────────────────── */
 
-.modal__overlay {
-    position: fixed;
-    inset: 0;
+.modal__content {
+    width: calc(100% - 24px);
+    max-width: 400px;
+    max-height: calc(100dvh - 24px);
+    margin: auto;
+    padding: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--surface-raised);
+    color: var(--text-primary);
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    box-shadow: var(--shadow-modal);
+}
+
+.modal__content[open] {
+    animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.modal__content::backdrop {
     background: rgba(30, 26, 22, 0.45);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     animation: overlayIn 0.2s ease both;
@@ -449,26 +551,13 @@
     to   { opacity: 1; }
 }
 
-/* ── Modal Card ───────────────────────────── */
-
-.modal__content {
-    background: var(--surface-raised);
-    border-radius: 20px;
-    padding: 36px 32px 28px;
-    width: 100%;
-    max-width: 400px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--shadow-modal);
-    position: relative;
-    margin: 20px;
-    animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
-    border: 1px solid var(--border-soft);
-}
-
 @keyframes modalIn {
     from { opacity: 0; transform: scale(0.96) translateY(8px); }
     to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal__body {
+    padding: 32px 32px 28px;
 }
 
 .modal__header {
@@ -480,39 +569,37 @@
 
 .modal__header h2 {
     margin: 0;
-    font-family: var(--h-font-serif);
+    font-family: var(--font-serif);
     font-size: 30px;
     font-weight: 400;
-    color: var(--h-text);
+    color: var(--text-primary);
     letter-spacing: -0.2px;
     line-height: 1.1;
 }
 
 .modal__close {
-    background: none;
-    border: none;
-    font-size: 22px;
-    color: var(--h-text-3);
-    cursor: pointer;
-    padding: 0;
-    width: 32px;
-    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 100px;
-    transition: all 0.2s;
     flex-shrink: 0;
-    margin-top: 2px;
-    line-height: 1;
+    width: 40px;
+    height: 40px;
+    margin: -6px -8px 0 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 100px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .modal__close:hover {
-    background: var(--h-surface-2);
-    color: var(--h-text);
+    background: var(--surface-page);
+    color: var(--text-primary);
 }
 
-/* ── Auth Form ────────────────────────────── */
+/* ── Auth form ────────────────────────────── */
 
 .auth__form {
     margin-bottom: 20px;
@@ -528,41 +615,41 @@
 }
 
 .form__group label {
-    font-family: var(--h-font-sans);
-    font-size: 12px;
+    font-family: var(--font-sans);
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--h-text-3);
+    letter-spacing: 0.3px;
+    color: var(--text-secondary);
 }
 
 .form__input {
     width: 100%;
-    padding: 11px 14px;
+    padding: 12px 14px;
     border: 1.5px solid var(--border-default);
     border-radius: 10px;
-    font-family: var(--h-font-sans);
-    font-size: 14px;
-    color: var(--h-text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    color: var(--text-primary);
+    caret-color: var(--accent);
     background: var(--surface-input);
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
 }
 
 .form__input::placeholder {
-    color: var(--h-text-3);
+    color: var(--text-tertiary);
 }
 
 .form__input:focus {
     outline: none;
-    border-color: var(--h-sage);
+    border-color: var(--accent);
     background: var(--surface-raised);
     box-shadow: 0 0 0 3px var(--accent-tint-border);
 }
 
 .error__message {
-    font-family: var(--h-font-sans);
-    font-size: 13px;
+    font-family: var(--font-sans);
+    font-size: 14px;
     color: var(--error-fg);
     background: var(--error-bg);
     border: 1px solid var(--error-border);
@@ -572,30 +659,29 @@
 
 .form__submit {
     width: 100%;
-    background: var(--h-sage);
+    min-height: 48px;
+    background: var(--accent);
     color: var(--accent-contrast);
     border: none;
-    padding: 12px;
     border-radius: 100px;
-    font-family: var(--h-font-sans);
-    font-size: 14px;
+    font-family: var(--font-sans);
+    font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     margin-top: 4px;
 }
 
 .form__submit:hover:not(:disabled) {
-    background: var(--h-sage-hover);
-    box-shadow: 0 4px 16px rgba(92, 138, 98, 0.3);
+    background: var(--accent-hover);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 30%, transparent);
     transform: translateY(-1px);
 }
 
 .form__submit:disabled {
     background: var(--border-default);
+    color: var(--text-secondary);
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
 }
 
 /* ── Divider ──────────────────────────────── */
@@ -616,30 +702,30 @@
 }
 
 .auth__divider span {
-    font-family: var(--h-font-sans);
-    font-size: 12px;
-    color: var(--h-text-3);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--text-secondary);
     white-space: nowrap;
 }
 
-/* ── Google Button ────────────────────────── */
+/* ── Google button ────────────────────────── */
 
 .google__button {
     width: 100%;
+    min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 11px;
     background: var(--surface-raised);
     border: 1.5px solid var(--border-default);
     border-radius: 100px;
-    font-family: var(--h-font-sans);
-    font-size: 14px;
+    font-family: var(--font-sans);
+    font-size: 15px;
     font-weight: 500;
-    color: var(--h-text);
+    color: var(--text-primary);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
     margin-bottom: 20px;
 }
 
@@ -648,23 +734,29 @@
     cursor: not-allowed;
 }
 
+.google__button:hover:not(:disabled) {
+    background: var(--surface-page);
+    border-color: var(--border-strong);
+    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.08);
+}
+
 .forgot__link {
     align-self: flex-end;
     margin-top: -6px;
-    padding: 6px 0;
-    font-family: var(--h-font-sans);
-    font-size: 13px;
-    color: var(--h-sage);
+    padding: 8px 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--accent);
 }
 
 .terms__check {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    font-family: var(--h-font-sans);
-    font-size: 13px;
+    font-family: var(--font-sans);
+    font-size: 14px;
     line-height: 1.5;
-    color: var(--h-text-2);
+    color: var(--text-secondary);
 }
 
 .terms__check input {
@@ -672,67 +764,74 @@
     width: 20px;
     height: 20px;
     margin: 0;
-    accent-color: var(--h-sage);
+    accent-color: var(--accent);
 }
 
 .terms__check a,
 .terms__note a {
-    color: var(--h-sage);
+    color: var(--accent);
 }
 
 .terms__note {
     margin: -8px 0 16px;
     text-align: center;
-    font-family: var(--h-font-sans);
-    font-size: 12px;
+    font-family: var(--font-sans);
+    font-size: 13px;
     line-height: 1.5;
-    color: var(--h-text-2);
+    color: var(--text-secondary);
 }
 
-.google__button:hover:not(:disabled) {
-    background: var(--h-surface-2);
-    border-color: var(--border-strong);
-    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.08);
-}
-
-/* ── Auth Switch ──────────────────────────── */
+/* ── Auth switch ──────────────────────────── */
 
 .auth__switch {
     text-align: center;
-    font-family: var(--h-font-sans);
-    font-size: 13px;
-    color: var(--h-text-2);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-secondary);
 }
 
 .switch__button {
     background: none;
     border: none;
-    color: var(--h-sage);
+    color: var(--accent);
     cursor: pointer;
-    font-family: var(--h-font-sans);
-    font-size: 13px;
+    font-family: var(--font-sans);
+    font-size: 14px;
     font-weight: 600;
-    text-decoration: none;
-    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 10px 4px;
     transition: color 0.2s;
 }
 
 .switch__button:hover {
-    color: var(--h-sage-hover);
+    color: var(--accent-hover);
 }
 
 /* ── Mobile ───────────────────────────────── */
 
 @media (max-width: 768px) {
     .header__container {
-        padding: 0 10px 0 16px;
+        padding: 0 12px 0 16px;
         height: 60px;
-        gap: 12px;
+        gap: 8px;
     }
 
     .header__nav,
-    .header__actions {
+    .header__lang,
+    .header__createButton,
+    .header__userMenu {
         display: none;
+    }
+
+    .header__loading {
+        width: 96px;
+    }
+
+    .header__loginButton {
+        min-height: 44px;
+        padding: 0 16px;
+        border-color: var(--border-default);
     }
 
     .header__menuToggle {
@@ -744,20 +843,61 @@
         display: flex;
     }
 
-    .modal__content {
-        margin: 12px;
+    .modal__body {
         padding: 28px 20px 24px;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 380px) {
     .header__logoImage {
         height: 26px;
     }
+
+    .header__menuLabel {
+        display: none;
+    }
+
+    .header__menuToggle {
+        padding: 0;
+        width: 44px;
+    }
 }
 
-@media (max-width: 768px), (pointer: coarse) {
-    .header__logoLink { display: inline-flex; align-items: center; min-height: 44px; }
-    .header__loginButton { font-size: 14px; min-height: 44px; }
-    .drawer__rowLabel { font-size: 14px; }
+@media (pointer: coarse) {
+    .header__logoLink {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+    }
+
+    .header__navLink,
+    .header__userName {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .header__loginButton,
+    .header__createButton,
+    .header__logoutButton {
+        min-height: 44px;
+    }
+
+    .modal__close {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .drawer,
+    .drawer__overlay,
+    .skip {
+        transition: none;
+    }
+
+    .modal__content[open],
+    .modal__content::backdrop {
+        animation: none;
+    }
 }
