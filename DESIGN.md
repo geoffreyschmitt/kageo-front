@@ -161,7 +161,7 @@ A restrained palette: warm paper, brown-black ink, one sage accent, and a small 
 
 ### Tertiary
 - **Wanted Blue** (#1a5491) on #edf3fb: "wanted" status.
-- **Reserved Plum** (#4e3278) on #f0ebf8: reserved status; also the left rail on reserved cards.
+- **Reserved Plum** (#4e3278) on #f0ebf8: reserved status, carried by the chip and the "Réservé par" line.
 - **Alert Brick** (#8a2318) on #fdecea: errors and high priority.
 - **Note Gold** (#d4a843) on #fffcf5: sticky-note accent on wish notes.
 
@@ -189,9 +189,9 @@ A restrained palette: warm paper, brown-black ink, one sage accent, and a small 
 ### Hierarchy
 - **Display** (500, clamp(2.25rem, 5vw, 3rem), 1.1): landing and hero headlines. Tokens go up to 48px.
 - **Headline** (500, 22px, 1.3): panel and section titles.
-- **Title** (500, 18px, 1.3): card titles, wish names.
+- **Title** (500, 18px, 1.3): card titles. Wish names on the wish card run 20px / 1.25 so a long name wraps in fewer lines on a phone.
 - **Body** (400, 14px, 1.6): descriptions, form text; keep lines to 65-75ch.
-- **Label** (500, 13px, 0.1px tracking): buttons, tabs, chips. Small captions go down to 11-12px (never below).
+- **Label** (500, 13px, 0.1px tracking): buttons, tabs, chips. Small captions go down to 11-12px (never below); status chips are 11px, rising to 12px on touch.
 
 ### Named Rules
 **The Serif Is a Voice Rule.** Fraunces is for names, titles and moments of warmth. Forms, buttons, metadata and tables are always DM Sans.
@@ -217,7 +217,7 @@ Hybrid: surfaces are tonal (page, raised, sunken) and a soft warm shadow separat
 
 ## Shapes
 
-Rounded, friendly, hierarchical. Controls that act are pills (100px); containers that hold are rounded rectangles that grow with importance: 10px fields, 16px panels, 20px wish cards. Borders are 1px hairlines on cards and 1.5px on fields and outlined buttons. State is signalled by a 3px left rail on cards (reserved plum) rather than a full colour wash.
+Rounded, friendly, hierarchical. Controls that act are pills (100px); containers that hold are rounded rectangles that grow with importance: 10px fields, 16px panels, 20px wish cards. Borders are 1px hairlines on cards and 1.5px on fields and outlined buttons. State is signalled by a chip and one line of text, never by a coloured border or a full colour wash.
 
 ## Components
 
@@ -236,7 +236,7 @@ Rounded, friendly, hierarchical. Controls that act are pills (100px); containers
 - **Background:** Clean Sheet on Warm Paper, 1px Hairline border.
 - **Shadow Strategy:** Card shadow at rest, Hover shadow with 4px lift.
 - **Internal Padding:** 24px / 28px on panels.
-- **States:** purchased shows a sage veil on the image and a struck-through title; reserved adds a plum left rail and banner; high priority tints the border toward brick.
+- **States:** purchased shows a sage veil on the image and a struck-through title; reserved adds the plum chip and a one-line "Réservé par" note; high priority adds a quiet gold chip beside the date.
 
 ### Inputs / Fields
 - **Style:** 1.5px Hairline border, 10px radius, Input Paper background, 10px 14px padding, 14px DM Sans.
@@ -269,4 +269,4 @@ An outlined gift box with a bow in the site green and an ink wordmark, one colou
 - **Don't** hard-code hex values in components; use the theme tokens.
 - **Don't** show reservations, pots or guest comments styling in any owner view; surprise is part of the design.
 - **Don't** add ad-like banners, paywall surfaces over a shared list, or generic utilitarian dashboards.
-- **Don't** signal state by colour alone, or add side-stripe borders thicker than the existing 3px reserved rail.
+- **Don't** signal state by colour alone, or add side-stripe borders (a coloured border above 1px on one side of a card).

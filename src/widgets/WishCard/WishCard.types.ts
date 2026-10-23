@@ -15,6 +15,8 @@ export type TWishCard = {
   purchaseUrl?: string
   notes?: string
   addedDate: string
+  // ISO creation time, used to sort by date added (addedDate is a display label).
+  createdAt?: string
   // Number of comments on this wish. Only populated for non-owner viewers
   // (comments are never exposed to the wishlist owner).
   commentCount?: number
@@ -45,6 +47,8 @@ export type TWishCard = {
   onDeleteWish?: (wishId: string) => void
   onDeleteError?: (wishId: string) => void
   onEditWish?: (wish: TWishCard) => void
+  // Owner-only: pin a wish as a favourite (priority 'high') or put it back to normal.
+  onToggleFavorite?: (wishId: string, favorite: boolean) => void
   userId?: string
   // Called when a signed-out guest taps Reserve, so the page can ask them to log in.
   onRequireLogin?: () => void

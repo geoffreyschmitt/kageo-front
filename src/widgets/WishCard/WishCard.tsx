@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useId, useRef } from 'react'
 
 import Image from 'next/image'
 
-import {useTranslations} from 'next-intl'
+import {useLocale, useTranslations} from 'next-intl'
 
 import {GiftPotSection} from "@/widgets/GiftPotSection";
+import {hidesGuestState, resolveVisibleStatus} from '@/widgets/WishCard/visibleStatus';
 import {TWishCard} from '@/widgets/WishCard/WishCard.types';
+
 
 import {CancelReservationButton} from "@/features/cancelReservation";
 import {DeleteWishButton} from "@/features/DeleteWish";
@@ -15,39 +17,19 @@ import {MarkPurchasedButton} from "@/features/markPurchasedWish";
 import {RemovePurchasedButton} from "@/features/removePurchasedWish";
 import {ReserveButton} from "@/features/reserveWish";
 
+import {formatVersionPrice} from '@/entities/wish';
+
 import {eventBus} from "@/shared/eventBus";
 
 
 import styles from './WishCard.module.css'
 
-const getPriorityClass = (priority) => {
-    switch (priority) {
-        case 'high':
-            return styles['wish-card__priority--high']
-        case 'medium':
-            return styles['wish-card__priority--medium']
-        case 'low':
-            return styles['wish-card__priority--low']
-        default:
-            return styles['wish-card__priority--medium']
-    }
-}
-
-const getStatusClass = (status) => {
-    switch (status) {
-        case 'purchased':
-            return styles['wish-card__status--purchased']
-        case 'reserved':
-            return styles['wish-card__status--reserved']
-        case 'proposed':
-            return styles['wish-card__status--proposed']
-        case 'funded':
-            return styles['wish-card__status--funded']
-        case 'wanted':
-            return styles['wish-card__status--wanted']
-        default:
-            return styles['wish-card__status--wanted']
-    }
+const STATUS_CLASS = {
+    purchased: styles['wish-card__status--purchased'],
+    reserved: styles['wish-card__status--reserved'],
+    proposed: styles['wish-card__status--proposed'],
+    funded: styles['wish-card__status--funded'],
+    wanted: styles['wish-card__status--wanted'],
 }
 
 export const WishCard = ({
@@ -82,6 +64,7 @@ export const WishCard = ({
     onDeleteWish,
     onDeleteError,
     onEditWish,
+    onToggleFavorite,
     userId,
     onRequireLogin,
     giftPot,
@@ -96,21 +79,29 @@ export const WishCard = ({
     ownerName
 }: TWishCard) => {
     const t = useTranslations('wishCard')
+    const locale = useLocale()
     const tComments = useTranslations('comments')
     const [imgError, setImgError] = useState(false)
     const [descExpanded, setDescExpanded] = useState(false)
     const [descOverflows, setDescOverflows] = useState(false)
     const descRef = useRef<HTMLParagraphElement>(null)
+    const descId = useId()
 
+    // Re-measure on resize, font load and locale change: the clamp depends on the rendered width.
     useEffect(() => {
         const el = descRef.current
-        if (el) setDescOverflows(el.scrollHeight > el.clientHeight)
-    }, [description])
+        if (!el) return
+        const measure = () => setDescOverflows(el.scrollHeight > el.clientHeight)
+        measure()
+        const observer = new ResizeObserver(measure)
+        observer.observe(el)
+        return () => observer.disconnect()
+    }, [description, locale])
 
-    const visibleStatus =
-        showOwnerAction && (status === 'reserved' || status === 'purchased' || status === 'funded')
-            ? 'wanted'
-            : status
+    // The owner never sees reservation state on a live list; an archived list reveals it.
+    // Decided from isOwner/isHistory so it can't drift from the action flags callers pass.
+    const hideGuestState = hidesGuestState({isOwner, isHistory})
+    const visibleStatus = resolveVisibleStatus({status, isOwner, isHistory})
 
     const giftPotActive = giftPot != null
     const noop = () => {}
@@ -119,84 +110,89 @@ export const WishCard = ({
     // renders as an empty bordered strip above the gift pot — a double divider.
     const hasGuestActions =
         showGuestAction &&
-        ((!giftPotActive && (status === 'wanted' || status === 'proposed') && (!!userId || !!purchaseUrl || !!onRequireLogin)) ||
+        ((!giftPotActive && (status === 'wanted' || status === 'proposed') && (!!userId || !!onRequireLogin)) ||
             (status === 'reserved' && reservedBy === userId) ||
             (status === 'purchased' && purchasedBy === userId))
     const hasActionsRow = hasGuestActions || showOwnerAction
 
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
-    const priorityLabel = t(`priority${cap(priority)}`)
     const statusLabel = t(`status${cap(visibleStatus)}`)
+    // Reserve first, then shop: the link only appears for the person who reserved, so two
+    // cousins can't both buy the same gift.
+    const showPurchaseLink = !!purchaseUrl && !!userId && status === 'reserved' && reservedBy === userId
 
     return (
-        <div className={`${styles['wish-card']} ${visibleStatus === 'purchased' ? styles['wish-card--purchased'] : ''} ${visibleStatus === 'reserved' ? styles['wish-card--reserved'] : ''} ${priority === 'high' && visibleStatus !== 'purchased' ? styles['wish-card--high-priority'] : ''}`}
+        <div className={`${styles['wish-card']} ${visibleStatus === 'purchased' ? styles['wish-card--purchased'] : ''}`}
              data-id={id}>
             <div className={styles['wish-card__imageContainer']}>
                 {imageUrl && !imgError ? (
                     <Image
                         src={imageUrl}
-                        alt={name}
-                        width={200}
-                        height={200}
+                        alt=""
+                        width={640}
+                        height={520}
+                        sizes="(max-width: 768px) 100vw, 420px"
                         className={styles['wish-card__image']}
-                        placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YyZWRlNSIvPjwvc3ZnPg=="
                         onError={() => setImgError(true)}
                     />
                 ) : (
-                    <div className={styles['wish-card__imagePlaceholder']}>
+                    <div className={styles['wish-card__imagePlaceholder']} aria-hidden="true">
                         <span className={styles['wish-card__imagePlaceholderInitial']}>
                             {name.charAt(0).toUpperCase()}
                         </span>
-                        <svg className={styles['wish-card__imagePlaceholderDecor']} viewBox="0 0 200 200" fill="none" aria-hidden="true">
-                            <path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/>
-                            <path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/>
-                            <path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/>
-                            <circle cx="100" cy="55" r="5" fill="#6e3c0c" opacity="0.1"/>
-                            <circle cx="72" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
-                            <circle cx="128" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
-                        </svg>
                     </div>
                 )}
-                {!showOwnerAction && <div className={`${styles['wish-card__status']} ${getStatusClass(visibleStatus)}`}>{statusLabel}</div>}
-                <div className={`${styles['wish-card__priority']} ${getPriorityClass(priority)}`}>
-                    {priority === 'high' && (
-                        <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M8 0l2.35 4.76 5.25.77-3.8 3.7.9 5.24L8 12.18l-4.7 2.29.9-5.24-3.8-3.7 5.25-.77z"/>
+                {showOwnerAction && onToggleFavorite && (
+                    <button
+                        type="button"
+                        className={`${styles['wish-card__favorite']} ${priority === 'high' ? styles['wish-card__favorite--on'] : ''}`}
+                        aria-pressed={priority === 'high'}
+                        aria-label={priority === 'high' ? t('favoriteRemove', {name}) : t('favoriteAdd', {name})}
+                        onClick={() => onToggleFavorite(id, priority !== 'high')}
+                    >
+                        <svg width="20" height="20" viewBox="0 0 16 16" fill={priority === 'high' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
                         </svg>
-                    )}
-                    {priorityLabel}
-                </div>
+                    </button>
+                )}
+                {!showOwnerAction && <div className={`${styles['wish-card__status']} ${STATUS_CLASS[visibleStatus] ?? STATUS_CLASS.wanted}`}>{statusLabel}</div>}
             </div>
 
             <div className={styles['wish-card__content']}>
                 <div className={styles['wish-card__header']}>
                     <h3 className={styles['wish-card__title']}>{name}</h3>
-                    <div className={styles['wish-card__price']}>
-                        {currency}
-                        {price.toFixed(2)}
-                    </div>
+                    {price > 0 && (
+                        <div className={styles['wish-card__price']}>
+                            {formatVersionPrice(price, currency, locale)}
+                        </div>
+                    )}
                 </div>
 
-                {status === 'reserved' && !showOwnerAction && (
-                    <div className={styles['wish-card__reservedBanner']}>
-                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                {status === 'reserved' && !hideGuestState && (
+                    <p className={styles['wish-card__reservedLine']}>
+                        <svg width="14" height="14" viewBox="0 0 13 13" fill="none" aria-hidden="true">
                             <rect x="2" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
                             <path d="M4 5.5V3.5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
                         </svg>
-                        <span>{reservedBy === userId ? t('youPlanningToGift') : t('someonePlanningToGift')}</span>
-                    </div>
+                        {reservedBy === userId
+                            ? t('reservedByYou')
+                            : t('reservedBy', {name: reservedByName ?? t('someone')})}
+                    </p>
                 )}
 
                 {description && (
                     <p
                         ref={descRef}
+                        id={descId}
                         className={`${styles['wish-card__description']} ${descExpanded ? styles['wish-card__description--expanded'] : ''}`}
                     >{description}</p>
                 )}
                 {description && (descOverflows || descExpanded) && (
                     <button
+                        type="button"
                         className={styles['wish-card__desc-toggle']}
+                        aria-expanded={descExpanded}
+                        aria-controls={descId}
                         onClick={() => setDescExpanded(v => !v)}
                     >
                         {descExpanded ? t('showLess') : t('showMore')}
@@ -212,14 +208,15 @@ export const WishCard = ({
 
                 <div className={styles['wish-card__meta']}>
                     <span className={styles['wish-card__date']}>{t('added', {date: addedDate})}</span>
-                    {!showOwnerAction && status === 'reserved' && reservedBy && (
-                        <span className={styles['wish-card__reservedBy']}>
-                            {reservedBy === userId
-                                ? t('reservedByYou')
-                                : t('reservedBy', {name: reservedByName ?? t('someone')})}
+                    {priority === 'high' && (
+                        <span className={styles['wish-card__priority']}>
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
+                            </svg>
+                            {t('priorityHighBadge')}
                         </span>
                     )}
-                    {!showOwnerAction && status === 'purchased' && purchasedBy && (
+                    {!hideGuestState && status === 'purchased' && purchasedBy && (
                         <span className={styles['wish-card__purchasedBy']}>
                             {purchasedBy === userId
                                 ? t('purchasedByYou')
@@ -260,18 +257,22 @@ export const WishCard = ({
                                 <ReserveButton wishId={id} userId="" onRequireLogin={onRequireLogin}/>
                             )}
 
+                            {!giftPotActive && (status === 'wanted' || status === 'proposed') && !userId && onRequireLogin && (
+                                <p className={styles['wish-card__reserveHint']}>{t('reserveHint')}</p>
+                            )}
+
                             {status === 'reserved' && reservedBy === userId && (
                                 <CancelReservationButton wishId={id} onCancel={onCancelReservation} onError={onCancelError}/>
                             )}
 
-                            {!giftPotActive && purchaseUrl && (status === 'wanted' || status === 'proposed') && (
+                            {showPurchaseLink && (
                                 <a
                                     href={purchaseUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`${styles['wish-card__button']} ${styles['wish-card__button--primary']}`}
+                                    className={`${styles['wish-card__button']} ${styles['wish-card__button--ghost']}`}
                                 >
-                                    {t('buyNow')}
+                                    {t('viewInShop')}
                                 </a>
                             )}
 
