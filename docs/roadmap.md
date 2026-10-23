@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated 2026-10-22. Edit freely; this is a starting point, not a commitment. Product context (purpose, persona, freemium principles) is in `docs/product.md`.
+Updated 2026-10-23. Edit freely; this is a starting point, not a commitment. Product context (purpose, persona, freemium principles) is in `docs/product.md`.
 
 Legend: **[B]** blocker for real users · **[P]** production readiness · **[Bug]** known defect · items without a tag are improvements.
 
@@ -19,8 +19,9 @@ Success test: the creators' own circle uses Kageo for one real event. No new fea
    - Data export omits the user’s pledges, comments and reservations on other people’s lists; decide whether a data-access request needs them (see `docs/decisions.md`).
    - ~~Minor~~ fixed 2026-10-22: `placeholder.svg` lived in `src/public/` (404 on every list without a cover and on the features page); invalid SVG `rx="6 0 0 6"` on the empty-state illustration; the wrong checklist item 5 in the gift-pot spec.
 3. ~~**[B] Send invite emails** via Resend.~~ Shipped 2026-10-23 (see Done). Still needs your part outside the repo: a verified Resend sender domain, then `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in Vercel (Preview and Production) and `.env.local`; the real-delivery check on a phone waits for that.
+   - **Domain: `kageo.app`** (chosen 2026-10-23; `kageo.com` and `kageo.fr` are taken). Not registered yet. To do: register it (decide with Kevin who holds the account), add it in Resend and publish the SPF/DKIM records at the DNS host (Cloudflare: `send`/`rsend` CNAMEs set to DNS only), verify, set `RESEND_FROM_EMAIL="Kageo <invites@kageo.app>"`, then add `kageo.app` under Vercel Domains and update `NEXTAUTH_URL` and the Google OAuth redirect URIs. Until then invites only reach the Resend account owner's address (sender `onboarding@resend.dev`), which is enough to test.
 4. **[B] Forgot / reset password by email.** Today a user who forgets their password is locked out. Uses the same Resend pipeline as item 3.
-5. **[P] Production environment check.** Create the production KV database (none exists yet; the old one was archived), connected to Production only. Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
+5. **[P] Production environment check.** Create the production KV database (none exists yet; the old one was archived), connected to Production only. Until then Production temporarily shares `kageo-dev` (since 2026-10-23); move the data over before real users sign up. Confirm `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, Google OAuth redirect URIs and Resend sender-domain verification in the Vercel dashboard (checklist in `docs/runbook.md`).
 6. **[P] Resolve the `(verify)` items in `docs/runbook.md`**: Git-deploy behaviour, and whether the KV plan has its own backups.
 
 ## 2. Open — beyond the family
