@@ -1,6 +1,6 @@
 /* ============================================
    RESERVE BUTTON — Garden Party
-   #4e3278 on #f0ebf8   7.8:1 ✓ (reserved state)
+   white on sage #3f6845 6.4:1 ✓ (Sage Ribbon, the single action colour)
    ============================================ */
 
 .reserved-button {
@@ -8,23 +8,28 @@
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.2px;
-    padding: 7px 14px;
+    padding: 9px 22px;
     border-radius: 100px;
-    border: 1px solid var(--border-default);
+    border: 1px solid var(--accent);
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
     display: inline-block;
     text-align: center;
-    background: var(--status-reserved-bg);
-    color: var(--status-reserved-fg);
+    background: var(--accent);
+    color: var(--accent-contrast);
 }
 
 .reserved-button:hover:not(:disabled) {
-    background: var(--status-reserved-bg);
-    border-color: var(--border-strong);
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
     transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(78, 50, 120, 0.2);
+    box-shadow: 0 3px 10px rgba(63, 104, 69, 0.25);
+}
+
+.reserved-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .reserved-button:disabled {
