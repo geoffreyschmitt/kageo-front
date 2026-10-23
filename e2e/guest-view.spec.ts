@@ -35,7 +35,7 @@ test('a guest who logs in from the shared list can reserve straight away', async
     const context = await browser.newContext()
     const email = `guest-${Date.now()}@e2e.test`
     const register = await context.request.post('/api/auth/register', {
-        data: { name: 'Gus', email, password: 'e2e-password-1' },
+        data: { name: 'Gus', email, password: 'e2e-password-1', acceptTerms: true },
     })
     expect(register.status()).toBe(201)
 

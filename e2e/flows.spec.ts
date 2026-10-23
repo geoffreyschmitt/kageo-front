@@ -14,6 +14,7 @@ test.describe('accounts', () => {
         await page.getByLabel('Name').fill('Una')
         await page.getByLabel('Email').fill(email)
         await page.getByLabel('Password').fill('e2e-password-1')
+        await page.getByLabel(/I accept the terms of use/).check()
         await page.getByRole('button', { name: 'Sign Up' }).click()
         await expect(page.getByRole('banner').getByText('Hello, Una')).toBeVisible()
 
@@ -29,6 +30,34 @@ test.describe('accounts', () => {
         await page.getByLabel('Password').fill('e2e-password-1')
         await page.getByRole('button', { name: 'Login' }).last().click()
         await expect(page.getByRole('banner').getByText('Hello, Una')).toBeVisible()
+    })
+
+    test('sign-up needs the terms accepted, and the legal pages are linked', async ({ page, request }) => {
+        await page.goto('/en')
+        await page.getByRole('button', { name: 'Login' }).first().click()
+        await page.getByRole('button', { name: 'Sign up' }).click()
+
+        const terms = page.getByLabel(/I accept the terms of use/)
+        await expect(terms).not.toBeChecked()
+        await expect(page.getByRole('button', { name: 'Continue with Google' })).toBeDisabled()
+        await terms.check()
+        await expect(page.getByRole('button', { name: 'Continue with Google' })).toBeEnabled()
+
+        const refused = await request.post('/api/auth/register', {
+            data: { name: 'No', email: `no-${Date.now()}@e2e.test`, password: 'e2e-password-1' },
+        })
+        expect(refused.status()).toBe(400)
+
+        for (const [link, heading] of [
+            ['Privacy', 'Privacy policy'],
+            ['Terms', 'Terms of use'],
+            ['Cookies', 'Cookie policy'],
+            ['Legal notice', 'Legal notice'],
+        ]) {
+            await page.goto('/en')
+            await page.getByRole('contentinfo').getByRole('link', { name: link }).click()
+            await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
+        }
     })
 
     test('deleting the account ends the session and the credentials stop working', async ({ request }) => {

@@ -11,7 +11,7 @@ export type TUser = { name: string; email: string; password: string; id: string 
 // credentials endpoint, so the browser context holding it is logged in on its next page load.
 export const createUser = async (request: APIRequestContext, name: string): Promise<TUser> => {
     const email = `${name.toLowerCase()}-${unique()}@e2e.test`
-    const register = await request.post('/api/auth/register', { data: { name, email, password: PASSWORD } })
+    const register = await request.post('/api/auth/register', { data: { name, email, password: PASSWORD, acceptTerms: true } })
     expect(register.status()).toBe(201)
     const { user } = (await register.json()) as { user: { id: string } }
 

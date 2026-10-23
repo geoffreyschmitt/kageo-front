@@ -31,7 +31,9 @@
     "loginLink": "Login",
     "hello": "Hello, {name}",
     "logout": "Logout",
-    "or": "or"
+    "or": "or",
+    "acceptTerms": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
+    "googleNotice": "By continuing with Google you accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>."
   },
   "landing": {
     "heroTitle": "Everyone gets a gift they'll love.",
@@ -594,7 +596,7 @@
   },
   "privacy": {
     "title": "Privacy policy",
-    "updated": "Last updated: 8 October 2026",
+    "updated": "Last updated: 23 October 2026",
     "draftNotice": "This policy is a draft that has not yet been reviewed by a lawyer.",
     "contactLabel": "Contact",
     "sections": [
@@ -613,7 +615,17 @@
           "Your account: name, email address and a password hash (we never store your password itself). If you sign in with Google, we receive your name and email from Google and store no password.",
           "Your date of birth, only if you choose to add it. It is visible only to you.",
           "What you create: wishlists, wishes, comments, and the email addresses you invite.",
-          "What you do on other people's lists: reservations, purchases, pledges to pots, pots you organise, comments and suggested wishes."
+          "What you do on other people's lists: reservations, purchases, pledges to pots, pots you organise, comments and suggested wishes.",
+          "The date you accepted these terms, recorded at sign-up.",
+          "Short-lived technical counters that limit abuse (sign-in attempts, invitations, writes), keyed by your IP address or email address. They expire on their own, within a day."
+        ]
+      },
+      {
+        "title": "Why we may use your data",
+        "items": [
+          "To provide the service you asked for (your account, your lists, reservations, pots, invitations): this is the contract formed by the terms of use.",
+          "To keep Kageo secure and prevent abuse (rate limits, sign-in protection): our legitimate interest.",
+          "For what is optional and yours to decide (your date of birth, your public profile, signing in with Google): your consent, which you can withdraw at any time."
         ]
       },
       {
@@ -621,7 +633,7 @@
         "items": [
           "We do not handle payments. A pot only records pledges; the money moves outside Kageo.",
           "We use no advertising, no analytics and no tracking cookies, and we do not sell or share your data for marketing.",
-          "Kageo does not send emails yet. If it starts to (for example invitations), this policy will say so."
+          "We send no marketing email. Kageo only emails someone when you invite them to a list: they get one message about that list, sent in your name."
         ]
       },
       {
@@ -636,7 +648,7 @@
       {
         "title": "Cookies and local storage",
         "paragraphs": [
-          "Kageo sets only what it needs to run, so there is no cookie banner:"
+          "Kageo sets only what it needs to run, so there is no cookie banner. The cookie policy gives the full list:"
         ],
         "items": [
           "Sign-in cookies (session and security tokens) keep you logged in.",
@@ -647,7 +659,8 @@
       {
         "title": "Service providers",
         "paragraphs": [
-          "Your data is processed by the services that run Kageo: Vercel (hosting and the Redis-compatible database that stores everything) and, if you choose it, Google (sign-in). When you add an image link to a wish, visitors' browsers load that image from its own website."
+          "Your data is processed by the services that run Kageo: Vercel (hosting), Upstash (the Redis-compatible database that stores everything, provided through Vercel), Resend (sending the invitation emails; it receives the recipient’s address and the message) and, if you choose it, Google (sign-in). When you add an image link to a wish, visitors’ browsers load that image from its own website.",
+          "Some of these providers are based in or operate from outside the European Union, notably in the United States. Where that is the case, the transfer relies on the safeguards the law provides (such as the EU–US Data Privacy Framework or standard contractual clauses)."
         ]
       },
       {
@@ -655,13 +668,20 @@
         "paragraphs": [
           "We keep your data until you delete it. Deleting your account removes your wishlists and wishes, your comments, pledges, reservations and invitations on other people's lists, and your account itself.",
           "Two details: a gift you marked as purchased stays marked as purchased (only your identity is removed), so the owner is not told it is still unbought. And a pot you organise passes to its largest remaining pledger, who then sees the pledges; it is deleted only if nobody else pledged.",
-          "Backups, if any are made, may keep deleted data until they are discarded."
+          "Backups, if any are made, may keep deleted data until they are discarded.",
+          "Abuse counters expire automatically. Invitations you sent are removed with your account."
         ]
       },
       {
         "title": "Your rights",
         "paragraphs": [
-          "You can see and correct your details on your profile page, download all your data as a file from there, and delete your account at any time. You can also contact us to exercise your rights under the GDPR (access, rectification, erasure, portability, objection), or complain to your data-protection authority (in France, the CNIL)."
+          "You can see and correct your details on your profile page, download all your data as a file from there, and delete your account at any time. You can also contact us to exercise your rights under the GDPR (access, rectification, erasure, portability, objection), or complain to your data-protection authority (in France, the CNIL). We answer within one month. You can also ask us to limit the processing of your data."
+        ]
+      },
+      {
+        "title": "Age",
+        "paragraphs": [
+          "Kageo is for people aged 15 and over, or younger with a parent’s agreement."
         ]
       },
       {
@@ -673,7 +693,10 @@
     ]
   },
   "footer": {
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookies": "Cookies",
+    "legalNotice": "Legal notice"
   },
   "installPrompt": {
     "title": "Install Kageo",
@@ -784,5 +807,145 @@
       "load": "Could not load your ideas.",
       "generic": "Something went wrong. Please try again."
     }
+  },
+  "terms": {
+    "title": "Terms of use",
+    "updated": "Last updated: 23 October 2026",
+    "draftNotice": "These terms are a draft that has not yet been reviewed by a lawyer.",
+    "contactLabel": "Contact",
+    "sections": [
+      {
+        "title": "About Kageo",
+        "paragraphs": [
+          "Kageo is a free service that lets you keep wishlists, share them, and coordinate gifts with the people you share them with: reserve a gift, mark it as bought, suggest a wish, pledge to a pot, comment. By creating an account or signing in with Google you accept these terms and the privacy policy."
+        ]
+      },
+      {
+        "title": "Your account",
+        "items": [
+          "You must be at least 15 years old, or have the agreement of a parent or guardian.",
+          "Give accurate details and keep your password to yourself. You are responsible for what happens under your account.",
+          "You can delete your account at any time from your profile; see the privacy policy for what is removed."
+        ]
+      },
+      {
+        "title": "Viewing and acting",
+        "paragraphs": [
+          "Anyone with the link can view a shared wishlist. Reserving a gift, commenting, pledging to a pot or suggesting a wish needs an account, and on a private list an invitation to the email address you sign in with."
+        ]
+      },
+      {
+        "title": "The surprise",
+        "paragraphs": [
+          "Kageo keeps gifts a surprise: the owner of a wishlist never sees its reservations, pots or the comments guests leave. Please do not try to get around this, and do not share what you see as a guest with the list owner."
+        ]
+      },
+      {
+        "title": "Pots",
+        "paragraphs": [
+          "A pot only records what people intend to give. Kageo does not collect, hold or transfer money, and a pledge is not a binding commitment. Settling up happens between the people involved, outside Kageo, and Kageo is not a party to it."
+        ]
+      },
+      {
+        "title": "Your content",
+        "paragraphs": [
+          "You keep ownership of what you write and add (lists, wishes, comments, image links). You allow Kageo to store it and show it to the people you chose so that the service works. You promise that it is yours to share and that it is not unlawful, hateful, harassing, misleading, or an infringement of anyone’s rights. Product details imported from a web link come from that website; check them before you rely on them."
+        ]
+      },
+      {
+        "title": "Acceptable use",
+        "items": [
+          "No spam, no fake accounts or reservations, no attempt to break, overload or scrape the service, and no use to harass someone.",
+          "Invite people you know, and only to lists you want them to see. Each invitation sends them an email in your name."
+        ]
+      },
+      {
+        "title": "Availability",
+        "paragraphs": [
+          "Kageo is provided free of charge, as it is. We do our best to keep it running and your data safe, but we cannot promise it will always be available or free of errors. Check important dates and gift details yourself."
+        ]
+      },
+      {
+        "title": "Liability",
+        "paragraphs": [
+          "To the extent the law allows, Kageo is not liable for indirect damage, for a gift that is bought twice or not at all, or for what users write. Nothing here limits a liability that cannot be limited by law."
+        ]
+      },
+      {
+        "title": "Suspension",
+        "paragraphs": [
+          "We may remove content or suspend an account that breaks these terms or puts others or the service at risk, and we will say why when we can."
+        ]
+      },
+      {
+        "title": "Changes to Kageo and to these terms",
+        "paragraphs": [
+          "Kageo will evolve, and paid options may be added later. Lists stay unlimited and guests are never asked to pay. If these terms change in a way that matters, we will update the date above and tell you in the app, and you can delete your account if you do not agree."
+        ]
+      },
+      {
+        "title": "Law and disputes",
+        "paragraphs": [
+          "These terms are governed by French law. If you have a problem, write to us first so we can fix it. If you are a consumer you may also use a consumer mediator and the courts of your place of residence."
+        ]
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Cookie policy",
+    "updated": "Last updated: 23 October 2026",
+    "draftNotice": "This policy is a draft that has not yet been reviewed by a lawyer.",
+    "contactLabel": "Contact",
+    "sections": [
+      {
+        "title": "No banner, on purpose",
+        "paragraphs": [
+          "Kageo only sets cookies and local-storage entries that are strictly necessary to run the service or to remember a choice you made. These do not need your consent, so there is no cookie banner. We use no advertising, no analytics and no tracking, and no third-party cookies of our own."
+        ]
+      },
+      {
+        "title": "Cookies",
+        "items": [
+          "next-auth.session-token: keeps you signed in. Lasts up to 30 days.",
+          "next-auth.csrf-token and next-auth.callback-url: protect the sign-in form and remember the page to return to after signing in. They last for your visit (session cookies).",
+          "NEXT_LOCALE: remembers your language. Lasts up to one year.",
+          "kageo-theme: remembers light or dark mode, if you choose one. Lasts one year."
+        ]
+      },
+      {
+        "title": "Local storage",
+        "items": [
+          "kageo-theme: the same theme choice, kept in your browser.",
+          "kageo:installPromptDismissedAt: remembers that you closed the “install the app” banner."
+        ]
+      },
+      {
+        "title": "Google sign-in",
+        "paragraphs": [
+          "If you choose “Continue with Google”, you are sent to Google, which sets its own cookies under its own policy. Kageo only receives your name and email address back."
+        ]
+      },
+      {
+        "title": "Your choices",
+        "paragraphs": [
+          "You can delete or block cookies in your browser settings. Kageo will still show public lists, but you will not be able to stay signed in. If we ever add analytics or other optional cookies, we will ask for your consent first and update this page."
+        ]
+      }
+    ]
+  },
+  "legalNotice": {
+    "title": "Legal notice",
+    "updated": "Last updated: 23 October 2026",
+    "draftNotice": "This notice is incomplete: the publisher details are still to be filled in.",
+    "toComplete": "(to be completed)",
+    "publisherTitle": "Publisher",
+    "publisherText": "Kageo (kageo.app) is published by {publisher}, a private individual acting in a non-professional capacity.",
+    "publisherContact": "Contact: {contact}",
+    "directorTitle": "Director of publication",
+    "directorText": "{publisher}",
+    "hostTitle": "Hosting",
+    "hostText": "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, United States (vercel.com).",
+    "dataTitle": "Personal data",
+    "dataText": "See the privacy policy for what we collect, why, and how to exercise your rights."
   }
 }

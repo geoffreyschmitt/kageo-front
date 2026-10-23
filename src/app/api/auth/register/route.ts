@@ -12,10 +12,14 @@ export async function POST(request: NextRequest) {
 
     try {
         const body = await request.json()
-        const { email, password, name } = body
+        const { email, password, name, acceptTerms } = body
 
         if (!email || !password || !name) {
             return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
+        }
+
+        if (acceptTerms !== true) {
+            return NextResponse.json({ message: 'You must accept the terms and the privacy policy' }, { status: 400 })
         }
 
         if (password.length < 6) {
@@ -43,6 +47,7 @@ export async function POST(request: NextRequest) {
             password: hashedPassword,
             provider: 'credentials',
             createdAt: new Date().toISOString(),
+            termsAcceptedAt: new Date().toISOString(),
         }
 
         await kv.multi().set(`user:${email.toLowerCase()}`, user).set(`user:id:${userId}`, email.toLowerCase()).exec()

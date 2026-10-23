@@ -20,7 +20,7 @@ const register = (ip: string, n: number) =>
         new NextRequest('http://localhost/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ip },
-            body: JSON.stringify({ email: `u${n}@x.io`, password: 'secret1', name: 'U' }),
+            body: JSON.stringify({ email: `u${n}@x.io`, password: 'secret1', name: 'U', acceptTerms: true }),
         }),
     )
 

@@ -643,7 +643,44 @@
     margin-bottom: 20px;
 }
 
-.google__button:hover {
+.google__button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.terms__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-family: var(--h-font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--h-text-2);
+}
+
+.terms__check input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--h-sage);
+}
+
+.terms__check a,
+.terms__note a {
+    color: var(--h-sage);
+}
+
+.terms__note {
+    margin: -8px 0 16px;
+    text-align: center;
+    font-family: var(--h-font-sans);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--h-text-2);
+}
+
+.google__button:hover:not(:disabled) {
     background: var(--h-surface-2);
     border-color: var(--border-strong);
     box-shadow: 0 2px 8px rgba(60, 45, 25, 0.08);

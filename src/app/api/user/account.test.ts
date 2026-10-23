@@ -217,13 +217,15 @@ describe('GET /api/user/stats', () => {
 })
 
 describe('POST /api/auth/register', () => {
-    const valid = { email: 'New@X.io', password: 'secret1', name: 'New' }
+    const valid = { email: 'New@X.io', password: 'secret1', name: 'New', acceptTerms: true }
 
     it.each([
         [{ ...valid, email: '' }, 'missing email'],
         [{ ...valid, name: '' }, 'missing name'],
         [{ ...valid, password: '12345' }, 'short password'],
         [{ ...valid, email: 'not-an-email' }, 'bad email'],
+        [{ ...valid, acceptTerms: false }, 'terms not accepted'],
+        [{ ...valid, acceptTerms: undefined }, 'terms missing'],
     ])('400 on %j (%s)', async (body) => {
         expect((await register(jsonRequest(body))).status).toBe(400)
         expect(fake.keys()).toEqual([])
@@ -240,6 +242,12 @@ describe('POST /api/auth/register', () => {
         expect(stored.password).not.toBe('secret1')
         expect(await bcrypt.compare('secret1', stored.password)).toBe(true)
         expect(await fake.get(`user:id:${stored.id}`)).toBe('new@x.io')
+    })
+
+    it('records when the terms were accepted', async () => {
+        await register(jsonRequest(valid))
+        const stored = (await fake.get('user:new@x.io')) as { termsAcceptedAt: string }
+        expect(Number.isNaN(Date.parse(stored.termsAcceptedAt))).toBe(false)
     })
 
     it('409 when the email already exists, case-insensitively', async () => {

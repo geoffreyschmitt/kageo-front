@@ -53,7 +53,7 @@ All values are JSON unless noted. IDs are UUIDs.
 
 | Key | Type | Content |
 |---|---|---|
-| `user:{email}` | value | `{id, email, name, password(hash), provider, createdAt, isPublic?, birthdate?}` (email lowercased) |
+| `user:{email}` | value | `{id, email, name, password(hash), provider, createdAt, termsAcceptedAt?, isPublic?, birthdate?}` (email lowercased) |
 | `user:id:{id}` | value | email (reverse lookup) |
 | `user:{id}:wishlists` | set | wishlist ids owned by the user |
 | `email:{email}:invitedWishlists` | set | wishlists an email was invited to (works before the invitee has an account) |

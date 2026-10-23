@@ -5,3 +5,4 @@ export * from './Logo';
 export * from './Panel';
 export * from './Tabs';
 export * from './Toast';
+export * from './LegalDocument';

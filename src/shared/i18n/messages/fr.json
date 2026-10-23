@@ -31,7 +31,9 @@
     "loginLink": "Se connecter",
     "hello": "Bonjour, {name}",
     "logout": "Déconnexion",
-    "or": "ou"
+    "or": "ou",
+    "acceptTerms": "J’accepte les <terms>conditions d’utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
+    "googleNotice": "En continuant avec Google, vous acceptez les <terms>conditions d’utilisation</terms> et la <privacy>politique de confidentialité</privacy>."
   },
   "landing": {
     "heroTitle": "Chacun reçoit un cadeau qui lui plaît vraiment.",
@@ -594,7 +596,7 @@
   },
   "privacy": {
     "title": "Politique de confidentialité",
-    "updated": "Dernière mise à jour : 8 octobre 2026",
+    "updated": "Dernière mise à jour : 23 octobre 2026",
     "draftNotice": "Cette politique est un brouillon qui n’a pas encore été relu par un juriste.",
     "contactLabel": "Contact",
     "sections": [
@@ -613,7 +615,17 @@
           "Votre compte : nom, adresse e-mail et empreinte du mot de passe (nous ne conservons jamais le mot de passe lui-même). Si vous vous connectez avec Google, nous recevons votre nom et votre e-mail de Google et ne conservons aucun mot de passe.",
           "Votre date de naissance, seulement si vous choisissez de l’ajouter. Elle n’est visible que de vous.",
           "Ce que vous créez : listes, envies, commentaires, et les adresses e-mail que vous invitez.",
-          "Ce que vous faites sur les listes des autres : réservations, achats, participations aux cagnottes, cagnottes que vous organisez, commentaires et suggestions d’envies."
+          "Ce que vous faites sur les listes des autres : réservations, achats, participations aux cagnottes, cagnottes que vous organisez, commentaires et suggestions d’envies.",
+          "La date à laquelle vous avez accepté les conditions, enregistrée à l’inscription.",
+          "De courts compteurs techniques qui limitent les abus (tentatives de connexion, invitations, écritures), associés à votre adresse IP ou e-mail. Ils expirent d’eux-mêmes, en un jour au plus."
+        ]
+      },
+      {
+        "title": "Pourquoi nous pouvons utiliser vos données",
+        "items": [
+          "Pour fournir le service que vous avez demandé (votre compte, vos listes, réservations, cagnottes, invitations) : c’est le contrat formé par les conditions d’utilisation.",
+          "Pour assurer la sécurité de Kageo et prévenir les abus (limites de fréquence, protection de la connexion) : notre intérêt légitime.",
+          "Pour ce qui est facultatif et vous appartient (votre date de naissance, votre profil public, la connexion avec Google) : votre consentement, que vous pouvez retirer à tout moment."
         ]
       },
       {
@@ -621,7 +633,7 @@
         "items": [
           "Nous ne gérons aucun paiement. Une cagnotte enregistre seulement des promesses de participation ; l’argent circule en dehors de Kageo.",
           "Nous n’utilisons ni publicité, ni outil d’analyse, ni cookie de suivi, et nous ne vendons ni ne partageons vos données à des fins commerciales.",
-          "Kageo n’envoie pas encore d’e-mails. S’il commence à le faire (par exemple pour les invitations), cette politique le précisera."
+          "Nous n’envoyons aucun e-mail promotionnel. Kageo n’envoie un e-mail à quelqu’un que lorsque vous l’invitez à une liste : il reçoit un seul message à ce sujet, envoyé en votre nom."
         ]
       },
       {
@@ -636,7 +648,7 @@
       {
         "title": "Cookies et stockage local",
         "paragraphs": [
-          "Kageo ne dépose que ce qui est nécessaire à son fonctionnement ; il n’y a donc pas de bandeau de cookies :"
+          "Kageo ne dépose que ce qui est nécessaire à son fonctionnement ; il n’y a donc pas de bandeau de cookies. La politique de cookies en donne la liste complète :"
         ],
         "items": [
           "Des cookies de connexion (session et jetons de sécurité) vous gardent connecté.",
@@ -647,7 +659,8 @@
       {
         "title": "Prestataires",
         "paragraphs": [
-          "Vos données sont traitées par les services qui font fonctionner Kageo : Vercel (hébergement et base de données compatible Redis qui stocke l’ensemble) et, si vous le choisissez, Google (connexion). Lorsque vous ajoutez le lien d’une image à une envie, le navigateur des visiteurs charge cette image depuis son propre site."
+          "Vos données sont traitées par les services qui font fonctionner Kageo : Vercel (hébergement), Upstash (la base de données compatible Redis qui stocke l’ensemble, fournie via Vercel), Resend (envoi des e-mails d’invitation ; il reçoit l’adresse du destinataire et le message) et, si vous le choisissez, Google (connexion). Lorsque vous ajoutez le lien d’une image à une envie, le navigateur des visiteurs charge cette image depuis son propre site.",
+          "Certains de ces prestataires sont établis ou opèrent hors de l’Union européenne, notamment aux États-Unis. Dans ce cas, le transfert s’appuie sur les garanties prévues par la loi (comme le cadre de protection des données UE–États-Unis ou les clauses contractuelles types)."
         ]
       },
       {
@@ -655,13 +668,20 @@
         "paragraphs": [
           "Nous conservons vos données jusqu’à ce que vous les supprimiez. Supprimer votre compte efface vos listes et envies, vos commentaires, participations, réservations et invitations sur les listes des autres, ainsi que le compte lui-même.",
           "Deux précisions : un cadeau que vous avez marqué comme acheté reste marqué comme acheté (seule votre identité est retirée), afin que le propriétaire ne croie pas qu’il reste à acheter. Et une cagnotte que vous organisez passe à la personne qui a promis le plus parmi les autres, qui voit alors les promesses ; elle n’est supprimée que si personne d’autre n’a participé.",
-          "Les sauvegardes éventuelles peuvent conserver des données supprimées jusqu’à leur élimination."
+          "Les sauvegardes éventuelles peuvent conserver des données supprimées jusqu’à leur élimination.",
+          "Les compteurs anti-abus expirent automatiquement. Les invitations que vous avez envoyées sont supprimées avec votre compte."
         ]
       },
       {
         "title": "Vos droits",
         "paragraphs": [
-          "Vous pouvez consulter et corriger vos informations sur votre page de profil, y télécharger toutes vos données sous forme de fichier, et supprimer votre compte à tout moment. Vous pouvez aussi nous contacter pour exercer vos droits au titre du RGPD (accès, rectification, effacement, portabilité, opposition), ou introduire une réclamation auprès de votre autorité de protection des données (en France, la CNIL)."
+          "Vous pouvez consulter et corriger vos informations sur votre page de profil, y télécharger toutes vos données sous forme de fichier, et supprimer votre compte à tout moment. Vous pouvez aussi nous contacter pour exercer vos droits au titre du RGPD (accès, rectification, effacement, portabilité, opposition), ou introduire une réclamation auprès de votre autorité de protection des données (en France, la CNIL). Nous répondons sous un mois. Vous pouvez aussi demander la limitation du traitement de vos données."
+        ]
+      },
+      {
+        "title": "Âge",
+        "paragraphs": [
+          "Kageo s’adresse aux personnes de 15 ans et plus, ou plus jeunes avec l’accord d’un parent."
         ]
       },
       {
@@ -673,7 +693,10 @@
     ]
   },
   "footer": {
-    "privacy": "Confidentialité"
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "cookies": "Cookies",
+    "legalNotice": "Mentions légales"
   },
   "installPrompt": {
     "title": "Installer Kageo",
@@ -784,5 +807,145 @@
       "load": "Impossible de charger vos idées.",
       "generic": "Une erreur est survenue. Veuillez réessayer."
     }
+  },
+  "terms": {
+    "title": "Conditions générales d’utilisation",
+    "updated": "Dernière mise à jour : 23 octobre 2026",
+    "draftNotice": "Ces conditions sont un brouillon qui n’a pas encore été relu par un juriste.",
+    "contactLabel": "Contact",
+    "sections": [
+      {
+        "title": "À propos de Kageo",
+        "paragraphs": [
+          "Kageo est un service gratuit qui vous permet de tenir des listes d’envies, de les partager et de coordonner les cadeaux avec les personnes concernées : réserver un cadeau, le marquer comme acheté, suggérer une envie, participer à une cagnotte, commenter. En créant un compte ou en vous connectant avec Google, vous acceptez ces conditions et la politique de confidentialité."
+        ]
+      },
+      {
+        "title": "Votre compte",
+        "items": [
+          "Vous devez avoir au moins 15 ans, ou l’accord d’un parent ou tuteur.",
+          "Donnez des informations exactes et gardez votre mot de passe pour vous. Vous êtes responsable de ce qui se passe avec votre compte.",
+          "Vous pouvez supprimer votre compte à tout moment depuis votre profil ; la politique de confidentialité détaille ce qui est effacé."
+        ]
+      },
+      {
+        "title": "Consulter et agir",
+        "paragraphs": [
+          "Toute personne ayant le lien peut consulter une liste partagée. Réserver un cadeau, commenter, participer à une cagnotte ou suggérer une envie demande un compte, et, sur une liste privée, une invitation à l’adresse e-mail avec laquelle vous vous connectez."
+        ]
+      },
+      {
+        "title": "La surprise",
+        "paragraphs": [
+          "Kageo garde les cadeaux secrets : le propriétaire d’une liste ne voit jamais ses réservations, ses cagnottes ni les commentaires laissés par les invités. Merci de ne pas chercher à contourner cela, et de ne pas révéler au propriétaire ce que vous voyez en tant qu’invité."
+        ]
+      },
+      {
+        "title": "Cagnottes",
+        "paragraphs": [
+          "Une cagnotte enregistre seulement ce que chacun a l’intention de donner. Kageo ne collecte, ne détient et ne transfère aucun argent, et une promesse de participation n’est pas un engagement ferme. Le règlement se fait entre les personnes concernées, en dehors de Kageo, qui n’y est pas partie."
+        ]
+      },
+      {
+        "title": "Votre contenu",
+        "paragraphs": [
+          "Vous restez propriétaire de ce que vous écrivez et ajoutez (listes, envies, commentaires, liens d’images). Vous autorisez Kageo à le conserver et à le montrer aux personnes que vous avez choisies, afin que le service fonctionne. Vous garantissez que vous pouvez le partager et qu’il n’est ni illégal, ni haineux, ni harcelant, ni trompeur, ni contraire aux droits de quiconque. Les informations d’un produit importées depuis un lien viennent de ce site ; vérifiez-les avant de vous y fier."
+        ]
+      },
+      {
+        "title": "Usage acceptable",
+        "items": [
+          "Pas de spam, de faux comptes ou de fausses réservations, pas de tentative de casser, surcharger ou aspirer le service, et pas d’usage pour harceler quelqu’un.",
+          "Invitez des personnes que vous connaissez, et seulement à des listes que vous voulez leur montrer. Chaque invitation leur envoie un e-mail en votre nom."
+        ]
+      },
+      {
+        "title": "Disponibilité",
+        "paragraphs": [
+          "Kageo est fourni gratuitement, en l’état. Nous faisons de notre mieux pour qu’il fonctionne et que vos données soient en sécurité, mais nous ne pouvons pas promettre qu’il sera toujours disponible ni sans erreur. Vérifiez vous-même les dates importantes et les détails des cadeaux."
+        ]
+      },
+      {
+        "title": "Responsabilité",
+        "paragraphs": [
+          "Dans la mesure permise par la loi, Kageo n’est pas responsable des dommages indirects, d’un cadeau acheté deux fois ou jamais, ni de ce que les utilisateurs écrivent. Rien ici ne limite une responsabilité que la loi ne permet pas de limiter."
+        ]
+      },
+      {
+        "title": "Suspension",
+        "paragraphs": [
+          "Nous pouvons retirer un contenu ou suspendre un compte qui enfreint ces conditions ou met en danger d’autres personnes ou le service, et nous en indiquerons la raison quand c’est possible."
+        ]
+      },
+      {
+        "title": "Évolution de Kageo et de ces conditions",
+        "paragraphs": [
+          "Kageo évoluera et des options payantes pourront être ajoutées plus tard. Les listes restent illimitées et les invités ne paient jamais. Si ces conditions changent d’une manière qui vous concerne, nous mettrons à jour la date ci-dessus et vous préviendrons dans l’application ; vous pouvez alors supprimer votre compte si vous n’êtes pas d’accord."
+        ]
+      },
+      {
+        "title": "Droit applicable et litiges",
+        "paragraphs": [
+          "Ces conditions sont régies par le droit français. En cas de problème, écrivez-nous d’abord pour que nous puissions le régler. Si vous êtes consommateur, vous pouvez aussi recourir à un médiateur de la consommation et aux tribunaux de votre lieu de résidence."
+        ]
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Politique de cookies",
+    "updated": "Dernière mise à jour : 23 octobre 2026",
+    "draftNotice": "Cette politique est un brouillon qui n’a pas encore été relu par un juriste.",
+    "contactLabel": "Contact",
+    "sections": [
+      {
+        "title": "Pas de bandeau, volontairement",
+        "paragraphs": [
+          "Kageo ne dépose que des cookies et des entrées de stockage local strictement nécessaires au fonctionnement du service ou à la mémorisation d’un choix que vous avez fait. Ils ne demandent pas votre consentement, donc il n’y a pas de bandeau de cookies. Nous n’utilisons ni publicité, ni outil d’analyse, ni suivi, et aucun cookie tiers de notre fait."
+        ]
+      },
+      {
+        "title": "Cookies",
+        "items": [
+          "next-auth.session-token : vous garde connecté. Dure jusqu’à 30 jours.",
+          "next-auth.csrf-token et next-auth.callback-url : protègent le formulaire de connexion et retiennent la page où revenir après la connexion. Ils durent le temps de votre visite (cookies de session).",
+          "NEXT_LOCALE : retient votre langue. Dure jusqu’à un an.",
+          "kageo-theme : retient le mode clair ou sombre, si vous en choisissez un. Dure un an."
+        ]
+      },
+      {
+        "title": "Stockage local",
+        "items": [
+          "kageo-theme : le même choix de thème, conservé dans votre navigateur.",
+          "kageo:installPromptDismissedAt : retient que vous avez fermé le bandeau « installer l’application »."
+        ]
+      },
+      {
+        "title": "Connexion avec Google",
+        "paragraphs": [
+          "Si vous choisissez « Continuer avec Google », vous êtes envoyé chez Google, qui dépose ses propres cookies selon sa propre politique. Kageo ne reçoit en retour que votre nom et votre adresse e-mail."
+        ]
+      },
+      {
+        "title": "Vos choix",
+        "paragraphs": [
+          "Vous pouvez supprimer ou bloquer les cookies dans les réglages de votre navigateur. Kageo affichera toujours les listes publiques, mais vous ne pourrez pas rester connecté. Si nous ajoutons un jour des outils d’analyse ou d’autres cookies facultatifs, nous demanderons d’abord votre consentement et mettrons cette page à jour."
+        ]
+      }
+    ]
+  },
+  "legalNotice": {
+    "title": "Mentions légales",
+    "updated": "Dernière mise à jour : 23 octobre 2026",
+    "draftNotice": "Ces mentions sont incomplètes : les informations sur l’éditeur restent à renseigner.",
+    "toComplete": "(à compléter)",
+    "publisherTitle": "Éditeur",
+    "publisherText": "Kageo (kageo.app) est édité par {publisher}, personne physique agissant à titre non professionnel.",
+    "publisherContact": "Contact : {contact}",
+    "directorTitle": "Directeur de la publication",
+    "directorText": "{publisher}",
+    "hostTitle": "Hébergement",
+    "hostText": "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis (vercel.com).",
+    "dataTitle": "Données personnelles",
+    "dataText": "Consultez la politique de confidentialité pour savoir ce que nous collectons, pourquoi, et comment exercer vos droits."
   }
 }

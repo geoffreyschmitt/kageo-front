@@ -16,6 +16,11 @@ import styles from './Header.module.css'
 export const Header = () => {
   const {data: session, status} = useSession()
   const t = useTranslations('auth')
+  const legalText = (key: 'acceptTerms' | 'googleNotice') =>
+    t.rich(key, {
+      terms: (chunks) => <Link href="/terms" target="_blank">{chunks}</Link>,
+      privacy: (chunks) => <Link href="/privacy" target="_blank">{chunks}</Link>,
+    })
   const tNav = useTranslations('nav')
   const pathname = usePathname()
   const router = useRouter()
@@ -27,6 +32,7 @@ export const Header = () => {
     password: '',
     name: ''
   })
+  const [acceptTerms, setAcceptTerms] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -88,7 +94,7 @@ export const Header = () => {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(formData)
+          body: JSON.stringify({...formData, acceptTerms})
         })
 
         if (res.ok) {
@@ -101,6 +107,7 @@ export const Header = () => {
           if (!result?.error) {
             setShowAuthModal(false)
             setFormData({email: '', password: '', name: ''})
+            setAcceptTerms(false)
             router.refresh()
           }
         } else if (res.status === 429) {
@@ -330,6 +337,18 @@ export const Header = () => {
                 />
               </div>
 
+              {!isLogin && (
+                <label className={styles.terms__check}>
+                  <input
+                    type="checkbox"
+                    checked={acceptTerms}
+                    onChange={(e) => setAcceptTerms(e.target.checked)}
+                    required
+                  />
+                  <span>{legalText('acceptTerms')}</span>
+                </label>
+              )}
+
               {error && <div className={styles.error__message}>{error}</div>}
 
               <button
@@ -347,6 +366,7 @@ export const Header = () => {
 
             <button
               onClick={handleGoogleSignIn}
+              disabled={!isLogin && !acceptTerms}
               className={styles.google__button}
             >
               <svg width="20" height="20" viewBox="0 0 24 24">
@@ -361,6 +381,7 @@ export const Header = () => {
               </svg>
               {t('continueWithGoogle')}
             </button>
+            {isLogin && <p className={styles.terms__note}>{legalText('googleNotice')}</p>}
 
             <div className={styles.auth__switch}>
               {isLogin ? t('noAccount') + ' ' : t('hasAccount') + ' '}
@@ -370,6 +391,7 @@ export const Header = () => {
                   setIsLogin(!isLogin)
                   setError('')
                   setFormData({email: '', password: '', name: ''})
+                  setAcceptTerms(false)
                 }}
                 className={styles.switch__button}
               >
