@@ -1,18 +1,22 @@
 import { kv } from "@vercel/kv"
 import { getServerSession } from "next-auth"
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 
 import DashboardPage from "@/views/dashboard/dashboard"
 
 import { authOptions } from "@/shared/config/authOptions"
-import { Link } from '@/shared/i18n/navigation'
+import { Bow, EnvelopeGlyph, ListGlyph, Logo } from "@/shared/ui"
 
+import { MockWish } from "./LandingMocks"
 import { LoginCta } from "./LoginCta"
 import pageStyles from "./page.module.css"
 
+// Sample data for the product pictures: a fixed date, so the page never claims a moment it did not happen.
+const DEMO_ADDED = Date.UTC(2026, 9, 12, 12)
+const DEMO_RESERVER = 'Marc'
+
 export default async function HomePage() {
     const session = await getServerSession(authOptions)
-    const t = await getTranslations('landing')
 
     if (session?.user?.id) {
         const wishlistIds = await kv.smembers<string[]>(`user:${session.user.id}:wishlists`)
@@ -32,6 +36,13 @@ export default async function HomePage() {
         )
     }
 
+    const t = await getTranslations('landing')
+    const locale = await getLocale()
+    const addedDate = new Date(DEMO_ADDED).toLocaleDateString(locale)
+    const cocotte = { name: t('demoItem1'), price: 140, addedDate, reservedByName: DEMO_RESERVER }
+    const luberon = { name: t('demoItem2'), price: 500, addedDate }
+    const tablier = { name: t('demoItem3'), price: 35, addedDate }
+
     return (
         <main className={pageStyles.page}>
             <section className={pageStyles.hero}>
@@ -42,145 +53,120 @@ export default async function HomePage() {
                         <LoginCta className={pageStyles.hero__cta}>
                             {t('getStarted')}
                         </LoginCta>
-                        <Link href="/features" className={pageStyles.hero__ctaSecondary}>
-                            {t('learnMore')}
-                        </Link>
+                        <a href="#exemple" className={pageStyles.hero__ctaSecondary}>
+                            {t('exampleLink')}
+                        </a>
                     </div>
+                    <p className={pageStyles.hero__reassure}>{t('heroNoAccount')}</p>
                 </div>
 
-                <div className={pageStyles.heroCard} aria-hidden="true">
-                    <div className={pageStyles.heroCard__inner}>
-                        <div className={pageStyles.heroCard__head}>
-                            <div className={pageStyles.heroCard__headTitle}>{t('demoListName')}</div>
-                            <div className={pageStyles.heroCard__headMeta}>{t('demoListShared')}</div>
-                        </div>
-                        <div className={pageStyles.heroCard__list}>
-                            <div className={pageStyles.heroCard__row}>
-                                <span className={pageStyles.heroCard__thumb} />
-                                <span className={pageStyles.heroCard__rowMain}>
-                                    <span className={pageStyles.heroCard__rowTitle}>{t('demoItem1')}</span>
-                                    <span className={pageStyles.heroCard__rowMeta}>€140</span>
-                                </span>
-                                <span className={`${pageStyles.pill} ${pageStyles['pill--reserved']}`}>
-                                    {t('demoItem1Status')}
-                                </span>
-                            </div>
-                            <div className={`${pageStyles.heroCard__row} ${pageStyles['heroCard__row--pot']}`}>
-                                <span className={pageStyles.heroCard__thumb} />
-                                <span className={pageStyles.heroCard__rowMain}>
-                                    <span className={pageStyles.heroCard__rowTitle}>{t('demoItem2')}</span>
-                                    <span className={pageStyles.heroCard__rowMeta}>{t('demoItem2Progress')}</span>
-                                    <span className={pageStyles.heroCard__bar}>
-                                        <span className={pageStyles.heroCard__barFill} />
-                                    </span>
-                                </span>
-                                <span className={`${pageStyles.pill} ${pageStyles['pill--pot']}`}>
-                                    {t('demoItem2Action')}
-                                </span>
-                            </div>
-                            <div className={pageStyles.heroCard__row}>
-                                <span className={pageStyles.heroCard__thumb} />
-                                <span className={pageStyles.heroCard__rowMain}>
-                                    <span className={pageStyles.heroCard__rowTitle}>{t('demoItem3')}</span>
-                                    <span className={pageStyles.heroCard__rowMeta}>€35</span>
-                                </span>
-                                <span className={`${pageStyles.pill} ${pageStyles['pill--wanted']}`}>
-                                    {t('demoItem3Action')}
-                                </span>
-                            </div>
-                        </div>
+                <div className={pageStyles.heroCards}>
+                    <p className={pageStyles.srOnly}>{t('demoCardLabel')}</p>
+                    <MockWish variant="reserved" {...cocotte} />
+                    <div className={pageStyles.heroCards__second}>
+                        <MockWish variant="pot-out" {...luberon} />
                     </div>
                 </div>
             </section>
 
             <section className={pageStyles.steps}>
-                <h2 className={pageStyles.steps__title}>{t('stepsTitle')}</h2>
-                <p className={pageStyles.steps__subtitle}>{t('stepsSubtitle')}</p>
-                <div className={pageStyles.steps__grid}>
-                    <div className={pageStyles.step}>
-                        <span className={pageStyles.step__icon}>
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <path d="M12 5v14M5 12h14" />
-                            </svg>
-                        </span>
-                        <h3 className={pageStyles.step__title}>{t('step1Title')}</h3>
-                        <p className={pageStyles.step__desc}>{t('step1Desc')}</p>
-                    </div>
-                    <div className={pageStyles.step}>
-                        <span className={pageStyles.step__icon}>
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <path d="M4 12v8h16v-8" />
-                                <path d="M12 3v13M7 8l5-5 5 5" />
-                            </svg>
-                        </span>
-                        <h3 className={pageStyles.step__title}>{t('step2Title')}</h3>
-                        <p className={pageStyles.step__desc}>{t('step2Desc')}</p>
-                    </div>
-                    <div className={pageStyles.step}>
-                        <span className={pageStyles.step__icon}>
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <path d="M20 6L9 17l-5-5" />
-                            </svg>
-                        </span>
-                        <h3 className={pageStyles.step__title}>{t('step3Title')}</h3>
-                        <p className={pageStyles.step__desc}>{t('step3Desc')}</p>
-                    </div>
+                <div className={pageStyles.steps__inner}>
+                    <h2 className={pageStyles.steps__title}>{t('stepsTitle')}</h2>
+                    <p className={pageStyles.steps__subtitle}>{t('stepsSubtitle')}</p>
+                    <ol className={pageStyles.steps__grid}>
+                        <li className={pageStyles.step}>
+                            <span className={pageStyles.step__icon} aria-hidden="true">
+                                <ListGlyph width="28" height="28" />
+                            </span>
+                            <div>
+                                <h3 className={pageStyles.step__title}>{t('step1Title')}</h3>
+                                <p className={pageStyles.step__desc}>{t('step1Desc')}</p>
+                            </div>
+                        </li>
+                        <li className={pageStyles.step}>
+                            <span className={pageStyles.step__icon} aria-hidden="true">
+                                <EnvelopeGlyph width="28" height="28" />
+                            </span>
+                            <div>
+                                <h3 className={pageStyles.step__title}>{t('step2Title')}</h3>
+                                <p className={pageStyles.step__desc}>{t('step2Desc')}</p>
+                            </div>
+                        </li>
+                        <li className={pageStyles.step}>
+                            <span className={pageStyles.step__icon} aria-hidden="true">
+                                <Logo variant="symbol" width="30" height="30" aria-hidden="true" role="presentation" />
+                            </span>
+                            <div>
+                                <h3 className={pageStyles.step__title}>{t('step3Title')}</h3>
+                                <p className={pageStyles.step__desc}>{t('step3Desc')}</p>
+                            </div>
+                        </li>
+                    </ol>
                 </div>
+            </section>
+
+            <section id="exemple" className={pageStyles.guest}>
+                <div className={pageStyles.guest__body}>
+                    <h2 className={pageStyles.guest__title}>{t('guestTitle')}</h2>
+                    <p className={pageStyles.guest__desc}>{t('guestDesc')}</p>
+                </div>
+                <figure className={pageStyles.phone}>
+                    <p className={pageStyles.srOnly}>{t('guestPhoneLabel')}</p>
+                    <div className={pageStyles.phone__screen}>
+                        <MockWish variant="wanted" {...tablier} />
+                    </div>
+                    <figcaption className={pageStyles.phone__caption}>{t('guestPhoneCaption')}</figcaption>
+                </figure>
             </section>
 
             <section className={pageStyles.pot}>
-                <div className={pageStyles.pot__card} aria-hidden="true">
-                    <div className={pageStyles.pot__cardItem}>{t('potCardItem')}</div>
-                    <div className={pageStyles.pot__cardMeta}>{t('potCardContributors')}</div>
-                    <div className={pageStyles.pot__cardAmount}>
-                        <span className={pageStyles.pot__cardValue}>€310</span>
-                        <span className={pageStyles.pot__cardGoal}>{t('potCardGoal')}</span>
-                    </div>
-                    <div className={pageStyles.pot__cardBar}>
-                        <span className={pageStyles.pot__cardBarFill} />
-                    </div>
-                    <div className={pageStyles.pot__chips}>
-                        <span className={pageStyles.pot__chip}>€20</span>
-                        <span className={`${pageStyles.pot__chip} ${pageStyles['pot__chip--active']}`}>€50</span>
-                        <span className={pageStyles.pot__chip}>{t('potCardOther')}</span>
-                    </div>
+                <div className={pageStyles.pot__visual}>
+                    <p className={pageStyles.srOnly}>{t('potCardLabel')}</p>
+                    <MockWish variant="pot-in" {...luberon} />
                 </div>
                 <div className={pageStyles.pot__body}>
-                    <div className={pageStyles.pot__eyebrow}>{t('potEyebrow')}</div>
                     <h2 className={pageStyles.pot__title}>{t('potTitle')}</h2>
                     <p className={pageStyles.pot__description}>{t('potDescription')}</p>
                     <ul className={pageStyles.pot__points}>
-                        <li className={pageStyles.pot__point}>
-                            <span className={pageStyles.pot__pointMark} aria-hidden="true">✓</span>
-                            {t('potPoint1')}
-                        </li>
-                        <li className={pageStyles.pot__point}>
-                            <span className={pageStyles.pot__pointMark} aria-hidden="true">✓</span>
-                            {t('potPoint2')}
-                        </li>
-                        <li className={pageStyles.pot__point}>
-                            <span className={pageStyles.pot__pointMark} aria-hidden="true">✓</span>
-                            {t('potPoint3')}
-                        </li>
+                        <li className={pageStyles.pot__point}>{t('potPoint1')}</li>
+                        <li className={pageStyles.pot__point}>{t('potPoint2')}</li>
+                        <li className={pageStyles.pot__point}>{t('potPoint3')}</li>
                     </ul>
+                    <p className={pageStyles.pot__note}>{t('potNote')}</p>
                 </div>
             </section>
 
-            <section className={pageStyles.privacy}>
-                <div className={pageStyles.privacy__grid}>
-                    <div className={pageStyles.privacy__item}>
-                        <h3 className={pageStyles.privacy__itemTitle}>{t('privacy1Title')}</h3>
-                        <p className={pageStyles.privacy__itemDesc}>{t('privacy1Desc')}</p>
-                    </div>
-                    <div className={pageStyles.privacy__item}>
-                        <h3 className={pageStyles.privacy__itemTitle}>{t('privacy2Title')}</h3>
-                        <p className={pageStyles.privacy__itemDesc}>{t('privacy2Desc')}</p>
-                    </div>
-                    <div className={pageStyles.privacy__item}>
-                        <h3 className={pageStyles.privacy__itemTitle}>{t('privacy3Title')}</h3>
-                        <p className={pageStyles.privacy__itemDesc}>{t('privacy3Desc')}</p>
+            <section className={pageStyles.surprise}>
+                <div className={pageStyles.surprise__inner}>
+                    <h2 className={pageStyles.surprise__title}>{t('surpriseTitle')}</h2>
+                    <p className={pageStyles.surprise__desc}>{t('surpriseDesc')}</p>
+                    <div className={pageStyles.surprise__compare}>
+                        <div className={pageStyles.view}>
+                            <h3 className={pageStyles.view__title}>{t('ownerViewTitle')}</h3>
+                            <p className={pageStyles.view__note}>{t('ownerViewNote')}</p>
+                            <MockWish variant="owner" {...cocotte} />
+                        </div>
+                        <div className={pageStyles.surprise__ribbon} aria-hidden="true">
+                            <Bow className={pageStyles.surprise__bow} />
+                        </div>
+                        <div className={pageStyles.view}>
+                            <h3 className={pageStyles.view__title}>{t('guestViewTitle')}</h3>
+                            <p className={pageStyles.view__note}>{t('guestViewNote')}</p>
+                            <MockWish variant="reserved" {...cocotte} />
+                        </div>
                     </div>
                 </div>
+            </section>
+
+            <section className={pageStyles.notes}>
+                <p className={pageStyles.note}>
+                    <strong className={pageStyles.note__lead}>{t('privacy2Title')}</strong>{' '}
+                    {t('privacy2Desc')}
+                </p>
+                <p className={pageStyles.note}>
+                    <strong className={pageStyles.note__lead}>{t('privacy3Title')}</strong>{' '}
+                    {t('privacy3Desc')}
+                </p>
             </section>
 
             <section className={pageStyles.cta}>

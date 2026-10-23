@@ -1,44 +1,58 @@
 /* ============================================
-   HOME PAGE — product-led, airy. Light + dark
+   HOME PAGE — product-led, warm. Light + dark
    both come from the semantic theme tokens in
-   theme.css; no hard-coded palette here beyond
-   the demo-card sample prices.
+   theme.css; nothing here is hard-coded.
    ============================================ */
 
 .page {
     background: var(--surface-page);
     min-height: 100vh;
     font-family: var(--font-sans);
+    font-size: 16px;
     color: var(--text-primary);
+}
+
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
 }
 
 /* ── Hero ─────────────────────────────────── */
 
 .hero {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
     align-items: center;
-    gap: 80px;
-    max-width: 1200px;
+    gap: 56px;
+    max-width: 1320px;
     margin: 0 auto;
-    padding: 80px 72px 100px;
+    padding: 64px 72px 88px;
 }
 
 .hero__title {
     font-family: var(--font-serif);
-    font-size: clamp(40px, 5vw, 64px);
+    font-size: clamp(38px, 5vw, 60px);
     font-weight: var(--font-weight-normal);
     line-height: 1.08;
-    letter-spacing: -1px;
-    margin: 0 0 24px;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+    text-wrap: balance;
 }
 
 .hero__description {
-    font-size: 19px;
+    font-size: 18px;
     line-height: 1.6;
     color: var(--text-secondary);
-    max-width: 440px;
-    margin: 0 0 36px;
+    max-width: 460px;
+    margin: 0 0 32px;
+    text-wrap: pretty;
 }
 
 .hero__actions {
@@ -46,6 +60,14 @@
     gap: 14px;
     flex-wrap: wrap;
     align-items: center;
+}
+
+.hero__reassure {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 18px 0 0;
+    max-width: 440px;
 }
 
 .hero__cta,
@@ -64,13 +86,6 @@
     white-space: nowrap;
 }
 
-.hero__cta:hover,
-.cta__button:hover {
-    background: var(--accent-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-}
-
 .hero__ctaSecondary {
     font-family: var(--font-sans);
     font-size: 16px;
@@ -78,7 +93,7 @@
     padding: 15px 28px;
     border-radius: var(--border-radius-full);
     border: 1px solid var(--border-default);
-    background: var(--surface-raised);
+    background: transparent;
     color: var(--text-primary);
     text-decoration: none;
     cursor: pointer;
@@ -86,171 +101,120 @@
     white-space: nowrap;
 }
 
-.hero__ctaSecondary:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
+.hero__cta:focus-visible,
+.cta__button:focus-visible,
+.hero__ctaSecondary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 
-/* ── Hero demo card ───────────────────────── */
+@media (hover: hover) {
+    .hero__cta:hover,
+    .cta__button:hover {
+        background: var(--accent-hover);
+        box-shadow: var(--shadow-hover);
+    }
 
-.heroCard {
-    background: var(--surface-raised);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--border-radius-2xl);
-    box-shadow: var(--shadow-hover);
-    padding: 10px;
+    .hero__ctaSecondary:hover {
+        border-color: var(--border-strong);
+        background: var(--surface-raised);
+    }
 }
 
-.heroCard__inner {
-    border: 1px solid var(--border-soft);
-    border-radius: var(--border-radius-xl);
-    overflow: hidden;
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .hero__cta:hover,
+    .cta__button:hover,
+    .hero__ctaSecondary:hover {
+        transform: translateY(-2px);
+    }
 }
 
-.heroCard__head {
-    padding: 22px 24px;
-    background: var(--accent-tint-bg);
-}
+/* ── Product pictures (the real WishCard, fed sample data) ── */
 
-.heroCard__headTitle {
-    font-family: var(--font-serif);
-    font-size: 18px;
-    font-weight: var(--font-weight-medium);
-    color: var(--accent);
-}
-
-.heroCard__headMeta {
-    font-size: 13px;
-    color: var(--accent);
-    margin-top: 3px;
-}
-
-.heroCard__list {
-    display: flex;
-    flex-direction: column;
-    padding: 8px;
-}
-
-.heroCard__row {
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    padding: 16px;
-}
-
-.heroCard__row--pot {
-    background: var(--surface-sunken);
-    border-radius: var(--border-radius-2xl);
-}
-
-.heroCard__thumb {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    border-radius: 14px;
-    background: var(--surface-sunken-2);
-}
-
-.heroCard__rowMain {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+.mock {
+    width: 100%;
     min-width: 0;
+    pointer-events: none;
+    user-select: none;
 }
 
-.heroCard__rowTitle {
-    font-size: 15px;
-    font-weight: var(--font-weight-medium);
+.heroCards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    align-items: start;
 }
 
-.heroCard__rowMeta {
-    font-size: 13px;
-    color: var(--text-tertiary);
+/* The real card, scaled up a notch so the hero picture holds its own beside the title. */
+.heroCards .mock {
+    zoom: 1.1;
 }
 
-.heroCard__bar {
-    display: block;
-    height: 7px;
-    border-radius: var(--border-radius-full);
-    background: var(--surface-sunken-2);
-    overflow: hidden;
-    margin-top: 6px;
-}
-
-.heroCard__barFill {
-    display: block;
-    width: 62%;
-    height: 100%;
-    background: var(--amber);
-}
-
-.pill {
-    font-size: 12px;
-    font-weight: var(--font-weight-semibold);
-    padding: 6px 12px;
-    border-radius: var(--border-radius-full);
-    white-space: nowrap;
-    align-self: center;
-}
-
-.pill--reserved {
-    color: var(--status-purchased-fg);
-    background: var(--status-purchased-bg);
-}
-
-.pill--pot {
-    color: var(--status-proposed-fg);
-    background: var(--status-proposed-bg);
-}
-
-.pill--wanted {
-    color: var(--status-wanted-fg);
-    background: var(--status-wanted-bg);
+.heroCards__second {
+    margin-top: 56px;
 }
 
 /* ── Steps ────────────────────────────────── */
 
 .steps {
-    padding: 88px 72px;
+    padding: 80px 72px;
     background: var(--surface-raised);
     border-top: 1px solid var(--border-soft);
     border-bottom: 1px solid var(--border-soft);
-    text-align: center;
+}
+
+.steps__inner {
+    max-width: 1056px;
+    margin: 0 auto;
 }
 
 .steps__title {
     font-family: var(--font-serif);
     font-size: clamp(30px, 4vw, 40px);
     font-weight: var(--font-weight-normal);
-    letter-spacing: -0.6px;
+    letter-spacing: -0.02em;
     margin: 0 0 8px;
+    text-wrap: balance;
 }
 
 .steps__subtitle {
-    font-size: 16px;
+    font-size: 17px;
     color: var(--text-secondary);
-    margin: 0 0 60px;
+    margin: 0 0 48px;
 }
 
 .steps__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 36px;
-    max-width: 1040px;
-    margin: 0 auto;
+    gap: 48px;
 }
 
 .step {
-    text-align: center;
+    position: relative;
+}
+
+/* The ribbon that ties the three steps together. */
+.step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 32px;
+    left: 80px;
+    right: -32px;
+    border-top: 2px dashed var(--accent-tint-border);
 }
 
 .step__icon {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 64px;
     height: 64px;
-    margin: 0 auto 20px;
+    margin: 0 0 20px;
     border-radius: var(--border-radius-full);
     background: var(--accent-tint-bg);
     color: var(--accent);
@@ -258,15 +222,86 @@
 
 .step__title {
     font-family: var(--font-serif);
-    font-size: 20px;
+    font-size: 21px;
     font-weight: var(--font-weight-medium);
-    margin: 0 0 10px;
+    margin: 0 0 8px;
 }
 
 .step__desc {
-    font-size: 14.5px;
+    font-size: 16px;
     line-height: 1.6;
     color: var(--text-secondary);
+    margin: 0;
+    text-wrap: pretty;
+}
+
+/* ── Guest view ───────────────────────────── */
+
+.guest {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 72px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 96px 72px;
+    scroll-margin-top: 72px;
+}
+
+.guest__title {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 4.2vw, 46px);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+}
+
+.guest__desc {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0;
+    text-wrap: pretty;
+}
+
+.phone {
+    justify-self: center;
+    width: 100%;
+    max-width: 336px;
+    margin: 0;
+}
+
+.phone__screen {
+    position: relative;
+    padding: 34px 14px 16px;
+    background: var(--surface-page);
+    border: 2px solid var(--border-strong);
+    border-radius: 36px;
+    box-shadow: var(--shadow-hover);
+}
+
+.phone__screen::before {
+    content: "";
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    width: 64px;
+    height: 6px;
+    transform: translateX(-50%);
+    border-radius: var(--border-radius-full);
+    background: var(--surface-sunken-2);
+}
+
+.phone__caption {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    text-align: center;
+    text-wrap: balance;
 }
 
 /* ── Gift pot ─────────────────────────────── */
@@ -278,164 +313,185 @@
     gap: 64px;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 96px 72px;
+    padding: 24px 72px 96px;
 }
 
-.pot__card {
-    background: var(--surface-raised);
-    border: 1px solid var(--border-default);
-    border-radius: var(--border-radius-2xl);
-    padding: 32px;
-    box-shadow: var(--shadow-card);
-}
-
-.pot__cardItem {
-    font-family: var(--font-serif);
-    font-size: 16px;
-    font-weight: var(--font-weight-medium);
-    margin-bottom: 4px;
-}
-
-.pot__cardMeta {
-    font-size: 13px;
-    color: var(--text-tertiary);
-    margin-bottom: 20px;
-}
-
-.pot__cardAmount {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.pot__cardValue {
-    font-family: var(--font-serif);
-    font-size: 30px;
-    font-weight: var(--font-weight-medium);
-}
-
-.pot__cardGoal {
-    font-size: 14px;
-    color: var(--text-tertiary);
-}
-
-.pot__cardBar {
-    height: 10px;
-    border-radius: var(--border-radius-full);
-    background: var(--surface-sunken-2);
-    overflow: hidden;
-    margin-bottom: 20px;
-}
-
-.pot__cardBarFill {
-    display: block;
-    width: 62%;
-    height: 100%;
-    background: var(--accent);
-}
-
-.pot__chips {
-    display: flex;
-    gap: 8px;
-}
-
-.pot__chip {
-    flex-grow: 1;
-    text-align: center;
-    padding: 11px;
-    border: 1px solid var(--border-default);
-    border-radius: var(--border-radius-lg);
-    font-size: 13px;
-    font-weight: var(--font-weight-medium);
-}
-
-.pot__chip--active {
-    border-color: var(--accent);
-    background: var(--accent-tint-bg);
-    color: var(--accent);
-    font-weight: var(--font-weight-semibold);
-}
-
-.pot__eyebrow {
-    font-size: 12.5px;
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: var(--amber);
-    margin-bottom: 14px;
+.pot__visual {
+    justify-self: center;
+    width: 100%;
+    max-width: 400px;
 }
 
 .pot__title {
     font-family: var(--font-serif);
-    font-size: clamp(28px, 3.5vw, 34px);
+    font-size: clamp(28px, 3.5vw, 36px);
     font-weight: var(--font-weight-normal);
-    letter-spacing: -0.5px;
+    letter-spacing: -0.02em;
     margin: 0 0 16px;
+    text-wrap: balance;
 }
 
 .pot__description {
-    font-size: 15.5px;
+    font-size: 17px;
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0 0 20px;
+    text-wrap: pretty;
 }
 
 .pot__points {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 0 0 24px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    font-size: 14px;
+    font-size: 16px;
     color: var(--text-secondary);
 }
 
 .pot__point {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
+    padding-left: 26px;
+    position: relative;
 }
 
-.pot__pointMark {
-    color: var(--accent);
-    font-weight: var(--font-weight-semibold);
+.pot__point::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0.5em;
+    width: 6px;
+    height: 10px;
+    border: solid var(--accent);
+    border-width: 0 2px 2px 0;
+    transform: translateY(-50%) rotate(45deg);
 }
 
-/* ── Privacy ──────────────────────────────── */
+.pot__note {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: var(--border-radius-xl);
+    background: var(--amber-tint-bg);
+}
 
-.privacy {
-    padding: 76px 72px;
+/* ── Surprise ─────────────────────────────── */
+
+.surprise {
+    padding: 96px 72px;
     background: var(--surface-sunken);
+    border-top: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
 }
 
-.privacy__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 44px;
-    max-width: 1100px;
+.surprise__inner {
+    max-width: 1056px;
     margin: 0 auto;
 }
 
-.privacy__itemTitle {
+.surprise__title {
     font-family: var(--font-serif);
-    font-size: 18px;
-    font-weight: var(--font-weight-medium);
-    margin: 0 0 8px;
+    font-size: clamp(36px, 5.2vw, 60px);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 18px;
+    text-wrap: balance;
 }
 
-.privacy__itemDesc {
-    font-size: 14px;
-    line-height: 1.6;
+.surprise__desc {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 0 48px;
+    text-wrap: pretty;
+}
+
+.surprise__compare {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr);
+    align-items: stretch;
+}
+
+.view {
+    min-width: 0;
+}
+
+.view .mock {
+    max-width: 360px;
+}
+
+.view__title {
+    font-family: var(--font-serif);
+    font-size: 21px;
+    font-weight: var(--font-weight-medium);
+    margin: 0 0 2px;
+}
+
+.view__note {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 0 0 16px;
+}
+
+/* The ribbon between the two views, knotted in the middle. */
+.surprise__ribbon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.surprise__ribbon::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto;
+    left: 50%;
+    border-left: 2px dashed var(--accent-tint-border);
+}
+
+.surprise__bow {
+    position: relative;
+    width: 52px;
+    height: auto;
+    padding: 6px 0;
+    color: var(--accent);
+    background: var(--surface-sunken);
+}
+
+/* ── Supporting notes ─────────────────────── */
+
+.notes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 72px;
+}
+
+.note {
+    font-size: 16px;
+    line-height: 1.65;
     color: var(--text-secondary);
     margin: 0;
+    text-wrap: pretty;
+}
+
+.note__lead {
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
 }
 
 /* ── CTA ──────────────────────────────────── */
 
 .cta {
-    padding: 100px 72px;
+    padding: 96px 72px;
     text-align: center;
     background: var(--accent-tint-bg);
 }
@@ -444,13 +500,14 @@
     font-family: var(--font-serif);
     font-size: clamp(32px, 4vw, 42px);
     font-weight: var(--font-weight-normal);
-    letter-spacing: -0.6px;
+    letter-spacing: -0.02em;
     color: var(--text-primary);
     margin: 0 0 18px;
+    text-wrap: balance;
 }
 
 .cta__description {
-    font-size: 17px;
+    font-size: 18px;
     color: var(--text-secondary);
     max-width: 440px;
     margin: 0 auto 34px;
@@ -466,56 +523,107 @@
 @media (max-width: 1024px) {
     .hero {
         grid-template-columns: 1fr;
-        gap: 48px;
-        padding: 60px 40px 72px;
+        gap: 56px;
+        padding: 48px 40px 72px;
     }
 
     .hero__description {
         max-width: none;
     }
 
+    .steps,
+    .surprise,
+    .notes {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .guest {
+        grid-template-columns: 1fr;
+        gap: 48px;
+        padding: 72px 40px;
+    }
+
     .pot {
         grid-template-columns: 1fr;
         gap: 40px;
-        padding: 72px 40px;
+        padding: 16px 40px 72px;
     }
 
     .pot__body {
         order: -1;
     }
-
-    .steps,
-    .privacy {
-        padding-left: 40px;
-        padding-right: 40px;
-    }
 }
 
 @media (max-width: 768px) {
     .hero {
-        padding: 48px 20px 56px;
+        padding: 32px 20px 56px;
+        gap: 48px;
+    }
+
+    .hero__description {
+        font-size: 17px;
+        margin-bottom: 24px;
     }
 
     .steps {
-        padding: 64px 20px;
+        padding: 56px 20px;
+    }
+
+    .steps__subtitle {
+        margin-bottom: 32px;
     }
 
     .steps__grid {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 28px;
+    }
+
+    .step {
+        display: grid;
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    .step:not(:last-child)::after {
+        display: none;
+    }
+
+    .step__icon {
+        margin: 0;
+    }
+
+    .guest {
+        padding: 56px 20px;
     }
 
     .pot {
-        padding: 56px 20px;
+        padding: 8px 20px 56px;
     }
 
-    .privacy {
-        padding: 56px 20px;
+    .surprise {
+        padding: 64px 20px;
     }
 
-    .privacy__grid {
+    .surprise__compare {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .surprise__ribbon {
+        height: 64px;
+    }
+
+    .surprise__ribbon::before {
+        inset: 0 auto;
+        left: auto;
+        top: 0;
+        bottom: 0;
+    }
+
+    .notes {
         grid-template-columns: 1fr;
-        gap: 32px;
+        gap: 28px;
+        padding: 48px 20px;
     }
 
     .cta {
@@ -532,5 +640,17 @@
     .hero__cta,
     .hero__ctaSecondary {
         text-align: center;
+    }
+
+    .heroCards {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .heroCards .mock {
+        zoom: 1;
+    }
+
+    .heroCards__second {
+        display: none;
     }
 }

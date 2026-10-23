@@ -124,10 +124,10 @@
     font-family: var(--h-font-sans);
     font-size: 13px;
     font-weight: 500;
-    background: var(--h-sage);
-    color: var(--accent-contrast);
-    border: none;
-    padding: 8px 20px;
+    background: transparent;
+    color: var(--h-sage);
+    border: 1.5px solid var(--h-sage);
+    padding: 6.5px 18.5px;
     border-radius: 100px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -135,9 +135,9 @@
 }
 
 .header__loginButton:hover {
-    background: var(--h-sage-hover);
-    box-shadow: 0 3px 12px rgba(92, 138, 98, 0.3);
-    transform: translateY(-1px);
+    background: var(--h-sage-light);
+    border-color: var(--h-sage-hover);
+    color: var(--h-sage-hover);
 }
 
 .header__loading {
