@@ -16,6 +16,7 @@ type KVUser = {
     provider: string
     createdAt: string
     isPublic?: boolean
+    termsAcceptedAt?: string
 }
 
 export const authOptions: NextAuthOptions = {
@@ -43,13 +44,17 @@ export const authOptions: NextAuthOptions = {
                 const existing = await kv.get<KVUser>(`user:${email}`)
                 if (!existing) {
                     const id = randomUUID()
+                    const now = new Date().toISOString()
                     const newUser: KVUser = {
                         id,
                         email,
                         name: user.name ?? email,
                         password: '',
                         provider: 'google',
-                        createdAt: new Date().toISOString(),
+                        createdAt: now,
+                        // The sign-up screen shows the terms and privacy notice next to the Google button
+                        // (and disables it in sign-up mode until the box is ticked).
+                        termsAcceptedAt: now,
                     }
                     await kv.multi().set(`user:${email}`, newUser).set(`user:id:${id}`, email).exec()
                     user.id = id

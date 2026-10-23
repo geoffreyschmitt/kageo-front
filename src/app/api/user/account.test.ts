@@ -183,6 +183,69 @@ describe('GET /api/user/export', () => {
     })
 })
 
+describe('GET /api/user/export surprise and activity', () => {
+    const run = async () =>
+        (await (await exportData(new NextRequest('http://localhost/api/user/export'))).json()) as {
+            wishlists: { wishes: Record<string, unknown>[] }[]
+            activity: {
+                pledges: Record<string, unknown>[]
+                comments: Record<string, unknown>[]
+                claims: Record<string, unknown>[]
+            }
+        }
+
+    it('masks reservations, purchases and funded status in the owner’s own wishes', async () => {
+        await seedUser()
+        await fake.set('wishlist:L1', { id: 'L1', ownerId: 'u1' })
+        await fake.sadd('user:u1:wishlists', 'L1')
+        await fake.sadd('wishlist:L1:wishes', 'w1', 'w2')
+        await fake.set('wish:w1', { id: 'w1', wishlistId: 'L1', status: 'reserved', reservedBy: 'g1' })
+        await fake.set('wish:w2', { id: 'w2', wishlistId: 'L1', status: 'purchased', purchasedBy: 'g2' })
+        signInAs('u1')
+
+        const body = await run()
+        expect(JSON.stringify(body.wishlists)).not.toMatch(/g1|g2|reservedBy|purchasedBy/)
+        expect(body.wishlists[0].wishes.map((w) => w.status)).toEqual(['wanted', 'wanted'])
+    })
+
+    it('lists the user’s own pledges, comments and claims on other people’s content, and nothing else', async () => {
+        await seedUser()
+        await fake.set('wishlist:L1', { id: 'L1', ownerId: 'u1', name: 'Mine' })
+        await fake.sadd('user:u1:wishlists', 'L1')
+        await fake.sadd('wishlist:L1:wishes', 'own')
+        await fake.set('wish:own', { id: 'own', wishlistId: 'L1', status: 'wanted' })
+        // pots and guest comments on the user's own content must not be exported
+        await fake.rpush('wish:own:contributions', JSON.stringify({ userId: 'u1', amount: 1, contributedAt: 't' }))
+        await fake.rpush('wish:own:comments', JSON.stringify({ id: 'c0', authorId: 'u1', text: 'own-comment', createdAt: 't' }))
+
+        await fake.set('wishlist:X', { id: 'X', ownerId: 'other', name: 'Their list' })
+        await fake.rpush('wishlist:X:contributions',
+            JSON.stringify({ userId: 'u1', amount: 20, contributedAt: '2026-10-01T00:00:00.000Z' }),
+            JSON.stringify({ userId: 'u9', amount: 99, contributedAt: '2026-10-02T00:00:00.000Z' }))
+        await fake.rpush('wishlist:X:comments',
+            JSON.stringify({ id: 'c1', authorId: 'u1', authorName: 'Una', text: 'mine', createdAt: 't1' }),
+            JSON.stringify({ id: 'c2', authorId: 'u9', authorName: 'Other', text: 'theirs', createdAt: 't2' }))
+        await fake.set('wish:W', { id: 'W', title: 'Lamp', status: 'reserved', reservedBy: 'u1' })
+        await fake.set('wish:V', { id: 'V', title: 'Vase', status: 'purchased', purchasedBy: 'u9' })
+        signInAs('u1')
+
+        const { activity } = await run()
+        expect(activity.pledges).toEqual([
+            { target: 'wishlist', id: 'X', title: 'Their list', amount: 20, contributedAt: '2026-10-01T00:00:00.000Z' },
+        ])
+        expect(activity.comments).toEqual([{ target: 'wishlist', id: 'X', title: 'Their list', text: 'mine', createdAt: 't1' }])
+        expect(activity.claims).toEqual([{ wishId: 'W', title: 'Lamp', reserved: true, purchased: false }])
+        const dump = JSON.stringify(activity)
+        expect(dump).not.toMatch(/u9|theirs|Other|own-comment|Vase/)
+    })
+
+    it('returns empty activity for a new account', async () => {
+        await seedUser()
+        signInAs('u1')
+        expect((await run()).activity).toEqual({ pledges: [], comments: [], claims: [] })
+    })
+})
+
 describe('GET /api/user/export safeBets', () => {
     it('exports an empty safeBets array when there are none', async () => {
         await seedUser({})

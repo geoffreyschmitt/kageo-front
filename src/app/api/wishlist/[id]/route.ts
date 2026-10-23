@@ -6,6 +6,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/shared/config/authOptions'
 import { queueWishlistDeletion } from '@/shared/lib/kvCascade'
 import { LockTimeoutError, busyResponse, withLock, wishlistLock } from '@/shared/lib/kvLock'
+import { maskWishForOwner } from '@/shared/lib/maskWishForOwner'
 import { limitWrite } from '@/shared/lib/rateLimit'
 
 type TWishlistKV = {
@@ -21,11 +22,6 @@ type TWishlistKV = {
     updatedAt: string
 }
 
-const maskForOwner = (wish: unknown) => {
-    const { reservedBy: _reservedBy, purchasedBy: _purchasedBy, ...rest } = wish as Record<string, unknown>
-    const hidden = rest.status === 'reserved' || rest.status === 'purchased' || rest.status === 'funded'
-    return { ...rest, status: hidden ? 'wanted' : rest.status }
-}
 
 // GET /api/wishlist/[id] — get a wishlist with its wishes
 export async function GET(
@@ -49,7 +45,7 @@ export async function GET(
     // The owner never learns who reserved or bought what (nor that a pot is full): same masking
     // as the wishlist page.
     const isOwner = !!session?.user?.id && session.user.id === wishlist.ownerId
-    const visibleWishes = isOwner ? wishes.map(maskForOwner) : wishes
+    const visibleWishes = isOwner ? wishes.map(maskWishForOwner) : wishes
 
     return NextResponse.json({ ...wishlist, wishes: visibleWishes })
 }

@@ -24,6 +24,10 @@ Short records of choices that are not obvious from the code. Newest first. Add o
 **Decision.** Both pot types, and guest comments, are hidden from the wishlist owner. Role-shaped payloads come from one place (`readPotForViewer`, `readGiftPotForViewer`).
 **Why.** The product is about coordinating gifts without spoiling them. Centralising the rule keeps routes and UI from re-deriving it. The CSV exports reuse the same readers so they cannot leak more than the UI shows.
 
+## The data export covers the user's own activity, and never the surprise
+**Decision.** `GET /api/user/export` returns the profile, owned wishlists (wishes masked with the owner's wishlist-page rule, `maskWishForOwner`), safe bets, and an `activity` section: the user's own pledges, comments, reservations and purchases on other people's content. It mirrors what `purgeUser` removes, and leaves out content the user owns (pots and guest comments there are hidden from them) and anything about other people (no names, no other pledgers).
+**Why.** An access request covers personal data the service holds about the person, and their pledges and comments are theirs. The export used to dump raw owner wishes, which leaked `reservedBy`/`purchasedBy` to the owner; masking it closes that. Not decided: whether a data-access request should also include the owner's own list data after the event date passes.
+
 ## Accounts are required to act (no anonymous reservation)
 **Decision.** Viewing a shared list needs no account; reserving, commenting, contributing and suggesting do. Anonymous reservation is an *Open*-phase experiment only, and would need a confirmed email, bot protection and rate limits.
 **Why.** The owner cannot see reservations (surprise), so a fake or bot reservation would make a gift look taken with nobody noticing. Some competitors (e.g. iKadoo) allow account-free reservation; we accept the extra sign-up step during Launch because the audience is family.

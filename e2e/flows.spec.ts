@@ -166,6 +166,48 @@ test.describe('wishlists', () => {
         expect((await owner.context.request.get(`/api/wishlist/pot?wishlistId=${list.id}`)).status()).not.toBe(200)
     })
 
+    test('two pledgers fund a wish pot together; only the organiser sees names; the owner sees nothing', async ({ browser }) => {
+        const owner = await newPerson(browser, 'Olivia')
+        const organiser = await newPerson(browser, 'Gus')
+        const fay = await newPerson(browser, 'Fay')
+        const hal = await newPerson(browser, 'Hal')
+        const list = await createWishlist(owner.context.request, 'Housewarming')
+        const wish = await createWish(owner.context.request, list.id, 'Lamp', 100)
+        for (const person of [organiser, fay, hal]) {
+            await api(owner.context.request, 'post', '/api/wishlist/share', { wishlistId: list.id, email: person.user.email }, 200)
+        }
+        await api(organiser.context.request, 'post', '/api/wish/pot', { wishId: wish.id }, 201)
+
+        const pot = async (who: typeof fay) =>
+            (await (await who.context.request.get(`/api/wish/pot?wishId=${wish.id}`)).json()) as Record<string, unknown>
+
+        const first = await api<{ totalContributed: number; isFunded: boolean }>(
+            fay.context.request, 'post', '/api/wish/contribute', { wishId: wish.id, amount: 30 })
+        expect(first).toMatchObject({ totalContributed: 30, isFunded: false })
+        const second = await api<{ totalContributed: number; isFunded: boolean }>(
+            hal.context.request, 'post', '/api/wish/contribute', { wishId: wish.id, amount: 70 })
+        expect(second).toMatchObject({ totalContributed: 100, isFunded: true })
+
+        // A pledger sees totals and their own share, never the others' names or amounts.
+        expect(await pot(fay)).toMatchObject({ totalContributed: 100, participantCount: 2, myContribution: 30, isFunded: true })
+        expect(await pot(fay)).not.toHaveProperty('contributors')
+        expect(await pot(hal)).toMatchObject({ myContribution: 70 })
+
+        // The organiser gets the nominative list.
+        const asOrganiser = (await pot(organiser)) as { contributors: { name: string; amount: number }[] }
+        expect(asOrganiser.contributors.map((c) => [c.name, c.amount])).toEqual([['Hal', 70], ['Fay', 30]])
+
+        // The owner learns nothing: no pot, and the wish still reads as wanted.
+        expect((await owner.context.request.get(`/api/wish/pot?wishId=${wish.id}`)).status()).toBe(404)
+        const ownerList = (await (await owner.context.request.get(`/api/wishlist/${list.id}`)).json()) as { wishes: { status: string }[] }
+        expect(ownerList.wishes.map((w) => w.status)).toEqual(['wanted'])
+
+        // One pledger lowering their pledge to zero un-funds the wish for everyone else.
+        const lowered = await fay.context.request.patch('/api/wish/contribute', { data: { wishId: wish.id, amount: 0 } })
+        expect(lowered.status()).toBe(200)
+        expect(await pot(hal)).toMatchObject({ totalContributed: 70, participantCount: 1, isFunded: false })
+    })
+
     test('the organiser deleting their account hands the pot to the biggest pledger', async ({ browser }) => {
         const owner = await newPerson(browser, 'Olivia')
         const organiser = await newPerson(browser, 'Gus')

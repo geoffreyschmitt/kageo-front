@@ -4,8 +4,11 @@ import { kv } from '@vercel/kv'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/shared/config/authOptions'
+import { maskWishForOwner } from '@/shared/lib/maskWishForOwner'
 import { limitWrite } from '@/shared/lib/rateLimit'
 import { getSafeBets } from '@/shared/lib/safeBets'
+
+import { exportActivity } from './exportActivity'
 
 type KVUser = {
     id: string
@@ -49,9 +52,17 @@ export async function GET(request: NextRequest) {
             const wishes = wishIds.length
                 ? (await Promise.all(wishIds.map((id) => kv.get(`wish:${id}`)))).filter(Boolean)
                 : []
-            return { ...wishlist, wishes }
+            // Same masking as the wishlist page: an export must not reveal reservations to the owner.
+            return { ...wishlist, wishes: wishes.map(maskWishForOwner) }
         }),
     )
+
+    const safeBets = await getSafeBets(userId)
+    const activity = await exportActivity(userId, {
+        wishlists: new Set(ownedWishlists.map((w) => w.id)),
+        wishes: new Set(wishlistsWithWishes.flatMap((w) => w.wishes.map((wish) => String(wish.id)))),
+        safeBets: new Set(safeBets.map((bet) => bet.id)),
+    })
 
     return NextResponse.json({
         exportedAt: new Date().toISOString(),
@@ -59,6 +70,7 @@ export async function GET(request: NextRequest) {
             ? { id: user.id, name: user.name, email: user.email, createdAt: user.createdAt, birthdate: user.birthdate ?? null }
             : null,
         wishlists: wishlistsWithWishes,
-        safeBets: await getSafeBets(userId),
+        safeBets,
+        activity,
     })
 }

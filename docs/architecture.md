@@ -26,7 +26,7 @@ API (`app/api/`):
 | Route | Purpose |
 |---|---|
 | `auth/[...nextauth]`, `auth/register` | NextAuth; credentials sign-up |
-| `user/me`, `user/password`, `user/stats`, `user/export` | Account info (incl. optional birthdate), `DELETE` = full account purge, password change, dashboard stats, data export |
+| `user/me`, `user/password`, `user/stats`, `user/export` | Account info (incl. optional birthdate), `DELETE` = full account purge, password change, dashboard stats, data export (profile, owned lists with owner-masked wishes, safe bets, and `activity`: the user's own pledges, comments, reservations and purchases elsewhere) |
 | `wishlist` , `wishlist/[id]` | Wishlist CRUD |
 | `wishlist/share` | Invite by email: sends the invite through Resend, then adds the invitee (nothing is saved if the email fails) |
 | `wishlist/pot`, `wishlist/contribute` | Wishlist-level pot; `PATCH` replaces the caller's pledge, `amount: 0` cancels |
