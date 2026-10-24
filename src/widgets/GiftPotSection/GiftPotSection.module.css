@@ -25,38 +25,14 @@
     font-family: var(--gp-font-sans);
 }
 
-/* ── "Open a gift pot" trigger (no pot yet) ───────────────── */
-
-.giftPot__create {
-    border-top: 1px solid var(--gp-border-soft);
-    padding-top: 14px;
-}
+/* The "give together" link has no styling here: it is the feature's own link and
+   WishCard places it in the footer, next to the comments link. */
 
 /* A wish-card actions row already drew the divider above — sit flush
-   under it instead of stacking a second border + 14px gap.
-   No-pot wrapper carries .giftPot__create itself; the pot case has
-   .giftPot__details on a child <details>. */
-.giftPot--flush.giftPot__create,
+   under it instead of stacking a second border + 14px gap. */
 .giftPot--flush .giftPot__details {
     border-top: none;
     padding-top: 6px;
-}
-
-/* Under a full-width Reserve button the "Open a gift pot" line is one quiet,
-   centred line instead of the left-aligned 11.5px default. */
-.giftPot--flush.giftPot__create {
-    text-align: center;
-    padding-top: 4px;
-}
-
-.giftPot--flush.giftPot__create button {
-    font-size: 13px;
-    color: var(--gp-text-2);
-    text-wrap: balance;
-}
-
-@media (max-width: 768px), (pointer: coarse) {
-    .giftPot--flush.giftPot__create button { font-size: 14px; }
 }
 
 /* ── Accordion ────────────────────────────────────────────── */

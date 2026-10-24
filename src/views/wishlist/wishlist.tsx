@@ -477,6 +477,8 @@ export default function Wishlist({
             counts={{all: shownableCount, open: wantedItems.length, taken: reservedItems.length + purchasedItems.length}}
             priceRange={priceRange}
             onPriceRangeChange={setPriceRange}
+          {potCard}
+
             currency={currency}
             sortBy={sortBy}
             sortOrder={sortOrder}
@@ -634,8 +636,6 @@ export default function Wishlist({
               </button>
             </div>
           )}
-
-          {potCard}
 
           {/* ── Suggestions Section (non-owners only, not in history) ── */}
           {!userIsOwner && !isHistory && (

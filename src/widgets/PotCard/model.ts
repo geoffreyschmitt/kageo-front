@@ -16,6 +16,7 @@ type TUsePotCardModelParams = {
 
 export const usePotCardModel = ({ wishlistId, pot, onPotRefreshed }: TUsePotCardModelParams) => {
     const [modal, setModal] = useState<'add' | 'edit' | null>(null)
+    const [expanded, setExpanded] = useState(false)
     const [search, setSearch] = useState('')
     const [sortBy, setSortBy] = useState<TSortBy>('amount')
 
@@ -46,6 +47,8 @@ export const usePotCardModel = ({ wishlistId, pot, onPotRefreshed }: TUsePotCard
 
     return {
         isDense,
+        expanded,
+        toggleExpanded: () => setExpanded((open) => !open),
         modal,
         openAdd: () => setModal('add'),
         openEdit: () => setModal('edit'),

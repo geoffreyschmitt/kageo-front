@@ -508,7 +508,7 @@
     "logIn": "Se connecter"
   },
   "createPotModal": {
-    "triggerButton": "Démarrer une cagnotte commune",
+    "triggerButton": "Lancer la cagnotte",
     "title": "Démarrer une cagnotte commune",
     "loginRequired": "Connectez-vous pour démarrer une cagnotte pour {ownerName}. Vous devrez aussi avoir été invité par le propriétaire de la wishlist.",
     "cancel": "Annuler",
@@ -520,12 +520,13 @@
     "startThePot": "Démarrer la cagnotte"
   },
   "potCard": {
-    "kicker": "Cagnotte cadeau",
+    "title": "Une cagnotte pour {ownerName}",
     "exportCsv": "Exporter les promesses (CSV)",
-    "guestTitle": "Votre aperçu",
-    "organizerTitle": "Votre tableau de bord",
+    "details": "Détails",
+    "hideDetails": "Masquer les détails",
+    "youPledged": "Vous avez promis {amount}",
     "startedByYou": "Cagnotte lancée par vous",
-    "notStarted": "Aucune cagnotte encore lancée pour {ownerName}",
+    "notStarted": "Personne ne l'a encore lancée. Donnez ce que vous voulez — les montants restent anonymes.",
     "loginToSee": "Une cagnotte de groupe est en cours d'organisation — connectez-vous pour voir les détails et contribuer.",
     "organisedBy": "Organisée par {creatorName}",
     "pledgedByFriends": "promis par vos amis",
@@ -770,8 +771,7 @@
     "logIn": "Se connecter"
   },
   "createGiftPotModal": {
-    "triggerLead": "Trop cher pour une seule personne ?",
-    "triggerAction": "Ouvrir une cagnotte",
+    "trigger": "Offrir à plusieurs",
     "title": "Lancer une cagnotte",
     "goalLabel": "Objectif",
     "goalHint": "L'objectif est le prix du cadeau. Vous pouvez le dépasser.",

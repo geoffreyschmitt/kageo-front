@@ -59,6 +59,7 @@ export const GiftPotSection = ({
     isInvited,
     userId,
     attached = false,
+    mode,
     giftPot,
     onGiftPotCreated,
     onContributeGiftPot,
@@ -89,10 +90,10 @@ export const GiftPotSection = ({
     // ── No pot yet ────────────────────────────────────────────
     if (!giftPot) {
         const isEligible = price > 0 && status === 'wanted'
-        if (!isEligible) return null
+        if (!isEligible || mode === 'pot') return null
 
         return (
-            <div className={`${wrapClass} ${styles.giftPot__create}`}>
+            <div className={styles.giftPot__create}>
                 <CreateGiftPotButton
                     wishId={wishId}
                     ownerName={ownerName}
@@ -105,6 +106,8 @@ export const GiftPotSection = ({
             </div>
         )
     }
+
+    if (mode === 'create') return null
 
     const goal = giftPot.goal
     const total = giftPot.totalContributed

@@ -508,7 +508,7 @@
     "logIn": "Log in"
   },
   "createPotModal": {
-    "triggerButton": "Start a gift pot",
+    "triggerButton": "Start the pot",
     "title": "Start a gift pot",
     "loginRequired": "Log in to start a pot for {ownerName}. You'll also need to be invited by the wishlist owner.",
     "cancel": "Cancel",
@@ -520,12 +520,13 @@
     "startThePot": "Start the pot"
   },
   "potCard": {
-    "kicker": "Gift pot",
+    "title": "A group gift for {ownerName}",
     "exportCsv": "Export pledges (CSV)",
-    "guestTitle": "Your overview",
-    "organizerTitle": "Your dashboard",
+    "details": "Details",
+    "hideDetails": "Hide details",
+    "youPledged": "You pledged {amount}",
     "startedByYou": "Pot started by you",
-    "notStarted": "No pot started yet for {ownerName}",
+    "notStarted": "Nobody has started it yet. Pledge what you like — amounts stay anonymous.",
     "loginToSee": "A group pot is being organised — log in to see the details and contribute.",
     "organisedBy": "Organised by {creatorName}",
     "pledgedByFriends": "pledged by friends",
@@ -770,8 +771,7 @@
     "logIn": "Log in"
   },
   "createGiftPotModal": {
-    "triggerLead": "Too pricey for one person?",
-    "triggerAction": "Open a gift pot",
+    "trigger": "Give together",
     "title": "Start a gift pot",
     "goalLabel": "Goal",
     "goalHint": "The goal is the price of the gift. You can go over it.",

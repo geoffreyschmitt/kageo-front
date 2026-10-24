@@ -115,6 +115,28 @@ export const WishCard = ({
             (status === 'purchased' && purchasedBy === userId))
     const hasActionsRow = hasGuestActions || showOwnerAction
 
+    const showGiftPot = !isOwner && !isHistory && giftPot !== undefined
+    const giftPotProps = {
+        wishId: id,
+        attached: hasActionsRow,
+        price,
+        currency,
+        status,
+        eventName: eventName ?? '',
+        ownerName: ownerName ?? '',
+        isLoggedIn: !!isLoggedIn,
+        isInvited: !!isInvited,
+        userId,
+        giftPot: giftPot ?? null,
+        onGiftPotCreated: onGiftPotCreated ?? noop,
+        onContributeGiftPot: onContributeGiftPot ?? noop,
+        onContributeGiftPotError: onContributeGiftPotError ?? noop,
+        onGiftPotRemoved: onGiftPotRemoved ?? noop,
+        onGiftPotRefreshed: onGiftPotRefreshed ?? noop,
+        onMarkPurchased,
+        onMarkPurchasedError,
+    }
+
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
     const statusLabel = t(`status${cap(visibleStatus)}`)
     // Reserve first, then shop: the link only appears for the person who reserved, so two
@@ -329,43 +351,25 @@ export const WishCard = ({
                 )}
 
                 {/* An archived wishlist is read-only — same rule as the wishlist-level PotCard. */}
-                {!isOwner && !isHistory && giftPot !== undefined && (
-                    <GiftPotSection
-                        wishId={id}
-                        attached={hasActionsRow}
-                        price={price}
-                        currency={currency}
-                        status={status}
-                        eventName={eventName ?? ''}
-                        ownerName={ownerName ?? ''}
-                        isLoggedIn={!!isLoggedIn}
-                        isInvited={!!isInvited}
-                        userId={userId}
-                        giftPot={giftPot}
-                        onGiftPotCreated={onGiftPotCreated ?? noop}
-                        onContributeGiftPot={onContributeGiftPot ?? noop}
-                        onContributeGiftPotError={onContributeGiftPotError ?? noop}
-                        onGiftPotRemoved={onGiftPotRemoved ?? noop}
-                        onGiftPotRefreshed={onGiftPotRefreshed ?? noop}
-                        onMarkPurchased={onMarkPurchased}
-                        onMarkPurchasedError={onMarkPurchasedError}
-                    />
-                )}
+                {showGiftPot && <GiftPotSection {...giftPotProps} mode="pot" />}
 
                 {!isOwner && (
                     <div className={styles['wish-card__footer']}>
-                        <button
-                            type="button"
-                            className={styles['wish-card__commentsLink']}
-                            onClick={() => eventBus.emit('wish:openComments', { wishId: id, wishName: name })}
-                        >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"/>
-                            </svg>
-                            {commentCount && commentCount > 0
-                                ? tComments('count', {count: commentCount})
-                                : tComments('addCta')}
-                        </button>
+                        <div className={styles['wish-card__footerLinks']}>
+                            <button
+                                type="button"
+                                className={styles['wish-card__commentsLink']}
+                                onClick={() => eventBus.emit('wish:openComments', { wishId: id, wishName: name })}
+                            >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"/>
+                                </svg>
+                                {commentCount && commentCount > 0
+                                    ? tComments('count', {count: commentCount})
+                                    : tComments('addCta')}
+                            </button>
+                            {showGiftPot && <GiftPotSection {...giftPotProps} mode="create" />}
+                        </div>
                         <span className={styles['wish-card__date']}>{t('added', {date: addedDate})}</span>
                     </div>
                 )}

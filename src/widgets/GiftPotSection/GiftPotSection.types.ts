@@ -12,6 +12,9 @@ export type TGiftPotSectionProps = {
     isLoggedIn: boolean
     isInvited: boolean
     userId?: string
+    /** 'create' renders only the "give together" link (a wish-card footer slot);
+     *  'pot' renders only an existing pot. WishCard mounts one of each. */
+    mode: 'create' | 'pot'
     /** true when a wish-card actions row renders directly above — the section
      *  then sits flush under it instead of drawing its own top divider. */
     attached?: boolean

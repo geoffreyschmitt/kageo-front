@@ -158,7 +158,7 @@ test.describe('wishlists', () => {
 
         await owner.page.goto(`/en/wishlist/${list.id}`)
         await expect(owner.page.getByText('Speaker')).toBeVisible()
-        for (const text of ['Gift pot', 'Organised by', 'Pot started by', 'pledged']) {
+        for (const text of ['Gift pot', 'A group gift for', 'Organised by', 'Pot started by', 'pledged']) {
             await expect(owner.page.getByText(text)).toHaveCount(0)
         }
 
