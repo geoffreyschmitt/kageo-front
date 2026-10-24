@@ -2,6 +2,8 @@
 
 import {useCallback, useState} from "react"
 
+import { useTranslations } from "next-intl"
+
 import { useLinkImport } from "@/entities/wish"
 import type { TProposedWishFormData, TProposedWishValidationErrors } from "@/entities/wish"
 
@@ -36,8 +38,10 @@ export const useProposeWishForm = ({
         applyPatch: (patch) => setFormData(prev => ({ ...prev, ...patch })),
     })
 
+    const t = useTranslations('wishForm')
     const [errors, setErrors] = useState<TProposedWishValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [formError, setFormError] = useState("")
 
     const validateForm = (): boolean => {
         const newErrors: Partial<Record<keyof TProposedWishFormData, string>> = {}
@@ -111,6 +115,7 @@ export const useProposeWishForm = ({
         e.preventDefault()
         if (!validateForm()) return
         setIsSubmitting(true)
+        setFormError("")
         try {
             const result = await addWishService(wishlistId, formData)
 
@@ -119,7 +124,7 @@ export const useProposeWishForm = ({
             onClose()
         } catch (err) {
             console.error("Erreur lors de la proposition de souhait :", err)
-            // Optionally set a global error state here
+            setFormError(t('saveFailed'))
         } finally {
             setIsSubmitting(false)
         }
@@ -129,6 +134,7 @@ export const useProposeWishForm = ({
         formData,
         errors,
         isSubmitting,
+        formError,
         handleInputChange,
         handleCheckboxChange,
         handleSubmit,

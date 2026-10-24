@@ -358,7 +358,14 @@
     "createError": "Impossible de créer la wishlist — veuillez réessayer",
     "updateError": "Impossible de mettre à jour la wishlist — veuillez réessayer"
   },
+  "modal": {
+    "close": "Fermer"
+  },
   "wishForm": {
+    "currencyLabel": "Devise",
+    "favoriteHint": "Il apparaîtra en tête de votre liste, dans « Les plus désirés ».",
+    "saveFailed": "L'enregistrement a échoué. Vos modifications sont conservées, réessayez dans un instant.",
+    "fixErrors": "Corrigez les champs signalés ci-dessous.",
     "nameLabel": "Nom *",
     "priorityLabel": "Priorité",
     "priorityLow": "Faible",

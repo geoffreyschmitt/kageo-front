@@ -35,6 +35,7 @@ export const useAddWishModel = ({
 
     const [errors, setErrors] = useState<TWishValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [formError, setFormError] = useState<string>("")
     const t = useTranslations('wishForm')
 
     const linkImport = useLinkImport({
@@ -119,6 +120,7 @@ export const useAddWishModel = ({
             if (!validateForm()) return
 
             setIsSubmitting(true)
+            setFormError("")
             try {
                 const result = await addWishService(wishlistId, formData)
                 // ensure id exists in result
@@ -127,18 +129,19 @@ export const useAddWishModel = ({
                 onClose()
             } catch (err) {
                 console.error("Erreur lors de l'ajout de souhait :", err)
-                // Optionally set a global error state here
+                setFormError(t('saveFailed'))
             } finally {
                 setIsSubmitting(false)
             }
         },
-        [formData, onSubmit, onClose, resetForm, wishlistId, validateForm],
+        [formData, onSubmit, onClose, resetForm, wishlistId, validateForm, t],
     )
 
     return {
         formData,
         errors,
         isSubmitting,
+        formError,
         handleInputChange,
         handleCheckboxChange,
         handleSubmit,

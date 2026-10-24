@@ -36,6 +36,7 @@ type TBaseWishFormProps<TData, TErrors> = {
     submitLabel?: string
     submittingLabel?: string
     linkImport?: TLinkImport
+    formError?: string
 }
 
 export type TWishForm = TBaseWishFormProps<TWishFormData, TWishValidationErrors> & {

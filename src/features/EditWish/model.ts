@@ -36,6 +36,7 @@ export const useEditWishModel = ({
 
     const [errors, setErrors] = useState<TWishValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [formError, setFormError] = useState<string>("")
 
     // Update form data when initialData changes
     useEffect(() => {
@@ -128,6 +129,7 @@ export const useEditWishModel = ({
             if (!validateForm()) return
 
             setIsSubmitting(true)
+            setFormError("")
             try {
                 const result = await editWishService(wishId, formData)
                 // ensure id exists in result
@@ -136,18 +138,19 @@ export const useEditWishModel = ({
                 onClose()
             } catch (err) {
                 console.error("Erreur lors de la modification de souhait :", err)
-                // Optionally set a global error state here
+                setFormError(t('saveFailed'))
             } finally {
                 setIsSubmitting(false)
             }
         },
-        [wishId, formData, onSubmit, onClose, resetForm, validateForm],
+        [wishId, formData, onSubmit, onClose, resetForm, validateForm, t],
     )
 
     return {
         formData,
         errors,
         isSubmitting,
+        formError,
         handleInputChange,
         handleCheckboxChange,
         handleSubmit,

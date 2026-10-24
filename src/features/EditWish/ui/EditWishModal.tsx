@@ -10,7 +10,6 @@ import {WishForm, TWishFormData, TWishForm} from "@/entities/wish";
 
 import {Modal} from "@/shared/ui";
 
-import styles from "./EditWishModal.module.css";
 import {
     TEditWishModal,
 } from "./EditWishModal.types";
@@ -29,6 +28,7 @@ export const EditWishModal = ({
         formData,
         errors,
         isSubmitting,
+        formError,
         handleInputChange,
         handleCheckboxChange,
         handleSubmit,
@@ -52,7 +52,8 @@ export const EditWishModal = ({
             isOpen={isOpen}
             onClose={onClose}
             title={t('title')}
-            className={styles.editWishModal}
+            subtitle={initialData.name}
+            closeOnOverlayClick={false}
         >
             <WishForm<TWishForm>
                 formData={formData}
@@ -67,6 +68,7 @@ export const EditWishModal = ({
                 linkImport={linkImport}
                 submitLabel={t('submit')}
                 submittingLabel={t('submitting')}
+                formError={formError}
             />
         </Modal>
     );

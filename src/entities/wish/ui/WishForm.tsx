@@ -40,9 +40,27 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
     submitLabel,
     submittingLabel,
     linkImport,
+    formError,
 }: T) => {
     const t = useTranslations('wishForm')
     const locale = useLocale()
+    const uid = React.useId()
+    const formRef = React.useRef<HTMLFormElement>(null)
+    const errorId = (field: string) => `${uid}-${field}-error`
+    const hasErrors = Object.values(errors).some(Boolean)
+
+    // aria wiring shared by every field that can show an error.
+    const invalid = (field: keyof typeof errors) => errors[field]
+        ? { 'aria-invalid': true as const, 'aria-describedby': errorId(field as string) }
+        : {}
+    const fieldError = (field: keyof typeof errors) => errors[field] && (
+        <small id={errorId(field as string)} className={styles.wishForm__error}>{errors[field]}</small>
+    )
+
+    // After a failed validation, put the cursor in the first field that needs attention.
+    const focusFirstInvalid = () => {
+        window.setTimeout(() => formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(), 0)
+    }
 
     const [imgError, setImgError] = React.useState(false)
     React.useEffect(() => setImgError(false), [formData.imageUrl])
@@ -56,32 +74,20 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
             <span className={styles.wishForm__previewPlaceholderInitial}>
                 {(formData.name || t('previewName')).charAt(0).toUpperCase()}
             </span>
-            <svg
-                className={styles.wishForm__previewPlaceholderDecor}
-                viewBox="0 0 200 200"
-                fill="none"
-                aria-hidden="true"
-            >
-                <path d="M100 160 Q80 140 70 110 Q60 80 80 60 Q100 40 120 60 Q140 80 130 110 Q120 140 100 160Z" fill="#3f6845" opacity="0.08"/>
-                <path d="M50 120 Q35 100 45 80 Q55 60 75 70 Q95 80 85 105 Q75 130 50 120Z" fill="#3f6845" opacity="0.06"/>
-                <path d="M150 120 Q165 100 155 80 Q145 60 125 70 Q105 80 115 105 Q125 130 150 120Z" fill="#3f6845" opacity="0.06"/>
-                <circle cx="100" cy="55" r="5" fill="#6e3c0c" opacity="0.1"/>
-                <circle cx="72" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
-                <circle cx="128" cy="68" r="3" fill="#3f6845" opacity="0.1"/>
-            </svg>
-            {imgError && (
-                <small className={styles.wishForm__previewImageError}>
-                    {t('imageLoadError')}
-                </small>
-            )}
         </div>
     )
 
     return (
         <form
+            ref={formRef}
             className={styles.wishForm}
-            onSubmit={(e) => void handleSubmit(e)}
+            noValidate
+            onSubmit={(e) => {
+                void handleSubmit(e)
+                focusFirstInvalid()
+            }}
         >
+          <div className={styles.wishForm__body}>
             <div className={styles.wishForm__formGrid}>
                 {/* Purchase URL (first: it can fill the rest of the form) */}
                 <div className={`${styles.wishForm__field} ${styles['wishForm__field--full']}`}>
@@ -89,17 +95,18 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                         <span className={styles.wishForm__label}>{t('purchaseUrlLabel')}</span>
                         <input
                             name="purchaseUrl"
+                            type="url"
+                            inputMode="url"
+                            autoComplete="off"
+                            placeholder="https://"
                             value={formData.purchaseUrl}
                             onChange={(e) => handleInputChange("purchaseUrl", e.target.value)}
                             disabled={isSubmitting}
-                            className={styles.wishForm__input}
+                            className={`${styles.wishForm__input} ${errors.purchaseUrl ? styles['wishForm__input--error'] : ""}`}
+                            {...invalid('purchaseUrl')}
                         />
-                        {errors.purchaseUrl && (
-                            <small className={styles.wishForm__error}>
-                                {errors.purchaseUrl}
-                            </small>
-                        )}
                     </label>
+                    {fieldError('purchaseUrl')}
                     {linkImport && (
                         <div className={styles.wishForm__import}>
                             <button
@@ -167,39 +174,44 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                 </div>
 
                 {/* Nom */}
-                <label className={styles.wishForm__field}>
-                    <span className={styles.wishForm__label}>{t('nameLabel')}</span>
-                    <input
-                        name="name"
-                        value={formData.name}
-                        onChange={(e) => handleInputChange("name", e.target.value)}
-                        disabled={isSubmitting}
-                        className={`${styles.wishForm__input} ${
-                            errors.name ? styles['wishForm__input--error'] : ""
-                        }`}
-                    />
-                    {errors.name && (
-                        <small className={styles.wishForm__error}>
-                            {errors.name}
-                        </small>
-                    )}
-                </label>
+                <div className={`${styles.wishForm__field} ${styles['wishForm__field--full']}`}>
+                    <label className={styles.wishForm__field}>
+                        <span className={styles.wishForm__label}>{t('nameLabel')}</span>
+                        <input
+                            name="name"
+                            autoComplete="off"
+                            aria-required="true"
+                            value={formData.name}
+                            onChange={(e) => handleInputChange("name", e.target.value)}
+                            disabled={isSubmitting}
+                            className={`${styles.wishForm__input} ${
+                                errors.name ? styles['wishForm__input--error'] : ""
+                            }`}
+                            {...invalid('name')}
+                        />
+                    </label>
+                    {fieldError('name')}
+                </div>
 
                 {/* Favourite: a wish is either normal or a favourite (priority 'high') */}
                 {!isProposedWish && (
-                    <label className={styles.wishForm__favorite}>
-                        <input
-                            type="checkbox"
-                            name="priority"
-                            checked={formData.priority === 'high'}
-                            onChange={(e) => handleSelectChange("priority", e.target.checked ? 'high' : 'medium')}
-                            disabled={isSubmitting}
-                        />
-                        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
-                        </svg>
-                        <span>{t('favoriteLabel')}</span>
-                    </label>
+                    <div className={`${styles.wishForm__field} ${styles['wishForm__field--full']}`}>
+                        <label className={styles.wishForm__favorite}>
+                            <input
+                                type="checkbox"
+                                name="priority"
+                                checked={formData.priority === 'high'}
+                                onChange={(e) => handleSelectChange("priority", e.target.checked ? 'high' : 'medium')}
+                                disabled={isSubmitting}
+                                aria-describedby={`${uid}-favorite-hint`}
+                            />
+                            <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
+                            </svg>
+                            <span>{t('favoriteLabel')}</span>
+                        </label>
+                        <small id={`${uid}-favorite-hint`} className={styles.wishForm__hint}>{t('favoriteHint')}</small>
+                    </div>
                 )}
 
                 {/* Description */}
@@ -216,72 +228,73 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
                         className={`${styles.wishForm__textarea} ${
                             errors.description ? styles['wishForm__textarea--error'] : ""
                         }`}
+                        {...invalid('description')}
                     />
-                    {errors.description && (
-                        <small className={styles.wishForm__error}>
-                            {errors.description}
-                        </small>
-                    )}
                 </label>
 
                 {/* Prix */}
-                <label className={styles.wishForm__field}>
-                    <span className={styles.wishForm__label}>{t('priceLabel')}</span>
-                    <div className={styles.wishForm__priceGroup}>
-                        <select
-                            name="currency"
-                            value={formData.currency}
-                            onChange={(e) => handleSelectChange("currency", e.target.value)}
-                            disabled={isSubmitting}
-                            className={`${styles.wishForm__select} ${styles.wishForm__currencySelect}`}
-                        >
-                            <option value="€">EUR (€)</option>
-                            <option value="$">USD ($)</option>
-                            <option value="£">GBP (£)</option>
-                            <option value="¥">JPY (¥)</option>
-                        </select>
-                        <input
-                            name="price"
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            value={
-                                Number.isFinite(formData.price) && formData.price !== 0
-                                    ? String(formData.price)
-                                    : ""
-                            }
-                            onChange={(e) =>
-                                handleInputChange("price", Number.parseFloat(e.target.value || "0"))
-                            }
-                            disabled={isSubmitting}
-                            className={`${styles.wishForm__input} ${
-                                errors.price ? styles['wishForm__input--error'] : ""
-                            }`}
-                        />
-                    </div>
-                    {errors.price && (
-                        <small className={styles.wishForm__error}>
-                            {errors.price}
-                        </small>
-                    )}
-                </label>
+                <div className={styles.wishForm__field}>
+                    <label className={styles.wishForm__field}>
+                        <span className={styles.wishForm__label}>{t('priceLabel')}</span>
+                        <span className={styles.wishForm__priceGroup}>
+                            <select
+                                name="currency"
+                                aria-label={t('currencyLabel')}
+                                value={formData.currency}
+                                onChange={(e) => handleSelectChange("currency", e.target.value)}
+                                disabled={isSubmitting}
+                                className={`${styles.wishForm__select} ${styles.wishForm__currencySelect}`}
+                            >
+                                <option value="€">EUR (€)</option>
+                                <option value="$">USD ($)</option>
+                                <option value="£">GBP (£)</option>
+                                <option value="¥">JPY (¥)</option>
+                            </select>
+                            <input
+                                name="price"
+                                type="number"
+                                inputMode="decimal"
+                                step="0.01"
+                                min="0"
+                                aria-required="true"
+                                value={
+                                    Number.isFinite(formData.price) && formData.price !== 0
+                                        ? String(formData.price)
+                                        : ""
+                                }
+                                onChange={(e) =>
+                                    handleInputChange("price", Number.parseFloat(e.target.value || "0"))
+                                }
+                                disabled={isSubmitting}
+                                className={`${styles.wishForm__input} ${
+                                    errors.price ? styles['wishForm__input--error'] : ""
+                                }`}
+                                {...invalid('price')}
+                            />
+                        </span>
+                    </label>
+                    {fieldError('price')}
+                </div>
 
                 {/* Image URL */}
-                <label className={styles.wishForm__field}>
-                    <span className={styles.wishForm__label}>{t('imageUrlLabel')}</span>
-                    <input
-                        name="imageUrl"
-                        value={formData.imageUrl}
-                        onChange={(e) => handleInputChange("imageUrl", e.target.value)}
-                        disabled={isSubmitting}
-                        className={styles.wishForm__input}
-                    />
-                    {errors.imageUrl && (
-                        <small className={styles.wishForm__error}>
-                            {errors.imageUrl}
-                        </small>
-                    )}
-                </label>
+                <div className={styles.wishForm__field}>
+                    <label className={styles.wishForm__field}>
+                        <span className={styles.wishForm__label}>{t('imageUrlLabel')}</span>
+                        <input
+                            name="imageUrl"
+                            type="url"
+                            inputMode="url"
+                            autoComplete="off"
+                            placeholder="https://"
+                            value={formData.imageUrl}
+                            onChange={(e) => handleInputChange("imageUrl", e.target.value)}
+                            disabled={isSubmitting}
+                            className={`${styles.wishForm__input} ${errors.imageUrl ? styles['wishForm__input--error'] : ""}`}
+                            {...invalid('imageUrl')}
+                        />
+                    </label>
+                    {fieldError('imageUrl')}
+                </div>
 
                 {/* Notes */}
                 <label
@@ -301,82 +314,76 @@ export const WishForm = <T extends TWishForm | TProposedWishForm>({
 
             {/* Show to Owner */}
             {isProposedWish && (
-                <div className={`${styles.proposeWishModal__field} ${styles["wishForm__field--full"]}`}>
-                    <label className={styles.proposeWishModal__checkbox}>
-                        <input
-                            type="checkbox"
-                            checked={(formData as unknown as TProposedWishFormData).showToOwner}
-                            onChange={e => handleCheckboxChange("showToOwner", e.target.checked)}
-                        />
-                        {t('showToOwner')}
-                    </label>
-                </div>
+                <label className={styles.wishForm__check}>
+                    <input
+                        type="checkbox"
+                        checked={(formData as unknown as TProposedWishFormData).showToOwner}
+                        onChange={e => handleCheckboxChange("showToOwner", e.target.checked)}
+                    />
+                    <span>{t('showToOwner')}</span>
+                </label>
             )}
 
-            {/* Preview */}
+            {/* Preview: one line, so Save is never pushed away by a second card */}
             {(formData.name || formData.imageUrl) && (
-                <section className={styles.wishForm__preview}>
-                    <h3 className={styles.wishForm__previewTitle}>{t('preview')}</h3>
-                    <div className={styles.wishForm__previewCard}>
-                        <div className={styles.wishForm__previewImage}>
-                            {isValidUrl(formData.imageUrl) && !imgError ? (
-                                <Image
-                                    src={formData.imageUrl}
-                                    alt={t('previewImageAlt')}
-                                    width={600}
-                                    height={400}
-                                    onError={() => setImgError(true)}
-                                />
-                            ) : (
-                                previewPlaceholder
-                            )}
-                        </div>
-                        <div className={styles.wishForm__previewContent}>
-                            <strong className={styles.wishForm__previewName}>
-                                {formData.name || t('previewName')}
-                            </strong>
-                            <p className={styles.wishForm__previewDescription}>
-                                {formData.description || t('previewDescription')}
-                            </p>
-                            <div className={styles.wishForm__previewMeta}>
-                    <span className={styles.wishForm__previewPrice}>
-                      {formData.currency}
-                        {Number.isFinite(formData.price)
-                            ? formData.price.toFixed(2)
-                            : "0.00"}
-                    </span>
-                                {!isProposedWish && formData.priority === 'high' && (
-                    <span
-                        className={`${styles.wishForm__previewPriority} ${styles['wishForm__previewPriority--high']}`}
-                    >
-                      {t('priorityHighBadge')}
-                    </span>
-                                )}
-                            </div>
-                        </div>
+                <section className={styles.wishForm__preview} aria-label={t('preview')}>
+                    <div className={styles.wishForm__previewImage}>
+                        {isValidUrl(formData.imageUrl) && !imgError ? (
+                            <Image
+                                src={formData.imageUrl}
+                                alt={t('previewImageAlt')}
+                                width={120}
+                                height={120}
+                                onError={() => setImgError(true)}
+                            />
+                        ) : (
+                            previewPlaceholder
+                        )}
                     </div>
+                    <strong className={styles.wishForm__previewName}>
+                        {formData.name || t('previewName')}
+                    </strong>
+                    <span className={styles.wishForm__previewPrice}>
+                        {formData.currency}
+                        {Number.isFinite(formData.price) && formData.price > 0
+                            ? new Intl.NumberFormat(locale, { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(formData.price)
+                            : '—'}
+                    </span>
+                    {!isProposedWish && formData.priority === 'high' && (
+                        <span className={styles.wishForm__previewPriority}>
+                            {t('priorityHighBadge')}
+                        </span>
+                    )}
                 </section>
             )}
+          </div>
 
-            {/* Actions */}
+            {/* Actions stay in view while the fields scroll */}
             <footer className={styles.wishForm__actions}>
-                <button
-                    type="button"
-                    className={`${styles.wishForm__button} ${styles['wishForm__button--secondary']}`}
-                    onClick={onCancel}
-                    disabled={isSubmitting}
-                >
-                    {t('cancel')}
-                </button>
-                <button
-                    type="submit"
-                    className={`${styles.wishForm__button} ${styles['wishForm__button--primary']}`}
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting
-                        ? (submittingLabel ?? t('adding'))
-                        : (submitLabel ?? t('addItem'))}
-                </button>
+                {(formError || hasErrors) && (
+                    <p className={styles.wishForm__formError} role="alert">
+                        {formError || t('fixErrors')}
+                    </p>
+                )}
+                <div className={styles.wishForm__buttons}>
+                    <button
+                        type="button"
+                        className={`${styles.wishForm__button} ${styles['wishForm__button--secondary']}`}
+                        onClick={onCancel}
+                        disabled={isSubmitting}
+                    >
+                        {t('cancel')}
+                    </button>
+                    <button
+                        type="submit"
+                        className={`${styles.wishForm__button} ${styles['wishForm__button--primary']}`}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting
+                            ? (submittingLabel ?? t('adding'))
+                            : (submitLabel ?? t('addItem'))}
+                    </button>
+                </div>
             </footer>
         </form>
     )

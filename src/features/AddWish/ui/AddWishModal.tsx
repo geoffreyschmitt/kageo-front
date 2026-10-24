@@ -28,6 +28,7 @@ export const AddWishModal = ({
         formData,
         errors,
         isSubmitting,
+        formError,
         handleInputChange,
         handleCheckboxChange,
         handleSubmit,
@@ -52,6 +53,7 @@ export const AddWishModal = ({
             onClose={handleClose}
             title={t('title')}
             className={styles.addWishModal}
+            closeOnOverlayClick={false}
         >
                 <WishForm<TWishForm>
                     formData={formData}
@@ -64,6 +66,7 @@ export const AddWishModal = ({
                     onCancel={handleClose}
                     priority={formData.priority}
                     linkImport={linkImport}
+                    formError={formError}
                 />
         </Modal>
     );

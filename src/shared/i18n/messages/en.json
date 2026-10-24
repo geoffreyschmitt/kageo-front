@@ -358,7 +358,14 @@
     "createError": "Could not create wishlist — please try again",
     "updateError": "Could not update wishlist — please try again"
   },
+  "modal": {
+    "close": "Close"
+  },
   "wishForm": {
+    "currencyLabel": "Currency",
+    "favoriteHint": "It will show first on your list, under “Most Wanted”.",
+    "saveFailed": "Saving failed. Your changes are kept — try again in a moment.",
+    "fixErrors": "Please fix the fields marked below.",
     "nameLabel": "Name *",
     "priorityLabel": "Priority",
     "priorityLow": "Low",
