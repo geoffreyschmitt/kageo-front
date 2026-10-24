@@ -28,10 +28,15 @@ export default async function HomePage() {
               ).filter(Boolean) as Record<string, unknown>[]
             : []
 
+        const itemCounts = await Promise.all(
+            rawWishlists.map((w) => kv.scard(`wishlist:${w.id as string}:wishes`)),
+        )
+        const wishlists = rawWishlists.map((w, i) => ({ ...w, itemCount: itemCounts[i] ?? 0 }))
+
         return (
             <DashboardPage
                 userName={session.user.name ?? null}
-                wishlists={rawWishlists as Parameters<typeof DashboardPage>[0]['wishlists']}
+                wishlists={wishlists as Parameters<typeof DashboardPage>[0]['wishlists']}
             />
         )
     }

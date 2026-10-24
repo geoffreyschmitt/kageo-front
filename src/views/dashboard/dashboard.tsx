@@ -8,6 +8,7 @@ import { WishlistCard } from '@/widgets/WishlistCard'
 import { TWishlistCard } from '@/widgets/WishlistCard'
 
 import { CreateWishlistModal } from '@/features/CreateWishlist'
+import { UpdateWishlistModal } from '@/features/UpdateWishlist'
 
 import { eventBus } from '@/shared/eventBus'
 import { Link } from '@/shared/i18n/navigation'
@@ -149,7 +150,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                         <div className={styles.section__grid}>
                             {thisWeek.map((w) => (
                                 <div key={w.id} className={styles.cardWrap}>
-                                    <WishlistCard {...w} hideOwner />
+                                    <WishlistCard {...w} isOwnedByCurrentUser />
 </div>
                             ))}
                         </div>
@@ -167,7 +168,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                         <div className={styles.section__grid}>
                             {thisMonth.map((w) => (
                                 <div key={w.id} className={styles.cardWrap}>
-                                    <WishlistCard {...w} hideOwner />
+                                    <WishlistCard {...w} isOwnedByCurrentUser />
 </div>
                             ))}
                         </div>
@@ -185,7 +186,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                         <div className={styles.section__grid}>
                             {later.map((w) => (
                                 <div key={w.id} className={styles.cardWrap}>
-                                    <WishlistCard {...w} hideOwner />
+                                    <WishlistCard {...w} isOwnedByCurrentUser />
 </div>
                             ))}
                         </div>
@@ -201,7 +202,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                         <div className={styles.section__grid}>
                             {past.slice(0, 3).map((w) => (
                                 <div key={w.id} className={`${styles.cardWrap} ${styles['cardWrap--past']}`}>
-                                    <WishlistCard {...w} isHistory hideOwner />
+                                    <WishlistCard {...w} isHistory isOwnedByCurrentUser />
 </div>
                             ))}
                         </div>
@@ -213,6 +214,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                 onSubmit={() => router.refresh()}
                 onError={() => {}}
             />
+            <UpdateWishlistModal onSubmit={() => router.refresh()} />
         </main>
     )
 }
