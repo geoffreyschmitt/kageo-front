@@ -9,6 +9,14 @@ import {Link} from '@/shared/i18n/navigation';
 
 import styles from './WishlistCard.module.css'
 
+const getDaysUntil = (date: Date): number => {
+    const now = new Date()
+    now.setHours(0, 0, 0, 0)
+    const target = new Date(date)
+    target.setHours(0, 0, 0, 0)
+    return Math.round((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+}
+
 export const WishlistCard = ({
     id,
     name,
@@ -34,8 +42,23 @@ export const WishlistCard = ({
 
     const formattedDate = format.dateTime(eventDate, { day: 'numeric', month: 'long', year: 'numeric' })
 
+    const days = getDaysUntil(eventDate)
+    const months = Math.round(days / 30)
+    const countdown =
+        days === 0 ? t('today')
+        : days === 1 ? t('tomorrow')
+        : days > 1 && days <= 60 ? t('inDays', {count: days})
+        : days > 60 ? t('inMonths', {count: months})
+        : days >= -60 ? t('daysAgo', {count: -days})
+        : t('monthsAgo', {count: -months})
+    const countdownTone = days < 0 ? 'past' : days <= 1 ? 'soon' : 'default'
+
     return (
         <div className={styles.wishlistCard} aria-busy={isPending || undefined}>
+            <span className={`${styles.wishlistCard__tab} ${styles[`wishlistCard__tab--${countdownTone}`]}`}>
+                {countdown}
+            </span>
+            <div className={styles.wishlistCard__body}>
             <div className={styles.wishlistCard__imageContainer}>
                 {usePreviewGrid ? (
                     <div className={styles.wishlistCard__previewGrid}>
@@ -130,6 +153,7 @@ export const WishlistCard = ({
                         {isPending && <span className={styles.wishlistCard__saving}>{t('saving')}</span>}
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     )

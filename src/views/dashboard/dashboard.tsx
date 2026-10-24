@@ -85,48 +85,46 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
 
     return (
         <main className={styles.dashboard}>
-            {/* ── Greeting ── */}
-            <section className={styles.greeting}>
-                <div className={styles.greeting__inner}>
-                    <p className={styles.greeting__eyebrow}>{t('welcomeBack')}</p>
-                    <h1 className={styles.greeting__title}>{t('hello', { name: firstName })}</h1>
-
-                    {nextEvent && nextDays !== null ? (
-                        <div className={`${styles.nextEvent} ${nextDays <= 3 ? styles['nextEvent--urgent'] : nextDays === 0 ? styles['nextEvent--today'] : ''}`}>
-                            <span className={styles.nextEvent__label}>{t('nextEvent')}</span>
-                            <span className={styles.nextEvent__name}>{nextEvent.name}</span>
-                            <span className={styles.nextEvent__countdown}>{getCountdownLabel(nextDays)}</span>
-                        </div>
-                    ) : hydrated.length === 0 ? (
-                        <p className={styles.greeting__sub}>{t('noWishlists')}</p>
-                    ) : (
-                        <p className={styles.greeting__sub}>{t('noUpcoming')}</p>
-                    )}
-
-                    <div className={styles.greeting__actions}>
+            <div className={styles.content}>
+                <header className={styles.header}>
+                    <h1 className={styles.header__title}>{t('hello', { name: firstName })}</h1>
+                    <div className={styles.header__actions}>
+                        <Link href="/wishlists" className={styles.header__link}>
+                            {t('allWishlists')}
+                        </Link>
                         <button
-                            className={styles.greeting__ctaPrimary}
+                            className={styles.header__cta}
                             onClick={() => eventBus.emit('wishlist:openCreationModal', {})}
                         >
                             {t('newWishlist')}
                         </button>
-                        <Link href="/wishlists" className={styles.greeting__ctaSecondary}>
-                            {t('allWishlists')}
-                        </Link>
                     </div>
-                </div>
-            </section>
+                </header>
 
-            <div className={styles.content}>
+                {nextEvent && nextDays !== null ? (
+                    <Link
+                        href={`/wishlist/${nextEvent.id}`}
+                        className={`${styles.nextEvent} ${nextDays <= 3 ? styles['nextEvent--urgent'] : ''}`}
+                    >
+                        <span>{t('nextEvent')}</span>
+                        <span className={styles.nextEvent__name}>{nextEvent.name}</span>
+                        <span className={styles.nextEvent__countdown}>{getCountdownLabel(nextDays)}</span>
+                    </Link>
+                ) : hydrated.length === 0 ? (
+                    <p className={styles.sub}>{t('noWishlists')}</p>
+                ) : (
+                    <p className={styles.sub}>{t('noUpcoming')}</p>
+                )}
+
                 {upcoming.length === 0 && past.length === 0 && (
                     <section className={styles.empty}>
                         <div className={styles.empty__icon} aria-hidden="true">
                             <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
-                                <rect x="14" y="38" width="52" height="30" rx="4" fill="#f2ede5" stroke="#d6cec4" strokeWidth="1.5"/>
-                                <rect x="11" y="28" width="58" height="14" rx="4" fill="#ebe5da" stroke="#d6cec4" strokeWidth="1.5"/>
-                                <rect x="34" y="28" width="12" height="40" rx="2" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1"/>
-                                <path d="M40 28 C32 18 20 20 22 28 C24 35 38 31 40 28Z" fill="#eaf2eb" stroke="#3f6845" strokeWidth="1" opacity="0.8"/>
-                                <path d="M40 28 C48 18 60 20 58 28 C56 35 42 31 40 28Z" fill="#eaf2eb" stroke="#3f6845" strokeWidth="1" opacity="0.8"/>
+                                <rect x="14" y="38" width="52" height="30" rx="4" fill="var(--surface-sunken)" stroke="var(--border-default)" strokeWidth="1.5"/>
+                                <rect x="11" y="28" width="58" height="14" rx="4" fill="var(--surface-sunken-2)" stroke="var(--border-default)" strokeWidth="1.5"/>
+                                <rect x="34" y="28" width="12" height="40" rx="2" fill="var(--accent-tint-bg)" stroke="var(--accent-tint-border)" strokeWidth="1"/>
+                                <path d="M40 28 C32 18 20 20 22 28 C24 35 38 31 40 28Z" fill="var(--accent-tint-bg)" stroke="var(--accent)" strokeWidth="1" opacity="0.8"/>
+                                <path d="M40 28 C48 18 60 20 58 28 C56 35 42 31 40 28Z" fill="var(--accent-tint-bg)" stroke="var(--accent)" strokeWidth="1" opacity="0.8"/>
                             </svg>
                         </div>
                         <h2 className={styles.empty__title}>{t('nothingYet')}</h2>
@@ -151,11 +149,8 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                         <div className={styles.section__grid}>
                             {thisWeek.map((w) => (
                                 <div key={w.id} className={styles.cardWrap}>
-                                    <div className={`${styles.cardWrap__pill} ${getDaysUntil(w.eventDate) <= 1 ? styles['cardWrap__pill--today'] : ''}`}>
-                                        {getCountdownLabel(getDaysUntil(w.eventDate))}
-                                    </div>
                                     <WishlistCard {...w} hideOwner />
-                                </div>
+</div>
                             ))}
                         </div>
                     </section>
@@ -172,11 +167,8 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                         <div className={styles.section__grid}>
                             {thisMonth.map((w) => (
                                 <div key={w.id} className={styles.cardWrap}>
-                                    <div className={styles.cardWrap__pill}>
-                                        {getCountdownLabel(getDaysUntil(w.eventDate))}
-                                    </div>
                                     <WishlistCard {...w} hideOwner />
-                                </div>
+</div>
                             ))}
                         </div>
                     </section>
@@ -193,11 +185,8 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                         <div className={styles.section__grid}>
                             {later.map((w) => (
                                 <div key={w.id} className={styles.cardWrap}>
-                                    <div className={styles.cardWrap__pill}>
-                                        {getCountdownLabel(getDaysUntil(w.eventDate))}
-                                    </div>
                                     <WishlistCard {...w} hideOwner />
-                                </div>
+</div>
                             ))}
                         </div>
                     </section>
@@ -212,11 +201,8 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                         <div className={styles.section__grid}>
                             {past.slice(0, 3).map((w) => (
                                 <div key={w.id} className={`${styles.cardWrap} ${styles['cardWrap--past']}`}>
-                                    <div className={`${styles.cardWrap__pill} ${styles['cardWrap__pill--past']}`}>
-                                        {getCountdownLabel(getDaysUntil(w.eventDate))}
-                                    </div>
                                     <WishlistCard {...w} isHistory hideOwner />
-                                </div>
+</div>
                             ))}
                         </div>
                     </section>

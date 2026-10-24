@@ -27,23 +27,38 @@
 }
 
 /* ── Card shell ───────────────────────────── */
+/* Outer element: lifts on hover and owns the countdown tab. Inner body: the bordered card. */
 
 .wishlistCard {
-    background: var(--wc2-surface);
-    border: 1px solid var(--wc2-border);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    --wc2-edge:    var(--wc2-border);
+    --wc2-tab-r:   12px;
     position: relative;
     display: flex;
     flex-direction: column;
-    box-shadow: var(--wc2-shadow);
+    border-radius: 20px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wishlistCard:hover {
-    border-color: var(--wc2-border-hover);
-    box-shadow: var(--wc2-shadow-hover);
+    --wc2-edge: var(--wc2-border-hover);
     transform: translateY(-4px);
+}
+
+.wishlistCard__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--wc2-surface);
+    border: 1px solid var(--wc2-edge);
+    /* square top-left: the tab continues the corner */
+    border-radius: 0 20px 20px 20px;
+    overflow: hidden;
+    box-shadow: var(--wc2-shadow);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wishlistCard:hover .wishlistCard__body {
+    box-shadow: var(--wc2-shadow-hover);
 }
 
 .wishlistCard:has(.wishlistCard__link:focus-visible) {
@@ -53,6 +68,58 @@
 
 .wishlistCard[aria-busy="true"] {
     opacity: 0.75;
+}
+
+/* ── Countdown tab ────────────────────────── */
+
+.wishlistCard__tab {
+    --wc2-tab-bg: var(--wc2-surface);
+    position: relative;
+    z-index: 1;
+    align-self: flex-start;
+    margin-bottom: -2px; /* covers the body's top border and its 1px inner highlight (dark theme), so tab and body read as one */
+    padding: 6px 14px 7px;
+    border: 1px solid var(--wc2-edge);
+    border-bottom: none;
+    border-radius: var(--wc2-tab-r) var(--wc2-tab-r) 0 0;
+    background: var(--wc2-tab-bg);
+    font-family: var(--wc2-font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.1px;
+    color: var(--wc2-sage);
+    transition: border-color 0.3s ease;
+}
+
+/* Concave join between the tab's right edge and the body's top edge. Starts in the same pixel column as the
+   tab's right border, so the curve replaces the border instead of running beside it. */
+.wishlistCard__tab::after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+    width: var(--wc2-tab-r);
+    height: calc(var(--wc2-tab-r) + 1px);
+    background:
+        radial-gradient(
+            circle at 100% 0,
+            transparent calc(var(--wc2-tab-r) - 1px),
+            var(--wc2-edge) calc(var(--wc2-tab-r) - 1px),
+            var(--wc2-edge) var(--wc2-tab-r),
+            var(--wc2-tab-bg) var(--wc2-tab-r)
+        ) 0 0 / 100% var(--wc2-tab-r) no-repeat,
+        /* the body's 1px inner highlight (dark theme) sits just under its border: hide it here too */
+        linear-gradient(var(--wc2-tab-bg), var(--wc2-tab-bg)) 0 100% / 100% 1px no-repeat;
+    pointer-events: none;
+}
+
+.wishlistCard__tab--soon {
+    color: var(--amber);
+}
+
+.wishlistCard__tab--past {
+    color: var(--wc2-text-3);
 }
 
 /* The title link stretches over the whole card; Edit sits above it. */
@@ -65,7 +132,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
 }
 
 .wishlistCard__link:focus-visible {
@@ -76,7 +143,9 @@
 
 .wishlistCard__imageContainer {
     position: relative;
-    width: 100%;
+    /* inset in the card's surface, so the countdown tab above joins a plain background */
+    margin: 10px 10px 0;
+    border-radius: 12px;
     height: 168px;
     overflow: hidden;
     flex-shrink: 0;

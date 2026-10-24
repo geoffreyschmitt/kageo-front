@@ -127,7 +127,6 @@
     "ownershipIconAlt": "Owner Icon"
   },
   "dashboard": {
-    "welcomeBack": "Welcome back",
     "hello": "Hello, {name}",
     "nextEvent": "Next event",
     "noWishlists": "You have no wishlists yet. Create one to get started.",
@@ -310,6 +309,12 @@
     "private": "Private",
     "items": "{count, plural, one {# item} other {# items}}",
     "edit": "Edit",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "inDays": "In {count, plural, one {# day} other {# days}}",
+    "inMonths": "In {count, plural, one {# month} other {# months}}",
+    "daysAgo": "{count, plural, one {# day} other {# days}} ago",
+    "monthsAgo": "{count, plural, one {# month} other {# months}} ago",
     "saving": "Saving…",
     "by": "By {name}"
   },
