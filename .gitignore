@@ -60,6 +60,7 @@ public/swe-worker-*.js
 # playwright
 /test-results/
 /playwright-report/
+/.playwright-mcp/
 
 # local tooling (skill symlinks are machine-specific; recreate via the skills installer)
 .junie/

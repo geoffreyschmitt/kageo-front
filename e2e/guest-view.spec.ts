@@ -41,7 +41,9 @@ test('a guest who logs in from the shared list can reserve straight away', async
 
     const page = await context.newPage()
     await page.goto(`/en/wishlist/${list.id}`)
-    await expect(page.getByText('Log in to see and post comments.')).toBeVisible()
+    // Signed out, the preview offers the thread but cannot show it: no empty-state sentence yet.
+    await expect(page.getByRole('button', { name: 'Start the conversation' })).toBeVisible()
+    await expect(page.getByText(/No comments yet/)).toHaveCount(0)
 
     await page.getByRole('button', { name: 'Login' }).first().click()
     await page.getByLabel('Email').fill(email)
@@ -50,7 +52,7 @@ test('a guest who logs in from the shared list can reserve straight away', async
     await expect(page.getByText('Hello, Gus')).toBeVisible()
 
     // No reload: the list itself must now know who is signed in.
-    await expect(page.getByText('Log in to see and post comments.')).toBeHidden()
+    await expect(page.getByText(/No comments yet/)).toBeVisible()
     await page.getByRole('button', { name: 'Reserve', exact: true }).click()
     await expect(page.getByText('Reserved by you')).toBeVisible()
     await context.close()
