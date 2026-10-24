@@ -1,0 +1,287 @@
+/* One quiet row: status chips and a budget chip on the left, sort on the right. No panel, no toggle. */
+
+.bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    margin-bottom: 28px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip,
+.budgetPill {
+    border: 1.5px solid var(--g-border);
+    border-radius: 100px;
+    background: var(--g-surface);
+    color: var(--g-text-2);
+    font-family: var(--g-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.chip {
+    min-height: 36px;
+    padding: 0 14px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.chip:hover:not(:disabled) {
+    border-color: var(--g-sage);
+    color: var(--g-sage);
+}
+
+.chip--active,
+.budgetPill--active {
+    background: var(--g-sage-light);
+    border-color: var(--g-sage);
+    color: var(--g-sage);
+    font-weight: 600;
+}
+
+.chip:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.chip:focus-visible,
+.budgetClear:focus-visible,
+.clear:focus-visible,
+.sortSelect:focus-visible,
+.input:focus-visible {
+    outline: 2px solid var(--g-sage);
+    outline-offset: 2px;
+}
+
+.budgetPill:has(.budgetButton:focus-visible) {
+    outline: 2px solid var(--g-sage);
+    outline-offset: 2px;
+}
+
+.budgetButton:focus-visible {
+    outline: none;
+}
+
+/* ── Budget ───────────────────────────────── */
+
+.budget {
+    position: relative;
+}
+
+.budgetPill {
+    display: inline-flex;
+    align-items: center;
+}
+
+.budgetPill:not(.budgetPill--active):hover {
+    border-color: var(--g-sage);
+    color: var(--g-sage);
+}
+
+.budgetButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 33px;
+    padding: 0 14px;
+    border: none;
+    border-radius: 100px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.budgetPill--active .budgetButton {
+    padding-right: 6px;
+}
+
+.budgetClear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-right: 4px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.budgetClear:hover {
+    background: var(--g-surface);
+}
+
+.popover {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 8px);
+    left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    padding: 16px;
+    background: var(--g-surface);
+    border: 1px solid var(--g-border);
+    border-radius: 16px;
+    box-shadow: var(--g-shadow-lg);
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fieldLabel {
+    font-family: var(--g-font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--g-text-3);
+}
+
+.input {
+    width: 104px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1.5px solid var(--g-border);
+    border-radius: 10px;
+    background: var(--g-surface);
+    color: var(--g-text);
+    font-family: var(--g-font-sans);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    transition: border-color 0.2s;
+}
+
+.input::placeholder {
+    color: var(--g-text-3);
+}
+
+.input:focus {
+    border-color: var(--g-sage);
+}
+
+.input[aria-invalid='true'] {
+    border-color: var(--g-high);
+}
+
+.hint {
+    flex-basis: 100%;
+    margin: 0;
+    font-family: var(--g-font-sans);
+    font-size: 12px;
+    color: var(--g-high);
+}
+
+/* ── Sort and meta ────────────────────────── */
+
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 16px;
+    margin-left: auto;
+}
+
+.count {
+    font-family: var(--g-font-sans);
+    font-size: 13px;
+    color: var(--g-text-3);
+}
+
+.clear {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--g-sage);
+    font-family: var(--g-font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.clear:hover {
+    color: var(--g-sage-hover);
+}
+
+.sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--g-font-sans);
+    font-size: 13px;
+    color: var(--g-text-3);
+}
+
+.sortSelect {
+    padding: 6px 22px 6px 2px;
+    border: none;
+    border-bottom: 1.5px solid transparent;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M3 5l4 4 4-4' stroke='%236b6258' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 4px center;
+    color: var(--g-text);
+    font-family: var(--g-font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.sortSelect:hover {
+    border-bottom-color: var(--g-border);
+}
+
+.sortSelect option {
+    background: var(--g-surface);
+    color: var(--g-text);
+}
+
+/* Touch: 44px targets, 14px text. */
+@media (max-width: 768px), (pointer: coarse) {
+    .chip { min-height: 44px; font-size: 14px; }
+    .budgetButton { min-height: 41px; font-size: 14px; }
+    .budgetPill { font-size: 14px; }
+    .budgetClear { width: 36px; height: 36px; }
+    .input { min-height: 44px; font-size: 16px; }
+    .count,
+    .clear,
+    .sort,
+    .sortSelect { font-size: 14px; }
+    .sortSelect { min-height: 44px; }
+    .clear { min-height: 44px; }
+}
+
+@media (max-width: 768px) {
+    .meta { margin-left: 0; width: 100%; justify-content: space-between; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chip,
+    .budgetPill,
+    .input { transition: none; }
+}
