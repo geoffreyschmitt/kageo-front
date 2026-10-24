@@ -38,6 +38,15 @@ Kageo is a side project by two creators, Kevin and Geoffrey (the name is a fusio
 
 Name: **Kageo** (Kevin + Geoffrey). Logo: an outlined gift box with a solid bow, in the site green, one colour. Display font Fraunces. Tone: warm, simple, friendly, never corporate.
 
+**Voice (UX copy):** warm, plain and friendly, never corporate. Short sentences, everyday words, no jargon, readable by someone who has never used the app. French is the default language and English is a full peer: every string exists in both. Errors are calm and say what to do next.
+
+## Accessibility and inclusion
+
+- Target: WCAG 2.1 AA. Text levels meet AA contrast on their surfaces, state is never carried by colour alone (chip plus icon or label), and focus is always visible.
+- The main audience includes non-technical and older relatives on phones: tap targets at least 44px, text never below 12px, one clear action per step, no account needed to view.
+- Both light and dark themes must hold the same contrast bar.
+- Not yet done: a real-device pass and a screen-reader pass (see `docs/roadmap.md`, mobile audit).
+
 ## Business model (freemium, from the Monetise phase)
 
 **Principles**
