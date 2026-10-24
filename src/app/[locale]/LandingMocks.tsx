@@ -79,6 +79,7 @@ export const MockWish = ({ variant, name, price, addedDate, reservedByName }: TM
                 giftPot={giftPot}
                 eventName=""
                 ownerName="Julie"
+                titleIsHeading={false}
             />
         </div>
     )

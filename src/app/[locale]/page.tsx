@@ -154,7 +154,7 @@ export default async function HomePage() {
                         <div className={pageStyles.surprise__ribbon} aria-hidden="true">
                             <Bow className={pageStyles.surprise__bow} />
                         </div>
-                        <div className={pageStyles.view}>
+                        <div className={`${pageStyles.view} ${pageStyles.viewEnd}`}>
                             <h3 className={pageStyles.view__title}>{t('guestViewTitle')}</h3>
                             <p className={pageStyles.view__note}>{t('guestViewNote')}</p>
                             <MockWish variant="reserved" {...cocotte} />

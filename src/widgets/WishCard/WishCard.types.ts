@@ -62,4 +62,6 @@ export type TWishCard = {
   isInvited?: boolean
   eventName?: string
   ownerName?: string
+  /** Set to false where the card is only a picture (landing demos) so it adds no heading to the outline. */
+  titleIsHeading?: boolean
 }

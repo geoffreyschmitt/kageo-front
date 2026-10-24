@@ -193,6 +193,14 @@ A restrained palette: warm paper, brown-black ink, one sage accent, and a small 
 - **Body** (400, 14px, 1.6): descriptions, form text; keep lines to 65-75ch.
 - **Label** (500, 13px, 0.1px tracking): buttons, tabs, chips. Small captions go down to 11-12px (never below); status chips are 11px, rising to 12px on touch.
 
+**Landing steps.** The logged-out homepage is read on a phone by someone who has never seen the app, so its copy runs larger than the app's 14px. It uses six steps, declared once as `--land-*` on `.page` in `app/[locale]/page.module.css`:
+- **Display** `clamp(38px, 5vw, 60px)`: hero and the "surprise" headline.
+- **Section** `clamp(30px, 4vw, 42px)`: every other section heading.
+- **Title** 20px: step titles, the two view titles, note leads (Fraunces).
+- **Lead** 18px: the paragraph under a heading.
+- **Body** 16px: lists, notes, buttons.
+- **Small** 15px: reassurance lines, captions, view notes.
+
 ### Named Rules
 **The Serif Is a Voice Rule.** Fraunces is for names, titles and moments of warmth. Forms, buttons, metadata and tables are always DM Sans.
 

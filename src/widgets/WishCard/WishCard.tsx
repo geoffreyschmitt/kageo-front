@@ -76,9 +76,11 @@ export const WishCard = ({
     isLoggedIn,
     isInvited,
     eventName,
-    ownerName
+    ownerName,
+    titleIsHeading = true
 }: TWishCard) => {
     const t = useTranslations('wishCard')
+    const TitleTag = titleIsHeading ? 'h3' : 'p'
     const locale = useLocale()
     const tComments = useTranslations('comments')
     const [imgError, setImgError] = useState(false)
@@ -191,7 +193,7 @@ export const WishCard = ({
 
             <div className={styles['wish-card__content']}>
                 <div className={styles['wish-card__header']}>
-                    <h3 className={styles['wish-card__title']}>{name}</h3>
+                    <TitleTag className={styles['wish-card__title']}>{name}</TitleTag>
                     {price > 0 && (
                         <div className={styles['wish-card__price']}>
                             {formatVersionPrice(price, currency, locale)}

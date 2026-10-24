@@ -5,11 +5,23 @@
    ============================================ */
 
 .page {
+    /* Landing type steps, documented in DESIGN.md. Marketing copy runs larger than the app's 14px. */
+    --land-display: clamp(38px, 5vw, 60px);
+    --land-section: clamp(30px, 4vw, 42px);
+    --land-title: 20px;
+    --land-lead: 18px;
+    --land-body: 16px;
+    --land-small: 15px;
     background: var(--surface-page);
     min-height: 100vh;
     font-family: var(--font-sans);
-    font-size: 16px;
+    font-size: var(--land-body);
     color: var(--text-primary);
+}
+
+/* The closing band sits flush on the footer; the app's 48px gap above it would show as a dark stripe. */
+.page + footer {
+    margin-top: 0;
 }
 
 .srOnly {
@@ -38,7 +50,7 @@
 
 .hero__title {
     font-family: var(--font-serif);
-    font-size: clamp(38px, 5vw, 60px);
+    font-size: var(--land-display);
     font-weight: var(--font-weight-normal);
     line-height: 1.08;
     letter-spacing: -0.02em;
@@ -47,7 +59,7 @@
 }
 
 .hero__description {
-    font-size: 18px;
+    font-size: var(--land-lead);
     line-height: 1.6;
     color: var(--text-secondary);
     max-width: 460px;
@@ -63,7 +75,7 @@
 }
 
 .hero__reassure {
-    font-size: 15px;
+    font-size: var(--land-small);
     line-height: 1.5;
     color: var(--text-secondary);
     margin: 18px 0 0;
@@ -73,7 +85,7 @@
 .hero__cta,
 .cta__button {
     font-family: var(--font-sans);
-    font-size: 16px;
+    font-size: var(--land-body);
     font-weight: var(--font-weight-semibold);
     padding: 16px 34px;
     border-radius: var(--border-radius-full);
@@ -88,7 +100,7 @@
 
 .hero__ctaSecondary {
     font-family: var(--font-sans);
-    font-size: 16px;
+    font-size: var(--land-body);
     font-weight: var(--font-weight-medium);
     padding: 15px 28px;
     border-radius: var(--border-radius-full);
@@ -170,7 +182,7 @@
 
 .steps__title {
     font-family: var(--font-serif);
-    font-size: clamp(30px, 4vw, 40px);
+    font-size: var(--land-section);
     font-weight: var(--font-weight-normal);
     letter-spacing: -0.02em;
     margin: 0 0 8px;
@@ -178,7 +190,7 @@
 }
 
 .steps__subtitle {
-    font-size: 17px;
+    font-size: var(--land-lead);
     color: var(--text-secondary);
     margin: 0 0 48px;
 }
@@ -222,13 +234,13 @@
 
 .step__title {
     font-family: var(--font-serif);
-    font-size: 21px;
+    font-size: var(--land-title);
     font-weight: var(--font-weight-medium);
     margin: 0 0 8px;
 }
 
 .step__desc {
-    font-size: 16px;
+    font-size: var(--land-body);
     line-height: 1.6;
     color: var(--text-secondary);
     margin: 0;
@@ -250,7 +262,7 @@
 
 .guest__title {
     font-family: var(--font-serif);
-    font-size: clamp(32px, 4.2vw, 46px);
+    font-size: var(--land-section);
     font-weight: var(--font-weight-normal);
     line-height: 1.12;
     letter-spacing: -0.02em;
@@ -259,7 +271,7 @@
 }
 
 .guest__desc {
-    font-size: 18px;
+    font-size: var(--land-lead);
     line-height: 1.65;
     color: var(--text-secondary);
     max-width: 480px;
@@ -297,7 +309,7 @@
 
 .phone__caption {
     margin-top: 16px;
-    font-size: 15px;
+    font-size: var(--land-small);
     line-height: 1.5;
     color: var(--text-secondary);
     text-align: center;
@@ -324,7 +336,7 @@
 
 .pot__title {
     font-family: var(--font-serif);
-    font-size: clamp(28px, 3.5vw, 36px);
+    font-size: var(--land-section);
     font-weight: var(--font-weight-normal);
     letter-spacing: -0.02em;
     margin: 0 0 16px;
@@ -332,7 +344,7 @@
 }
 
 .pot__description {
-    font-size: 17px;
+    font-size: var(--land-lead);
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0 0 20px;
@@ -346,7 +358,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    font-size: 16px;
+    font-size: var(--land-body);
     color: var(--text-secondary);
 }
 
@@ -368,7 +380,7 @@
 }
 
 .pot__note {
-    font-size: 15px;
+    font-size: var(--land-small);
     line-height: 1.55;
     color: var(--text-secondary);
     margin: 0;
@@ -393,7 +405,7 @@
 
 .surprise__title {
     font-family: var(--font-serif);
-    font-size: clamp(36px, 5.2vw, 60px);
+    font-size: var(--land-display);
     font-weight: var(--font-weight-normal);
     line-height: 1.08;
     letter-spacing: -0.02em;
@@ -402,7 +414,7 @@
 }
 
 .surprise__desc {
-    font-size: 18px;
+    font-size: var(--land-lead);
     line-height: 1.65;
     color: var(--text-secondary);
     max-width: 600px;
@@ -424,15 +436,25 @@
     max-width: 360px;
 }
 
+/* Side by side, the two views mirror each other around the ribbon: the second hugs the right edge. */
+.viewEnd {
+    text-align: right;
+}
+
+.viewEnd .mock {
+    margin-left: auto;
+    text-align: left;
+}
+
 .view__title {
     font-family: var(--font-serif);
-    font-size: 21px;
+    font-size: var(--land-title);
     font-weight: var(--font-weight-medium);
     margin: 0 0 2px;
 }
 
 .view__note {
-    font-size: 15px;
+    font-size: var(--land-small);
     color: var(--text-secondary);
     margin: 0 0 16px;
 }
@@ -474,7 +496,7 @@
 }
 
 .note {
-    font-size: 16px;
+    font-size: var(--land-body);
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0;
@@ -483,7 +505,7 @@
 
 .note__lead {
     font-family: var(--font-serif);
-    font-size: 19px;
+    font-size: var(--land-title);
     font-weight: var(--font-weight-medium);
     color: var(--text-primary);
 }
@@ -498,7 +520,7 @@
 
 .cta__title {
     font-family: var(--font-serif);
-    font-size: clamp(32px, 4vw, 42px);
+    font-size: var(--land-section);
     font-weight: var(--font-weight-normal);
     letter-spacing: -0.02em;
     color: var(--text-primary);
@@ -507,7 +529,7 @@
 }
 
 .cta__description {
-    font-size: 18px;
+    font-size: var(--land-lead);
     color: var(--text-secondary);
     max-width: 440px;
     margin: 0 auto 34px;
@@ -562,7 +584,6 @@
     }
 
     .hero__description {
-        font-size: 17px;
         margin-bottom: 24px;
     }
 
@@ -607,6 +628,14 @@
 
     .surprise__compare {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .viewEnd {
+        text-align: left;
+    }
+
+    .viewEnd .mock {
+        margin-left: 0;
     }
 
     .surprise__ribbon {
