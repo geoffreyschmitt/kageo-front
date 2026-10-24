@@ -759,7 +759,10 @@
     "count": "{count, plural, one {# comment} other {# comments}}",
     "addCta": "Comment",
     "close": "Close comments",
-    "wishlistEmpty": "No comments yet — start the conversation about {ownerName}'s wishlist."
+    "wishlistEmpty": "No comments yet — start the conversation about {ownerName}'s wishlist.",
+    "viewAll": "View all {count} comments",
+    "openThread": "Open the thread",
+    "startThread": "Start the conversation"
   },
   "publicProfile": {
     "publicWishlistsTitle": "Public Wishlists",

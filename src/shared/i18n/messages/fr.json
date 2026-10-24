@@ -759,7 +759,10 @@
     "count": "{count, plural, one {# commentaire} other {# commentaires}}",
     "addCta": "Commenter",
     "close": "Fermer les commentaires",
-    "wishlistEmpty": "Aucun commentaire pour le moment — lancez la conversation sur la wishlist de {ownerName}."
+    "wishlistEmpty": "Aucun commentaire pour le moment — lancez la conversation sur la wishlist de {ownerName}.",
+    "viewAll": "Voir les {count} commentaires",
+    "openThread": "Ouvrir la discussion",
+    "startThread": "Lancer la conversation"
   },
   "publicProfile": {
     "publicWishlistsTitle": "Wishlists publiques",

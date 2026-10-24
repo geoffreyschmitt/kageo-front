@@ -73,6 +73,8 @@
     position: sticky;
     top: 88px;
     min-width: 0;
+    max-height: calc(100vh - 88px - 24px);
+    overflow-y: auto;
 }
 
 .wishlist__main {
@@ -443,6 +445,8 @@
 
     .wishlist__intro {
         position: static;
+        max-height: none;
+        overflow-y: visible;
     }
 
     .wishlist__actions {

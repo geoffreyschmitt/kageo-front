@@ -10,7 +10,7 @@ import {TWishCard, WishCard} from '@/widgets/WishCard';
 import {WishFilterBar} from '@/widgets/WishFilterBar'
 
 import {AddWishModal} from '@/features/AddWish'
-import {CommentsSection, CommentsDrawer} from '@/features/Comments'
+import {CommentsDrawer, CommentsPreview} from '@/features/Comments'
 import {DeleteWishlistButton} from '@/features/DeleteWishlist'
 import {EditWishModal} from '@/features/EditWish'
 import {ProposeWishModal} from '@/features/ProposeWish';
@@ -414,6 +414,13 @@ export default function Wishlist({
           {showLockedNotice && (
             <p className={styles.wishlist__lockedNotice}>{t('cannotEditNotice')}</p>
           )}
+          {!userIsOwner && !isHistory && (
+            <CommentsPreview
+              wishlistId={id}
+              isLoggedIn={isLoggedIn}
+              emptyMessage={tComments('wishlistEmpty', { ownerName })}
+            />
+          )}
         </header>
 
         <div className={styles.wishlist__main}>
@@ -470,6 +477,8 @@ export default function Wishlist({
           </>
       ) : (
         <div className={styles.wishlist__items}>
+          {potCard}
+
           <WishFilterBar
             showStatus={!userIsOwner}
             statusView={isTakenFilter ? 'taken' : isOpenFilter ? 'open' : 'all'}
@@ -477,8 +486,6 @@ export default function Wishlist({
             counts={{all: shownableCount, open: wantedItems.length, taken: reservedItems.length + purchasedItems.length}}
             priceRange={priceRange}
             onPriceRangeChange={setPriceRange}
-          {potCard}
-
             currency={currency}
             sortBy={sortBy}
             sortOrder={sortOrder}
@@ -796,22 +803,14 @@ export default function Wishlist({
             </div>
           )}
 
-          {!userIsOwner && !isHistory && (
-            <div className={styles.wishlist__commentsSection}>
-              <CommentsSection
-                target={{ type: 'wishlist', wishlistId: id }}
-                enabled={!userIsOwner}
-                isLoggedIn={isLoggedIn}
-                emptyMessage={tComments('wishlistEmpty', { ownerName })}
-              />
-            </div>
-          )}
         </div>
       )}
         </div>
       </div>
 
-      {!userIsOwner && <CommentsDrawer isLoggedIn={isLoggedIn} />}
+      {!userIsOwner && (
+        <CommentsDrawer isLoggedIn={isLoggedIn} emptyMessage={tComments('wishlistEmpty', { ownerName })} />
+      )}
 
       {canEditWishlist && (
         <UpdateWishlistModal

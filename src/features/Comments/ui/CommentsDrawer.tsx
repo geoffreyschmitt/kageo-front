@@ -13,28 +13,40 @@ type TCommentsDrawerProps = {
     // Logged-out visitors may open the drawer (the composer prompts them to log in)
     // but never see existing comments — this mirrors CommentsSection's own gating.
     isLoggedIn?: boolean
+    // Empty-state copy for the wishlist-level thread.
+    emptyMessage?: string
 }
 
-// Single instance mounted per wishlist page. WishCards emit `wish:openComments`
-// to open it; the wishlist owner never triggers it because the card entry point
-// is hidden from them.
-export const CommentsDrawer = ({ isLoggedIn = true }: TCommentsDrawerProps) => {
+type TThread = { kind: 'wish'; id: string; name: string } | { kind: 'wishlist'; id: string }
+
+// Single instance mounted per wishlist page. WishCards emit `wish:openComments` and the
+// sidebar preview emits `wishlist:openComments` to open it; the wishlist owner never
+// triggers either because both entry points are hidden from them.
+export const CommentsDrawer = ({ isLoggedIn = true, emptyMessage }: TCommentsDrawerProps) => {
     const t = useTranslations('comments')
-    const [wish, setWish] = useState<{ id: string; name: string } | null>(null)
+    const [thread, setThread] = useState<TThread | null>(null)
 
     useEffect(
         () =>
             eventBus.on('wish:openComments', ({ wishId, wishName }) => {
-                setWish({ id: wishId, name: wishName })
+                setThread({ kind: 'wish', id: wishId, name: wishName })
             }),
         [],
     )
 
-    const close = () => setWish(null)
+    useEffect(
+        () =>
+            eventBus.on('wishlist:openComments', ({ wishlistId }) => {
+                setThread({ kind: 'wishlist', id: wishlistId })
+            }),
+        [],
+    )
+
+    const close = () => setThread(null)
 
     // Lock body scroll and close on Escape while open.
     useEffect(() => {
-        if (!wish) return
+        if (!thread) return
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') close()
         }
@@ -44,9 +56,9 @@ export const CommentsDrawer = ({ isLoggedIn = true }: TCommentsDrawerProps) => {
             document.body.style.overflow = ''
             document.removeEventListener('keydown', onKeyDown)
         }
-    }, [wish])
+    }, [thread])
 
-    if (!wish) return null
+    if (!thread) return null
 
     return (
         <div className={styles.wrap} role="dialog" aria-modal="true" aria-label={t('defaultTitle')}>
@@ -67,13 +79,20 @@ export const CommentsDrawer = ({ isLoggedIn = true }: TCommentsDrawerProps) => {
                 </div>
                 <div className={styles.body}>
                     <CommentsSection
-                        target={{ type: 'wish', wishId: wish.id }}
+                        target={
+                            thread.kind === 'wish'
+                                ? { type: 'wish', wishId: thread.id }
+                                : { type: 'wishlist', wishlistId: thread.id }
+                        }
                         enabled
                         isLoggedIn={isLoggedIn}
-                        title={wish.name}
+                        title={thread.kind === 'wish' ? thread.name : undefined}
+                        emptyMessage={thread.kind === 'wishlist' ? emptyMessage : undefined}
                         fill
                         onCommentPosted={() =>
-                            eventBus.emit('wish:commentCountChanged', { wishId: wish.id, delta: 1 })
+                            thread.kind === 'wish'
+                                ? eventBus.emit('wish:commentCountChanged', { wishId: thread.id, delta: 1 })
+                                : eventBus.emit('wishlist:commentPosted', { wishlistId: thread.id })
                         }
                     />
                 </div>
