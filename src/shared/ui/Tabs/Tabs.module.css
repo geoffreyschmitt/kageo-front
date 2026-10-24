@@ -57,13 +57,13 @@
 }
 
 .tabs__button--active {
-    background: var(--tab-sage);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     font-weight: 600;
 }
 
 .tabs__button--active:hover {
-    background: var(--accent-hover);
+    background: var(--accent-solid-hover);
     color: var(--accent-contrast);
 }
 

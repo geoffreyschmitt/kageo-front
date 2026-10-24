@@ -78,8 +78,8 @@
     padding: 16px 34px;
     border-radius: var(--border-radius-full);
     border: none;
-    background: var(--accent);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     text-decoration: none;
     cursor: pointer;
     transition: var(--transition-all-fast);
@@ -111,7 +111,7 @@
 @media (hover: hover) {
     .hero__cta:hover,
     .cta__button:hover {
-        background: var(--accent-hover);
+        background: var(--accent-solid-hover);
         box-shadow: var(--shadow-hover);
     }
 

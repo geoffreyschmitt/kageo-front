@@ -351,12 +351,12 @@
 }
 
 .wishForm__button--primary {
-    background: var(--wf2-sage);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
 }
 
 .wishForm__button--primary:hover:not(:disabled) {
-    background: var(--wf2-sage-hover);
+    background: var(--accent-solid-hover);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px var(--accent-tint-border);
 }

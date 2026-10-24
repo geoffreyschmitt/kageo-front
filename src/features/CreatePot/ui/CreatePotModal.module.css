@@ -63,12 +63,12 @@
 }
 
 .createPot__button--primary {
-    background: var(--cp2-sage);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
 }
 
 .createPot__button--primary:hover:not(:disabled) {
-    background: var(--cp2-sage-hover);
+    background: var(--accent-solid-hover);
 }
 
 .createPot__button--secondary {

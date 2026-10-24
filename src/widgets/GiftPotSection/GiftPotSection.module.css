@@ -456,17 +456,17 @@
     letter-spacing: 0.2px;
     padding: 11px 22px;
     border-radius: 100px;
-    border: 1.5px solid var(--gp-sage);
-    background: var(--gp-sage);
-    color: var(--gp-contrast);
+    border: 1.5px solid var(--accent-solid);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     cursor: pointer;
     margin-top: 14px;
     transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .giftPot__button:hover {
-    background: var(--gp-sage-hover);
-    border-color: var(--gp-sage-hover);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
 }
 
 @media (max-width: 420px) {

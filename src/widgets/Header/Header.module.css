@@ -23,8 +23,8 @@
     z-index: 1100;
     padding: 12px 20px;
     border-radius: 100px;
-    background: var(--accent);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 600;
@@ -175,14 +175,14 @@
 }
 
 .header__createButton {
-    background: var(--accent);
-    color: var(--accent-contrast);
-    border: 1.5px solid var(--accent);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
+    border: 1.5px solid var(--accent-solid);
 }
 
 .header__createButton:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
     box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
@@ -288,7 +288,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(30, 26, 22, 0.45);
+    background: var(--scrim);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     opacity: 0;
@@ -375,14 +375,14 @@
 }
 
 .drawer__create {
-    background: var(--accent);
-    color: var(--accent-contrast);
-    border: 1.5px solid var(--accent);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
+    border: 1.5px solid var(--accent-solid);
 }
 
 .drawer__create:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
 }
 
 .drawer__login {
@@ -540,7 +540,7 @@
 }
 
 .modal__content::backdrop {
-    background: rgba(30, 26, 22, 0.45);
+    background: var(--scrim);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     animation: overlayIn 0.2s ease both;
@@ -660,8 +660,8 @@
 .form__submit {
     width: 100%;
     min-height: 48px;
-    background: var(--accent);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     border: none;
     border-radius: 100px;
     font-family: var(--font-sans);
@@ -673,7 +673,7 @@
 }
 
 .form__submit:hover:not(:disabled) {
-    background: var(--accent-hover);
+    background: var(--accent-solid-hover);
     box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 30%, transparent);
     transform: translateY(-1px);
 }
@@ -737,7 +737,7 @@
 .google__button:hover:not(:disabled) {
     background: var(--surface-page);
     border-color: var(--border-strong);
-    box-shadow: 0 2px 8px rgba(60, 45, 25, 0.08);
+    box-shadow: var(--shadow-card);
 }
 
 .forgot__link {

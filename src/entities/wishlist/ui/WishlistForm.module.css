@@ -382,15 +382,15 @@
 }
 
 .editWishlistForm__button--primary {
-    background: var(--wf-sage);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     letter-spacing: 0.1px;
 }
 
 .editWishlistForm__button--primary:hover:not(:disabled) {
-    background: var(--wf-sage-hover);
+    background: var(--accent-solid-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(63, 104, 69, 0.3);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .editWishlistForm__button--secondary {

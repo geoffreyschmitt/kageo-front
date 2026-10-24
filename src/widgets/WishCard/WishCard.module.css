@@ -384,7 +384,7 @@
     padding: 10px 13px;
     border: 1px solid var(--border-soft);
     border-radius: 12px;
-    background: var(--surface-input);
+    background: transparent;
     font-family: var(--wc-font-sans);
     font-size: 13px;
     font-weight: 500;
@@ -425,7 +425,7 @@
     margin: 0;
     font-family: var(--wc-font-sans);
     font-size: 12px;
-    color: var(--wc-text-3);
+    color: var(--wc-text-2);
     line-height: 1.4;
 }
 
@@ -447,15 +447,15 @@
 }
 
 .wish-card__button--primary {
-    background: var(--wc-sage);
-    border-color: var(--wc-sage);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    border-color: var(--accent-solid);
+    color: var(--on-accent-solid);
     font-weight: 600;
 }
 
 .wish-card__button--primary:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
     box-shadow: 0 3px 14px color-mix(in srgb, var(--wc-sage) 35%, transparent);
     transform: translateY(-1px);
 }

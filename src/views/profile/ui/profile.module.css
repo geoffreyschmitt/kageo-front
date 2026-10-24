@@ -53,25 +53,25 @@
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(ellipse 65% 55% at 50% -5%, rgba(63, 104, 69, 0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 35% 30% at 90% 110%, rgba(110, 60, 12, 0.05) 0%, transparent 60%),
-        radial-gradient(ellipse 25% 25% at 5% 90%, rgba(63, 104, 69, 0.04) 0%, transparent 55%);
+        radial-gradient(ellipse 65% 55% at 50% -5%, color-mix(in srgb, var(--accent) 7%, transparent) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 30% at 90% 110%, color-mix(in srgb, var(--amber) 5%, transparent) 0%, transparent 60%),
+        radial-gradient(ellipse 25% 25% at 5% 90%, color-mix(in srgb, var(--accent) 4%, transparent) 0%, transparent 55%);
     pointer-events: none;
 }
 
 :root[data-theme="dark"] .hero::before {
     background-image:
-        radial-gradient(ellipse 65% 55% at 50% -5%, rgba(143, 197, 151, 0.09) 0%, transparent 65%),
-        radial-gradient(ellipse 35% 30% at 90% 110%, rgba(224, 168, 110, 0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 25% 25% at 5% 90%, rgba(143, 197, 151, 0.05) 0%, transparent 55%);
+        radial-gradient(ellipse 65% 55% at 50% -5%, color-mix(in srgb, var(--accent) 9%, transparent) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 30% at 90% 110%, color-mix(in srgb, var(--amber) 7%, transparent) 0%, transparent 60%),
+        radial-gradient(ellipse 25% 25% at 5% 90%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 55%);
 }
 
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .hero::before {
         background-image:
-            radial-gradient(ellipse 65% 55% at 50% -5%, rgba(143, 197, 151, 0.09) 0%, transparent 65%),
-            radial-gradient(ellipse 35% 30% at 90% 110%, rgba(224, 168, 110, 0.07) 0%, transparent 60%),
-            radial-gradient(ellipse 25% 25% at 5% 90%, rgba(143, 197, 151, 0.05) 0%, transparent 55%);
+            radial-gradient(ellipse 65% 55% at 50% -5%, color-mix(in srgb, var(--accent) 9%, transparent) 0%, transparent 65%),
+            radial-gradient(ellipse 35% 30% at 90% 110%, color-mix(in srgb, var(--amber) 7%, transparent) 0%, transparent 60%),
+            radial-gradient(ellipse 25% 25% at 5% 90%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 55%);
     }
 }
 
@@ -89,7 +89,7 @@
     height: 88px;
     border-radius: 50%;
     background: var(--p-sage-light);
-    border: 2px solid rgba(63, 104, 69, 0.2);
+    border: 2px solid color-mix(in srgb, var(--accent) 20%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -171,7 +171,7 @@
 
 .hero__badge--since {
     background: var(--p-sage-light);
-    border-color: rgba(63, 104, 69, 0.25);
+    border-color: color-mix(in srgb, var(--accent) 25%, transparent);
     color: var(--p-sage);
 }
 
@@ -345,15 +345,15 @@
 }
 
 .btn--primary {
-    background: var(--p-sage);
-    border-color: var(--p-sage);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    border-color: var(--accent-solid);
+    color: var(--on-accent-solid);
 }
 
 .btn--primary:hover {
-    background: var(--p-sage-hover);
-    border-color: var(--p-sage-hover);
-    box-shadow: 0 4px 14px rgba(63, 104, 69, 0.28);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 28%, transparent);
     transform: translateY(-1px);
 }
 

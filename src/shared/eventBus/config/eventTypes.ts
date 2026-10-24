@@ -38,6 +38,11 @@ type WishlistEvents = {
   'wishlist:update': NoPayload;
   
   'wishlist:delete': NoPayload;
+
+  // Fired from the wishlist sidebar preview to open the comments drawer on the wishlist thread.
+  'wishlist:openComments': { wishlistId: string };
+  // Fired from the drawer after a wishlist comment is posted, so the sidebar preview can refresh.
+  'wishlist:commentPosted': { wishlistId: string };
 };
 
 

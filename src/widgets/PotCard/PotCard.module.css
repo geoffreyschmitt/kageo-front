@@ -377,17 +377,17 @@
     letter-spacing: 0.2px;
     padding: 10px 22px;
     border-radius: 100px;
-    border: 1.5px solid var(--pc-sage);
-    background: var(--pc-sage);
-    color: var(--pc-contrast);
+    border: 1.5px solid var(--accent-solid);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .potCard__button:hover {
-    background: var(--pc-sage-hover);
-    border-color: var(--pc-sage-hover);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
     transform: translateY(-1px);
 }
 

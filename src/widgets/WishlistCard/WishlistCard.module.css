@@ -113,20 +113,8 @@
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(circle, rgba(63, 104, 69, 0.07) 1px, transparent 1px);
+        radial-gradient(circle, color-mix(in srgb, var(--accent) 7%, transparent) 1px, transparent 1px);
     background-size: 14px 14px;
-}
-
-:root[data-theme="dark"] .wishlistCard__previewCell--empty::after {
-    background-image:
-        radial-gradient(circle, rgba(143, 197, 151, 0.10) 1px, transparent 1px);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .wishlistCard__previewCell--empty::after {
-        background-image:
-            radial-gradient(circle, rgba(143, 197, 151, 0.10) 1px, transparent 1px);
-    }
 }
 
 .wishlistCard:hover .wishlistCard__previewImage {
@@ -153,7 +141,7 @@
 .wishlistCard__badge--public {
     background: rgba(234, 242, 235, 0.92);
     color: var(--wc2-sage);
-    box-shadow: 0 1px 4px rgba(63, 104, 69, 0.2);
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 :root[data-theme="dark"] .wishlistCard__badge--public {

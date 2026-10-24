@@ -24,7 +24,7 @@
     background: var(--status-purchased-bg);
     border-color: var(--accent-tint-border);
     transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(63, 104, 69, 0.2);
+    box-shadow: 0 3px 10px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .mark-purchased-button:disabled {

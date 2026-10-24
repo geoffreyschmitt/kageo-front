@@ -10,21 +10,21 @@
     letter-spacing: 0.2px;
     padding: 9px 22px;
     border-radius: 100px;
-    border: 1px solid var(--accent);
+    border: 1px solid var(--accent-solid);
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
     display: inline-block;
     text-align: center;
-    background: var(--accent);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
 }
 
 .reserved-button:hover:not(:disabled) {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
     transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(63, 104, 69, 0.25);
+    box-shadow: 0 3px 10px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 .reserved-button:focus-visible {

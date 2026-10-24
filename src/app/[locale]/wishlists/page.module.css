@@ -20,7 +20,7 @@
     inset: 0;
     background-image:
         radial-gradient(ellipse 70% 60% at 50% -5%, rgba(92, 138, 98, 0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 35% at 90% 105%, rgba(110, 60, 12, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 35% at 90% 105%, color-mix(in srgb, var(--amber) 5%, transparent) 0%, transparent 60%),
         radial-gradient(ellipse 30% 30% at 5% 95%, rgba(92, 138, 98, 0.04) 0%, transparent 55%);
     pointer-events: none;
 }
@@ -90,17 +90,17 @@
     font-weight: 500;
     padding: 11px 28px;
     border-radius: 100px;
-    border: 1.5px solid var(--accent);
-    background: var(--accent);
-    color: var(--accent-contrast);
+    border: 1.5px solid var(--accent-solid);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     cursor: pointer;
     transition: all 0.2s ease;
     letter-spacing: 0.1px;
 }
 
 .pageHero__cta:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
     box-shadow: 0 4px 16px rgba(92, 138, 98, 0.3);
     transform: translateY(-1px);
 }
@@ -176,24 +176,24 @@
 
 :root[data-theme="dark"] .pageHero::before {
     background-image:
-        radial-gradient(ellipse 70% 60% at 50% -5%, rgba(143, 197, 151, 0.08) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 35% at 90% 105%, rgba(224, 168, 110, 0.06) 0%, transparent 60%),
-        radial-gradient(ellipse 30% 30% at 5% 95%, rgba(143, 197, 151, 0.05) 0%, transparent 55%);
+        radial-gradient(ellipse 70% 60% at 50% -5%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 35% at 90% 105%, color-mix(in srgb, var(--amber) 6%, transparent) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 30% at 5% 95%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 55%);
 }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .pageHero::before {
         background-image:
-            radial-gradient(ellipse 70% 60% at 50% -5%, rgba(143, 197, 151, 0.08) 0%, transparent 65%),
-            radial-gradient(ellipse 40% 35% at 90% 105%, rgba(224, 168, 110, 0.06) 0%, transparent 60%),
-            radial-gradient(ellipse 30% 30% at 5% 95%, rgba(143, 197, 151, 0.05) 0%, transparent 55%);
+            radial-gradient(ellipse 70% 60% at 50% -5%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 65%),
+            radial-gradient(ellipse 40% 35% at 90% 105%, color-mix(in srgb, var(--amber) 6%, transparent) 0%, transparent 60%),
+            radial-gradient(ellipse 30% 30% at 5% 95%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 55%);
     }
 }
 
 :root[data-theme="dark"] .pageHero__historyLink:hover {
-    background: rgba(143, 197, 151, 0.08);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .pageHero__historyLink:hover {
-        background: rgba(143, 197, 151, 0.08);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
     }
 }

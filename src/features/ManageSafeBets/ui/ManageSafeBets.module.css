@@ -113,13 +113,13 @@
 }
 
 .btnPrimary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    border-color: var(--accent-solid);
+    color: var(--on-accent-solid);
 }
 
 .btnPrimary:hover:not(:disabled) {
-    background: var(--accent-hover);
+    background: var(--accent-solid-hover);
 }
 
 .btnGhost,

@@ -18,9 +18,9 @@
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(ellipse 70% 60% at 50% -5%, rgba(110, 60, 12, 0.05) 0%, transparent 65%),
+        radial-gradient(ellipse 70% 60% at 50% -5%, color-mix(in srgb, var(--amber) 5%, transparent) 0%, transparent 65%),
         radial-gradient(ellipse 40% 35% at 90% 105%, rgba(92, 138, 98, 0.04) 0%, transparent 60%),
-        radial-gradient(ellipse 30% 30% at 5% 95%, rgba(110, 60, 12, 0.03) 0%, transparent 55%);
+        radial-gradient(ellipse 30% 30% at 5% 95%, color-mix(in srgb, var(--amber) 3%, transparent) 0%, transparent 55%);
     pointer-events: none;
 }
 
@@ -120,15 +120,15 @@
 
 :root[data-theme="dark"] .pageHero::before {
     background-image:
-        radial-gradient(ellipse 70% 60% at 50% -5%, rgba(224, 168, 110, 0.06) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 35% at 90% 105%, rgba(143, 197, 151, 0.05) 0%, transparent 60%),
-        radial-gradient(ellipse 30% 30% at 5% 95%, rgba(224, 168, 110, 0.04) 0%, transparent 55%);
+        radial-gradient(ellipse 70% 60% at 50% -5%, color-mix(in srgb, var(--amber) 6%, transparent) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 35% at 90% 105%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 30% at 5% 95%, color-mix(in srgb, var(--amber) 4%, transparent) 0%, transparent 55%);
 }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .pageHero::before {
         background-image:
-            radial-gradient(ellipse 70% 60% at 50% -5%, rgba(224, 168, 110, 0.06) 0%, transparent 65%),
-            radial-gradient(ellipse 40% 35% at 90% 105%, rgba(143, 197, 151, 0.05) 0%, transparent 60%),
-            radial-gradient(ellipse 30% 30% at 5% 95%, rgba(224, 168, 110, 0.04) 0%, transparent 55%);
+            radial-gradient(ellipse 70% 60% at 50% -5%, color-mix(in srgb, var(--amber) 6%, transparent) 0%, transparent 65%),
+            radial-gradient(ellipse 40% 35% at 90% 105%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 60%),
+            radial-gradient(ellipse 30% 30% at 5% 95%, color-mix(in srgb, var(--amber) 4%, transparent) 0%, transparent 55%);
     }
 }

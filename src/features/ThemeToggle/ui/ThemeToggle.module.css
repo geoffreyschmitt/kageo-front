@@ -27,8 +27,8 @@
 }
 
 .option--active {
-    background: var(--accent);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
 }
 
 .option:focus-visible {

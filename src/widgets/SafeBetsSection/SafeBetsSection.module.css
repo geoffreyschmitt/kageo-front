@@ -1,7 +1,27 @@
+/* Mirrors the wishlist page grid (intro rail + main column) so the block
+   lines up with the wish cards above instead of floating centred. */
 .section {
-    max-width: 640px;
+    display: grid;
+    grid-template-columns: minmax(240px, 300px) minmax(0, 640px);
+    column-gap: 48px;
+    max-width: 1760px;
     margin: var(--spacing-400) auto 0;
-    padding: 0 var(--spacing-200);
+    padding: 0 32px;
+}
+
+.section > * {
+    grid-column: 2;
+}
+
+@media (max-width: 900px) {
+    .section {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 0 var(--spacing-200);
+    }
+
+    .section > * {
+        grid-column: 1;
+    }
 }
 
 .section__title {

@@ -52,8 +52,8 @@
 .button {
     margin-top: 8px;
     padding: 11px 28px;
-    background: var(--accent);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
     border: none;
     border-radius: 100px;
     font-family: var(--font-sans);
@@ -65,13 +65,13 @@
 }
 
 .button:hover {
-    background: var(--accent-hover);
+    background: var(--accent-solid-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(63, 104, 69, 0.3);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .button:active {
-    background: var(--accent-hover);
+    background: var(--accent-solid-hover);
     transform: translateY(0);
     box-shadow: none;
 }

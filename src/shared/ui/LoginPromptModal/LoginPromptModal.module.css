@@ -32,12 +32,12 @@
 }
 
 .loginPrompt__button--primary {
-    background: var(--accent);
-    color: var(--accent-contrast);
+    background: var(--accent-solid);
+    color: var(--on-accent-solid);
 }
 
 .loginPrompt__button--primary:hover {
-    background: var(--accent-hover);
+    background: var(--accent-solid-hover);
 }
 
 .loginPrompt__button--secondary {
