@@ -207,7 +207,7 @@
     "potNotStarted": "Aucune cagnotte encore lancée pour {ownerName}",
     "potLoginToSee": "Une cagnotte de groupe est en cours d'organisation — connectez-vous pour voir les détails et contribuer.",
     "loginToSuggest": "Connectez-vous pour proposer un souhait à la wishlist « {name} » de {ownerName}.",
-    "loginToReserve": "Connectez-vous pour réserver un cadeau de la liste de {ownerName}.",
+    "loginToReserve": "Connectez-vous pour réserver un cadeau de la liste de {ownerName}. {ownerName} ne verra pas votre réservation.",
     "loginToContribute": "Connectez-vous pour contribuer à la cagnotte de {ownerName}.",
     "emptyTitle": "Rien ici pour l'instant",
     "emptyMessage": "Ajoutez votre premier souhait et commencez à créer quelque chose de beau.",
@@ -283,7 +283,6 @@
   "wishCard": {
     "reserve": "Réserver",
     "reserving": "Réservation…",
-    "reserveHint": "Le créateur de la liste ne verra pas votre réservation.",
     "youPlanningToGift": "Vous l'offrez",
     "someonePlanningToGift": "Déjà pris par quelqu'un",
     "showMore": "Voir plus",

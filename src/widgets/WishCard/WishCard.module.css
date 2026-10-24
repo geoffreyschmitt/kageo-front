@@ -45,27 +45,11 @@
     border: 1px solid var(--wc-border);
     border-radius: 20px;
     overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
     height: 100%;
     position: relative;
     box-shadow: var(--wc-shadow);
-}
-
-.wish-card:hover {
-    border-color: var(--wc-border-hover);
-    box-shadow: var(--wc-shadow-hover);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .wish-card:hover {
-        transform: translateY(-4px);
-    }
-
-    .wish-card:hover .wish-card__image {
-        transform: scale(1.03);
-    }
 }
 
 /* ── Purchased state — completion, not just dimness ── */
@@ -86,27 +70,33 @@
     color: var(--wc-text-3);
 }
 
-.wish-card--purchased:hover {
-    transform: none;
-    box-shadow: var(--wc-shadow);
-    border-color: var(--wc-border);
-}
+/* ── Reserved / purchased — the chip names the state, this line says who; the card shell stays calm ── */
 
-/* ── Reserved state — the chip and this line say it; the card shell stays calm ── */
-
-.wish-card__reservedLine {
+.wish-card__stateLine {
     display: flex;
     align-items: center;
-    gap: 7px;
-    margin: 0 0 12px;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding: 10px 14px;
+    border-radius: 12px;
     font-family: var(--wc-font-sans);
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    color: var(--wc-reserv);
+    line-height: 1.3;
 }
 
-.wish-card__reservedLine svg {
+.wish-card__stateLine svg {
     flex-shrink: 0;
+}
+
+.wish-card__stateLine--reserved {
+    color: var(--wc-reserv);
+    background: var(--wc-reserv-bg);
+}
+
+.wish-card__stateLine--purchased {
+    color: var(--wc-purch);
+    background: var(--wc-purch-bg);
 }
 
 /* ── Image container ──────────────────────── */
@@ -114,7 +104,7 @@
 .wish-card__imageContainer {
     position: relative;
     width: 100%;
-    height: 260px;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
     flex-shrink: 0;
     background: var(--wc-surface-2);
@@ -124,7 +114,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     display: block;
 }
 
@@ -187,6 +176,26 @@
     color: var(--wc-propos);
 }
 
+/* ── Coup de cœur badge — same gold as the owner's notes ── */
+
+.wish-card__badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--wc-font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--note-label);
+    background: var(--note-bg);
+    border: 1px solid var(--note-border);
+    padding: 4px 10px 4px 8px;
+    border-radius: 100px;
+}
+
 /* ── Content ──────────────────────────────── */
 
 .wish-card__content {
@@ -237,7 +246,7 @@
     line-height: 1.6;
     margin: 0 0 6px;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -248,6 +257,7 @@
 }
 
 .wish-card__desc-toggle {
+    align-self: flex-start;
     display: inline-block;
     margin: 0 0 14px;
     padding: 0;
@@ -362,49 +372,48 @@
     border-color: var(--note-accent);
 }
 
-.wish-card__purchasedBy {
-    font-family: var(--wc-font-sans);
-    font-size: 12px;
-    color: var(--wc-purch);
-    font-weight: 500;
-    background: var(--wc-purch-bg);
-    padding: 2px 9px;
-    border-radius: 100px;
-}
+/* ── Footer: comments link + date, last on the card ── */
 
-/* ── Comments ─────────────────────────────── */
-
-.wish-card__commentsButton {
+.wish-card__footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 9px;
-    width: 100%;
-    margin-top: 4px;
-    padding: 10px 13px;
-    border: 1px solid var(--border-soft);
-    border-radius: 12px;
-    background: transparent;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.wish-card__commentsLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
     font-family: var(--wc-font-sans);
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--wc-text-2);
-    cursor: pointer;
-    transition: border-color 0.15s ease, color 0.15s ease;
+    text-decoration: underline;
+    text-decoration-color: var(--wc-border);
+    text-underline-offset: 3px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
-.wish-card__commentsButton:hover {
-    border-color: var(--wc-border-hover);
+.wish-card__commentsLink:hover {
     color: var(--wc-text);
+    text-decoration-color: currentColor;
 }
 
-.wish-card__commentsButtonLabel {
-    display: flex;
-    align-items: center;
-    gap: 9px;
+.wish-card__commentsLink:focus-visible {
+    outline: 2px solid var(--wc-sage);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
-.wish-card__commentsButton svg {
+.wish-card__commentsLink svg {
     flex-shrink: 0;
     color: var(--wc-text-3);
 }
@@ -420,13 +429,18 @@
     border-top: 1px solid var(--border-soft);
 }
 
-.wish-card__reserveHint {
-    flex-basis: 100%;
-    margin: 0;
-    font-family: var(--wc-font-sans);
-    font-size: 12px;
-    color: var(--wc-text-2);
-    line-height: 1.4;
+/* Guests: the primary action leads, full width, and the footer carries the rest */
+.wish-card__actions--guest {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin-top: 16px;
+}
+
+.wish-card__actions--guest > button,
+.wish-card__actions--guest > a {
+    box-sizing: border-box;
+    min-height: 44px;
+    font-size: 14px;
 }
 
 .wish-card__button {
@@ -485,10 +499,6 @@
 /* ── Mobile ───────────────────────────────── */
 
 @media (max-width: 768px) {
-    .wish-card__imageContainer {
-        height: 220px;
-    }
-
     .wish-card__actions {
         flex-direction: column;
         flex-wrap: nowrap;
@@ -507,10 +517,7 @@
     .wish-card__priority { font-size: 12px; }
     .wish-card__price { font-size: 17px; }
     .wish-card__date,
-    .wish-card__purchasedBy,
-    .wish-card__commentsButtonLabel { font-size: 14px; }
     .wish-card__notesText { font-size: 14px; }
-    .wish-card__commentsButton { min-height: 44px; }
     .wish-card__button { font-size: 15px; min-height: 44px; }
     .wish-card__desc-toggle { font-size: 14px; min-height: 44px; margin: 0 0 6px; }
 }

@@ -207,7 +207,7 @@
     "potNotStarted": "No pot started yet for {ownerName}",
     "potLoginToSee": "A group pot is being organised — log in to see the details and contribute.",
     "loginToSuggest": "Log in to suggest a wish for the “{name}” wishlist by {ownerName}.",
-    "loginToReserve": "Log in to reserve a gift from {ownerName}’s list.",
+    "loginToReserve": "Log in to reserve a gift from {ownerName}’s list. {ownerName} won’t see your reservation.",
     "loginToContribute": "Log in to contribute to the pot for {ownerName}.",
     "emptyTitle": "Nothing here yet",
     "emptyMessage": "Add your first wish and start building something beautiful.",
@@ -283,7 +283,6 @@
   "wishCard": {
     "reserve": "Reserve",
     "reserving": "Reserving…",
-    "reserveHint": "The list owner will not see your reservation.",
     "youPlanningToGift": "You are planning to gift this",
     "someonePlanningToGift": "Someone is planning to gift this",
     "showMore": "Show more",

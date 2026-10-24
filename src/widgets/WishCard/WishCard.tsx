@@ -155,7 +155,16 @@ export const WishCard = ({
                         </svg>
                     </button>
                 )}
-                {!showOwnerAction && <div className={`${styles['wish-card__status']} ${STATUS_CLASS[visibleStatus] ?? STATUS_CLASS.wanted}`}>{statusLabel}</div>}
+                {!showOwnerAction && priority === 'high' && (
+                    <div className={styles['wish-card__badge']}>
+                        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
+                        </svg>
+                        {t('priorityHighBadge')}
+                    </div>
+                )}
+                {/* "Available" is the default, so only a state that differs gets a chip. */}
+                {!showOwnerAction && visibleStatus !== 'wanted' && <div className={`${styles['wish-card__status']} ${STATUS_CLASS[visibleStatus] ?? STATUS_CLASS.wanted}`}>{statusLabel}</div>}
             </div>
 
             <div className={styles['wish-card__content']}>
@@ -167,18 +176,6 @@ export const WishCard = ({
                         </div>
                     )}
                 </div>
-
-                {status === 'reserved' && !hideGuestState && (
-                    <p className={styles['wish-card__reservedLine']}>
-                        <svg width="14" height="14" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-                            <rect x="2" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
-                            <path d="M4 5.5V3.5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-                        </svg>
-                        {reservedBy === userId
-                            ? t('reservedByYou')
-                            : t('reservedBy', {name: reservedByName ?? t('someone')})}
-                    </p>
-                )}
 
                 {description && (
                     <p
@@ -199,6 +196,25 @@ export const WishCard = ({
                     </button>
                 )}
 
+                {!hideGuestState && status === 'reserved' && (
+                    <p className={`${styles['wish-card__stateLine']} ${styles['wish-card__stateLine--reserved']}`}>
+                        <svg width="14" height="14" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                            <rect x="2" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                            <path d="M4 5.5V3.5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                        </svg>
+                        {reservedBy === userId
+                            ? t('reservedByYou')
+                            : t('reservedBy', {name: reservedByName ?? t('someone')})}
+                    </p>
+                )}
+                {!hideGuestState && status === 'purchased' && purchasedBy && (
+                    <p className={`${styles['wish-card__stateLine']} ${styles['wish-card__stateLine--purchased']}`}>
+                        {purchasedBy === userId
+                            ? t('purchasedByYou')
+                            : t('purchasedBy', {name: purchasedByName ?? t('someone')})}
+                    </p>
+                )}
+
                 {notes && (
                     <div className={styles['wish-card__notes']}>
                         <span className={styles['wish-card__notesLabel']}>{t('notes')}</span>
@@ -206,47 +222,22 @@ export const WishCard = ({
                     </div>
                 )}
 
-                <div className={styles['wish-card__meta']}>
-                    <span className={styles['wish-card__date']}>{t('added', {date: addedDate})}</span>
-                    {priority === 'high' && (
-                        <span className={styles['wish-card__priority']}>
-                            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                                <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
-                            </svg>
-                            {t('priorityHighBadge')}
-                        </span>
-                    )}
-                    {!hideGuestState && status === 'purchased' && purchasedBy && (
-                        <span className={styles['wish-card__purchasedBy']}>
-                            {purchasedBy === userId
-                                ? t('purchasedByYou')
-                                : t('purchasedBy', {name: purchasedByName ?? t('someone')})}
-                        </span>
-                    )}
-                </div>
-
-                {!isOwner && (
-                    <button
-                        type="button"
-                        className={styles['wish-card__commentsButton']}
-                        onClick={() => eventBus.emit('wish:openComments', { wishId: id, wishName: name })}
-                    >
-                        <span className={styles['wish-card__commentsButtonLabel']}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"/>
-                            </svg>
-                            {commentCount && commentCount > 0
-                                ? tComments('count', {count: commentCount})
-                                : tComments('addCta')}
-                        </span>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="M9 6l6 6-6 6"/>
-                        </svg>
-                    </button>
+                {isOwner && (
+                    <div className={styles['wish-card__meta']}>
+                        <span className={styles['wish-card__date']}>{t('added', {date: addedDate})}</span>
+                        {showOwnerAction && priority === 'high' && (
+                            <span className={styles['wish-card__priority']}>
+                                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                    <path d="M8 13.6S1.8 9.9 1.8 5.7A3.2 3.2 0 0 1 8 4.3a3.2 3.2 0 0 1 6.2 1.4C14.2 9.9 8 13.6 8 13.6z"/>
+                                </svg>
+                                {t('priorityHighBadge')}
+                            </span>
+                        )}
+                    </div>
                 )}
 
                 {hasActionsRow && (
-                <div className={styles['wish-card__actions']}>
+                <div className={`${styles['wish-card__actions']} ${showGuestAction ? styles['wish-card__actions--guest'] : ''}`}>
                     {showGuestAction && (
                         <>
                             {!giftPotActive && (status === 'wanted' || status === 'proposed') && userId && (
@@ -255,10 +246,6 @@ export const WishCard = ({
 
                             {!giftPotActive && (status === 'wanted' || status === 'proposed') && !userId && onRequireLogin && (
                                 <ReserveButton wishId={id} userId="" onRequireLogin={onRequireLogin}/>
-                            )}
-
-                            {!giftPotActive && (status === 'wanted' || status === 'proposed') && !userId && onRequireLogin && (
-                                <p className={styles['wish-card__reserveHint']}>{t('reserveHint')}</p>
                             )}
 
                             {status === 'reserved' && reservedBy === userId && (
@@ -363,6 +350,24 @@ export const WishCard = ({
                         onMarkPurchased={onMarkPurchased}
                         onMarkPurchasedError={onMarkPurchasedError}
                     />
+                )}
+
+                {!isOwner && (
+                    <div className={styles['wish-card__footer']}>
+                        <button
+                            type="button"
+                            className={styles['wish-card__commentsLink']}
+                            onClick={() => eventBus.emit('wish:openComments', { wishId: id, wishName: name })}
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"/>
+                            </svg>
+                            {commentCount && commentCount > 0
+                                ? tComments('count', {count: commentCount})
+                                : tComments('addCta')}
+                        </button>
+                        <span className={styles['wish-card__date']}>{t('added', {date: addedDate})}</span>
+                    </div>
                 )}
             </div>
         </div>

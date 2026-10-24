@@ -42,6 +42,23 @@
     padding-top: 6px;
 }
 
+/* Under a full-width Reserve button the "Open a gift pot" line is one quiet,
+   centred line instead of the left-aligned 11.5px default. */
+.giftPot--flush.giftPot__create {
+    text-align: center;
+    padding-top: 4px;
+}
+
+.giftPot--flush.giftPot__create button {
+    font-size: 13px;
+    color: var(--gp-text-2);
+    text-wrap: balance;
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+    .giftPot--flush.giftPot__create button { font-size: 14px; }
+}
+
 /* ── Accordion ────────────────────────────────────────────── */
 
 .giftPot__details {
