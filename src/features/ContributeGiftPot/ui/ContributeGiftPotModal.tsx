@@ -60,11 +60,11 @@ export const ContributeGiftPotModal = ({
                 <div className={styles.contributeGiftPot__hero}>
                     <div className={styles.contributeGiftPot__heroIcon} aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="24" cy="24" r="22" fill="#eaf2eb" stroke="#b8dbb9" strokeWidth="1.2"/>
-                            <path d="M24 33 Q18 27 16 21 Q14 15 20 13 Q23 12 25 16 Q27 12 30 13 Q36 15 28 25 Q27 27 24 33Z" fill="#3f6845" opacity="0.75"/>
-                            <path d="M24 33 Q24 26 24 20" stroke="#3f6845" strokeWidth="1.2" opacity="0.5" strokeLinecap="round"/>
-                            <path d="M24 23 Q21 20 18 18" stroke="#3f6845" strokeWidth="1" opacity="0.4" strokeLinecap="round"/>
-                            <path d="M24 27 Q27 24 30 22" stroke="#3f6845" strokeWidth="1" opacity="0.4" strokeLinecap="round"/>
+                            <circle cx="24" cy="24" r="22" fill="var(--accent-tint-bg)" stroke="var(--accent-tint-border)" strokeWidth="1.2"/>
+                            <path d="M24 33 Q18 27 16 21 Q14 15 20 13 Q23 12 25 16 Q27 12 30 13 Q36 15 28 25 Q27 27 24 33Z" fill="var(--accent)" opacity="0.75"/>
+                            <path d="M24 33 Q24 26 24 20" stroke="var(--accent)" strokeWidth="1.2" opacity="0.5" strokeLinecap="round"/>
+                            <path d="M24 23 Q21 20 18 18" stroke="var(--accent)" strokeWidth="1" opacity="0.4" strokeLinecap="round"/>
+                            <path d="M24 27 Q27 24 30 22" stroke="var(--accent)" strokeWidth="1" opacity="0.4" strokeLinecap="round"/>
                         </svg>
                     </div>
                     <div className={styles.contributeGiftPot__heroText}>

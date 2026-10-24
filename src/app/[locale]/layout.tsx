@@ -74,7 +74,7 @@ export const viewport: Viewport = {
     // --surface-page in shared/styles/theme.css (light / dark)
     themeColor: [
         { media: '(prefers-color-scheme: light)', color: '#f7f4ef' },
-        { media: '(prefers-color-scheme: dark)', color: '#17130e' },
+        { media: '(prefers-color-scheme: dark)', color: '#120e09' },
     ],
     width: 'device-width',
     initialScale: 1,

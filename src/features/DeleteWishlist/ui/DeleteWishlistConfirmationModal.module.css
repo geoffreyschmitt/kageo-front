@@ -59,7 +59,7 @@
 .confirmation-modal__button--confirm:hover {
     background: var(--dwc-danger-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(192, 57, 43, 0.3);
+    box-shadow: 0 4px 14px var(--error-shadow);
 }
 
 @media (max-width: 480px) {

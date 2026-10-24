@@ -5,7 +5,7 @@
    #3f6845 on #eaf2eb    5.7:1 ✓
    #4e443c on white      9.2:1 ✓
    #6b6258 on white      5.4:1 ✓
-   #c0392b on white      5.1:1 ✓ (error)
+   #8a2318 on white      9.0:1 ✓ (error)
    ============================================ */
 
 .proposeWishModal {
@@ -61,7 +61,7 @@
 .proposeWishModal__select,
 .proposeWishModal__textarea {
     padding: 10px 14px;
-    border: 1.5px solid var(--pw-border);
+    border: 1.5px solid var(--border-control);
     border-radius: 10px;
     font-family: var(--pw-font-sans);
     font-size: 14px;

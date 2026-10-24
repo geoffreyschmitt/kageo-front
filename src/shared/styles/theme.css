@@ -1,70 +1,79 @@
 /* ============================================================
    THEME TOKENS — light + dark. Single source of truth.
-   'system' preference sets NO [data-theme]; the media query
-   below resolves it. Explicit choices set [data-theme].
+   Every colour is declared once as light-dark(light, dark); the
+   value follows `color-scheme`. 'system' preference sets NO
+   [data-theme] and resolves through `color-scheme: light dark`;
+   explicit choices set [data-theme] and pin the scheme.
+   Only shadows (which light-dark() can't express) keep a dark block.
    ============================================================ */
 
 :root {
-    /* Surfaces */
-    --surface-page:        #f7f4ef;
-    --surface-raised:      #ffffff;
-    --surface-sunken:      #f2ede5;
-    --surface-sunken-2:    #ebe5da;
-    --surface-input:       #faf8f4;
+    color-scheme: light dark;
 
-    /* Borders */
-    --border-default:      #d6cec4;
-    --border-soft:         #e5dfd5;
-    --border-strong:       #a8a099;
+    /* Surfaces */
+    --surface-page:        light-dark(#f7f4ef, #120e09);
+    --surface-raised:      light-dark(#ffffff, #30271b);
+    --surface-sunken:      light-dark(#f2ede5, #403525);
+    --surface-sunken-2:    light-dark(#ebe5da, #4a3e2c);
+    --surface-input:       light-dark(#faf8f4, #1a150f);
+
+    /* Borders. Hairlines divide; --border-control outlines a field
+       or a control and holds 3:1 against its surface (WCAG 1.4.11). */
+    --border-default:      light-dark(#d6cec4, #5a503f);
+    --border-soft:         light-dark(#e5dfd5, #463d2f);
+    --border-strong:       light-dark(#a8a099, #8a806d);
+    --border-control:      light-dark(#8c8379, #8a806d);
 
     /* Text */
-    --text-primary:        #1e1a16;
-    --text-secondary:      #4e443c;
-    --text-tertiary:       #6b6258;
+    --text-primary:        light-dark(#1e1a16, #f3eee4);
+    --text-secondary:      light-dark(#4e443c, #cabfb0);
+    --text-tertiary:       light-dark(#6b6258, #b3a99b);
 
     /* Accent (sage) */
-    --accent:              #3f6845;
-    --accent-hover:        #2e5033;
-    --accent-contrast:     #ffffff;
-    --accent-solid:        #3f6845;
-    --accent-solid-hover:  #2e5033;
+    --accent:              light-dark(#3f6845, #7fb788);
+    --accent-hover:        light-dark(#2e5033, #92c99a);
+    --accent-contrast:     light-dark(#ffffff, #12100b);
+    --accent-solid:        light-dark(#3f6845, #447449);
+    --accent-solid-hover:  light-dark(#2e5033, #3a6641);
     --on-accent-solid:     #ffffff;
-    /* Hover shadow for solid accent buttons. Fixed sage, not --accent: in dark mode --accent is the light green and glows. */
-    --accent-solid-shadow: rgba(92, 138, 98, 0.3);
-    --accent-tint-bg:      #eaf2eb;
-    --accent-tint-border:  rgba(63, 104, 69, 0.20);
+    /* Hover glow for solid accent buttons: the solid fill, not --accent (which is the light green in dark mode). */
+    --accent-solid-shadow: light-dark(rgba(63, 104, 69, 0.3), rgba(68, 116, 73, 0.4));
+    --accent-tint-bg:      light-dark(#eaf2eb, #1f2a21);
+    --accent-tint-border:  light-dark(rgba(63, 104, 69, 0.20), rgba(127, 183, 136, 0.28));
 
     /* Amber */
-    --amber:               #6e3c0c;
-    --amber-tint-bg:       #fdf0e6;
+    --amber:               light-dark(#6e3c0c, #e0a86e);
+    --amber-tint-bg:       light-dark(#fdf0e6, #2c2116);
 
     /* Status */
-    --status-wanted-fg:    #1a5491;
-    --status-wanted-bg:    #edf3fb;
-    --status-purchased-fg: #3f6845;
-    --status-purchased-bg: #eaf2eb;
-    --status-reserved-fg:  #4e3278;
-    --status-reserved-bg:  #f0ebf8;
-    --status-proposed-fg:  #6e3c0c;
-    --status-proposed-bg:  #fdf0e6;
-    --status-high-fg:      #8a2318;
-    --status-high-bg:      #fdecea;
+    --status-wanted-fg:    light-dark(#1a5491, #84b1e8);
+    --status-wanted-bg:    light-dark(#edf3fb, #1a2434);
+    --status-purchased-fg: light-dark(#3f6845, #7fb788);
+    --status-purchased-bg: light-dark(#eaf2eb, #1c2a21);
+    --status-reserved-fg:  light-dark(#4e3278, #b9a0e6);
+    --status-reserved-bg:  light-dark(#f0ebf8, #251d34);
+    --status-proposed-fg:  light-dark(#6e3c0c, #e0a86e);
+    --status-proposed-bg:  light-dark(#fdf0e6, #2c2116);
+    --status-high-fg:      light-dark(#8a2318, #e79184);
+    --status-high-bg:      light-dark(#fdecea, #2f1b17);
 
     /* Error */
-    --error-fg:            #8a2318;
-    --error-bg:            #fdecea;
-    --error-border:        rgba(138, 35, 24, 0.20);
+    --error-fg:            light-dark(#8a2318, #e79184);
+    --error-bg:            light-dark(#fdecea, #2f1b17);
+    --error-border:        light-dark(rgba(138, 35, 24, 0.20), rgba(231, 145, 132, 0.25));
+    /* Glow under a hovered danger button: the error colour, softened. */
+    --error-shadow:        color-mix(in srgb, var(--error-fg) 30%, transparent);
 
     /* Notes (WishCard) */
     --note-accent:         #d4a843;
-    --note-bg:             #fffcf5;
-    --note-border:         #ede4cc;
-    --note-label:          #6b5210;
+    --note-bg:             light-dark(#fffcf5, #1f1a12);
+    --note-border:         light-dark(#ede4cc, #3a3222);
+    --note-label:          light-dark(#6b5210, #e0a86e);
 
-    /* Overlays + accent glows */
-    --scrim:               rgba(30, 26, 22, 0.45);
+    /* Overlays */
+    --scrim:               light-dark(rgba(30, 26, 22, 0.45), rgba(8, 6, 3, 0.62));
 
-    /* Shadows */
+    /* Shadows (light; dark overrides below) */
     --shadow-card:         0 2px 12px rgba(60, 45, 25, 0.08);
     --shadow-hover:        0 8px 28px rgba(60, 45, 25, 0.13);
     --shadow-modal:        0 24px 64px rgba(60, 45, 25, 0.18);
@@ -73,126 +82,29 @@
     --font-serif:          var(--font-cormorant, Georgia, serif);
     --font-sans:           var(--font-dm-sans, system-ui, sans-serif);
     --font-mono:           var(--font-mono, ui-monospace, monospace);
-
-    color-scheme: light;
-}
-
-/* DARK — one block, referenced twice so both the media default
-   and the explicit attribute resolve identically. */
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --surface-page:        #120e09;
-        --surface-raised:      #2a2218;
-        --surface-sunken:      #372d20;
-        --surface-sunken-2:    #443926;
-        --surface-input:       #1a150f;
-
-        --border-default:      #5a503f;
-        --border-soft:         #463d2f;
-        --border-strong:       #8a806d;
-
-        --text-primary:        #f3eee4;
-        --text-secondary:      #cabfb0;
-        --text-tertiary:       #b3a99b;
-
-        --accent:              #7fb788;
-        --accent-hover:        #92c99a;
-        --accent-contrast:     #12100b;
-        --accent-solid:        #4a7c53;
-        --accent-solid-hover:  #3f6c48;
-        --on-accent-solid:     #ffffff;
-        --accent-tint-bg:      #1f2a21;
-        --accent-tint-border:  rgba(127, 183, 136, 0.28);
-
-        --amber:               #e0a86e;
-        --amber-tint-bg:       #2c2116;
-
-        --status-wanted-fg:    #84b1e8;
-        --status-wanted-bg:    #1a2434;
-        --status-purchased-fg: #7fb788;
-        --status-purchased-bg: #1c2a21;
-        --status-reserved-fg:  #b9a0e6;
-        --status-reserved-bg:  #251d34;
-        --status-proposed-fg:  #e0a86e;
-        --status-proposed-bg:  #2c2116;
-        --status-high-fg:      #e79184;
-        --status-high-bg:      #2f1b17;
-
-        --error-fg:            #e79184;
-        --error-bg:            #2f1b17;
-        --error-border:        rgba(231, 145, 132, 0.25);
-
-        --note-accent:         #d4a843;
-        --note-bg:             #1f1a12;
-        --note-border:         #3a3222;
-        --note-label:          #e0a86e;
-
-        --scrim:               rgba(8, 6, 3, 0.62);
-
-        --shadow-card:         inset 0 1px 0 rgba(255, 240, 215, 0.05), 0 2px 14px rgba(0, 0, 0, 0.45);
-        --shadow-hover:        0 12px 40px rgba(0, 0, 0, 0.55);
-        --shadow-modal:        0 24px 64px rgba(0, 0, 0, 0.65);
-
-        color-scheme: dark;
-    }
-}
-
-:root[data-theme="dark"] {
-    --surface-page:        #120e09;
-    --surface-raised:      #2a2218;
-    --surface-sunken:      #372d20;
-    --surface-sunken-2:    #443926;
-    --surface-input:       #1a150f;
-
-    --border-default:      #5a503f;
-    --border-soft:         #463d2f;
-    --border-strong:       #8a806d;
-
-    --text-primary:        #f3eee4;
-    --text-secondary:      #cabfb0;
-    --text-tertiary:       #b3a99b;
-
-    --accent:              #7fb788;
-    --accent-hover:        #92c99a;
-    --accent-contrast:     #12100b;
-    --accent-solid:        #4a7c53;
-    --accent-solid-hover:  #3f6c48;
-    --on-accent-solid:     #ffffff;
-    --accent-tint-bg:      #1f2a21;
-    --accent-tint-border:  rgba(127, 183, 136, 0.28);
-
-    --amber:               #e0a86e;
-    --amber-tint-bg:       #2c2116;
-
-    --status-wanted-fg:    #84b1e8;
-    --status-wanted-bg:    #1a2434;
-    --status-purchased-fg: #7fb788;
-    --status-purchased-bg: #1c2a21;
-    --status-reserved-fg:  #b9a0e6;
-    --status-reserved-bg:  #251d34;
-    --status-proposed-fg:  #e0a86e;
-    --status-proposed-bg:  #2c2116;
-    --status-high-fg:      #e79184;
-    --status-high-bg:      #2f1b17;
-
-    --error-fg:            #e79184;
-    --error-bg:            #2f1b17;
-    --error-border:        rgba(231, 145, 132, 0.25);
-
-    --note-accent:         #d4a843;
-    --note-bg:             #1f1a12;
-    --note-border:         #3a3222;
-    --note-label:          #e0a86e;
-
-    --scrim:               rgba(8, 6, 3, 0.62);
-
-    --shadow-card:         inset 0 1px 0 rgba(255, 240, 215, 0.05), 0 2px 14px rgba(0, 0, 0, 0.45);
-    --shadow-hover:        0 12px 40px rgba(0, 0, 0, 0.55);
-    --shadow-modal:        0 24px 64px rgba(0, 0, 0, 0.65);
-
-    color-scheme: dark;
 }
 
 :root[data-theme="light"] {
     color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+/* Dark shadows: deeper and black, plus an inset top highlight so cards
+   still read against the near-black page. Declared twice only because
+   a selector list can't join a media query to an attribute selector. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --shadow-card:  inset 0 1px 0 rgba(255, 240, 215, 0.05), 0 2px 14px rgba(0, 0, 0, 0.45);
+        --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.55);
+        --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.65);
+    }
+}
+
+:root[data-theme="dark"] {
+    --shadow-card:  inset 0 1px 0 rgba(255, 240, 215, 0.05), 0 2px 14px rgba(0, 0, 0, 0.45);
+    --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.55);
+    --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.65);
 }

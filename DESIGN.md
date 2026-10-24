@@ -5,7 +5,7 @@ colors:
   sage: "#3f6845"
   sage-deep: "#2e5033"
   sage-tint: "#eaf2eb"
-  sage-night: "#8fc597"
+  sage-night: "#7fb788"
   paper: "#f7f4ef"
   paper-raised: "#ffffff"
   paper-sunken: "#f2ede5"
@@ -14,6 +14,7 @@ colors:
   line: "#d6cec4"
   line-soft: "#e5dfd5"
   line-strong: "#a8a099"
+  line-control: "#8c8379"
   ink: "#1e1a16"
   ink-soft: "#4e443c"
   ink-faint: "#6b6258"
@@ -27,8 +28,8 @@ colors:
   alert-tint: "#fdecea"
   note-gold: "#d4a843"
   note-tint: "#fffcf5"
-  night-page: "#17130e"
-  night-raised: "#211b14"
+  night-page: "#120e09"
+  night-raised: "#30271b"
   night-ink: "#f3eee4"
 typography:
   display:
@@ -138,7 +139,7 @@ Kageo looks like something carefully wrapped: a calm paper ground, one ribbon of
 
 The mood is warm, calm and editorial. Surfaces are paper-warm neutrals tinted toward brown, never cool grey. Fraunces gives headlines a soft, bookish character; DM Sans keeps every form, label and sentence easy to read on a phone for someone who has never used the app. Shapes are rounded and friendly (pill buttons, 16 to 20px cards) without becoming toy-like. The internal CSS calls this look "Garden Party"; that name survives in file headers.
 
-Light and dark are equal citizens. Dark mode is a warm brown-black with the sage lifted to a pale green, not an inverted grey UI.
+Light and dark are equal citizens. Dark mode is a warm brown-black (surfaces step up in lightness: #120e09 page, #30271b sheet, #403525 well) with the sage lifted to a pale green, not an inverted grey UI.
 
 **Key Characteristics:**
 - Paper-warm neutrals with a single sage accent, used for action and "done".
@@ -152,7 +153,7 @@ Light and dark are equal citizens. Dark mode is a warm brown-black with the sage
 A restrained palette: warm paper, brown-black ink, one sage accent, and a small family of tinted status colours used only to communicate gift state.
 
 ### Primary
-- **Sage Ribbon** (#3f6845): the single action colour: primary buttons, links, focus rings, purchased/"done" marks, selected tabs. Lifts to **Moonlit Sage** (#8fc597) in dark mode.
+- **Sage Ribbon** (#3f6845): the single action colour: primary buttons, links, focus rings, purchased/"done" marks, selected tabs. Lifts to **Moonlit Sage** (#7fb788) in dark mode.
 - **Deep Sage** (#2e5033): hover and pressed state of the accent.
 - **Sage Mist** (#eaf2eb): tinted backgrounds for accent chips, ghost-button hover, purchased status.
 
@@ -168,8 +169,9 @@ A restrained palette: warm paper, brown-black ink, one sage accent, and a small 
 ### Neutral
 - **Warm Paper** (#f7f4ef): page background. **Clean Sheet** (#ffffff): raised cards and panels. **Sunken Paper** (#f2ede5 / #ebe5da): wells, hover fills. **Input Paper** (#faf8f4): field background.
 - **Warm Ink** (#1e1a16), **Soft Ink** (#4e443c), **Faint Ink** (#6b6258): the three text levels, all AA on white.
-- **Hairline** (#e5dfd5 soft, #d6cec4 default, #a8a099 strong): borders.
-- **Night Paper** (#17130e), **Night Sheet** (#211b14), **Night Ink** (#f3eee4): the dark counterparts.
+- **Hairline** (#e5dfd5 soft, #d6cec4 default, #a8a099 strong): borders that divide and contain (cards, panels, dividers).
+- **Control Edge** (#8c8379 light, #8a806d dark): the outline of a field or control; holds 3:1 against its surface (WCAG 1.4.11). Never use a hairline to outline an input.
+- **Night Paper** (#120e09), **Night Sheet** (#30271b), **Night Ink** (#f3eee4): the dark counterparts.
 
 ### Named Rules
 **The One Ribbon Rule.** Sage is the only chromatic accent for action. Status colours label state; they never decorate or act as buttons.
@@ -231,7 +233,7 @@ Rounded, friendly, hierarchical. Controls that act are pills (100px); containers
 
 ### Buttons
 - **Shape:** full pill (100px), 9px 22px padding, 13px / 500 DM Sans.
-- **Primary:** Sage Ribbon fill, white text (dark ink on the pale dark-mode sage).
+- **Primary:** Sage Ribbon fill, white text. In dark mode the fill is a deeper sage (#447449) so white text keeps 5.4:1; the pale Moonlit Sage is for text and icons only.
 - **Secondary:** transparent with a 1.5px Hairline border and Soft Ink text; **Outline:** sage border and text that fills on hover; **Ghost:** sage text, Sage Mist fill on hover.
 - **Hover / Focus:** hover lifts 1px, primary gains the sage shadow; active returns to rest; disabled drops to 55% opacity. Focus is a 2px sage outline with 2px offset.
 
@@ -247,7 +249,7 @@ Rounded, friendly, hierarchical. Controls that act are pills (100px); containers
 - **States:** purchased shows a sage veil on the image and a struck-through title; reserved adds the plum chip and a one-line "Réservé par" note; high priority adds a quiet gold chip beside the date.
 
 ### Inputs / Fields
-- **Style:** 1.5px Hairline border, 10px radius, Input Paper background, 10px 14px padding, 14px DM Sans.
+- **Style:** 1.5px Control Edge border, 10px radius, Input Paper background, 10px 14px padding, 14px DM Sans.
 - **Focus:** border turns sage, 3px sage-tint ring, background lifts to Clean Sheet.
 - **Error / Disabled:** Alert Brick border on Alert Tint background; error focus ring uses the error border tint.
 

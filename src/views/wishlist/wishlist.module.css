@@ -190,7 +190,7 @@
 .wishlist__button--primary:hover {
     background: var(--accent-solid-hover);
     border-color: var(--accent-solid-hover);
-    box-shadow: 0 4px 16px rgba(92, 138, 98, 0.3);
+    box-shadow: 0 4px 16px var(--accent-solid-shadow);
     transform: translateY(-1px);
 }
 
@@ -350,7 +350,7 @@
 .wishlist__emptyButton:hover {
     background: var(--accent-solid-hover);
     border-color: var(--accent-solid-hover);
-    box-shadow: 0 4px 16px rgba(92, 138, 98, 0.3);
+    box-shadow: 0 4px 16px var(--accent-solid-shadow);
     transform: translateY(-1px);
 }
 

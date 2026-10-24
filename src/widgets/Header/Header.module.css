@@ -625,7 +625,7 @@
 .form__input {
     width: 100%;
     padding: 12px 14px;
-    border: 1.5px solid var(--border-default);
+    border: 1.5px solid var(--border-control);
     border-radius: 10px;
     font-family: var(--font-sans);
     font-size: 16px;

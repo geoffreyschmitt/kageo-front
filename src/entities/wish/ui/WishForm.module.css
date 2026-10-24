@@ -67,7 +67,7 @@
 .wishForm__textarea {
     padding: 10px 14px;
     min-height: 44px;
-    border: 1.5px solid var(--wf2-border);
+    border: 1.5px solid var(--border-control);
     border-radius: 10px;
     font-family: var(--wf2-font-sans);
     font-size: 14px;

@@ -5,7 +5,7 @@ The token system is split in two:
 | File | Holds |
 |------|-------|
 | `theme.css` | **Semantic, theme-aware color tokens** — light + dark. Single source of truth for color. |
-| `variables.css` | **Non-color primitives** — spacing, typography, radius, border widths, transitions, and a couple of non-themed shadow helpers. |
+| `variables.css` | **Non-color primitives** — spacing, typography, radius, border widths, transitions, and non-themed shadow helpers. |
 | `globals.css` | Global element styles + Tailwind directives + `.text-balance`. |
 | `reset.css` | CSS reset. |
 
@@ -16,25 +16,26 @@ All colors are consumed as `var(--token)`. Never hardcode a hex in a rule body.
 Token groups:
 
 - **Surfaces** — `--surface-page`, `--surface-raised`, `--surface-sunken`, `--surface-sunken-2`, `--surface-input`
-- **Borders** — `--border-default`, `--border-soft`, `--border-strong`
+- **Borders** — `--border-default`, `--border-soft`, `--border-strong`, `--border-control` (field/control outline, 3:1)
 - **Text** — `--text-primary`, `--text-secondary`, `--text-tertiary`
-- **Accent** (sage) — `--accent`, `--accent-hover`, `--accent-contrast`, `--accent-tint-bg`, `--accent-tint-border`
+- **Accent** (sage) — `--accent`, `--accent-hover`, `--accent-contrast`, `--accent-solid`, `--accent-solid-shadow`, `--accent-tint-bg`, `--accent-tint-border`
 - **Amber** — `--amber`, `--amber-tint-bg`
 - **Status** — `--status-{wanted,purchased,reserved,proposed,high}-{fg,bg}`
-- **Error** — `--error-fg`, `--error-bg`, `--error-border`
+- **Error** — `--error-fg`, `--error-bg`, `--error-border`, `--error-shadow`
 - **Note** (WishCard) — `--note-accent`, `--note-bg`, `--note-border`, `--note-label`
+- **Overlay** — `--scrim`
 - **Shadows** — `--shadow-card`, `--shadow-hover`, `--shadow-modal` (values differ per theme)
 - **Fonts** — `--font-serif`, `--font-sans`, `--font-mono` (bound to the `next/font` CSS vars on `<html>`)
 
-### The three-block pattern
+### One declaration per colour
 
-Each token is declared three times so every resolution path lands on the same value:
+Every colour is a single `light-dark(light, dark)` value; `color-scheme` picks the side:
 
-1. `:root { … }` — the **light** palette + `color-scheme: light`.
-2. `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { … } }` — dark values for the **`system`** preference (no `[data-theme]` attribute is set).
-3. `:root[data-theme="dark"] { … }` — identical dark values for the **explicit** dark choice.
+1. `:root { color-scheme: light dark }` — the **`system`** preference (no `[data-theme]` attribute).
+2. `:root[data-theme="light"|"dark"] { color-scheme: … }` — the explicit choice pins the scheme.
+3. Shadows can't use `light-dark()`, so only `--shadow-*` keep a dark override (media query + attribute).
 
-`[data-theme]` is set only for explicit `light`/`dark`; `system` sets no attribute and lets the media query decide.
+Add or change a colour in ONE place. `[data-theme]` is set only for explicit `light`/`dark`; `system` sets no attribute and lets the media query decide.
 
 ## How component modules consume tokens
 
@@ -58,5 +59,5 @@ dark tuning (e.g. gradient overlays) uses
 
 `--spacing-*`, `--font-size-*` / `--font-weight-*` / `--line-height-*` /
 `--letter-spacing-*`, `--border-radius-*` / `--border-width-*`,
-`--transition-*` / `--easing-*`, and the non-themed `--shadow-sm/md/lg/xl`,
-`--shadow-button-hover`, `--shadow-card-hover` helpers. These do not vary by theme.
+`--transition-*` / `--easing-*`, and the non-themed `--shadow-sm/md/lg/xl`
+helpers. These do not vary by theme.

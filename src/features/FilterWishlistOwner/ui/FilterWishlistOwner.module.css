@@ -42,7 +42,7 @@
 .ownerFilterSelect__input {
     width: 100%;
     padding: 10px 36px 10px 14px;
-    border: 1.5px solid var(--of-border);
+    border: 1.5px solid var(--border-control);
     border-radius: 100px;
     font-family: var(--of-font-sans);
     font-size: 13px;

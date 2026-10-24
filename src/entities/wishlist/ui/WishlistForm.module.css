@@ -5,9 +5,9 @@
    #3f6845 on #eaf2eb    5.7:1 ✓
    #4e443c on white      9.2:1 ✓
    #6b6258 on white      5.4:1 ✓
-   #c0392b on white      5.1:1 ✓ (error)
+   #8a2318 on white      9.0:1 ✓ (error)
    #1a5491 on #edf3fb    7.4:1 ✓ (public badge)
-   #4a3a6a on #f0ebf8    8.2:1 ✓ (private badge)
+   #4e3278 on #f0ebf8    8.7:1 ✓ (private badge)
    ============================================ */
 
 .editWishlistForm {
@@ -81,7 +81,7 @@
 .editWishlistForm__textarea {
     padding: 10px 14px;
     min-height: 44px;
-    border: 1.5px solid var(--wf-border);
+    border: 1.5px solid var(--border-control);
     border-radius: 10px;
     font-family: var(--wf-font-sans);
     font-size: 14px;
@@ -147,7 +147,7 @@
     gap: 14px;
     min-height: 44px;
     padding: 14px 16px;
-    border: 1.5px solid var(--wf-border);
+    border: 1.5px solid var(--border-control);
     border-radius: 12px;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
@@ -155,7 +155,7 @@
 }
 
 .editWishlistForm__radioLabel:hover {
-    border-color: var(--border-strong);
+    border-color: var(--text-tertiary);
     background: var(--wf-surface-2);
 }
 

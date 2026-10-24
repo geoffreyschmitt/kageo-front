@@ -4,7 +4,7 @@
    #4e443c on white      9.2:1 ✓
    #6b6258 on white      5.4:1 ✓
    #8a2318 on #fdecea    7.2:1 ✓ (danger button bg)
-   #ffffff on #c0392b    4.8:1 ✓ (danger button text)
+   #ffffff on #8a2318    9.0:1 ✓ (danger button text)
    ============================================ */
 
 .confirmation-modal__content {
@@ -71,7 +71,7 @@
 .confirmation-modal__button--confirm:hover {
     background: var(--dc-danger-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(192, 57, 43, 0.3);
+    box-shadow: 0 4px 14px var(--error-shadow);
 }
 
 @media (max-width: 480px) {

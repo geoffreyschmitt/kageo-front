@@ -166,7 +166,7 @@
     width: 104px;
     min-height: 40px;
     padding: 8px 12px;
-    border: 1.5px solid var(--g-border);
+    border: 1.5px solid var(--border-control);
     border-radius: 10px;
     background: var(--g-surface);
     color: var(--g-text);

@@ -143,7 +143,7 @@
 .contributeGiftPot__amountWrap {
     display: flex;
     align-items: center;
-    border: 1.5px solid var(--cp-border);
+    border: 1.5px solid var(--border-control);
     border-radius: 10px;
     background: var(--cp-input-bg);
     overflow: hidden;
