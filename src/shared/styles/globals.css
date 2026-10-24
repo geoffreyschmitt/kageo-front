@@ -3,6 +3,18 @@ html {
     scrollbar-gutter: stable;
 }
 
+/* "See an example" on the landing page jumps to an anchor; glide there unless the visitor asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+::selection {
+    background: var(--accent-tint-border);
+    color: var(--text-primary);
+}
+
 body {
     margin: 0;
     font-family: var(--font-sans);
