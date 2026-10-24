@@ -10,7 +10,6 @@ import {WishlistForm} from '@/entities/wishlist/ui';
 import {eventBus} from '@/shared/eventBus/lib/eventBus';
 import {Modal} from '@/shared/ui';
 
-import styles from './UpdateWishlistModal.module.css'
 
 export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpdateWishlistModal) => {
     const t = useTranslations('updateWishlistModal')
@@ -54,6 +53,7 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpda
         formData,
         errors,
         isSubmitting,
+        formError,
         handleInputChange,
         handleSubmit,
     } = useEditWishlistModel({
@@ -67,11 +67,13 @@ export const UpdateWishlistModal = ({onClose, onSubmit, initialData = {}}: TUpda
             isOpen={isOpen}
             onClose={handleClose}
             title={t('title')}
-            className={styles.updateWishlistModal}
+            subtitle={initialDataToUse.name}
+            closeOnOverlayClick={false}
         >
             <WishlistForm
                 formData={formData}
                 errors={errors}
+                formError={formError}
                 isSubmitting={isSubmitting}
                 handleInputChange={handleInputChange}
                 handleSubmit={handleSubmit}

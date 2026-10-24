@@ -8,7 +8,6 @@ import {validateWishlistForm} from '@/entities/wishlist/lib/validateWishlistForm
 import {DEFAULT_WISHLIST_SETTINGS} from "@/entities/wishlist/model/constants";
 
 import {createWishlist} from "@/shared/api/wishlist/createWishlist";
-import {eventBus} from "@/shared/eventBus";
 
 
 type TUseCreateWishlistModel = {
@@ -28,6 +27,7 @@ export const useCreateWishlistModel = ({
 
     const [errors, setErrors] = useState<TWishlistValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [formError, setFormError] = useState<string | undefined>()
 
     const t = useTranslations('wishlistForm')
 
@@ -51,6 +51,7 @@ export const useCreateWishlistModel = ({
             ...DEFAULT_WISHLIST_SETTINGS,
         })
         setErrors({})
+        setFormError(undefined)
     }, [])
 
     const handleSubmit = useCallback(
@@ -62,8 +63,9 @@ export const useCreateWishlistModel = ({
 
             if (hasError) return
 
+            setFormError(undefined)
             setIsSubmitting(true)
-            
+
             // Generate temporary ID immediately for optimistic update
             const tempId = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function" 
                 ? `temp-${crypto.randomUUID()}` 
@@ -88,7 +90,7 @@ export const useCreateWishlistModel = ({
             } catch (err) {
                 console.error("Erreur lors de la création de la wishlist :", err)
                 onError?.(tempId)
-                eventBus.emit('ui:toast', { message: t('createError'), type: 'error' })
+                setFormError(t('createError'))
             } finally {
                 setIsSubmitting(false)
             }
@@ -100,6 +102,7 @@ export const useCreateWishlistModel = ({
         formData,
         errors,
         isSubmitting,
+        formError,
         handleInputChange,
         handleSubmit,
         resetForm,

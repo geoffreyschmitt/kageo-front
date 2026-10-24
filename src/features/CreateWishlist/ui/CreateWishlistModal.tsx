@@ -10,7 +10,6 @@ import {WishlistForm} from '@/entities/wishlist/ui';
 import {eventBus} from '@/shared/eventBus/lib/eventBus';
 import {Modal} from '@/shared/ui';
 
-import styles from './CreateWishlistModal.module.css'
 
 
 export const CreateWishlistModal = ({onClose, onSubmit, onError}: TCreateWishlistModal) => {
@@ -39,6 +38,7 @@ export const CreateWishlistModal = ({onClose, onSubmit, onError}: TCreateWishlis
     formData,
     errors,
     isSubmitting,
+    formError,
     handleInputChange,
     handleSubmit,
   } = useCreateWishlistModel({
@@ -53,11 +53,12 @@ export const CreateWishlistModal = ({onClose, onSubmit, onError}: TCreateWishlis
       isOpen={isOpen}
       onClose={handleClose}
       title={t('title')}
-      className={styles.createWishlistModal}
+      closeOnOverlayClick={false}
     >
       <WishlistForm
         formData={formData}
         errors={errors}
+        formError={formError}
         isSubmitting={isSubmitting}
         handleInputChange={handleInputChange}
         handleSubmit={handleSubmit}

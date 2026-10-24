@@ -49,7 +49,12 @@ export const Modal = ({ isOpen, onClose, title, subtitle, children, className = 
             }
         }
         document.addEventListener('keydown', onKeyDown)
+
+        // The page behind must not scroll under the dialog.
+        const previousOverflow = document.body.style.overflow
+        document.body.style.overflow = 'hidden'
         return () => {
+            document.body.style.overflow = previousOverflow
             document.removeEventListener('keydown', onKeyDown)
             opener?.focus?.()
         }

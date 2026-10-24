@@ -6,7 +6,6 @@ import {TWishlistFormData, TWishlistValidationErrors, validateWishlistForm} from
 import {DEFAULT_WISHLIST_SETTINGS} from '@/entities/wishlist/model/constants';
 
 import {updateWishlist} from '@/shared/api/wishlist/updateWishlist'
-import {eventBus} from '@/shared/eventBus'
 
 
 
@@ -32,6 +31,7 @@ export const useEditWishlistModel = ({
 
     const [errors, setErrors] = useState<TWishlistValidationErrors>({})
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [formError, setFormError] = useState<string | undefined>()
 
     const t = useTranslations('wishlistForm')
 
@@ -56,6 +56,7 @@ export const useEditWishlistModel = ({
             ...initialData,
         })
         setErrors({})
+        setFormError(undefined)
     }, [initialData])
 
     useEffect(() => {
@@ -72,6 +73,7 @@ export const useEditWishlistModel = ({
 
             if (hasError) return
 
+            setFormError(undefined)
             setIsSubmitting(true)
             try {
                 if (!wishlistId) throw new Error('Missing wishlist ID')
@@ -82,7 +84,7 @@ export const useEditWishlistModel = ({
                 onClose()
             } catch (err) {
                 console.error('Erreur lors de la mise à jour de la wishlist :', err)
-                eventBus.emit('ui:toast', { message: t('updateError'), type: 'error' })
+                setFormError(t('updateError'))
             } finally {
                 setIsSubmitting(false)
             }
@@ -94,6 +96,7 @@ export const useEditWishlistModel = ({
         formData,
         errors,
         isSubmitting,
+        formError,
         handleInputChange,
         handleSubmit,
         resetForm,

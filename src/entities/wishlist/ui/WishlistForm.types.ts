@@ -25,4 +25,5 @@ export type TWishlistForm = {
     handleInputChange: TFormChangeHandler<TWishlistFormData>
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     onCancel: () => void
+    formError?: string
 }

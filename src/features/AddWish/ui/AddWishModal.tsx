@@ -10,7 +10,6 @@ import {WishForm, TWishFormData, TWishForm} from "@/entities/wish";
 
 import {Modal} from "@/shared/ui";
 
-import styles from "./AddWishModal.module.css";
 import {
     TAddWishModal,
 } from "./AddWishModal.types";
@@ -52,7 +51,6 @@ export const AddWishModal = ({
             isOpen={isOpen}
             onClose={handleClose}
             title={t('title')}
-            className={styles.addWishModal}
             closeOnOverlayClick={false}
         >
                 <WishForm<TWishForm>

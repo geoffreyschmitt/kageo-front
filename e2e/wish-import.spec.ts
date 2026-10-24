@@ -38,11 +38,11 @@ const imageInput = (page: Page) => page.locator('input[name="imageUrl"]')
 // The form's priority is a single "top pick" checkbox: checked = 'high', unchecked = 'medium'.
 const favoriteCheckbox = (page: Page) => page.locator('input[name="priority"]')
 const fillButton = (page: Page) => page.getByRole('button', { name: 'Fill in for me' })
-const submitButton = (page: Page) => page.getByRole('button', { name: 'Add Item' }).last()
+const submitButton = (page: Page) => page.getByRole('button', { name: 'Add a wish' }).last()
 
 const openAddModal = async (page: Page, listId: string) => {
     await page.goto(`/en/wishlist/${listId}`)
-    await page.getByRole('button', { name: 'Add Item' }).first().click()
+    await page.getByRole('button', { name: 'Add a wish' }).first().click()
     await expect(linkInput(page)).toBeVisible()
 }
 
@@ -299,7 +299,7 @@ test.describe('import a wish from a link (Fill in for me)', () => {
 
             await page.getByRole('button', { name: 'Cancel' }).click()
             await expect(linkInput(page)).toBeHidden()
-            await page.getByRole('button', { name: 'Add Item' }).first().click()
+            await page.getByRole('button', { name: 'Add a wish' }).first().click()
             await expect(linkInput(page)).toBeVisible()
             await expect(page.getByText(VERSION_QUESTION)).toBeHidden()
             await expect(page.getByText(FOUND_MESSAGE)).toBeHidden()
@@ -322,7 +322,7 @@ test.describe('import a wish from a link (Fill in for me)', () => {
 
             await page.getByRole('button', { name: 'Cancel' }).click()
             await expect(linkInput(page)).toBeHidden()
-            await page.getByRole('button', { name: 'Add Item' }).first().click()
+            await page.getByRole('button', { name: 'Add a wish' }).first().click()
             await expect(linkInput(page)).toBeVisible()
             await expect(page.getByText(LOADING_MESSAGE)).toBeHidden()
 
@@ -363,7 +363,7 @@ test.describe('import a wish from a link (Fill in for me)', () => {
         await expect(page.getByText('First lamp')).toBeVisible()
         await expect(linkInput(page)).toBeHidden()
 
-        await page.getByRole('button', { name: 'Add Item' }).first().click()
+        await page.getByRole('button', { name: 'Add a wish' }).first().click()
         await expect(linkInput(page)).toBeVisible()
         await expect(linkInput(page)).toHaveValue('')
         await expect(page.getByText(FOUND_MESSAGE)).toBeHidden()

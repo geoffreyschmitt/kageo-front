@@ -337,6 +337,7 @@
     "publicDesc": "Toute personne avec le lien peut voir",
     "coverImageLabel": "URL de l'image de couverture",
     "imageLoadError": "Image impossible à charger",
+    "fixErrors": "Corrigez les champs signalés ci-dessous.",
     "preview": "Aperçu",
     "previewName": "Nom de la Wishlist",
     "previewDescription": "Description de la wishlist",
