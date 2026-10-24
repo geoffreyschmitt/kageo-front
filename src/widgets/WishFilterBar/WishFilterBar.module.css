@@ -285,3 +285,17 @@
     .budgetPill,
     .input { transition: none; }
 }
+
+/* Desktop only: keep the row reachable while scrolling a long list. On phones it stays in the flow so it
+   doesn't eat viewport under the 64px header. The page background and hairline keep cards from showing through. */
+@media (min-width: 901px) {
+    .bar {
+        position: sticky;
+        top: 64px;
+        z-index: 5;
+        padding: 12px 0;
+        margin-bottom: 16px;
+        background: var(--g-bg);
+        border-bottom: 1px solid var(--g-border);
+    }
+}
