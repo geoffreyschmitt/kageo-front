@@ -7,4 +7,7 @@ export type TWishlistList = {
     emptyMessage?: string
     showCreateButton?: boolean
     isHistory?: boolean
+    /** Skip the title/count/create row when the page already provides its own header. */
+    hideHeader?: boolean
+    hideOwner?: boolean
 }

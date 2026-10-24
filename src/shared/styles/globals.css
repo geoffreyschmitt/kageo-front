@@ -1,3 +1,8 @@
+/* Reserve the scrollbar's width so the page doesn't shift when content height crosses the fold (e.g. tab changes). */
+html {
+    scrollbar-gutter: stable;
+}
+
 body {
     margin: 0;
     font-family: var(--font-sans);

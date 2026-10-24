@@ -90,13 +90,13 @@
     transition: all 0.2s ease;
     display: inline-block;
     letter-spacing: 0.1px;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 25%, transparent);
+    box-shadow: 0 4px 16px var(--accent-solid-shadow);
 }
 
 .featuresHero__ctaButton:hover {
     background: var(--accent-solid-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 35%, transparent);
+    box-shadow: 0 6px 20px var(--accent-solid-shadow);
 }
 
 /* ── Feature Section ──────────────────────── */
@@ -249,13 +249,13 @@
     transition: all 0.2s ease;
     display: inline-block;
     letter-spacing: 0.1px;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 25%, transparent);
+    box-shadow: 0 4px 16px var(--accent-solid-shadow);
 }
 
 .featuresCta__button:hover {
     background: var(--accent-solid-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 35%, transparent);
+    box-shadow: 0 6px 20px var(--accent-solid-shadow);
 }
 
 /* ── Mobile ───────────────────────────────── */

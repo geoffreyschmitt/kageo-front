@@ -14,12 +14,14 @@ export const WishlistList = ({
   emptyMessage,
   showCreateButton = false,
   isHistory = false,
+  hideHeader = false,
+  hideOwner = false,
 }: TWishlistList) => {
   const t = useTranslations('wishlistList')
 
   return (
     <div className={styles.wishlistList}>
-      <div className={styles.wishlistList__header}>
+      {!hideHeader && <div className={styles.wishlistList__header}>
         <h2 className={styles.wishlistList__title}>{title}</h2>
         <div className={styles.wishlistList__meta}>
           <span className={styles.wishlistList__count}>
@@ -31,7 +33,7 @@ export const WishlistList = ({
             }}>{t('createNew')}</button>
           )}
         </div>
-      </div>
+      </div>}
 
       {wishlistCardList.length === 0 ? (
         <div className={styles.wishlistList__empty}>
@@ -84,6 +86,7 @@ export const WishlistList = ({
               itemCount={wishlistCard.itemCount}
               isHistory={isHistory}
               isPending={wishlistCard.isPending}
+              hideOwner={hideOwner}
               isOwnedByCurrentUser={wishlistCard.ownerId === currentUserId}
             />
           ))}

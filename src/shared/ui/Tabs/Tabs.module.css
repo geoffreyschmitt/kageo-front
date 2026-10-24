@@ -51,6 +51,13 @@
     letter-spacing: 0.1px;
 }
 
+.tabs__count {
+    margin-left: 8px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    opacity: 0.85;
+}
+
 .tabs__button:hover {
     color: var(--tab-sage);
     background: var(--tab-sage-bg);
@@ -59,12 +66,11 @@
 .tabs__button--active {
     background: var(--accent-solid);
     color: var(--on-accent-solid);
-    font-weight: 600;
 }
 
 .tabs__button--active:hover {
     background: var(--accent-solid-hover);
-    color: var(--accent-contrast);
+    color: var(--on-accent-solid);
 }
 
 .tabs__content {

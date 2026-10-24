@@ -154,7 +154,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                                     <div className={`${styles.cardWrap__pill} ${getDaysUntil(w.eventDate) <= 1 ? styles['cardWrap__pill--today'] : ''}`}>
                                         {getCountdownLabel(getDaysUntil(w.eventDate))}
                                     </div>
-                                    <WishlistCard {...w} />
+                                    <WishlistCard {...w} hideOwner />
                                 </div>
                             ))}
                         </div>
@@ -175,7 +175,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                                     <div className={styles.cardWrap__pill}>
                                         {getCountdownLabel(getDaysUntil(w.eventDate))}
                                     </div>
-                                    <WishlistCard {...w} />
+                                    <WishlistCard {...w} hideOwner />
                                 </div>
                             ))}
                         </div>
@@ -196,7 +196,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                                     <div className={styles.cardWrap__pill}>
                                         {getCountdownLabel(getDaysUntil(w.eventDate))}
                                     </div>
-                                    <WishlistCard {...w} />
+                                    <WishlistCard {...w} hideOwner />
                                 </div>
                             ))}
                         </div>
@@ -215,7 +215,7 @@ export default function DashboardPage({ userName, wishlists }: TDashboardPagePro
                                     <div className={`${styles.cardWrap__pill} ${styles['cardWrap__pill--past']}`}>
                                         {getCountdownLabel(getDaysUntil(w.eventDate))}
                                     </div>
-                                    <WishlistCard {...w} isHistory />
+                                    <WishlistCard {...w} isHistory hideOwner />
                                 </div>
                             ))}
                         </div>

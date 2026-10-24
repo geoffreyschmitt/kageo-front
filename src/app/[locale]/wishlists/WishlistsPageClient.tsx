@@ -123,26 +123,25 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
         toast(t('updated', { name: wishlistData.name }), 'success')
     }
 
-    const displayName = userName.split(' ')[0] ?? 'there'
-    const totalWishlists = activeWishlists.length
-    const ownedCount = ownedWishlists.length
-    const sharedCount = allInvitedWishlists.length
-
     const tabs = [
         {
+            id: 'mine',
             label: t('tabMine'),
+            count: ownedWishlists.length,
             content: (
                 <WishlistList
                     wishlistCardList={ownedWishlists}
                     currentUserId={userId}
-                    title={t('listTitleMine')}
                     emptyMessage={t('emptyMine')}
                     showCreateButton={true}
+                    hideHeader
                 />
             ),
         },
         {
+            id: 'shared',
             label: t('tabShared'),
+            count: allInvitedWishlists.length,
             content: (
                 <>
                     <div className={pageStyles.filterContainer}>
@@ -155,9 +154,9 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
                     <WishlistList
                         wishlistCardList={filteredInvitedWishlists}
                         currentUserId={userId}
-                        title={t('listTitleShared')}
                         emptyMessage={t('emptyShared')}
                         showCreateButton={false}
+                        hideHeader
                     />
                 </>
             ),
@@ -166,39 +165,21 @@ export default function WishlistsPageClient({ initialWishlists, userId, userName
 
     return (
         <main>
-            <div className={pageStyles.pageHero}>
-                <div className={pageStyles.pageHero__inner}>
-                    <p className={pageStyles.pageHero__greeting}>{t('greeting', { name: displayName })}</p>
-                    <h1 className={pageStyles.pageHero__title}>{t('title')}</h1>
-                    <div className={pageStyles.pageHero__stats}>
-                        <span className={pageStyles.pageHero__stat}>
-                            <strong>{totalWishlists}</strong> {t('statTotal')}
-                        </span>
-                        <span className={pageStyles.pageHero__statDivider}>·</span>
-                        <span className={pageStyles.pageHero__stat}>
-                            <strong>{ownedCount}</strong> {t('statYours')}
-                        </span>
-                        <span className={pageStyles.pageHero__statDivider}>·</span>
-                        <span className={pageStyles.pageHero__stat}>
-                            <strong>{sharedCount}</strong> {t('statShared')}
-                        </span>
-                    </div>
-                    <div className={pageStyles.pageHero__actions}>
+            <div className={pageStyles.pageContent}>
+                <header className={pageStyles.pageHeader}>
+                    <h1 className={pageStyles.pageHeader__title}>{t('title')}</h1>
+                    <div className={pageStyles.pageHeader__actions}>
+                        <Link href="/history" className={pageStyles.pageHeader__historyLink}>
+                            {t('viewPast')}
+                        </Link>
                         <button
-                            className={pageStyles.pageHero__cta}
+                            className={pageStyles.pageHeader__cta}
                             onClick={() => eventBus.emit('wishlist:openCreationModal', {})}
                         >
                             {t('newWishlist')}
                         </button>
-                        <Link href="/history" className={pageStyles.pageHero__historyLink}>
-                            <span className={pageStyles.pageHero__historyIcon}>↩</span>
-                            {t('viewPast')}
-                        </Link>
                     </div>
-                </div>
-            </div>
-
-            <div className={pageStyles.pageContent}>
+                </header>
                 <Tabs tabs={tabs} />
             </div>
 

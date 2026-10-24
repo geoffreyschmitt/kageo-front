@@ -5,7 +5,7 @@ import {useTranslations, useFormatter} from 'next-intl'
 import {TWishlistCard} from '@/widgets/WishlistCard';
 
 import {eventBus} from '@/shared/eventBus';
-import {Button} from '@/shared/ui';
+import {Link} from '@/shared/i18n/navigation';
 
 import styles from './WishlistCard.module.css'
 
@@ -24,6 +24,7 @@ export const WishlistCard = ({
     isPending = false,
     isHistory = false,
     isOwnedByCurrentUser = false,
+    hideOwner = false,
 }: TWishlistCard) => {
     const t = useTranslations('wishlistCard')
     const format = useFormatter()
@@ -34,7 +35,7 @@ export const WishlistCard = ({
     const formattedDate = format.dateTime(eventDate, { day: 'numeric', month: 'long', year: 'numeric' })
 
     return (
-        <div className={styles.wishlistCard}>
+        <div className={styles.wishlistCard} aria-busy={isPending || undefined}>
             <div className={styles.wishlistCard__imageContainer}>
                 {usePreviewGrid ? (
                     <div className={styles.wishlistCard__previewGrid}>
@@ -57,7 +58,7 @@ export const WishlistCard = ({
                 ) : (
                     <Image
                         src={coverImage || '/placeholder.svg'}
-                        alt={`${name} wishlist cover`}
+                        alt=""
                         width={300}
                         height={200}
                         className={styles.wishlistCard__image}
@@ -84,16 +85,26 @@ export const WishlistCard = ({
 
             <div className={styles.wishlistCard__content}>
                 <div className={styles.wishlistCard__header}>
-                    <h3 className={styles.wishlistCard__title}>{name}</h3>
+                    <h3 className={styles.wishlistCard__title}>
+                        {isPending ? name : (
+                            <Link
+                                href={`/wishlist/${id}${isHistory ? '?mode=history' : ''}`}
+                                className={styles.wishlistCard__link}
+                            >
+                                {name}
+                            </Link>
+                        )}
+                    </h3>
                 </div>
+
+                {!isOwnedByCurrentUser && !hideOwner && (
+                    <p className={styles.wishlistCard__owner}>{t('by', {name: ownerName})}</p>
+                )}
 
                 {description && <p className={styles.wishlistCard__description}>{description}</p>}
 
                 <div className={styles.wishlistCard__footer}>
                     <span className={styles.wishlistCard__date}>{formattedDate}</span>
-                    {!isOwnedByCurrentUser && (
-                        <span className={styles.wishlistCard__owner}>{t('by', {name: ownerName})}</span>
-                    )}
                     <div className={styles.wishlistCard__actions}>
                         {isOwnedByCurrentUser && !isHistory && (
                             <button
@@ -116,23 +127,7 @@ export const WishlistCard = ({
                                 {t('edit')}
                             </button>
                         )}
-                        {isPending ? (
-                            <Button
-                                variant={'primary'}
-                                className={`${styles.wishlistCard__button}`}
-                                disabled
-                            >
-                                {t('view')}
-                            </Button>
-                        ) : (
-                            <Button
-                                href={`/wishlist/${id}${isHistory ? '?mode=history' : ''}`}
-                                variant={'primary'}
-                                className={`${styles.wishlistCard__button}`}
-                            >
-                                {t('view')}
-                            </Button>
-                        )}
+                        {isPending && <span className={styles.wishlistCard__saving}>{t('saving')}</span>}
                     </div>
                 </div>
             </div>

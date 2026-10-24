@@ -20,7 +20,7 @@ type Props = {
     userName: string
 }
 
-export default function HistoryPageClient({ initialWishlists, userId, userName }: Props) {
+export default function HistoryPageClient({ initialWishlists, userId }: Props) {
     const t = useTranslations('history')
     const [selectedOwnerFilter, setSelectedOwnerFilter] = useState<TWishlistOwner | null>(null)
 
@@ -52,27 +52,26 @@ export default function HistoryPageClient({ initialWishlists, userId, userName }
         return allInvitedWishlists.filter((w) => w.ownerId === selectedOwnerFilter.id)
     }, [allInvitedWishlists, selectedOwnerFilter])
 
-    const displayName = userName.split(' ')[0] ?? 'there'
-    const totalPast = initialWishlists.length
-    const ownedCount = ownedWishlists.length
-    const sharedCount = allInvitedWishlists.length
-
     const tabs = [
         {
+            id: 'mine',
             label: t('tabMine'),
+            count: ownedWishlists.length,
             content: (
                 <WishlistList
                     wishlistCardList={ownedWishlists}
                     currentUserId={userId}
-                    title={t('listTitleMine')}
                     emptyMessage={t('emptyMine')}
                     showCreateButton={false}
                     isHistory={true}
+                    hideHeader
                 />
             ),
         },
         {
+            id: 'shared',
             label: t('tabShared'),
+            count: allInvitedWishlists.length,
             content: (
                 <>
                     <div className={pageStyles.filterContainer}>
@@ -85,10 +84,10 @@ export default function HistoryPageClient({ initialWishlists, userId, userName }
                     <WishlistList
                         wishlistCardList={filteredInvitedWishlists}
                         currentUserId={userId}
-                        title={t('listTitleShared')}
                         emptyMessage={t('emptyShared')}
                         showCreateButton={false}
                         isHistory={true}
+                        hideHeader
                     />
                 </>
             ),
@@ -97,28 +96,11 @@ export default function HistoryPageClient({ initialWishlists, userId, userName }
 
     return (
         <main>
-            <div className={pageStyles.pageHero}>
-                <div className={pageStyles.pageHero__inner}>
-                    <p className={pageStyles.pageHero__greeting}>{t('greeting', { name: displayName })}</p>
-                    <h1 className={pageStyles.pageHero__title}>{t('title')}</h1>
-                    <div className={pageStyles.pageHero__stats}>
-                        <span className={pageStyles.pageHero__stat}>
-                            {t('statPast', { count: totalPast })}
-                        </span>
-                        <span className={pageStyles.pageHero__statDivider}>·</span>
-                        <span className={pageStyles.pageHero__stat}>
-                            <strong>{ownedCount}</strong> {t('statYours')}
-                        </span>
-                        <span className={pageStyles.pageHero__statDivider}>·</span>
-                        <span className={pageStyles.pageHero__stat}>
-                            <strong>{sharedCount}</strong> {t('statShared')}
-                        </span>
-                    </div>
-                    <p className={pageStyles.pageHero__subtitle}>{t('subtitle')}</p>
-                </div>
-            </div>
-
             <div className={pageStyles.pageContent}>
+                <header className={pageStyles.pageHeader}>
+                    <h1 className={pageStyles.pageHeader__title}>{t('title')}</h1>
+                    <p className={pageStyles.pageHeader__subtitle}>{t('subtitle')}</p>
+                </header>
                 <Tabs tabs={tabs} />
             </div>
         </main>

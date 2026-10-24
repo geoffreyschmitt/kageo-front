@@ -150,16 +150,10 @@
   },
   "wishlists": {
     "title": "Your Wishlists",
-    "greeting": "Hello, {name}",
-    "statTotal": "total",
-    "statYours": "yours",
-    "statShared": "shared with you",
     "newWishlist": "New Wishlist",
     "viewPast": "View past wishlists",
     "tabMine": "My Wishlists",
     "tabShared": "Shared with Me",
-    "listTitleMine": "My Wishlists",
-    "listTitleShared": "Wishlists Shared with Me",
     "emptyMine": "You haven't created any wishlists yet. Start by creating one!",
     "emptyShared": "No wishlists have been shared with you yet.",
     "createError": "Could not create wishlist — please try again",
@@ -168,15 +162,9 @@
   },
   "history": {
     "title": "History",
-    "greeting": "Hello, {name}",
-    "statPast": "{count, plural, one {# past event} other {# past events}}",
-    "statYours": "yours",
-    "statShared": "shared with you",
     "subtitle": "A read-only record of past wishlists and how they were gifted.",
     "tabMine": "My Past Wishlists",
     "tabShared": "Shared with Me",
-    "listTitleMine": "My Past Wishlists",
-    "listTitleShared": "Past Wishlists Shared with Me",
     "emptyMine": "None of your wishlists have passed yet.",
     "emptyShared": "No past wishlists have been shared with you."
   },
@@ -322,7 +310,7 @@
     "private": "Private",
     "items": "{count, plural, one {# item} other {# items}}",
     "edit": "Edit",
-    "view": "View",
+    "saving": "Saving…",
     "by": "By {name}"
   },
   "wishlistList": {

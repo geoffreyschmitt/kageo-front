@@ -1,97 +1,43 @@
 /* ============================================
    HISTORY PAGE — Muted Garden
+   Compact header, same scale as the wishlists page.
    ============================================ */
-
-/* ── Hero section ─────────────────────────── */
-
-.pageHero {
-    background: var(--surface-raised);
-    border-bottom: 1px solid var(--border-soft);
-    padding: 56px 40px 52px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.pageHero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-        radial-gradient(ellipse 70% 60% at 50% -5%, color-mix(in srgb, var(--amber) 5%, transparent) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 35% at 90% 105%, rgba(92, 138, 98, 0.04) 0%, transparent 60%),
-        radial-gradient(ellipse 30% 30% at 5% 95%, color-mix(in srgb, var(--amber) 3%, transparent) 0%, transparent 55%);
-    pointer-events: none;
-}
-
-.pageHero__inner {
-    max-width: 640px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-}
-
-.pageHero__greeting {
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1.8px;
-    text-transform: uppercase;
-    color: var(--text-tertiary);
-    margin: 0 0 16px;
-}
-
-.pageHero__title {
-    font-family: var(--font-serif);
-    font-size: clamp(44px, 7vw, 68px);
-    font-weight: 400;
-    color: var(--text-primary);
-    line-height: 1.0;
-    letter-spacing: -0.5px;
-    margin: 0 0 24px;
-}
-
-.pageHero__stats {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-}
-
-.pageHero__stat {
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--text-tertiary);
-}
-
-.pageHero__stat strong {
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.pageHero__statDivider {
-    color: var(--border-default);
-    font-size: 14px;
-}
-
-.pageHero__subtitle {
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--text-tertiary);
-    margin: 0;
-}
 
 /* ── Page content ─────────────────────────── */
 
 .pageContent {
     background: var(--surface-page);
     min-height: calc(100vh - 60px);
-    padding: 48px 32px 80px;
+    padding: 36px 32px 80px;
     max-width: 1300px;
     margin: 0 auto;
     box-sizing: content-box;
+}
+
+/* ── Header ───────────────────────────────── */
+
+.pageHeader {
+    margin-bottom: 28px;
+}
+
+.pageHeader__title {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 3.4vw, 42px);
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.2px;
+    margin: 0;
+    text-wrap: balance;
+}
+
+.pageHeader__subtitle {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-tertiary);
+    margin: 8px 0 0;
+    max-width: 60ch;
 }
 
 .filterContainer {
@@ -101,34 +47,11 @@
 /* ── Mobile ───────────────────────────────── */
 
 @media (max-width: 768px) {
-    .pageHero {
-        padding: 40px 20px 36px;
-    }
-
     .pageContent {
-        padding: 28px 16px 60px;
+        padding: 24px 16px 60px;
     }
-}
 
-@media (max-width: 480px) {
-    .pageHero__title {
-        font-size: clamp(36px, 11vw, 48px);
-    }
-}
-
-/* ── Dark overrides for decorative sage/amber tints (no semantic token) ── */
-
-:root[data-theme="dark"] .pageHero::before {
-    background-image:
-        radial-gradient(ellipse 70% 60% at 50% -5%, color-mix(in srgb, var(--amber) 6%, transparent) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 35% at 90% 105%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 60%),
-        radial-gradient(ellipse 30% 30% at 5% 95%, color-mix(in srgb, var(--amber) 4%, transparent) 0%, transparent 55%);
-}
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .pageHero::before {
-        background-image:
-            radial-gradient(ellipse 70% 60% at 50% -5%, color-mix(in srgb, var(--amber) 6%, transparent) 0%, transparent 65%),
-            radial-gradient(ellipse 40% 35% at 90% 105%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 60%),
-            radial-gradient(ellipse 30% 30% at 5% 95%, color-mix(in srgb, var(--amber) 4%, transparent) 0%, transparent 55%);
+    .pageHeader {
+        margin-bottom: 20px;
     }
 }

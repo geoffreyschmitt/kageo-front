@@ -29,6 +29,8 @@
     --accent-solid:        #3f6845;
     --accent-solid-hover:  #2e5033;
     --on-accent-solid:     #ffffff;
+    /* Hover shadow for solid accent buttons. Fixed sage, not --accent: in dark mode --accent is the light green and glows. */
+    --accent-solid-shadow: rgba(92, 138, 98, 0.3);
     --accent-tint-bg:      #eaf2eb;
     --accent-tint-border:  rgba(63, 104, 69, 0.20);
 

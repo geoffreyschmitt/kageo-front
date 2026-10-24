@@ -202,7 +202,7 @@
 .greeting__ctaPrimary:hover {
     background: var(--home-sage-hover, #2e5033);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 30%, transparent);
+    box-shadow: 0 6px 20px var(--accent-solid-shadow);
 }
 
 .greeting__ctaSecondary {
@@ -391,7 +391,7 @@
 .empty__cta:hover {
     background: var(--home-sage-hover, #2e5033);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 30%, transparent);
+    box-shadow: 0 6px 20px var(--accent-solid-shadow);
 }
 
 /* ── Responsive ──────────────────────────── */

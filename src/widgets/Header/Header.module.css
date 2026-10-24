@@ -183,7 +183,7 @@
 .header__createButton:hover {
     background: var(--accent-solid-hover);
     border-color: var(--accent-solid-hover);
-    box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 28%, transparent);
+    box-shadow: 0 4px 14px var(--accent-solid-shadow);
 }
 
 /* Reserves the width of the signed-out buttons so nothing jumps once the session is known. */
@@ -674,7 +674,7 @@
 
 .form__submit:hover:not(:disabled) {
     background: var(--accent-solid-hover);
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 30%, transparent);
+    box-shadow: 0 4px 16px var(--accent-solid-shadow);
     transform: translateY(-1px);
 }
 

@@ -50,7 +50,7 @@
 .button--primary:hover:not(:disabled) {
     background: var(--accent-solid-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 30%, transparent);
+    box-shadow: 0 4px 14px var(--accent-solid-shadow);
 }
 
 .button--primary:active:not(:disabled) {
@@ -90,7 +90,7 @@
     background: var(--accent-solid);
     color: var(--on-accent-solid);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 30%, transparent);
+    box-shadow: 0 4px 14px var(--accent-solid-shadow);
 }
 
 .button--outline:active:not(:disabled) {

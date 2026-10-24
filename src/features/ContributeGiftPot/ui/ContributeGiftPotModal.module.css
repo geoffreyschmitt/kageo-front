@@ -304,7 +304,7 @@
 .contributeGiftPot__button--primary:hover:not(:disabled) {
     background: var(--accent-solid-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 30%, transparent);
+    box-shadow: 0 4px 16px var(--accent-solid-shadow);
 }
 
 .contributeGiftPot__button--secondary {

@@ -150,16 +150,10 @@
   },
   "wishlists": {
     "title": "Vos Wishlists",
-    "greeting": "Bonjour, {name}",
-    "statTotal": "au total",
-    "statYours": "à vous",
-    "statShared": "partagées avec vous",
     "newWishlist": "Nouvelle Wishlist",
     "viewPast": "Voir les wishlists passées",
     "tabMine": "Mes Wishlists",
     "tabShared": "Partagées avec moi",
-    "listTitleMine": "Mes Wishlists",
-    "listTitleShared": "Wishlists partagées avec moi",
     "emptyMine": "Vous n'avez pas encore créé de wishlist. Commencez dès maintenant !",
     "emptyShared": "Aucune wishlist n'a encore été partagée avec vous.",
     "createError": "Impossible de créer la wishlist — veuillez réessayer",
@@ -168,15 +162,9 @@
   },
   "history": {
     "title": "Historique",
-    "greeting": "Bonjour, {name}",
-    "statPast": "{count, plural, one {# événement passé} other {# événements passés}}",
-    "statYours": "à vous",
-    "statShared": "partagés avec vous",
     "subtitle": "Un historique en lecture seule des wishlists passées et de la façon dont les cadeaux ont été offerts.",
     "tabMine": "Mes Wishlists Passées",
     "tabShared": "Partagées avec moi",
-    "listTitleMine": "Mes Wishlists Passées",
-    "listTitleShared": "Wishlists passées partagées avec moi",
     "emptyMine": "Aucune de vos wishlists n'est encore passée.",
     "emptyShared": "Aucune wishlist passée n'a été partagée avec vous."
   },
@@ -322,7 +310,7 @@
     "private": "Privé",
     "items": "{count, plural, one {# article} other {# articles}}",
     "edit": "Modifier",
-    "view": "Voir",
+    "saving": "Enregistrement…",
     "by": "Par {name}"
   },
   "wishlistList": {

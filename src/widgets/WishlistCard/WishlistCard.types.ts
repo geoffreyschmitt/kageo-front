@@ -13,4 +13,6 @@ export type TWishlistCard = {
     isPending?: boolean
     isHistory?: boolean
     isOwnedByCurrentUser?: boolean
+    /** Hide the "By {owner}" line where the owner is already obvious (own dashboard, a profile page). */
+    hideOwner?: boolean
 }

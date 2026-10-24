@@ -53,6 +53,7 @@ export default function PublicProfilePage({ name, createdAt, wishlists, currentU
                     title={t('publicWishlistsTitle')}
                     emptyMessage={t('emptyMessage', { name })}
                     showCreateButton={false}
+                    hideOwner
                 />
             </div>
         </main>
