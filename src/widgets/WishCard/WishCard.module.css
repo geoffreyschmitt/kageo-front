@@ -226,6 +226,58 @@
     letter-spacing: -0.1px;
 }
 
+.wish-card__titleLink {
+    color: inherit;
+    text-decoration: none;
+}
+
+.wish-card__titleLink:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--wc-border);
+    text-underline-offset: 3px;
+}
+
+.wish-card__titleLink:focus-visible,
+.wish-card__productLink:focus-visible {
+    outline: 2px solid var(--wc-sage);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Where the gift lives: a quiet "domain ↗" line under the title, open to every viewer. */
+.wish-card__productLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    align-self: flex-start;
+    min-height: 32px;
+    margin: -6px 0 6px;
+    font-family: var(--wc-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wc-text-2);
+    text-decoration: underline;
+    text-decoration-color: var(--wc-border);
+    text-underline-offset: 3px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.wish-card__productLink:hover {
+    color: var(--wc-text);
+    text-decoration-color: currentColor;
+}
+
+/* Someone else already took it: still reachable, but no longer inviting. */
+.wish-card__productLink--dim {
+    color: var(--wc-text-3);
+    opacity: 0.6;
+}
+
+.wish-card__productLink--dim:hover,
+.wish-card__productLink--dim:focus-visible {
+    opacity: 1;
+}
+
 /* Price is information, not an action: ink, no chip, no sage */
 .wish-card__price {
     font-family: var(--wc-font-sans);

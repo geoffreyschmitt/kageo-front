@@ -32,6 +32,17 @@ const STATUS_CLASS = {
     wanted: styles['wish-card__status--wanted'],
 }
 
+const getProductHost = (url?: string): string | null => {
+    if (!url) return null
+    try {
+        const parsed = new URL(url)
+        if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return null
+        return parsed.hostname.replace(/^www\./, '')
+    } catch {
+        return null
+    }
+}
+
 export const WishCard = ({
     id,
     name,
@@ -145,6 +156,12 @@ export const WishCard = ({
     // cousins can't both buy the same gift.
     const showPurchaseLink = !!purchaseUrl && !!userId && status === 'reserved' && reservedBy === userId
 
+    // Browsing the product is open to every viewer; only buying is gated by the reservation.
+    // The link stays visible but dims once someone else has taken the gift.
+    const productHost = getProductHost(purchaseUrl)
+    const takenByOther =
+        (status === 'reserved' && reservedBy !== userId) || (status === 'purchased' && purchasedBy !== userId)
+
     return (
         <div className={`${styles['wish-card']} ${visibleStatus === 'purchased' ? styles['wish-card--purchased'] : ''}`}
              data-id={id}>
@@ -193,13 +210,39 @@ export const WishCard = ({
 
             <div className={styles['wish-card__content']}>
                 <div className={styles['wish-card__header']}>
-                    <TitleTag className={styles['wish-card__title']}>{name}</TitleTag>
+                    <TitleTag className={styles['wish-card__title']}>
+                        {productHost ? (
+                            <a
+                                href={purchaseUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={styles['wish-card__titleLink']}
+                            >
+                                {name}
+                            </a>
+                        ) : name}
+                    </TitleTag>
                     {price > 0 && (
                         <div className={styles['wish-card__price']}>
                             {formatVersionPrice(price, currency, locale)}
                         </div>
                     )}
                 </div>
+
+                {productHost && (
+                    <a
+                        href={purchaseUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={t('openProduct', {name, host: productHost})}
+                        className={`${styles['wish-card__productLink']} ${takenByOther ? styles['wish-card__productLink--dim'] : ''}`}
+                    >
+                        {productHost}
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M4.5 2.5h5v5M9.5 2.5l-7 7"/>
+                        </svg>
+                    </a>
+                )}
 
                 {description && (
                     <p

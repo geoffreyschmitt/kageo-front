@@ -282,6 +282,7 @@
     "purchasedBy": "Purchased by {name}",
     "someone": "someone",
     "viewInShop": "View in shop",
+    "openProduct": "See {name} on {host} (opens in a new tab)",
     "cancelPurchase": "Cancel purchase",
     "cancellingPurchase": "Cancelling…",
     "cancelReservation": "Cancel reservation",
