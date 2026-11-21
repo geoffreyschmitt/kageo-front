@@ -409,7 +409,7 @@ export default function Wishlist({
           )}
 
           <div className={styles.wishlist__actions}>
-            {userIsOwner && !isHistory && (
+            {userIsOwner && !isHistory && !reorder.isReordering && (
               <button className={`${styles.wishlist__button} ${styles['wishlist__button--primary']}`}
                       onClick={() => setIsAddItemModalOpen(true)}>
                 {t('addItem')}

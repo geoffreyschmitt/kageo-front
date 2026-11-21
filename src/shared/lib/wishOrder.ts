@@ -16,7 +16,8 @@ export const sortByStoredOrder = <T extends TOrderable>(wishes: T[], order: stri
 
 // Validates a requested order against the wishes that exist. Wishes the request omits (for
 // instance one added in another tab) are kept, after the requested ones, in their current
-// position; ids of deleted wishes are dropped. Returns null for duplicates or unknown ids.
+// position. Ids that are not in the wishlist (a wish deleted in another tab) are dropped rather
+// than failing the save: they can never be stored. Returns null for duplicates.
 export const resolveOrder = (
     requested: string[],
     wishIds: string[],
@@ -24,14 +25,14 @@ export const resolveOrder = (
 ): string[] | null => {
     const known = new Set(wishIds)
     if (new Set(requested).size !== requested.length) return null
-    if (requested.some((id) => !known.has(id))) return null
+    const kept = requested.filter((id) => known.has(id))
 
     const rank = new Map((currentOrder ?? []).map((id, index) => [id, index]))
-    const inRequest = new Set(requested)
+    const inRequest = new Set(kept)
     const omitted = wishIds
         .filter((id) => !inRequest.has(id))
         .sort((a, b) => (rank.get(a) ?? Infinity) - (rank.get(b) ?? Infinity))
-    return [...requested, ...omitted]
+    return [...kept, ...omitted]
 }
 
 // A section is a subset of the global order. Writes the section's new order back into the

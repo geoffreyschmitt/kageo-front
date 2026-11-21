@@ -38,10 +38,9 @@ describe('guards', () => {
         expect(res.status).toBe(404)
     })
 
-    it('400 for duplicate ids, ids outside the wishlist, or a body that is not a list of strings', async () => {
+    it('400 for duplicate ids, or a body that is not a list of strings', async () => {
         signInAs('owner')
         expect((await put(['a', 'a'])).status).toBe(400)
-        expect((await put(['zzz'])).status).toBe(400)
         expect((await put('a')).status).toBe(400)
         expect((await put([1, 2])).status).toBe(400)
         expect(await stored()).toBeNull()
@@ -60,6 +59,13 @@ describe('saving', () => {
     it('keeps a wish the request omitted, e.g. one added from another tab', async () => {
         signInAs('owner')
         await put(['b'])
+        expect(await stored()).toEqual(['b', 'a', 'c'])
+    })
+
+    it('does not fail when the request names a wish that was deleted elsewhere (and never stores it)', async () => {
+        signInAs('owner')
+        const res = await put(['zzz', 'b'])
+        expect(res.status).toBe(200)
         expect(await stored()).toEqual(['b', 'a', 'c'])
     })
 

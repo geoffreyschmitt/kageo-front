@@ -37,9 +37,13 @@ describe('resolveOrder', () => {
         expect(resolveOrder(['b', 'a'], ['a', 'b', 'c'], ['c', 'a', 'b'])).toEqual(['b', 'a', 'c'])
     })
 
-    it('rejects duplicates and unknown ids', () => {
+    it('rejects duplicates', () => {
         expect(resolveOrder(['a', 'a'], ['a', 'b'], null)).toBeNull()
-        expect(resolveOrder(['x'], ['a', 'b'], null)).toBeNull()
+    })
+
+    it('drops requested ids that are not in the wishlist instead of rejecting the save', () => {
+        expect(resolveOrder(['x', 'b'], ['a', 'b'], null)).toEqual(['b', 'a'])
+        expect(resolveOrder(['x'], ['a', 'b'], null)).toEqual(['a', 'b'])
     })
 
     it('never returns ids of wishes that no longer exist', () => {
