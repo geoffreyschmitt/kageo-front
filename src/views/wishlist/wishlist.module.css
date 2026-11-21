@@ -661,3 +661,31 @@
     .wishlist__button { font-size: 15px; min-height: 48px; }
     .wishlist__suggestionsCTASub { font-size: 14px; }
 }
+
+/* ── Reorder mode (owner) ─────────────────── */
+
+.wishlist__reorderBar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.wishlist__reorderHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    margin-bottom: 20px;
+}
+
+.wishlist__reorderHint {
+    margin: 0;
+    color: var(--g-text-2);
+    font-size: 14px;
+}
+
+.wishlist__reorderActions {
+    display: flex;
+    gap: 8px;
+}

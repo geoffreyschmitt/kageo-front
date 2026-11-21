@@ -14,6 +14,7 @@ import {CommentsDrawer, CommentsPreview} from '@/features/Comments'
 import {DeleteWishlistButton} from '@/features/DeleteWishlist'
 import {EditWishModal} from '@/features/EditWish'
 import {ProposeWishModal} from '@/features/ProposeWish';
+import {ReorderSection, useReorderModel} from '@/features/ReorderWishes'
 import {ShareWishlistModal} from '@/features/ShareWishlist'
 import {UpdateWishlistModal} from '@/features/UpdateWishlist'
 
@@ -30,7 +31,7 @@ import {generateShareUrl} from '@/shared/lib/generateShareUrl';
 import {sortByStoredOrder} from '@/shared/lib/wishOrder'
 import {LoginPromptModal} from '@/shared/ui'
 
-import {isMostWanted} from './partitionWishes'
+import {isMostWanted, partitionWishes} from './partitionWishes'
 import styles from './wishlist.module.css'
 
 
@@ -102,6 +103,7 @@ export default function Wishlist({
   description,
   items = [],
   order = [],
+  onReorder,
   isPublic,
   eventDate,
   coverImage = '',
@@ -254,6 +256,23 @@ export default function Wishlist({
     [allProposedItems],
   )
 
+  // Reorder mode edits the order of every non-suggestion wish; "most wanted" and the rest are two
+  // sections of one global order.
+  const reorderable = useMemo(
+    () => items.filter((item) => item.status !== 'proposed' && !item.isProposed),
+    [items],
+  )
+  const reorderableIds = useMemo(() => sortByStoredOrder(reorderable, order).map((item) => item.id), [reorderable, order])
+  const reorder = useReorderModel({
+    allIds: reorderableIds,
+    onSave: async (nextOrder) => {
+      await onReorder?.(nextOrder)
+    },
+  })
+  const reorderSections = useMemo(() => partitionWishes(reorderable, reorder.draft), [reorderable, reorder.draft])
+  const canReorder = userIsOwner && !isHistory && !!onReorder && reorderable.length >= 2
+  const [isSavingOrder, setIsSavingOrder] = useState(false)
+
   const handleAddWish = (wish: TWishFormData & { id: string }) => {
     // Call parent callback to update state
     if (onAddWish) {
@@ -313,6 +332,21 @@ export default function Wishlist({
     setSortOrder('desc')
     setStatusFilter(['all'])
     setPriceRange({min: null, max: null})
+  }
+
+  const handleStartReorder = () => {
+    resetFilters()
+    reorder.start()
+  }
+
+  const handleFinishReorder = async () => {
+    if (isSavingOrder) return
+    setIsSavingOrder(true)
+    try {
+      await reorder.done()
+    } finally {
+      setIsSavingOrder(false)
+    }
   }
 
   const potCard = !userIsOwner && !isHistory ? (
@@ -484,6 +518,60 @@ export default function Wishlist({
         <div className={styles.wishlist__items}>
           {potCard}
 
+          {reorder.isReordering ? (
+            <div className={styles.wishlist__reorder}>
+              <div className={styles.wishlist__reorderHeader}>
+                <p className={styles.wishlist__reorderHint}>{t('reorderHint')}</p>
+                <div className={styles.wishlist__reorderActions}>
+                  <button
+                    type="button"
+                    className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
+                    onClick={reorder.cancel}
+                    disabled={isSavingOrder}
+                  >
+                    {t('reorderCancel')}
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.wishlist__button} ${styles['wishlist__button--primary']}`}
+                    onClick={handleFinishReorder}
+                    disabled={isSavingOrder}
+                  >
+                    {t('reorderDone')}
+                  </button>
+                </div>
+              </div>
+              {reorderSections.mostWanted.length > 0 && (
+                <ReorderSection
+                  title={t('mostWantedTitle')}
+                  items={reorderSections.mostWanted}
+                  onChange={reorder.moveSection}
+                  onToTop={reorder.toTop}
+                />
+              )}
+              {reorderSections.regular.length > 0 && (
+                <ReorderSection
+                  title={t('allIdeas')}
+                  items={reorderSections.regular}
+                  onChange={reorder.moveSection}
+                  onToTop={reorder.toTop}
+                />
+              )}
+            </div>
+          ) : (
+          <>
+          {canReorder && (
+            <div className={styles.wishlist__reorderBar}>
+              <button
+                type="button"
+                className={`${styles.wishlist__button} ${styles['wishlist__button--secondary']}`}
+                onClick={handleStartReorder}
+              >
+                {t('reorder')}
+              </button>
+            </div>
+          )}
+
           <WishFilterBar
             showStatus={!userIsOwner}
             isOwner={userIsOwner}
@@ -648,6 +736,8 @@ export default function Wishlist({
                 {t('resetAllFilters')}
               </button>
             </div>
+          )}
+          </>
           )}
 
           {/* ── Suggestions Section (non-owners only, not in history) ── */}
