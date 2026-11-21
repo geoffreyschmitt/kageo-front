@@ -13,6 +13,9 @@ export type { TWishlistContributeResponse, TWishlistSetContributionResponse } fr
 // No response type — route returns { ok: true } which callers do not need to consume
 export { shareWishlist } from './shareWishlist'
 
+export { reorderWishes } from './reorderWishes'
+export type { TReorderWishesResponse } from './reorderWishes'
+
 export { createPot } from './createPot'
 export type { TCreatePotResponse } from './createPot'
 

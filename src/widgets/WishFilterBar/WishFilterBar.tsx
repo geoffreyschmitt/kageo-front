@@ -6,7 +6,7 @@ import {useLocale, useTranslations} from 'next-intl'
 
 import styles from './WishFilterBar.module.css'
 
-export type TSortBy = 'name' | 'price' | 'date'
+export type TSortBy = 'manual' | 'name' | 'price' | 'date'
 export type TSortOrder = 'asc' | 'desc'
 export type TStatusView = 'all' | 'open' | 'taken'
 export type TPriceRange = { min: number | null; max: number | null }
@@ -14,6 +14,8 @@ export type TPriceRange = { min: number | null; max: number | null }
 type TWishFilterBarProps = {
   // Status chips are for guests only: the owner never sees who reserved what.
   showStatus: boolean
+  // Names the "manual order" sort: "My order" for the owner, "Owner's order" for guests.
+  isOwner: boolean
   statusView: TStatusView
   onStatusChange: (view: TStatusView) => void
   counts: { all: number; open: number; taken: number }
@@ -31,7 +33,9 @@ type TWishFilterBarProps = {
 }
 
 // One select holds field and direction, so the current order is spelled out instead of hidden behind an arrow.
+// "manual" is the owner's own order; it has no direction, so sortOrder is ignored for it.
 const SORT_OPTIONS = [
+  {value: 'manual', sortBy: 'manual', sortOrder: 'desc', labelKey: 'sortManualOwner'},
   {value: 'date-desc', sortBy: 'date', sortOrder: 'desc', labelKey: 'sortNewest'},
   {value: 'date-asc', sortBy: 'date', sortOrder: 'asc', labelKey: 'sortOldest'},
   {value: 'price-asc', sortBy: 'price', sortOrder: 'asc', labelKey: 'sortPriceAsc'},
@@ -44,6 +48,7 @@ const toBound = (raw: string) => (raw === '' ? null : Number(raw))
 
 export function WishFilterBar({
   showStatus,
+  isOwner,
   statusView,
   onStatusChange,
   counts,
@@ -95,7 +100,7 @@ export function WishFilterBar({
         ? t('budgetFrom', {min: money(min)})
         : t('budgetUpTo', {max: money(max as number)})
 
-  const sortValue = `${sortBy}-${sortOrder}`
+  const sortValue = sortBy === 'manual' ? 'manual' : `${sortBy}-${sortOrder}`
   const isFiltered = shown !== total
 
   const statusChips: { view: TStatusView; label: string; count: number }[] = [
@@ -209,7 +214,9 @@ export function WishFilterBar({
             }}
           >
             {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{t(o.labelKey)}</option>
+              <option key={o.value} value={o.value}>
+                {t(o.value === 'manual' && !isOwner ? 'sortManualGuest' : o.labelKey)}
+              </option>
             ))}
           </select>
         </label>

@@ -27,8 +27,10 @@ import {shareWishlist} from '@/shared/api/wishlist/shareWishlist'
 import {eventBus} from '@/shared/eventBus/';
 import {formatDate} from '@/shared/lib/formatDate';
 import {generateShareUrl} from '@/shared/lib/generateShareUrl';
+import {sortByStoredOrder} from '@/shared/lib/wishOrder'
 import {LoginPromptModal} from '@/shared/ui'
 
+import {isMostWanted} from './partitionWishes'
 import styles from './wishlist.module.css'
 
 
@@ -37,6 +39,10 @@ type TWishlistPageProps = {
   name: string
   description: string
   items: TWishCard[]
+  // The owner's manual wish order (wish ids). Wishes missing from it come first, newest first.
+  order?: string[]
+  // Saves a new order. The page applies it optimistically and rolls it back itself on failure.
+  onReorder?: (order: string[]) => Promise<void> | void
   isPublic: boolean
   eventDate: string
   coverImage?: string
@@ -95,6 +101,7 @@ export default function Wishlist({
   name,
   description,
   items = [],
+  order = [],
   isPublic,
   eventDate,
   coverImage = '',
@@ -140,7 +147,7 @@ export default function Wishlist({
   onDeleteWishlist,
   onDeleteWishlistError,
 }: TWishlistPageProps) {
-  const [sortBy, setSortBy] = useState<'name' | 'price' | 'date'>('date')
+  const [sortBy, setSortBy] = useState<'manual' | 'name' | 'price' | 'date'>('manual')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [statusFilter, setStatusFilter] = useState<('all' | 'wanted' | 'purchased' | 'reserved' | 'proposed' | 'funded')[]>(['all'])
   const [priceRange, setPriceRange] = useState<{ min: number | null; max: number | null }>({min: null, max: null})
@@ -176,6 +183,10 @@ export default function Wishlist({
   const compareItems = useCallback((a: TWishCard, b: TWishCard) => {
     let comparison = 0
     switch (sortBy) {
+      // Only reached for lists that are not ordered by the stored order (suggestions): newest first.
+      case 'manual':
+        comparison = addedAt(a) - addedAt(b)
+        break
       case 'name':
         comparison = a.name.localeCompare(b.name)
         break
@@ -211,18 +222,12 @@ export default function Wishlist({
       return true
     })
 
-    filtered.sort(compareItems)
-
-    return filtered
-  }, [items, compareItems, statusFilter, isOutsidePriceRange])
+    return sortBy === 'manual' ? sortByStoredOrder(filtered, order) : filtered.sort(compareItems)
+  }, [items, compareItems, sortBy, order, statusFilter, isOutsidePriceRange])
 
   const { mostWantedItems, regularItems } = useMemo(() => {
-    const mostWanted = filteredAndSortedItems.filter(
-      (item) => item.priority === 'high' && item.status !== 'purchased'
-    )
-    const regular = filteredAndSortedItems.filter(
-      (item) => item.priority !== 'high' || item.status === 'purchased'
-    )
+    const mostWanted = filteredAndSortedItems.filter(isMostWanted)
+    const regular = filteredAndSortedItems.filter((item) => !isMostWanted(item))
     return { mostWantedItems: mostWanted, regularItems: regular }
   }, [filteredAndSortedItems])
 
@@ -235,7 +240,7 @@ export default function Wishlist({
   const isOpenFilter = statusFilter.length === 1 && statusFilter[0] === 'wanted'
   const isTakenFilter = statusFilter.includes('reserved') && statusFilter.includes('purchased')
   const isDefaultView =
-    statusFilter.includes('all') && priceRange.min === null && priceRange.max === null && sortBy === 'date' && sortOrder === 'desc'
+    statusFilter.includes('all') && priceRange.min === null && priceRange.max === null && sortBy === 'manual'
   const allProposedItems = items.filter((item) => item.isProposed || item.status === 'proposed')
   const proposedItems = useMemo(() => {
     const filtered = allProposedItems.filter((item) => !isOutsidePriceRange(item.price))
@@ -304,7 +309,7 @@ export default function Wishlist({
   const handleSendShareEmail = async (email: string) => shareWishlist(id, email, locale)
 
   const resetFilters = () => {
-    setSortBy('date')
+    setSortBy('manual')
     setSortOrder('desc')
     setStatusFilter(['all'])
     setPriceRange({min: null, max: null})
@@ -481,6 +486,7 @@ export default function Wishlist({
 
           <WishFilterBar
             showStatus={!userIsOwner}
+            isOwner={userIsOwner}
             statusView={isTakenFilter ? 'taken' : isOpenFilter ? 'open' : 'all'}
             onStatusChange={(view) => setStatusFilter(view === 'open' ? ['wanted'] : view === 'taken' ? ['reserved', 'purchased'] : ['all'])}
             counts={{all: shownableCount, open: wantedItems.length, taken: reservedItems.length + purchasedItems.length}}

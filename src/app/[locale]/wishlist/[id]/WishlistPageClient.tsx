@@ -13,6 +13,7 @@ import { TWishlistFormData } from '@/entities/wishlist'
 
 import { editWish } from '@/shared/api/wish/editWish'
 import type { TGiftPotView } from '@/shared/api/wish/getGiftPot'
+import { reorderWishes } from '@/shared/api/wishlist'
 import type { TGetPotResponse } from '@/shared/api/wishlist/getPot'
 import { eventBus } from '@/shared/eventBus'
 import { useRouter } from '@/shared/i18n/navigation'
@@ -64,12 +65,14 @@ export default function WishlistPageClient({
     isLoggedIn,
     isInvited,
     initialItems,
+    initialOrder = [],
     initialPot,
     safeBets,
 }: Props) {
     const t = useTranslations('wishlistToast')
     const router = useRouter()
     const [items, setItems] = useState<TWishCard[]>(initialItems)
+    const [order, setOrder] = useState<string[]>(initialOrder)
     const [pot, setPot] = useState<TGetPotResponse | null>(initialPot)
     // Per-wish gift pots, keyed by wish id. Seeded from the server-rendered items
     // (owners never receive a giftPot, so their entries start as null).
@@ -291,6 +294,19 @@ export default function WishlistPageClient({
         toast(t('updateError'), 'error')
     }
 
+    // Optimistic: the new order shows at once, and goes back to the previous one if the save fails.
+    const handleReorder = async (next: string[]) => {
+        const previous = order
+        setOrder(next)
+        try {
+            const saved = await reorderWishes(id, next)
+            setOrder(saved.order)
+        } catch {
+            setOrder(previous)
+            toast(t('reorderSaveError'), 'error')
+        }
+    }
+
     const handleDeleteWish = (wishId: string) => {
         const name = items.find((i) => i.id === wishId)?.name
         setItems((prev) => prev.filter((item) => item.id !== wishId))
@@ -438,6 +454,8 @@ export default function WishlistPageClient({
                 ownerProfileUrl={ownerProfileUrl}
                 currency={currency}
                 items={items}
+                order={order}
+                onReorder={handleReorder}
                 userIsOwner={userIsOwner}
                 isHistory={isHistory}
                 hasActivity={hasActivity}

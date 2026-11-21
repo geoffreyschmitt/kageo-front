@@ -228,6 +228,8 @@
     "leadSurprise": "{ownerName} won't see who reserves.",
     "allIdeas": "All ideas",
     "sortLabel": "Sort",
+    "sortManualOwner": "My order",
+    "sortManualGuest": "Owner's order",
     "sortNewest": "Newest first",
     "sortOldest": "Oldest first",
     "sortPriceAsc": "Price: low to high",
@@ -243,6 +245,7 @@
     "clearFilters": "Clear"
   },
   "wishlistToast": {
+    "reorderSaveError": "Couldn't save the order — please try again",
     "potStarted": "Pot started — friends can now chip in",
     "giftPotStarted": "The gift pot has started",
     "wishReserved": "\"{name}\" reserved",

@@ -228,6 +228,8 @@
     "leadSurprise": "{ownerName} ne verra pas qui réserve.",
     "allIdeas": "Toutes les idées",
     "sortLabel": "Tri",
+    "sortManualOwner": "Mon ordre",
+    "sortManualGuest": "Ordre du créateur",
     "sortNewest": "Plus récents",
     "sortOldest": "Plus anciens",
     "sortPriceAsc": "Prix croissant",
@@ -243,6 +245,7 @@
     "clearFilters": "Effacer"
   },
   "wishlistToast": {
+    "reorderSaveError": "Impossible d'enregistrer l'ordre — réessayez",
     "potStarted": "La cagnotte a démarré — vos amis peuvent maintenant y contribuer",
     "giftPotStarted": "La cagnotte a démarré",
     "wishReserved": "« {name} » réservé",
