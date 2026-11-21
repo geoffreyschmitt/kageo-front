@@ -50,7 +50,7 @@ Reading: wishes whose id is in the list sort by their index; wishes not in the l
 
 `PUT /api/wishlist/[id]/order` with `{ order: string[] }`.
 - Auth required, owner only, rate limited like other writes, runs under `wishlistLock(id)`.
-- Validates that every id belongs to the wishlist's wish set and that there are no duplicates; unknown ids → 400. Ids of wishes that exist but are omitted are appended in their current order rather than rejected (guards against a wish added in another tab).
+- Rejects duplicates and a malformed body with 400. Ids that are not in the wishlist's wish set (a wish deleted in another tab) are ignored rather than failing the save (changed after review: a 400 would have blocked every save until a reload). Ids of wishes that exist but are omitted are appended in their current order rather than rejected (guards against a wish added in another tab).
 - Writes the key and returns the stored order.
 
 `GET /api/wishlist/[id]` and the server page `app/[locale]/wishlist/[id]/page.tsx` read the key and return the wishes already ordered (the page passes items in order, plus the sorting rule below).
