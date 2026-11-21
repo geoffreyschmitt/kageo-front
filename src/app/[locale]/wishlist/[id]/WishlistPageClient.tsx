@@ -36,6 +36,8 @@ type Props = {
     isLoggedIn: boolean
     isInvited: boolean
     initialItems: TWishCard[]
+    // The owner's manual wish order (wish ids); empty until the owner reorders.
+    initialOrder?: string[]
     initialPot: TGetPotResponse | null
     safeBets: TSafeBetEntry[]
 }

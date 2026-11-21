@@ -28,6 +28,7 @@ API (`app/api/`):
 | `auth/[...nextauth]`, `auth/register` | NextAuth; credentials sign-up |
 | `user/me`, `user/password`, `user/stats`, `user/export` | Account info (incl. optional birthdate), `DELETE` = full account purge, password change, dashboard stats, data export (profile, owned lists with owner-masked wishes, safe bets, and `activity`: the user's own pledges, comments, reservations and purchases elsewhere) |
 | `wishlist` , `wishlist/[id]` | Wishlist CRUD |
+| `wishlist/[id]/order` | `PUT {order}`: saves the owner's manual wish order. Owner only, `write` rate rule, under `wishlistLock`. Rejects duplicates and ids outside the wishlist (400); wishes the request omits are kept after the requested ones, ids of deleted wishes are dropped |
 | `wishlist/share` | Invite by email: sends the invite through Resend, then adds the invitee (nothing is saved if the email fails) |
 | `wishlist/pot`, `wishlist/contribute` | Wishlist-level pot; `PATCH` replaces the caller's pledge, `amount: 0` cancels |
 | `wishlist/pot/export`, `wish/pot/export` | Pledges as CSV; pot organiser only |
@@ -59,6 +60,7 @@ All values are JSON unless noted. IDs are UUIDs.
 | `email:{email}:invitedWishlists` | set | wishlists an email was invited to (works before the invitee has an account) |
 | `wishlist:{id}` | value | `TWishlist` (name, description, isPublic, eventDate, allowSuggestions, coverImage?, ownerId, timestamps) |
 | `wishlist:{id}:wishes` | set | wish ids |
+| `wishlist:{id}:order` | value | owner's manual wish order: array of wish ids, global across "most wanted" and the rest. Absent until the owner reorders; wishes missing from it sort first (newest first). Read through `shared/lib/wishOrder.ts` |
 | `wishlist:{id}:invitees` | set | invited emails |
 | `wishlist:{id}:pot` | value | wishlist-level pot (creator, target) |
 | `wishlist:{id}:contributions` | list | pledge entries `{userId, amount, contributedAt}` |

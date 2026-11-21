@@ -8,6 +8,7 @@ import { queueWishlistDeletion } from '@/shared/lib/kvCascade'
 import { LockTimeoutError, busyResponse, withLock, wishlistLock } from '@/shared/lib/kvLock'
 import { maskWishForOwner } from '@/shared/lib/maskWishForOwner'
 import { limitWrite } from '@/shared/lib/rateLimit'
+import { sortByStoredOrder } from '@/shared/lib/wishOrder'
 
 type TWishlistKV = {
     id: string
@@ -46,8 +47,12 @@ export async function GET(
     // as the wishlist page.
     const isOwner = !!session?.user?.id && session.user.id === wishlist.ownerId
     const visibleWishes = isOwner ? wishes.map(maskWishForOwner) : wishes
+    const order = await kv.get<string[]>(`wishlist:${id}:order`)
 
-    return NextResponse.json({ ...wishlist, wishes: visibleWishes })
+    return NextResponse.json({
+        ...wishlist,
+        wishes: sortByStoredOrder(visibleWishes as Array<{ id: string; createdAt?: string }>, order),
+    })
 }
 
 // PUT /api/wishlist/[id] — update wishlist metadata

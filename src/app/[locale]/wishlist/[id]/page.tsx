@@ -215,6 +215,7 @@ export default async function WishlistPage({
             isLoggedIn={isLoggedIn}
             isInvited={isInvited}
             initialItems={items}
+            initialOrder={(await kv.get<string[]>(`wishlist:${id}:order`)) ?? []}
             initialPot={potView}
             safeBets={safeBetEntries}
         />

@@ -127,6 +127,25 @@ describe('read, update, delete', () => {
         expect(fake.keys()).toEqual([])
     })
 
+    it('DELETE also removes the stored wish order', async () => {
+        await fake.set('wishlist:L:order', ['w1'])
+        signInAs('owner')
+        expect((await DELETE(plain, params('L'))).status).toBe(200)
+        expect(fake.has('wishlist:L:order')).toBe(false)
+    })
+
+    it('GET returns the wishes in the owner\'s stored order, unlisted wishes first', async () => {
+        await fake.sadd('wishlist:L:wishes', 'w2', 'w3')
+        await fake.set('wish:w1', { id: 'w1', wishlistId: 'L', status: 'wanted', createdAt: '2026-01-01T00:00:00.000Z' })
+        await fake.set('wish:w2', { id: 'w2', wishlistId: 'L', status: 'wanted', createdAt: '2026-01-02T00:00:00.000Z' })
+        await fake.set('wish:w3', { id: 'w3', wishlistId: 'L', status: 'wanted', createdAt: '2026-01-03T00:00:00.000Z' })
+        await fake.set('wishlist:L:order', ['w1', 'w2'])
+
+        signInAs(null)
+        const body = await bodyOf(await getOne(plain, params('L')))
+        expect((body.wishes as Array<{ id: string }>).map((w) => w.id)).toEqual(['w3', 'w1', 'w2'])
+    })
+
     it.each([
         ['a reserved wish', async () => fake.set('wish:w1', { id: 'w1', wishlistId: 'L', status: 'reserved' })],
         ['a wishlist pot', async () => fake.set('wishlist:L:pot', { creatorId: 'a' })],

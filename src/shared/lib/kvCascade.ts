@@ -17,6 +17,7 @@ export const wishKeys = (wishId: string): string[] => [
 export const wishlistKeys = (wishlistId: string): string[] => [
     `wishlist:${wishlistId}`,
     `wishlist:${wishlistId}:wishes`,
+    `wishlist:${wishlistId}:order`,
     `wishlist:${wishlistId}:invitees`,
     `wishlist:${wishlistId}:pot`,
     `wishlist:${wishlistId}:contributions`,
